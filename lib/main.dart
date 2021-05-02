@@ -175,10 +175,11 @@ class MyApp extends StatefulWidget with WidgetsBindingObserver {
 //
 //   runApp(MyApp());
 // }
+
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 class _MyAppState extends State<MyApp> {
   // AppUpdateInfo _updateInfo;
-
-  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   bool _flexibleUpdateAvailable = false;
   String _token;
@@ -353,11 +354,10 @@ class _MyAppState extends State<MyApp> {
                                 child: MaterialApp(
                                   debugShowCheckedModeBanner: false,
                                   navigatorKey: navigatorKey,
-                                  
 
                                   title: 'Aureal',
                                   theme: widget.themeProvider.themeData(),
-                                  home: Wallet(),
+                                  home: SplashScreenPage(),
                                   // home: TemporaryError(),
                                   // initialRoute: HiveAccount.id,
                                   routes: {
@@ -433,6 +433,8 @@ class _MyAppState extends State<MyApp> {
 }
 
 class SplashScreenPage extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   Widget _home = Welcome();
 
   Dio dio = Dio();
@@ -498,6 +500,7 @@ class SplashScreenPage extends StatelessWidget {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.black,
       body: Center(
         child: Container(

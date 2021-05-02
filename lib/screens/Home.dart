@@ -106,19 +106,21 @@ class _HomeState extends State<Home> {
     try {
       http.Response response = await http.get(Uri.parse(url), headers: header);
       if (response.statusCode == 200) {
-        setState(() {
-          prefs.setString(
-              'FullName', jsonDecode(response.body)['users']['fullname']);
+        if (this.mounted) {
+          setState(() {
+            prefs.setString(
+                'FullName', jsonDecode(response.body)['users']['fullname']);
 
-          prefs.setString(
-              'userName', jsonDecode(response.body)['users']['username']);
-          // displayPicture = jsonDecode(response.body)['users']['img'];
-          status = jsonDecode(response.body)['users']['settings']['Account']
-              ['Presence'];
+            prefs.setString(
+                'userName', jsonDecode(response.body)['users']['username']);
+            // displayPicture = jsonDecode(response.body)['users']['img'];
+            status = jsonDecode(response.body)['users']['settings']['Account']
+                ['Presence'];
 
-          prefs.getString('HiveUserName');
-          jsonDecode(response.body)['users']['email'];
-        });
+            prefs.getString('HiveUserName');
+            jsonDecode(response.body)['users']['email'];
+          });
+        }
       }
     } catch (e) {
       print(e);
@@ -130,10 +132,12 @@ class _HomeState extends State<Home> {
   var currentlyPlaying;
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      print(_selectedIndex);
-    });
+    if (this.mounted) {
+      setState(() {
+        _selectedIndex = index;
+        print(_selectedIndex);
+      });
+    }
   }
 
   Widget _createPage(BuildContext context, int index) {
@@ -164,10 +168,12 @@ class _HomeState extends State<Home> {
   void getLocalData() async {
     prefs = await SharedPreferences.getInstance();
     print(prefs.getString('token'));
-    setState(() {
-      displayPicture = prefs.getString('displayPicture');
-      username = prefs.getString('HiveUserName');
-    });
+    if (this.mounted) {
+      setState(() {
+        displayPicture = prefs.getString('displayPicture');
+        username = prefs.getString('HiveUserName');
+      });
+    }
   }
 
   String displayPicture;

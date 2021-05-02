@@ -89,7 +89,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
     Future<void> _pullRefresh() async {
       print('proceedd');
       await discoverData.getDiscoverProvider();
-      print(discoverData.isFetcheddiscoverList);
     }
 
     final mediaQueryData = MediaQuery.of(context);
@@ -98,7 +97,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
         return Scaffold(
           extendBody: true,
           body: ModalProgressHUD(
-            inAsyncCall: (!discoverData.isFetcheddiscoverList),
+            inAsyncCall: !discoverData.isFetcheddiscoverList,
+            progressIndicator: CircularProgressIndicator(),
             child: Container(
                 height: double.infinity,
                 width: double.infinity,
