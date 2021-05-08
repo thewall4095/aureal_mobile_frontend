@@ -335,7 +335,7 @@ class _FollowingPageState extends State<FollowingPage>
       await communities.getAllCommunity();
       await getFollowedPodcasts();
       await getHiveFollowedEpisode();
-      // await getHiveFollowedEpisode();
+
       await getFollowedPodcasts();
     }
 
