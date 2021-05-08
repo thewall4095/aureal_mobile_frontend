@@ -1,0 +1,51 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.github.florent37.assets_audio_player" >
+4
+5    <uses-sdk android:minSdkVersion="16" />
+5-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml
+6
+7    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+7-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:4:5-77
+7-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:4:22-74
+8    <uses-permission android:name="android.permission.VIBRATE" />
+8-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:5:5-66
+8-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:5:22-63
+9    <uses-permission android:name="android.permission.WAKE_LOCK" />
+9-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:6:5-68
+9-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:6:22-65
+10
+11    <application>
+11-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:7:5-26:19
+12        <receiver android:name="com.github.florent37.assets_audio_player.notification.NotificationActionReceiver" />
+12-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:8:9-76
+12-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:8:19-74
+13        <receiver android:name="com.github.florent37.assets_audio_player.notification.CustomMediaButtonReceiver" >
+13-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:9:9-13:20
+13-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:9:19-73
+14            <intent-filter>
+14-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:10:13-12:29
+15                <action android:name="android.intent.action.MEDIA_BUTTON" />
+15-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:11:17-77
+15-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:11:25-74
+16            </intent-filter>
+17        </receiver>
+18
+19        <service
+19-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:15:9-24:19
+20            android:name="com.github.florent37.assets_audio_player.notification.NotificationService"
+20-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:16:13-61
+21            android:enabled="true"
+21-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:17:13-35
+22            android:exported="true" >
+22-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3/android/src/main/AndroidManifest.xml:18:13-36
+23
+24            <!--
+25            <intent-filter>
+26                <action android:name="android.intent.action.MEDIA_BUTTON" />
+27            </intent-filter>
+28            -->
+29        </service>
+30    </application>
+31
+32</manifest>
