@@ -1,0 +1,44 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.tarafdari.flutter_media_notification" >
+4
+5    <uses-sdk android:minSdkVersion="16" />
+5-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+6
+7    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+7-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:3:5-77
+7-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:3:22-74
+8    <uses-permission android:name="android.permission.VIBRATE" />
+8-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:4:5-66
+8-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:4:22-63
+9    <uses-permission android:name="android.permission.WAKE_LOCK" />
+9-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:5:5-68
+9-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:5:22-65
+10
+11    <application>
+11-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:6:5-18:19
+12        <receiver android:name="com.tarafdari.flutter_media_notification.NotificationReturnSlot" />
+12-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:7:9-68
+12-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:7:19-56
+13        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+13-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:8:9-12:20
+13-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:8:19-76
+14            <intent-filter>
+14-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:9:13-11:29
+15                <action android:name="android.intent.action.MEDIA_BUTTON" />
+15-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:10:17-77
+15-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:10:25-74
+16            </intent-filter>
+17        </receiver>
+18
+19        <service
+19-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:14:9-17:47
+20            android:name="com.tarafdari.flutter_media_notification.NotificationPanel"
+20-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:15:13-46
+21            android:enabled="true"
+21-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:16:13-35
+22            android:exported="true" />
+22-->/Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:17:13-36
+23    </application>
+24
+25</manifest>

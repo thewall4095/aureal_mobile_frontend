@@ -1,0 +1,55 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:1:1-19:12
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:1:1-19:12
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:1:1-19:12
+	package
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:2:3-53
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:3:5-77
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:3:22-74
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:4:5-66
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:4:22-63
+uses-permission#android.permission.WAKE_LOCK
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:5:5-68
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:5:22-65
+application
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:6:5-18:19
+receiver#com.tarafdari.flutter_media_notification.NotificationReturnSlot
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:7:9-68
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:7:19-56
+receiver#androidx.media.session.MediaButtonReceiver
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:8:9-12:20
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:8:19-76
+intent-filter#action:name:android.intent.action.MEDIA_BUTTON
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:9:13-11:29
+action#android.intent.action.MEDIA_BUTTON
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:10:17-77
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:10:25-74
+service#com.tarafdari.flutter_media_notification.NotificationPanel
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:14:9-17:47
+	android:enabled
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:16:13-35
+	android:exported
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:17:13-36
+	android:name
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml:15:13-46
+uses-sdk
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_media_notification-1.2.6/android/src/main/AndroidManifest.xml

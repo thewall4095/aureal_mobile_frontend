@@ -1,0 +1,22 @@
+R_DEF: Internal format may change without notice
+local
+drawable baseline_pause_black_18
+drawable baseline_pause_black_24
+drawable baseline_pause_black_36
+drawable baseline_pause_black_48
+drawable baseline_play_arrow_black_18
+drawable baseline_play_arrow_black_24
+drawable baseline_play_arrow_black_36
+drawable baseline_play_arrow_black_48
+drawable baseline_skip_next_black_18
+drawable baseline_skip_next_black_24
+drawable baseline_skip_next_black_36
+drawable baseline_skip_next_black_48
+drawable baseline_skip_previous_black_18
+drawable baseline_skip_previous_black_24
+drawable baseline_skip_previous_black_36
+drawable baseline_skip_previous_black_48
+drawable ic_stat_music_note
+drawable launch_background
+mipmap ic_launcher
+style LaunchTheme

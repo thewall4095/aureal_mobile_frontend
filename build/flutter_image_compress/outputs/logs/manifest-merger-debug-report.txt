@@ -1,0 +1,29 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:3:5-47
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:2:5-51
+	xmlns:android
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:1:11-69
+uses-sdk
+ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+	tools:overrideLibrary
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:13-56
+	android:targetSdkVersion
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
+		ADDED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml:5:3-58
+		INJECTED from /Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_image_compress-1.0.0/android/src/main/AndroidManifest.xml
