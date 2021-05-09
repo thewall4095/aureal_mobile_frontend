@@ -301,14 +301,14 @@ class _EpisodeViewState extends State<EpisodeView>
                   Icons.arrow_back,
                 ),
               ),
-              actions: <Widget>[
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.more_vert,
-                  ),
-                )
-              ],
+              // actions: <Widget>[
+              //   IconButton(
+              //     onPressed: () {},
+              //     icon: Icon(
+              //       Icons.more_vert,
+              //     ),
+              //   )
+              // ],
               expandedHeight: 450,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(

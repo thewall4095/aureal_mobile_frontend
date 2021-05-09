@@ -338,10 +338,33 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
+      // print('${message.data}');
+      // print(message.contentAvailable);
       if (message != null) {
-        if (message.data['type'] == 'reply_comment') {
+        if (message.data['type'] != null) {
+          if (message.data['type'] == 'vote_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'reply_comment') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'comment_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'episode_published') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+        } else {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return EpisodeView(episodeId: message.data['episode_id']);
+            return _home;
           }));
         }
       } else {
@@ -375,11 +398,28 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("it is coming here");
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return EpisodeView(episodeId: message.data['episode_id']);
-      }));
+      print(
+          "it is coming here/////////////////////////////////////////////////");
+      if (message.data['type'] == 'vote_episode') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'reply_comment') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'comment_episode') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'episode_published') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
     });
   }
 
