@@ -141,24 +141,6 @@ class DiscoverProvider extends ChangeNotifier {
   void getDiscoverProvider() async {
     await getPreferences();
     _isFetcheddiscoverList = false;
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String url =
-    //     'https://api.aureal.one/public/discover?user_id=${prefs.getString('userId')}';
-    //
-    // try {
-    //   http.Response response = await http.get(Uri.parse(url));
-
-    //
-    //   if (response.statusCode == 200) {
-    //     discoverList = jsonDecode(response.body)['ans'];
-    //   }
-    // } catch (e) {
-    //   _isFetcheddiscoverList = true;
-    //   print(e);
-    // }
-    // getFeaturedPodcasts();
-    // getRecentlyPlayed();
-    // getNewest();
     getFeatured();
     getRecentlyPlayed();
     getNewPodcast();

@@ -572,6 +572,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "package_info",
+      "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "page_transition",
       "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/page_transition-1.1.7+6",
       "packageUri": "lib/",
@@ -950,7 +956,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-05-02T12:12:26.240047Z",
+  "generated": "2021-05-09T20:40:43.607240Z",
   "generator": "pub",
   "generatorVersion": "2.12.2"
 }
