@@ -482,6 +482,12 @@
       "languageVersion": "2.7"
     },
     {
+      "name": "in_app_update",
+      "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_update-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "intl",
       "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.17.0",
       "packageUri": "lib/",
@@ -956,7 +962,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-05-09T20:40:43.607240Z",
+  "generated": "2021-05-10T08:49:04.218917Z",
   "generator": "pub",
   "generatorVersion": "2.12.2"
 }

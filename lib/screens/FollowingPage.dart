@@ -68,7 +68,7 @@ class _FollowingPageState extends State<FollowingPage>
   //   await FlutterShare.share(
   //       title: '${v['title']}',
   //       text:
-  //           "Hey There, I'm listening to ${v['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${v['podcast_id']}");
+  //           "Hey There, I'm listening to ${v['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${v['podcast_id']}");
   // }
 
   void getLocalData() async {
@@ -237,7 +237,7 @@ class _FollowingPageState extends State<FollowingPage>
     // });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://ipfs.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber";
+        "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

@@ -195,15 +195,15 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> checkForUpdate() async {
-    // InAppUpdate.checkForUpdate().then((info) {
-    //   setState(() {
-    //     _updateInfo = info;
-    //   });
-    // }).catchError((e) {
-    //   showSnack(e.toString());
-    // });
-  }
+  // Future<void> checkForUpdate() async {
+  //   InAppUpdate.checkForUpdate().then((info) {
+  //     setState(() {
+  //       _updateInfo = info;
+  //     });
+  //   }).catchError((e) {
+  //     showSnack(e.toString());
+  //   });
+  // }
 
   void showSnack(String text) {
     if (_scaffoldKey.currentContext != null) {
@@ -218,7 +218,7 @@ class _MyAppState extends State<MyApp> {
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        // if(double.parse(_packageInfo.packageName.toString()) )
+        print(_packageInfo.packageName);
       }
     } catch (e) {
       print(e);
@@ -227,6 +227,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    // checkForUpdate();
     // TODO: implement initState
     _initPackageInfo();
     super.initState();

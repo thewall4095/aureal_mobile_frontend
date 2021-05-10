@@ -211,7 +211,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://ipfs.aureal.one/private/getSubmittedRssFeeds?user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/private/getSubmittedRssFeeds?user_id=${prefs.getString('userId')}';
     try {
       print('came here too');
       print(url);

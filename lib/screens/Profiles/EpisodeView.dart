@@ -72,7 +72,7 @@ class _EpisodeViewState extends State<EpisodeView>
   void getEpisode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://ipfs.aureal.one/public/episode?episode_id=${widget.episodeId}&user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/episode?episode_id=${widget.episodeId}&user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

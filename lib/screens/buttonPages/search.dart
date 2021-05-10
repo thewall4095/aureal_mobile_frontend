@@ -50,7 +50,7 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://ipfs.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=${query}&page=$pageNumber';
+        'https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=${query}&page=$pageNumber';
     http.Response response = await http.get(Uri.parse(url));
 
     print(response.body);
@@ -131,7 +131,7 @@ class SearchFunctionality extends SearchDelegate {
   Future getSearch() async {
     final TextEditingController _textController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = "https://ipfs.aureal.one/public/search?word=$query";
+    String url = "https://api.aureal.one/public/search?word=$query";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -323,7 +323,7 @@ class _ResultsSectionState extends State<ResultsSection>
   //   });
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
   //   String url =
-  //       "https://ipfs.aureal.one/public/search?word=$query&page=$communityPageNumber";
+  //       "https://api.aureal.one/public/search?word=$query&page=$communityPageNumber";
   //
   //   http.Response response = await http.get(Uri.parse(url));
   //   print(response.body);
@@ -345,7 +345,7 @@ class _ResultsSectionState extends State<ResultsSection>
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://ipfs.aureal.one/public/search?word=$query&page=$podcastPageNumber";
+        "https://api.aureal.one/public/search?word=$query&page=$podcastPageNumber";
 
     http.Response response = await http.get(Uri.parse(url));
     print(response.body);

@@ -97,14 +97,14 @@ class _PodcastViewState extends State<PodcastView> {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}");
+            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}");
   }
 
   void share({var episodeId, String episodeName}) async {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
+            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
   }
 
   // getMoreEpisodes() async {
@@ -166,7 +166,7 @@ class _PodcastViewState extends State<PodcastView> {
   void getEpisodes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://ipfs.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
+        'https://api.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -196,7 +196,7 @@ class _PodcastViewState extends State<PodcastView> {
     });
     prefs = await SharedPreferences.getInstance();
     String url =
-        'https://ipfs.aureal.one/public/podcast?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/podcast?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}';
     print(url);
     try {
       http.Response response = await http.get(Uri.parse(url));
