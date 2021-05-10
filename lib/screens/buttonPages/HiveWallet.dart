@@ -8,8 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import 'settings/Theme-.dart';
 
 class Wallet extends StatefulWidget {
   static const String id = "HiveWallet";
@@ -168,6 +171,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       body: SafeArea(
@@ -193,11 +197,20 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: kSecondaryColor,
-                                  border: Border.all(color: Color(0xff171b27))
-                                  // color: Color(0xff171b27),
-                                  ),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Color(0xff171b27)),
+                                // border:
+                                // Border.all(color: Color(0xff171b27)),
+                                // // border: Border.all(
+                                // //   color: Color(0xff171b27),
+                                color: themeProvider.isLightTheme == true
+                                    ? Colors.white
+                                    : kSecondaryColor,
+                                // color: kSecondaryColor,
+                                //),
+
+                                // color: Color(0xff171b27),
+                              ),
                               child: SafeArea(
                                 child: TabBarView(
                                   controller: _tabController,
@@ -441,7 +454,15 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: kSecondaryColor,
+                                    border:
+                                        Border.all(color: Color(0xff171b27)),
+                                    // border: Border.all(
+                                    //   color: Color(0xff171b27),
+                                    color: themeProvider.isLightTheme == true
+                                        ? Colors.white
+                                        : kSecondaryColor,
+                                    // color: kSecondaryColor,
+                                    //),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),
@@ -458,7 +479,8 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                         collapsed: Text(
                                           '${timeago.format(DateTime.parse(transferHive[index][1]['timestamp']))}',
                                           style: TextStyle(
-                                              color: Color(0xff3a3a3a)),
+                                              // color: Color(0xff3a3a3a)
+                                              ),
                                         ),
                                         expanded: Column(
                                           crossAxisAlignment:
@@ -466,8 +488,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                           children: [
                                             Text(
                                               '${timeago.format(DateTime.parse(transferHive[index][1]['timestamp']))}',
-                                              style: TextStyle(
-                                                  color: Color(0xff3a3a3a)),
+                                              style: TextStyle(),
                                             ),
                                             Text(
                                                 "From: ${transferHive[index][1]['op'][1]['from']}"),
@@ -492,7 +513,14 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: kSecondaryColor,
+                                    border:
+                                        Border.all(color: Color(0xff171b27)),
+                                    // border: Border.all(
+                                    //   color: Color(0xff171b27),
+                                    color: themeProvider.isLightTheme == true
+                                        ? Colors.white
+                                        : kSecondaryColor,
+                                    // color: kSecondaryColor,
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(10),

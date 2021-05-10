@@ -34,6 +34,7 @@ import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
 import 'buttonPages/Profile.dart';
 import 'buttonPages/search.dart';
+import 'buttonPages/settings/Theme-.dart';
 
 enum PlayerState {
   playing,
@@ -188,13 +189,23 @@ class _HomeState extends State<Home> {
 
   AppUpdateInfo _updateInfo;
   Future<void> checkForUpdate() async {
-    InAppUpdate.checkForUpdate().then((info) {
-      setState(() {
-        _updateInfo = info;
-      });
-    }).catchError((e) {
-      showSnack(e.toString());
-    });
+    try {
+      if (Platform.isAndroid) {
+        InAppUpdate.checkForUpdate().then((info) {
+          setState(() {
+            _updateInfo = info;
+          });
+        }).catchError((error) => print(error));
+
+        if (_updateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          InAppUpdate.performImmediateUpdate()
+              .catchError((error) => print(error));
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void showSnack(String text) {
@@ -236,6 +247,7 @@ class _HomeState extends State<Home> {
     var episodeObject = Provider.of<PlayerChange>(context);
     // getUserDetails();
     var category = Provider.of<CategoriesProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     if (category.isFetchedCategories == false) {
       getCategoryData(context);
     }
@@ -324,8 +336,10 @@ class _HomeState extends State<Home> {
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
         showSelectedLabels: false,
-        //  unselectedItemColor: Colors.black54,
-        selectedItemColor: Color(0xff5bc3ef),
+        unselectedItemColor:
+            themeProvider.isLightTheme == true ? Colors.black : Colors.white,
+        selectedItemColor: Colors.blue,
+        //Color(0xff5bc3ef),
         // backgroundColor: Colors.transparent,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
