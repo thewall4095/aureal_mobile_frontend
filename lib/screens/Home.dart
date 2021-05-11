@@ -256,20 +256,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        //  backgroundColor: Colors.transparent,
-        // leading: InkWell(
-        //     onTap: () {
-        //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        //         return Profile();
-        //       }));
-        //     },
-        //     child: displayPicture != null
-        //         ? CircleAvatar(
-        //             radius: SizeConfig.safeBlockHorizontal * 2,
-        //           )
-        //         : CircleAvatar(
-        //             radius: SizeConfig.safeBlockHorizontal * 2,
-        //           )),
         leading: IconButton(
           onPressed: () {},
           icon: CircleAvatar(
@@ -282,7 +268,6 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.account_balance_wallet_outlined),
@@ -351,8 +336,14 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             label: "",
-            icon: Icon(FontAwesomeIcons.heart),
-            activeIcon: Icon(FontAwesomeIcons.solidHeart),
+            icon: Icon(
+              Icons.home_sharp,
+              size: 30,
+            ),
+            activeIcon: Icon(
+              Icons.home_rounded,
+              size: 30,
+            ),
           ),
           BottomNavigationBarItem(
             label: "",

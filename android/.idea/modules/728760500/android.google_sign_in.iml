@@ -47,7 +47,13 @@
     </content>
     <content url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9">
       <sourceFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/android/src/main/java" isTestSource="false" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/.dart_tool" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/.pub" />
       <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/android/.gradle" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/build" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/example/.dart_tool" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/example/.pub" />
+      <excludeFolder url="file://$USER_HOME$/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.9/example/build" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
