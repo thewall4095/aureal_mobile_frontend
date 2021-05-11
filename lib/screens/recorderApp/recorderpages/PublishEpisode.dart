@@ -1,33 +1,29 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
-import 'package:auditory/CommunityProvider.dart';
-import 'package:auditory/utilities/SizeConfig.dart';
 
+import 'package:auditory/CommunityProvider.dart';
+import 'package:auditory/SelectedCommunitiesProvider.dart';
+import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
 import 'package:image/image.dart' as img;
-import 'CreatePodcast.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+
 import 'SelectCommunities.dart';
 import 'SelectTags.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
-import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:provider/provider.dart';
 import 'SelectedC'
     ''
     'ommunitiesWrap.dart';
-import 'SoundEditor/SelectedTagWrap.dart';
-import 'package:auditory/SelectedCommunitiesProvider.dart';
 
 class Publish extends StatefulWidget {
   // UserID,
@@ -225,9 +221,6 @@ class _PublishState extends State<Publish> {
     SizeConfig().init(context);
     var selectedCommunities = Provider.of<SelectedCommunityProvider>(context);
     CommunityProvider communities = Provider.of<CommunityProvider>(context);
-    print('the communities');
-    print(communities);
-    print(communities.allCommunities);
     if (communities.isFetchedallCommunities == false) {
       communities.getAllCommunity();
     }
@@ -288,6 +281,7 @@ class _PublishState extends State<Publish> {
                             child: _image == null
                                 // ? Image.asset('assets/images/Thumbnail.png')
                                 ? IconButton(
+                                    onPressed: () {},
                                     icon: Icon(Icons.edit,
                                         color: Colors.grey, size: 40),
                                   )

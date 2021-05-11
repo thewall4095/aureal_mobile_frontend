@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter_share/flutter_share.dart';
+import 'package:http/http.dart' as http;
 
 class Distribution extends StatefulWidget {
   var podcastObject;
@@ -233,6 +233,7 @@ class _DistributionState extends State<Distribution> {
                                             )),
                                       ),
                                       IconButton(
+                                        onPressed: () {},
                                         icon: Icon(
                                           Icons.share,
                                           color: Colors.white,

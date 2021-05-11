@@ -3,6 +3,7 @@ import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../CommunityProvider.dart';
 
@@ -146,150 +148,171 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                         height: 5,
                                       ),
                                       v['topic'] == 'Featured Podcasts'
-                                          ? Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  1.22,
-                                              width: double.infinity,
-                                              child: CarouselSlider(
-                                                options: CarouselOptions(
+                                          ? v['isLoaded'] == false
+                                              ? Shimmer.fromColors(
+                                                  baseColor: Color(0xff3a3a3a),
+                                                  highlightColor: kPrimaryColor,
+                                                  child: Container(
                                                     height:
                                                         MediaQuery.of(context)
                                                                 .size
+                                                                .width *
+                                                            0.8,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.8,
+                                                    color: kSecondaryColor,
+                                                  ),
+                                                )
+                                              : Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      1.22,
+                                                  width: double.infinity,
+                                                  child: CarouselSlider(
+                                                    options: CarouselOptions(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
                                                                 .height *
                                                             0.8,
-                                                    autoPlay: true,
-                                                    enableInfiniteScroll: true,
-                                                    viewportFraction: 1,
+                                                        autoPlay: true,
+                                                        enableInfiniteScroll:
+                                                            true,
+                                                        viewportFraction: 1,
 //
-                                                    aspectRatio: 4 / 3,
-                                                    pauseAutoPlayOnTouch: true,
-                                                    enlargeCenterPage: false),
-                                                items: <Widget>[
-                                                  for (var v in featured)
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15),
-                                                      child: Container(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: () {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) {
-                                                                  return PodcastView(
-                                                                      v['id']);
-                                                                }));
-                                                              },
-                                                              child: Container(
-                                                                height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-
-//
-                                                                child:
-                                                                    Container(
-                                                                  child:
-                                                                      CachedNetworkImage(
-                                                                    imageUrl: v['image'] ==
-                                                                            null
-                                                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                        : v['image'],
-                                                                    // memCacheHeight:
-                                                                    //     MediaQuery.of(
-                                                                    //             context)
-                                                                    //         .size
-                                                                    //         .width
-                                                                    //         .ceil(),
-                                                                    memCacheHeight: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .height
-                                                                        .floor(),
-
-                                                                    errorWidget: (context,
-                                                                            url,
-                                                                            error) =>
-                                                                        Icon(Icons
-                                                                            .error),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Column(
+                                                        aspectRatio: 4 / 3,
+                                                        pauseAutoPlayOnTouch:
+                                                            true,
+                                                        enlargeCenterPage:
+                                                            false),
+                                                    items: <Widget>[
+                                                      for (var v in featured)
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(15),
+                                                          child: Container(
+                                                            child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
-                                                                      .end,
+                                                                      .spaceBetween,
                                                               children: [
-                                                                Text(
-                                                                  v['name'] !=
-                                                                          null
-                                                                      ? v['name']
-                                                                      : ' ',
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.2,
-                                                                          1.1)
-                                                                      .toDouble(),
-                                                                  maxLines: 2,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style: TextStyle(
-                                                                      //color: Colors
-                                                                      //       .white,
-                                                                      fontSize: SizeConfig.blockSizeHorizontal * 4.7,
-                                                                      fontWeight: FontWeight.normal),
-                                                                ),
-                                                                Text(
-                                                                  v['author'] !=
-                                                                          null
-                                                                      ? v['author']
-                                                                      : ' ',
-                                                                  textScaleFactor:
-                                                                      1.0,
-                                                                  maxLines: 1,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        SizeConfig.safeBlockHorizontal *
-                                                                            3.4,
-                                                                    //   color: Colors
-                                                                    //     .grey
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(builder:
+                                                                            (context) {
+                                                                      return PodcastView(
+                                                                          v['id']);
+                                                                    }));
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width,
+                                                                    width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width,
+
+//
+                                                                    child:
+                                                                        Container(
+                                                                      child:
+                                                                          CachedNetworkImage(
+                                                                        imageUrl: v['image'] ==
+                                                                                null
+                                                                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                            : v['image'],
+                                                                        // memCacheHeight:
+                                                                        //     MediaQuery.of(
+                                                                        //             context)
+                                                                        //         .size
+                                                                        //         .width
+                                                                        //         .ceil(),
+                                                                        memCacheHeight: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height
+                                                                            .floor(),
+
+                                                                        errorWidget: (context,
+                                                                                url,
+                                                                                error) =>
+                                                                            Icon(Icons.error),
+                                                                      ),
+                                                                    ),
                                                                   ),
                                                                 ),
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Text(
+                                                                      v['name'] !=
+                                                                              null
+                                                                          ? v['name']
+                                                                          : ' ',
+                                                                      textScaleFactor: mediaQueryData
+                                                                          .textScaleFactor
+                                                                          .clamp(
+                                                                              0.2,
+                                                                              1.1)
+                                                                          .toDouble(),
+                                                                      maxLines:
+                                                                          2,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: TextStyle(
+                                                                          //color: Colors
+                                                                          //       .white,
+                                                                          fontSize: SizeConfig.blockSizeHorizontal * 4.7,
+                                                                          fontWeight: FontWeight.normal),
+                                                                    ),
+                                                                    Text(
+                                                                      v['author'] !=
+                                                                              null
+                                                                          ? v['author']
+                                                                          : ' ',
+                                                                      textScaleFactor:
+                                                                          1.0,
+                                                                      maxLines:
+                                                                          1,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            SizeConfig.safeBlockHorizontal *
+                                                                                3.4,
+                                                                        //   color: Colors
+                                                                        //     .grey
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )
                                                               ],
-                                                            )
-                                                          ],
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                ],
-                                              ),
-                                            )
+                                                    ],
+                                                  ),
+                                                )
                                           : Container(
                                               width: double.infinity,
                                               height:

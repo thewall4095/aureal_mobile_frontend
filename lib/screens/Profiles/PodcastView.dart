@@ -81,11 +81,13 @@ class _PodcastViewState extends State<PodcastView> {
 
   var episodeList = [];
 
+  bool episodeListLoading = true;
+
   bool loading;
 
   bool isLoading = false;
 
-  int pageNumber = 1;
+  int pageNumber = 0;
 
   bool seeMore = false;
 
@@ -95,41 +97,41 @@ class _PodcastViewState extends State<PodcastView> {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}");
+            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}");
   }
 
   void share({var episodeId, String episodeName}) async {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
+            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
   }
 
-  getMoreEpisodes() async {
-    setState(() {
-      isLoading = true;
-    });
-    print('getting more episodes');
-    String url =
-        'https://api.aureal.one/public/podcast?podcast_id=${widget.podcastId}&page=$pageNumber';
-
-    try {
-      http.Response response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        print(response.body);
-        setState(() {
-          episodeList = episodeList +
-              jsonDecode(response.body)['podcasts'][0]['Episodes'];
-          pageNumber = pageNumber + 1;
-        });
-      }
-    } catch (e) {
-      print(e);
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
+  // getMoreEpisodes() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   print('getting more episodes');
+  //   String url =
+  //       'https://api.aureal.one/public/podcast?podcast_id=${widget.podcastId}&page=$pageNumber';
+  //
+  //   try {
+  //     http.Response response = await http.get(Uri.parse(url));
+  //     if (response.statusCode == 200) {
+  //       print(response.body);
+  //       setState(() {
+  //         episodeList = episodeList +
+  //             jsonDecode(response.body)['podcasts'][0]['Episodes'];
+  //         pageNumber = pageNumber + 1;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
   SharedPreferences prefs;
 
@@ -161,6 +163,33 @@ class _PodcastViewState extends State<PodcastView> {
 
   String creator = '';
 
+  void getEpisodes() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          if (pageNumber == 0) {
+            episodeList = jsonDecode(response.body)['episodes'];
+            pageNumber = pageNumber + 1;
+            episodeListLoading = false;
+          } else {
+            episodeList = episodeList + jsonDecode(response.body)['episodes'];
+            episodeListLoading = false;
+            pageNumber = pageNumber + 1;
+          }
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void getPodcastData() async {
     setState(() {
       isLoading = true;
@@ -173,13 +202,13 @@ class _PodcastViewState extends State<PodcastView> {
       http.Response response = await http.get(Uri.parse(url));
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
-        episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
-        podcastData = jsonDecode(response.body)['podcasts'][0];
-        print(jsonDecode(response.body)['podcasts'][0]['follows']
+        // episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
+        podcastData = jsonDecode(response.body)['podcast'];
+        print(jsonDecode(response.body)['podcast']['ifFollows']
             .runtimeType
             .toString());
         setState(() {
-          follows = jsonDecode(response.body)['podcasts'][0]['follows'];
+          follows = jsonDecode(response.body)['podcast']['ifFollows'];
         });
 
         if (follows == true) {
@@ -195,7 +224,7 @@ class _PodcastViewState extends State<PodcastView> {
 
         setState(() {
           hiveToken = prefs.getString('access_token');
-          creator = jsonDecode(response.body)['podcasts'][0]['user_id'];
+          creator = jsonDecode(response.body)['podcast']['user_id'];
           print(hiveToken);
         });
       } else {
@@ -230,6 +259,7 @@ class _PodcastViewState extends State<PodcastView> {
 //    setEpisodes();
 
     getPodcastData();
+    getEpisodes();
     super.initState();
 
     IsolateNameServer.registerPortWithName(
@@ -243,7 +273,7 @@ class _PodcastViewState extends State<PodcastView> {
 
     _controller.addListener(() {
       if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-        getMoreEpisodes();
+        getEpisodes();
       }
     });
 
@@ -534,6 +564,7 @@ class _PodcastViewState extends State<PodcastView> {
                                           child: Column(
                                             children: <Widget>[
                                               IconButton(
+                                                onPressed: () {},
                                                 icon: Icon(
                                                   FontAwesomeIcons.shareAlt,
                                                   //    color: Colors.grey,
@@ -643,8 +674,9 @@ class _PodcastViewState extends State<PodcastView> {
                           ])
                         ]));
               } else {
+                if (episodeListLoading == true) {}
                 if (index == episodeList.length + 1) {
-                  return isLoading == false
+                  return episodeListLoading == false
                       ? SizedBox(height: 0, width: 0)
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -675,8 +707,8 @@ class _PodcastViewState extends State<PodcastView> {
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(
                               builder: (BuildContext context) {
-                            return EpisodeView(episodeId:
-                                episodeList[index - 1]['id']);
+                            return EpisodeView(
+                                episodeId: episodeList[index - 1]['id']);
                           }));
                         },
                         //
@@ -1106,9 +1138,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                             .symmetric(
                                                         horizontal: 8),
                                                     child: Text(
-                                                      DurationCalculator(
-                                                          episodeList[index - 1]
-                                                              ['duration']),
+                                                      '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
                                                       textScaleFactor:
                                                           mediaQueryData
                                                               .textScaleFactor

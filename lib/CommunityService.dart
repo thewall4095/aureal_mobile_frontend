@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:provider/provider.dart';
+import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+// import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:provider/provider.dart';
 
 class CommunityService {
   Future<List> getAllCommunitiesForUser() async {
@@ -98,7 +98,7 @@ class CommunityService {
   Future<dynamic> getCommunityEpisodes({int communityId}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/getCommunityEpisodes?community_id=${communityId}&user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/getCommunityEpisodes?community_id=$communityId&user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

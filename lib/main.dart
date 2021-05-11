@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
@@ -11,9 +10,8 @@ import 'package:auditory/PlayerState.dart';
 import 'package:auditory/SelectedCommunitiesProvider.dart';
 import 'package:auditory/Wrapper.dart';
 import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
-import 'package:auditory/screens/CommunityPages/CommunityView.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
-import 'package:auditory/screens/Profiles/EditPodcast.dart';
+import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/HiveWallet.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
@@ -32,6 +30,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info/package_info.dart';
 // import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
@@ -46,8 +45,6 @@ import 'screens/LoginSignup/WelcomeScreen.dart';
 import 'screens/Onboarding/Categories.dart';
 import 'screens/Onboarding/LanguageSelection.dart';
 import 'screens/Player/Player.dart';
-import 'screens/Profiles/CategoryView.dart';
-import 'screens/buttonPages/Bio.dart';
 import 'screens/buttonPages/Downloads.dart';
 // import 'screens/recorderApp/recorder/Recorder.dart';
 import 'screens/buttonPages/Messages.dart';
@@ -184,15 +181,29 @@ class _MyAppState extends State<MyApp> {
   bool _flexibleUpdateAvailable = false;
   String _token;
 
-  Future<void> checkForUpdate() async {
-    // InAppUpdate.checkForUpdate().then((info) {
-    //   setState(() {
-    //     _updateInfo = info;
-    //   });
-    // }).catchError((e) {
-    //   showSnack(e.toString());
-    // });
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+  );
+
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
   }
+
+  // Future<void> checkForUpdate() async {
+  //   InAppUpdate.checkForUpdate().then((info) {
+  //     setState(() {
+  //       _updateInfo = info;
+  //     });
+  //   }).catchError((e) {
+  //     showSnack(e.toString());
+  //   });
+  // }
 
   void showSnack(String text) {
     if (_scaffoldKey.currentContext != null) {
@@ -201,132 +212,33 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage message) {
-      if (message != null) {
-        print(message.toString());
-      }
-    });
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print(message);
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id,
-                channel.name,
-                channel.description,
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: 'notification_icon',
-              ),
-            ));
-      }
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      print('Navigating to screen');
-      // Navigator.pushNamed(context, NotificationPage.id,
-      //     arguments: MessageArguments(message, true));
-    });
-
-    checkForUpdate();
-  }
-
-  int _messageCount = 0;
-
-  /// The API endpoint here accepts a raw FCM payload for demonstration purposes.
-  String constructFCMPayload(String token) {
-    _messageCount++;
-    return jsonEncode({
-      'token': token,
-      'data': {
-        'via': 'FlutterFire Cloud Messaging!!!',
-        'count': _messageCount.toString(),
-      },
-      'notification': {
-        'title': 'Hello FlutterFire!',
-        'body': 'This notification (#$_messageCount) was created via FCM!',
-      },
-    });
-  }
-
-  Future<void> sendPushMessage() async {
-    if (_token == null) {
-      print('Unable to send FCM message, no token exists.');
-      return;
-    }
+  void getNewVersionCode() async {
+    String url = 'https://api.aureal.one/public/appversion';
 
     try {
-      await http.post(
-        Uri.parse('https://api.rnfirebase.io/messaging/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: constructFCMPayload(_token),
-      );
-      print('FCM request for device sent!');
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(_packageInfo.packageName);
+      }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> onActionSelected(String value) async {
-    switch (value) {
-      case 'subscribe':
-        {
-          print(
-              'FlutterFire Messaging Example: Subscribing to topic "fcm_test".');
-          await FirebaseMessaging.instance.subscribeToTopic('fcm_test');
-          print(
-              'FlutterFire Messaging Example: Subscribing to topic "fcm_test" successful.');
-        }
-        break;
-      case 'unsubscribe':
-        {
-          print(
-              'FlutterFire Messaging Example: Unsubscribing from topic "fcm_test".');
-          await FirebaseMessaging.instance.unsubscribeFromTopic('fcm_test');
-          print(
-              'FlutterFire Messaging Example: Unsubscribing from topic "fcm_test" successful.');
-        }
-        break;
-      case 'get_apns_token':
-        {
-          if (defaultTargetPlatform == TargetPlatform.iOS ||
-              defaultTargetPlatform == TargetPlatform.macOS) {
-            print('FlutterFire Messaging Example: Getting APNs token...');
-            String token = await FirebaseMessaging.instance.getAPNSToken();
-            print('FlutterFire Messaging Example: Got APNs token: $token');
-          } else {
-            print(
-                'FlutterFire Messaging Example: Getting an APNs token is only supported on iOS and macOS platforms.');
-          }
-        }
-        break;
-      default:
-        break;
-    }
+  @override
+  void initState() {
+    // checkForUpdate();
+    // TODO: implement initState
+    _initPackageInfo();
+    super.initState();
   }
+
+  int _messageCount = 0;
 
   final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    sendPushMessage();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -364,7 +276,7 @@ class _MyAppState extends State<MyApp> {
                                     PostRSSFeed.id: (context) => PostRSSFeed(),
                                     //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
                                     PopError.id: (context) => PopError(),
-                                    EditPodcast.id: (context) => EditPodcast(),
+
                                     // Recorder.id: (context) => Recorder(),
                                     Home.id: (context) => Home(),
                                     RecorderDashboard.id: (context) =>
@@ -394,10 +306,9 @@ class _MyAppState extends State<MyApp> {
                                     SoundEditor.id: (context) => SoundEditor(),
                                     CreatePodcast.id: (context) =>
                                         CreatePodcast(),
-                                    CategoryView.id: (context) =>
-                                        CategoryView(),
+
                                     Wrapper.id: (context) => Wrapper(),
-                                    Bio.id: (context) => Bio(),
+                                    // Bio.id: (context) => Bio(),
                                     Presence.id: (context) => Presence(),
                                     SelectLanguage.id: (context) =>
                                         SelectLanguage(),
@@ -410,8 +321,8 @@ class _MyAppState extends State<MyApp> {
                                     HiveAccount.id: (context) => HiveAccount(),
                                     TagSearch.id: (context) => TagSearch(),
                                     Wallet.id: (context) => Wallet(),
-                                    CommunityView.id: (context) =>
-                                        CommunityView(),
+                                    // CommunityView.id: (context) =>
+                                    //     CommunityView(),
                                     //      Noti.id: (context) => Noti(),
                                     HiveDetails.id: (context) => HiveDetails(),
                                     CommunitySearch.id: (context) =>
@@ -432,73 +343,183 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class SplashScreenPage extends StatelessWidget {
+class SplashScreenPage extends StatefulWidget {
+  @override
+  _SplashScreenPageState createState() => _SplashScreenPageState();
+}
+
+class _SplashScreenPageState extends State<SplashScreenPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget _home = Welcome();
 
   Dio dio = Dio();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+  }
+
+  void init() async {
+    if (counter < 1) {
+      await checkAuthenticity(context);
+    }
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage message) {
+      // print('${message.data}');
+      // print(message.contentAvailable);
+      if (message != null) {
+        if (message.data['type'] != null) {
+          if (message.data['type'] == 'vote_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'reply_comment') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'comment_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+          if (message.data['type'] == 'episode_published') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(episodeId: message.data['episode_id']);
+            }));
+          }
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return _home;
+          }));
+        }
+      } else {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return _home;
+        }));
+      }
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                importance: Importance.max,
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'notification_icon',
+              ),
+            ));
+        print(message.data);
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print(
+          "it is coming here/////////////////////////////////////////////////");
+      if (message.data['type'] == 'vote_episode') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'reply_comment') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'comment_episode') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'episode_published') {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+    });
+  }
+
   void checkAuthenticity(BuildContext context) async {
-    // var setCategories = Provider.of<CategoriesProvider>(context);
-    // await setCategories.getCategories();
     String url = 'https://api.aureal.one/public/getToken';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('userId')) {
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
-      // print(map.toString());
-      // print(prefs.containsKey('userId'));
+
       FormData formData = FormData.fromMap(map);
       try {
         // print(url);
         // print(map.toString());
         var response = await dio.post(url, data: formData);
-        print(response.statusCode);
+
         if (response.statusCode == 200) {
-          print(response.data.toString());
-          prefs.setString(
-              'access_token', response.data['updatedUser']['access_token']);
-          prefs.setString('token', response.data['updatedUser']['token']);
-          prefs.setString(
-              'displayPicture', response.data['updatedUser']['img']);
-          prefs.setString('userName', response.data['updatedUser']['username']);
-          print(prefs.getString('token'));
+          setState(() {
+            prefs.setString(
+                'access_token', response.data['updatedUser']['access_token']);
+            prefs.setString('token', response.data['updatedUser']['token']);
+            prefs.setString(
+                'displayPicture', response.data['updatedUser']['img']);
+            prefs.setString(
+                'userName', response.data['updatedUser']['username']);
+          });
+
           DiscoverProvider discoverData =
               Provider.of<DiscoverProvider>(context, listen: false);
           if (discoverData.isFetcheddiscoverList == false) {
             await discoverData.getDiscoverProvider();
-            _home = Home();
+            setState(() {
+              _home = Home();
+            });
           }
           // var categoryBuild = Provider.of<CategoriesProvider>(context);
           // // var communities = Provider.of<CommunityProvider>(context);
           // categoryBuild.getCategories();
         } else {
-          _home = Welcome();
+          setState(() {
+            _home = Welcome();
+          });
         }
       } catch (e) {
-        _home = Welcome();
+        setState(() {
+          _home = Welcome();
+        });
       }
     } else {
-      _home = Welcome();
+      setState(() {
+        _home = Welcome();
+      });
     }
 
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return _home;
-    }));
+    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    //   return _home;
+    // }));
 
-    counter = counter + 1;
+    setState(() {
+      counter = counter + 1;
+    });
   }
 
   letsRoute(BuildContext context) {}
+
   int counter = 0;
 
   @override
   Widget build(BuildContext context) {
-    if (counter < 1) {
-      checkAuthenticity(context);
-    }
-
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.black,

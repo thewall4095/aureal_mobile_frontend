@@ -1,9 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchProvider extends ChangeNotifier {
   SharedPreferences prefs;
@@ -69,16 +68,16 @@ class SearchProvider extends ChangeNotifier {
       _query = searchQuery;
       prefs = await SharedPreferences.getInstance();
       String url =
-          'https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=${_query}';
+          'https://api.aureal.one/public/search?user_id=&word=${_query}';
 
       http.Response response = await http.get(Uri.parse(url));
       print(response.body);
       if (response.statusCode == 200) {
-        if (jsonDecode(response.body)['EpisodeList'] != null) {
-          episodeResultList = jsonDecode(response.body)['EpisodeList'];
-        } else {
-          episodeResultList = [];
-        }
+        // if (jsonDecode(response.body)['EpisodeList'] != null) {
+        //   episodeResultList = jsonDecode(response.body)['EpisodeList'];
+        // } else {
+        //   episodeResultList = [];
+        // }
 
         if (jsonDecode(response.body)['PodcastList'] != null) {
           podcastResultList = jsonDecode(response.body)['PodcastList'];

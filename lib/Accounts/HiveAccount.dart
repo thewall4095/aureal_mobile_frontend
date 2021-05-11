@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Onboarding/LanguageSelection.dart';
@@ -10,7 +12,6 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:convert';
 
 class HiveAccount extends StatefulWidget {
   static const String id = "Hive Signer";
@@ -26,7 +27,7 @@ class _HiveAccountState extends State<HiveAccount> {
 
   Dio dio = Dio();
 
-  void HiveAuth() async {
+  void hiveAuth() async {
     await _messaging.getToken().then((token) {
       setState(() {
         registrationToken = token;
@@ -157,7 +158,7 @@ class _HiveAccountState extends State<HiveAccount> {
                           print(
                               'this is the code motherfucker: ${prefs.getString('code')}');
                         }
-                        HiveAuth();
+                        hiveAuth();
                       }
                     });
                   },

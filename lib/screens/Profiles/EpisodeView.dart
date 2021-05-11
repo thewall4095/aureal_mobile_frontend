@@ -285,6 +285,7 @@ class _EpisodeViewState extends State<EpisodeView>
   Widget build(BuildContext context) {
     final currentlyPlaying = Provider.of<PlayerChange>(context);
     final mediaQueryData = MediaQuery.of(context);
+    SizeConfig().init(context);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -300,13 +301,14 @@ class _EpisodeViewState extends State<EpisodeView>
                   Icons.arrow_back,
                 ),
               ),
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                  ),
-                )
-              ],
+              // actions: <Widget>[
+              //   IconButton(
+              //     onPressed: () {},
+              //     icon: Icon(
+              //       Icons.more_vert,
+              //     ),
+              //   )
+              // ],
               expandedHeight: 450,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(

@@ -1,16 +1,16 @@
 import 'dart:convert';
 
-import 'package:auditory/CommunityProvider.dart';
+// import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/CreatePodcast.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/PublishEpisode.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class SelectPodcast extends StatefulWidget {
   static const String id = "Select Podcast";
@@ -60,7 +60,7 @@ class _SelectPodcastState extends State<SelectPodcast> {
 
   @override
   Widget build(BuildContext context) {
-    var communities = Provider.of<CommunityProvider>(context);
+    // var communities = Provider.of<CommunityProvider>(context);
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(

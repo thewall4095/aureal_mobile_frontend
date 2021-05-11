@@ -14,6 +14,7 @@ import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:in_app_update/in_app_update.dart';
 import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // import 'package:music_player/music_player.dart';
@@ -33,6 +34,7 @@ import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
 import 'buttonPages/Profile.dart';
 import 'buttonPages/search.dart';
+import 'buttonPages/settings/Theme-.dart';
 
 enum PlayerState {
   playing,
@@ -127,7 +129,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
 
   var currentlyPlaying;
 
@@ -185,8 +187,37 @@ class _HomeState extends State<Home> {
     prefs = await SharedPreferences.getInstance();
   }
 
+  AppUpdateInfo _updateInfo;
+  Future<void> checkForUpdate() async {
+    try {
+      if (Platform.isAndroid) {
+        InAppUpdate.checkForUpdate().then((info) {
+          setState(() {
+            _updateInfo = info;
+          });
+        }).catchError((error) => print(error));
+
+        if (_updateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          InAppUpdate.performImmediateUpdate()
+              .catchError((error) => print(error));
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showSnack(String text) {
+    if (_scaffoldKey.currentContext != null) {
+      Scaffold.of(_scaffoldKey.currentContext)
+          .showSnackBar(SnackBar(content: Text(text)));
+    }
+  }
+
   @override
   void initState() {
+    checkForUpdate();
     setLocalData();
     // TODO: implement initState
 
@@ -216,6 +247,7 @@ class _HomeState extends State<Home> {
     var episodeObject = Provider.of<PlayerChange>(context);
     // getUserDetails();
     var category = Provider.of<CategoriesProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     if (category.isFetchedCategories == false) {
       getCategoryData(context);
     }
@@ -224,20 +256,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        //  backgroundColor: Colors.transparent,
-        // leading: InkWell(
-        //     onTap: () {
-        //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        //         return Profile();
-        //       }));
-        //     },
-        //     child: displayPicture != null
-        //         ? CircleAvatar(
-        //             radius: SizeConfig.safeBlockHorizontal * 2,
-        //           )
-        //         : CircleAvatar(
-        //             radius: SizeConfig.safeBlockHorizontal * 2,
-        //           )),
         leading: IconButton(
           onPressed: () {},
           icon: CircleAvatar(
@@ -250,7 +268,6 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.account_balance_wallet_outlined),
@@ -302,21 +319,31 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         elevation: 10,
         type: BottomNavigationBarType.fixed,
-        //  unselectedItemColor: Colors.black54,
-        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
+        unselectedItemColor:
+            themeProvider.isLightTheme == true ? Colors.black : Colors.white,
+        selectedItemColor: Colors.blue,
+        //Color(0xff5bc3ef),
         // backgroundColor: Colors.transparent,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.wifi_tethering,
+              Icons.stream,
             ),
-            activeIcon: Icon(Icons.wifi_tethering),
+            activeIcon: Icon(Icons.stream),
             label: '',
           ),
           BottomNavigationBarItem(
             label: "",
-            icon: Icon(FontAwesomeIcons.heart),
-            activeIcon: Icon(FontAwesomeIcons.solidHeart),
+            icon: Icon(
+              Icons.home_sharp,
+              size: 30,
+            ),
+            activeIcon: Icon(
+              Icons.home_rounded,
+              size: 30,
+            ),
           ),
           BottomNavigationBarItem(
             label: "",
@@ -466,6 +493,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: IconButton(
+                            onPressed: () {},
                             splashColor: Colors.blue,
                             icon: Icon(
                               FontAwesomeIcons.chevronCircleUp,

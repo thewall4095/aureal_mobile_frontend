@@ -231,19 +231,19 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       setState(() {
         podcastList = data;
       });
-      var episodes = [];
-      if (podcastList != null && podcastList.length > 0) {
-        print(podcastList[0].toString());
-        podcastList.forEach((element) {
-          print('came here too');
-          element['Episodes'].forEach((episode) {
-            episodes.add(episode);
-          });
-        });
-      }
-      setState(() {
-        episodeList = episodes;
-      });
+      // var episodes = [];
+      // if (podcastList != null && podcastList.length > 0) {
+      //   print(podcastList[0].toString());
+      //   podcastList.forEach((element) {
+      //     print('came here too');
+      //     element['Episodes'].forEach((episode) {
+      //       episodes.add(episode);
+      //     });
+      //   });
+      // }
+      // setState(() {
+      //   episodeList = episodes;
+      // });
     } catch (e) {
       print(e);
     }

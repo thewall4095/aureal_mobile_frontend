@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/screens/Profiles/CategoryView.dart';
-import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -57,8 +56,8 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
     print(response.body);
     if (response.statusCode == 200) {
       setState(() {
-        searchEpisodes =
-            searchEpisodes + jsonDecode(response.body)['EpisodeList'];
+        // searchEpisodes =
+        //     searchEpisodes + jsonDecode(response.body)['EpisodeList'];
         searchPodcasts =
             searchPodcasts + jsonDecode(response.body)['PodcastList'];
       });
@@ -132,8 +131,7 @@ class SearchFunctionality extends SearchDelegate {
   Future getSearch() async {
     final TextEditingController _textController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url =
-        "https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=$query";
+    String url = "https://api.aureal.one/public/search?word=$query";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -277,9 +275,7 @@ class SearchFunctionality extends SearchDelegate {
                           v['name'],
                           textScaleFactor: 0.75,
                           style: TextStyle(
-                              color: themeProvider.isLightTheme == true
-                                  ? Colors.white
-                                  : Colors.black,
+                              color: Colors.white,
                               fontSize: SizeConfig.safeBlockHorizontal * 4),
                         ),
                       ),
@@ -321,27 +317,27 @@ class _ResultsSectionState extends State<ResultsSection>
   bool isEpisodeLoading = false;
   bool isCommunityLoading = false;
 
-  void getMoreSearchCommunity({String query}) async {
-    setState(() {
-      isCommunityLoading = true;
-    });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url =
-        "https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=$query&page=$communityPageNumber";
-
-    http.Response response = await http.get(Uri.parse(url));
-    print(response.body);
-    if (response.statusCode == 200) {
-      setState(() {
-        communityResult.addAll(jsonDecode(response.body)['CommunityList']);
-        communityResult.toSet().toList();
-        communityPageNumber = communityPageNumber + 1;
-      });
-    }
-    setState(() {
-      isCommunityLoading = false;
-    });
-  }
+  // void getMoreSearchCommunity({String query}) async {
+  //   setState(() {
+  //     isCommunityLoading = true;
+  //   });
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String url =
+  //       "https://api.aureal.one/public/search?word=$query&page=$communityPageNumber";
+  //
+  //   http.Response response = await http.get(Uri.parse(url));
+  //   print(response.body);
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       communityResult.addAll(jsonDecode(response.body)['CommunityList']);
+  //       communityResult.toSet().toList();
+  //       communityPageNumber = communityPageNumber + 1;
+  //     });
+  //   }
+  //   setState(() {
+  //     isCommunityLoading = false;
+  //   });
+  // }
 
   void getMoreSearchPodcast({String query}) async {
     setState(() {
@@ -349,7 +345,7 @@ class _ResultsSectionState extends State<ResultsSection>
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=$query&page=$podcastPageNumber";
+        "https://api.aureal.one/public/search?word=$query&page=$podcastPageNumber";
 
     http.Response response = await http.get(Uri.parse(url));
     print(response.body);
@@ -365,32 +361,32 @@ class _ResultsSectionState extends State<ResultsSection>
     });
   }
 
-  void getMoreSearchEpisodes({String query}) async {
-    setState(() {
-      isEpisodeLoading = true;
-    });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url =
-        "https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=$query&page=$episodePageNumber";
-
-    http.Response response = await http.get(Uri.parse(url));
-    print(response.body);
-    if (response.statusCode == 200) {
-      setState(() {
-        episodeResult.addAll(jsonDecode(response.body)['EpisodeList']);
-        episodeResult.toSet().toList();
-        episodePageNumber = episodePageNumber + 1;
-      });
-    }
-    setState(() {
-      isEpisodeLoading = false;
-    });
-  }
+  // void getMoreSearchEpisodes({String query}) async {
+  //   setState(() {
+  //     isEpisodeLoading = true;
+  //   });
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String url =
+  //       "https://api.aureal.one/public/search?user_id=${prefs.getString('userId')}&word=$query&page=$episodePageNumber";
+  //
+  //   http.Response response = await http.get(Uri.parse(url));
+  //   print(response.body);
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       episodeResult.addAll(jsonDecode(response.body)['EpisodeList']);
+  //       episodeResult.toSet().toList();
+  //       episodePageNumber = episodePageNumber + 1;
+  //     });
+  //   }
+  //   setState(() {
+  //     isEpisodeLoading = false;
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
-    _controller = TabController(length: 2, vsync: this);
+    _controller = TabController(length: 1, vsync: this);
     _podcastScrollController = ScrollController();
     _episodeScrollController = ScrollController();
     _communityScrollController = ScrollController();
@@ -410,14 +406,14 @@ class _ResultsSectionState extends State<ResultsSection>
     _episodeScrollController.addListener(() {
       if (_episodeScrollController.position.pixels ==
           _episodeScrollController.position.maxScrollExtent) {
-        getMoreSearchEpisodes(query: widget.query);
+        // getMoreSearchEpisodes(query: widget.query);
       }
     });
 
     _communityScrollController.addListener(() {
       if (_communityScrollController.position.pixels ==
           _communityScrollController.position.maxScrollExtent) {
-        getMoreSearchCommunity(query: widget.query);
+        // getMoreSearchCommunity(query: widget.query);
       }
     });
 
@@ -432,108 +428,173 @@ class _ResultsSectionState extends State<ResultsSection>
         color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
         child: Column(
           children: [
-            Container(
-              child: TabBar(
-                controller: _controller,
-                tabs: [
-                  Tab(
-                    text: "Podcasts",
-                  ),
-                  Tab(
-                    text: 'Episodes',
-                  ),
-                  // Tab(
-                  //   text: 'Communities',
-                  // )
-                ],
-              ),
-            ),
             Expanded(
-                child: TabBarView(
-              controller: _controller,
-              children: [
-                Container(
-                  child: podcastResult != null && podcastResult.length == 0
-                      ? Stack(children: <Widget>[
-                          Container(
-                            height: double.infinity,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image:
-                                        AssetImage("assets/images/search.png"),
-                                    fit: BoxFit.contain)),
-                          ),
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Text(
-                                        "No Data Found",
-                                        textScaleFactor: 0.75,
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  5,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+              child: Container(
+                child: podcastResult != null && podcastResult.length == 0
+                    ? Stack(children: <Widget>[
+                        Container(
+                          height: double.infinity,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage("assets/images/search.png"),
+                                  fit: BoxFit.contain)),
+                        ),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: Text(
+                                      "No Data Found",
+                                      textScaleFactor: 0.75,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 5,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    SizedBox(
-                                      height: 350,
-                                    )
-                                  ],
-                                ),
-                              ])
-                        ])
-                      : ListView.builder(
-                          controller: _podcastScrollController,
-                          itemCount: podcastResult.length + 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == podcastResult.length) {
-                              return isPodcastLoading == false
-                                  ? SizedBox(
-                                      height: 0,
-                                      width: 0,
-                                    )
-                                  : Container(
-                                      height: 10,
-                                      width: double.infinity,
-                                      child: LinearProgressIndicator(
-                                        minHeight: 10,
-                                        backgroundColor: Colors.blue,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Color(0xff6249EF)),
-                                      ),
-                                    );
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return PodcastView(
-                                          podcastResult[index]['id']);
-                                    }));
-                                  },
-                                  child: Container(
+                                  ),
+                                  SizedBox(
+                                    height: 350,
+                                  )
+                                ],
+                              ),
+                            ])
+                      ])
+                    : ListView.builder(
+                        controller: _podcastScrollController,
+                        itemCount: podcastResult.length + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == podcastResult.length) {
+                            return isPodcastLoading == false
+                                ? SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  )
+                                : Container(
+                                    height: 10,
                                     width: double.infinity,
+                                    child: LinearProgressIndicator(
+                                      minHeight: 10,
+                                      backgroundColor: Colors.blue,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xff6249EF)),
+                                    ),
+                                  );
+                          } else {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return PodcastView(
+                                        podcastResult[index]['id']);
+                                  }));
+                                },
+                                // child: Container(
+                                //   width: double.infinity,
+                                //   child: Row(
+                                //     crossAxisAlignment:
+                                //         CrossAxisAlignment.start,
+                                //     children: <Widget>[
+                                //       ClipRRect(
+                                //         //ClipRRect
+                                //         child: FadeInImage.assetNetwork(
+                                //             height: 80,
+                                //             width: 80,
+                                //             fit: BoxFit.cover,
+                                //             placeholder:
+                                //                 'assets/images/Thumbnail.png',
+                                //             image: podcastResult[index]
+                                //                         ['image'] ==
+                                //                     null
+                                //                 ? 'assets/images/Thumbnail.png'
+                                //                 : podcastResult[index]
+                                //                     ['image']),
+                                //       ),
+                                //       SizedBox(width: 10),
+                                //       Expanded(
+                                //         child: Column(
+                                //           crossAxisAlignment:
+                                //               CrossAxisAlignment.start,
+                                //           mainAxisSize: MainAxisSize.max,
+                                //           mainAxisAlignment:
+                                //               MainAxisAlignment.center,
+                                //           children: <Widget>[
+                                //             Text(
+                                //               "${podcastResult[index]['name']}",
+                                //               textScaleFactor: 0.75,
+                                //               maxLines: 2,
+                                //               overflow: TextOverflow.ellipsis,
+                                //               style: TextStyle(
+                                //                   color: themeProvider
+                                //                               .isLightTheme !=
+                                //                           true
+                                //                       ? Colors.white
+                                //                       : kPrimaryColor,
+                                //                   fontSize: SizeConfig
+                                //                           .safeBlockHorizontal *
+                                //                       4,
+                                //                   fontWeight:
+                                //                       FontWeight.normal),
+                                //             ),
+                                //             SizedBox(
+                                //               height: 3,
+                                //             ),
+                                //             Text(
+                                //               podcastResult[index]['author'],
+                                //               textScaleFactor: 0.75,
+                                //               maxLines: 2,
+                                //               overflow: TextOverflow.ellipsis,
+                                //               style: TextStyle(
+                                //                   color: themeProvider
+                                //                               .isLightTheme !=
+                                //                           true
+                                //                       ? Colors.white
+                                //                           .withOpacity(0.5)
+                                //                       : kPrimaryColor
+                                //                           .withOpacity(0.5),
+                                //                   fontSize: SizeConfig
+                                //                           .safeBlockHorizontal *
+                                //                       4),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       )
+                                //     ],
+                                //   ),
+                                // ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          //ClipRRect
+                                      children: [
+                                        Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              5,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              5,
                                           child: FadeInImage.assetNetwork(
-                                              height: 80,
-                                              width: 80,
+                                              height:
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                              width:
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
                                               fit: BoxFit.cover,
                                               placeholder:
                                                   'assets/images/Thumbnail.png',
@@ -544,353 +605,508 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   : podcastResult[index]
                                                       ['image']),
                                         ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                "${podcastResult[index]['name']}",
-                                                textScaleFactor: 0.75,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: themeProvider
-                                                                .isLightTheme !=
-                                                            true
-                                                        ? Colors.white
-                                                        : kPrimaryColor,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4,
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                podcastResult[index]['author'],
-                                                textScaleFactor: 0.75,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: themeProvider
-                                                                .isLightTheme !=
-                                                            true
-                                                        ? Colors.white
-                                                            .withOpacity(0.5)
-                                                        : kPrimaryColor
-                                                            .withOpacity(0.5),
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                            ],
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 10),
+                                          child: Container(
+                                            child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "${podcastResult[index]['name']}",
+                                                    textScaleFactor: 1.0,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        color: themeProvider
+                                                                    .isLightTheme !=
+                                                                true
+                                                            ? Colors.white
+                                                            : kPrimaryColor,
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            4,
+                                                        fontWeight:
+                                                            FontWeight.normal),
+                                                  ),
+                                                  Text(
+                                                    '${podcastResult[index]['author']}',
+                                                    textScaleFactor: 0.75,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        color: themeProvider
+                                                                    .isLightTheme !=
+                                                                true
+                                                            ? Colors.white
+                                                                .withOpacity(
+                                                                    0.5)
+                                                            : kPrimaryColor
+                                                                .withOpacity(
+                                                                    0.5),
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            4),
+                                                  ),
+                                                ]),
                                           ),
                                         )
                                       ],
                                     ),
                                   ),
                                 ),
-                              );
-                            }
-                          }),
-                ),
-                Container(
-                  child: episodeResult != null && episodeResult.length == 0
-                      ? Stack(children: <Widget>[
-                          Container(
-                            height: double.infinity,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image:
-                                        AssetImage("assets/images/search.png"),
-                                    fit: BoxFit.contain)),
-                          ),
-                          Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Flexible(
-                                        child: Text("No Data Found",
-                                            textScaleFactor: 0.75,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  5,
-                                              fontWeight: FontWeight.w600,
-                                            ))),
-                                    SizedBox(
-                                      height: 350,
-                                    )
-                                  ],
-                                )
-                              ])
-                        ])
-                      : ListView.builder(
-                          controller: _episodeScrollController,
-                          itemCount: episodeResult.length + 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            if (index == episodeResult.length) {
-                              return isEpisodeLoading == false
-                                  ? SizedBox(
-                                      height: 0,
-                                      width: 0,
-                                    )
-                                  : Container(
-                                      height: 10,
-                                      width: double.infinity,
-                                      child: LinearProgressIndicator(
-                                        minHeight: 10,
-                                        backgroundColor: Colors.black,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Color(0xffffffff)),
-                                      ),
-                                    );
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 10),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return EpisodeView(
-                                          episodeId: episodeResult[index]
-                                              ['id']);
-                                    }));
-                                  },
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        ClipRRect(
-                                          //ClipRRect
-                                          child: FadeInImage.assetNetwork(
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.cover,
-                                              placeholder:
-                                                  'assets/images/Thumbnail.png',
-                                              image: episodeResult[index]
-                                                          ['image'] ==
-                                                      null
-                                                  ? 'assets/images/Thumbnail.png'
-                                                  : episodeResult[index]
-                                                      ['image']),
-                                        ),
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                "${episodeResult[index]['name']}",
-                                                textScaleFactor: 0.75,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: themeProvider
-                                                                .isLightTheme !=
-                                                            true
-                                                        ? Colors.white
-                                                        : kPrimaryColor,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4,
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                              ),
-                                              SizedBox(
-                                                height: 3,
-                                              ),
-                                              Text(
-                                                episodeResult[index]['author'],
-                                                textScaleFactor: 0.75,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: themeProvider
-                                                                .isLightTheme !=
-                                                            true
-                                                        ? Colors.white
-                                                            .withOpacity(0.5)
-                                                        : kPrimaryColor
-                                                            .withOpacity(0.5),
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                          }),
-                ),
-                // Container(
-                //   child: communityResult != null &&
-                //           communityResult.length == 0
-                //       ? Stack(children: <Widget>[
-                //           Container(
-                //             height: double.infinity,
-                //             width: double.infinity,
-                //             decoration: BoxDecoration(
-                //                 image: DecorationImage(
-                //                     image: AssetImage(
-                //                         "assets/images/search.png"),
-                //                     fit: BoxFit.contain)),
-                //           ),
-                //           Column(
-                //               mainAxisAlignment: MainAxisAlignment.end,
-                //               children: <Widget>[
-                //                 Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Flexible(
-                //                         child: Text("No Data Found",
-                //                             textScaleFactor: 0.75,
-                //                             style: TextStyle(
-                //                               color: Colors.grey,
-                //                               fontSize: SizeConfig
-                //                                       .safeBlockHorizontal *
-                //                                   5,
-                //                               fontWeight: FontWeight.w600,
-                //                             ))),
-                //                     SizedBox(
-                //                       height: 350,
-                //                     ),
-                //                   ],
-                //                 )
-                //               ])
-                //         ])
-                //       : ListView.builder(
-                //           controller: _communityScrollController,
-                //           itemCount: communityResult.length + 1,
-                //           itemBuilder: (BuildContext context, int index) {
-                //             if (index == communityResult.length) {
-                //               return isCommunityLoading == false
-                //                   ? SizedBox(
-                //                       height: 0,
-                //                       width: 0,
-                //                     )
-                //                   : Container(
-                //                       height: 10,
-                //                       width: double.infinity,
-                //                       child: LinearProgressIndicator(
-                //                         minHeight: 10,
-                //                         backgroundColor: Colors.blue,
-                //                         valueColor:
-                //                             AlwaysStoppedAnimation<Color>(
-                //                                 Color(0xff6249EF)),
-                //                       ),
-                //                     );
-                //             } else {
-                //               return InkWell(
-                //                   onTap: () {
-                //                     Navigator.push(context,
-                //                         MaterialPageRoute(builder: (context) {
-                //                       return CommunityProfileView(
-                //                           communityObject:
-                //                               communityResult[index]);
-                //                     }));
-                //                   },
-                //                   child: Padding(
-                //                     padding: EdgeInsets.all(
-                //                         SizeConfig.safeBlockHorizontal * 3),
-                //                     child: Container(
-                //                       width: double.infinity,
-                //                       height:
-                //                           MediaQuery.of(context).size.height,
-                //                       child: GridView.count(
-                //                           crossAxisCount: 3,
-                //                           mainAxisSpacing:
-                //                               SizeConfig.safeBlockHorizontal *
-                //                                   5,
-                //                           crossAxisSpacing:
-                //                               SizeConfig.blockSizeVertical *
-                //                                   1,
-                //                           children: [
-                //                             Container(
-                //                               decoration: BoxDecoration(
-                //                                   borderRadius:
-                //                                       BorderRadius.circular(
-                //                                           10),
-                //                                   border: Border.all(
-                //                                       color:
-                //                                           kSecondaryColor)),
-                //                               child: Column(
-                //                                 mainAxisAlignment:
-                //                                     MainAxisAlignment.center,
-                //                                 children: [
-                //                                   CircleAvatar(
-                //                                     backgroundColor:
-                //                                         Colors.transparent,
-                //                                     backgroundImage: communityResult[
-                //                                                     index][
-                //                                                 'profileImageUrl'] ==
-                //                                             null
-                //                                         ? AssetImage(
-                //                                             'assets/images/Favicon.png')
-                //                                         : NetworkImage(
-                //                                             communityResult[
-                //                                                     index][
-                //                                                 'profileImageUrl']),
-                //                                   ),
-                //                                   SizedBox(
-                //                                     height: 10,
-                //                                   ),
-                //                                   Padding(
-                //                                     padding: const EdgeInsets
-                //                                             .symmetric(
-                //                                         horizontal: 10),
-                //                                     child: Text(
-                //                                       communityResult[index]
-                //                                           ['name'],
-                //                                       textScaleFactor: 0.75,
-                //                                       maxLines: 2,
-                //                                       overflow: TextOverflow
-                //                                           .ellipsis,
-                //                                       textAlign:
-                //                                           TextAlign.center,
-                //                                       style: TextStyle(
-                //                                           color: Colors.white,
-                //                                           fontSize: SizeConfig
-                //                                                   .safeBlockHorizontal *
-                //                                               3),
-                //                                     ),
-                //                                   )
-                //                                 ],
-                //                               ),
-                //                             ),
-                //                           ]),
-                //                     ),
-                //                   ));
-                //             }
-                //           }),
-                // ),
-              ],
-            ))
+                              ),
+                            );
+                          }
+                        }),
+              ),
+            ),
+            // Expanded(
+            //     child: TabBarView(
+            //   controller: _controller,
+            //   children: [
+            //     Container(
+            //       child: podcastResult != null && podcastResult.length == 0
+            //           ? Stack(children: <Widget>[
+            //               Container(
+            //                 height: double.infinity,
+            //                 width: double.infinity,
+            //                 decoration: BoxDecoration(
+            //                     image: DecorationImage(
+            //                         image:
+            //                             AssetImage("assets/images/search.png"),
+            //                         fit: BoxFit.contain)),
+            //               ),
+            //               Column(
+            //                   mainAxisAlignment: MainAxisAlignment.end,
+            //                   children: <Widget>[
+            //                     Row(
+            //                       mainAxisAlignment: MainAxisAlignment.center,
+            //                       children: <Widget>[
+            //                         Flexible(
+            //                           child: Text(
+            //                             "No Data Found",
+            //                             textScaleFactor: 0.75,
+            //                             style: TextStyle(
+            //                               color: Colors.grey,
+            //                               fontSize:
+            //                                   SizeConfig.safeBlockHorizontal *
+            //                                       5,
+            //                               fontWeight: FontWeight.w600,
+            //                             ),
+            //                           ),
+            //                         ),
+            //                         SizedBox(
+            //                           height: 350,
+            //                         )
+            //                       ],
+            //                     ),
+            //                   ])
+            //             ])
+            //           : ListView.builder(
+            //               controller: _podcastScrollController,
+            //               itemCount: podcastResult.length + 1,
+            //               itemBuilder: (BuildContext context, int index) {
+            //                 if (index == podcastResult.length) {
+            //                   return isPodcastLoading == false
+            //                       ? SizedBox(
+            //                           height: 0,
+            //                           width: 0,
+            //                         )
+            //                       : Container(
+            //                           height: 10,
+            //                           width: double.infinity,
+            //                           child: LinearProgressIndicator(
+            //                             minHeight: 10,
+            //                             backgroundColor: Colors.blue,
+            //                             valueColor:
+            //                                 AlwaysStoppedAnimation<Color>(
+            //                                     Color(0xff6249EF)),
+            //                           ),
+            //                         );
+            //                 } else {
+            //                   return Padding(
+            //                     padding: const EdgeInsets.symmetric(
+            //                         vertical: 10, horizontal: 10),
+            //                     child: GestureDetector(
+            //                       onTap: () {
+            //                         Navigator.push(context,
+            //                             MaterialPageRoute(builder: (context) {
+            //                           return PodcastView(
+            //                               podcastResult[index]['id']);
+            //                         }));
+            //                       },
+            //                       child: Container(
+            //                         width: double.infinity,
+            //                         child: Row(
+            //                           crossAxisAlignment:
+            //                               CrossAxisAlignment.start,
+            //                           children: <Widget>[
+            //                             ClipRRect(
+            //                               //ClipRRect
+            //                               child: FadeInImage.assetNetwork(
+            //                                   height: 80,
+            //                                   width: 80,
+            //                                   fit: BoxFit.cover,
+            //                                   placeholder:
+            //                                       'assets/images/Thumbnail.png',
+            //                                   image: podcastResult[index]
+            //                                               ['image'] ==
+            //                                           null
+            //                                       ? 'assets/images/Thumbnail.png'
+            //                                       : podcastResult[index]
+            //                                           ['image']),
+            //                             ),
+            //                             SizedBox(width: 10),
+            //                             Expanded(
+            //                               child: Column(
+            //                                 crossAxisAlignment:
+            //                                     CrossAxisAlignment.start,
+            //                                 children: <Widget>[
+            //                                   Text(
+            //                                     "${podcastResult[index]['name']}",
+            //                                     textScaleFactor: 0.75,
+            //                                     maxLines: 2,
+            //                                     overflow: TextOverflow.ellipsis,
+            //                                     style: TextStyle(
+            //                                         color: themeProvider
+            //                                                     .isLightTheme !=
+            //                                                 true
+            //                                             ? Colors.white
+            //                                             : kPrimaryColor,
+            //                                         fontSize: SizeConfig
+            //                                                 .safeBlockHorizontal *
+            //                                             4,
+            //                                         fontWeight:
+            //                                             FontWeight.normal),
+            //                                   ),
+            //                                   SizedBox(
+            //                                     height: 3,
+            //                                   ),
+            //                                   Text(
+            //                                     podcastResult[index]['author'],
+            //                                     textScaleFactor: 0.75,
+            //                                     maxLines: 2,
+            //                                     overflow: TextOverflow.ellipsis,
+            //                                     style: TextStyle(
+            //                                         color: themeProvider
+            //                                                     .isLightTheme !=
+            //                                                 true
+            //                                             ? Colors.white
+            //                                                 .withOpacity(0.5)
+            //                                             : kPrimaryColor
+            //                                                 .withOpacity(0.5),
+            //                                         fontSize: SizeConfig
+            //                                                 .safeBlockHorizontal *
+            //                                             4),
+            //                                   ),
+            //                                   SizedBox(
+            //                                     height: 5,
+            //                                   ),
+            //                                 ],
+            //                               ),
+            //                             )
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   );
+            //                 }
+            //               }),
+            //     ),
+            //     // Container(
+            //     //   child: episodeResult != null && episodeResult.length == 0
+            //     //       ? Stack(children: <Widget>[
+            //     //           Container(
+            //     //             height: double.infinity,
+            //     //             width: double.infinity,
+            //     //             decoration: BoxDecoration(
+            //     //                 image: DecorationImage(
+            //     //                     image:
+            //     //                         AssetImage("assets/images/search.png"),
+            //     //                     fit: BoxFit.contain)),
+            //     //           ),
+            //     //           Column(
+            //     //               mainAxisAlignment: MainAxisAlignment.end,
+            //     //               children: <Widget>[
+            //     //                 Row(
+            //     //                   mainAxisAlignment: MainAxisAlignment.center,
+            //     //                   children: <Widget>[
+            //     //                     Flexible(
+            //     //                         child: Text("No Data Found",
+            //     //                             textScaleFactor: 0.75,
+            //     //                             style: TextStyle(
+            //     //                               color: Colors.grey,
+            //     //                               fontSize: SizeConfig
+            //     //                                       .safeBlockHorizontal *
+            //     //                                   5,
+            //     //                               fontWeight: FontWeight.w600,
+            //     //                             ))),
+            //     //                     SizedBox(
+            //     //                       height: 350,
+            //     //                     )
+            //     //                   ],
+            //     //                 )
+            //     //               ])
+            //     //         ])
+            //     //       : ListView.builder(
+            //     //           controller: _episodeScrollController,
+            //     //           itemCount: episodeResult.length + 1,
+            //     //           itemBuilder: (BuildContext context, int index) {
+            //     //             if (index == episodeResult.length) {
+            //     //               return isEpisodeLoading == false
+            //     //                   ? SizedBox(
+            //     //                       height: 0,
+            //     //                       width: 0,
+            //     //                     )
+            //     //                   : Container(
+            //     //                       height: 10,
+            //     //                       width: double.infinity,
+            //     //                       child: LinearProgressIndicator(
+            //     //                         minHeight: 10,
+            //     //                         backgroundColor: Colors.black,
+            //     //                         valueColor:
+            //     //                             AlwaysStoppedAnimation<Color>(
+            //     //                                 Color(0xffffffff)),
+            //     //                       ),
+            //     //                     );
+            //     //             } else {
+            //     //               return Padding(
+            //     //                 padding: const EdgeInsets.symmetric(
+            //     //                     vertical: 10, horizontal: 10),
+            //     //                 child: GestureDetector(
+            //     //                   onTap: () {
+            //     //                     Navigator.push(context,
+            //     //                         MaterialPageRoute(builder: (context) {
+            //     //                       return EpisodeView(
+            //     //                           episodeId: episodeResult[index]
+            //     //                               ['id']);
+            //     //                     }));
+            //     //                   },
+            //     //                   child: Container(
+            //     //                     width: double.infinity,
+            //     //                     child: Row(
+            //     //                       crossAxisAlignment:
+            //     //                           CrossAxisAlignment.start,
+            //     //                       children: <Widget>[
+            //     //                         ClipRRect(
+            //     //                           //ClipRRect
+            //     //                           child: FadeInImage.assetNetwork(
+            //     //                               height: 80,
+            //     //                               width: 80,
+            //     //                               fit: BoxFit.cover,
+            //     //                               placeholder:
+            //     //                                   'assets/images/Thumbnail.png',
+            //     //                               image: episodeResult[index]
+            //     //                                           ['image'] ==
+            //     //                                       null
+            //     //                                   ? 'assets/images/Thumbnail.png'
+            //     //                                   : episodeResult[index]
+            //     //                                       ['image']),
+            //     //                         ),
+            //     //                         SizedBox(width: 10),
+            //     //                         Expanded(
+            //     //                           child: Column(
+            //     //                             crossAxisAlignment:
+            //     //                                 CrossAxisAlignment.start,
+            //     //                             children: <Widget>[
+            //     //                               Text(
+            //     //                                 "${episodeResult[index]['name']}",
+            //     //                                 textScaleFactor: 0.75,
+            //     //                                 maxLines: 2,
+            //     //                                 overflow: TextOverflow.ellipsis,
+            //     //                                 style: TextStyle(
+            //     //                                     color: themeProvider
+            //     //                                                 .isLightTheme !=
+            //     //                                             true
+            //     //                                         ? Colors.white
+            //     //                                         : kPrimaryColor,
+            //     //                                     fontSize: SizeConfig
+            //     //                                             .safeBlockHorizontal *
+            //     //                                         4,
+            //     //                                     fontWeight:
+            //     //                                         FontWeight.normal),
+            //     //                               ),
+            //     //                               SizedBox(
+            //     //                                 height: 3,
+            //     //                               ),
+            //     //                               Text(
+            //     //                                 episodeResult[index]['author'],
+            //     //                                 textScaleFactor: 0.75,
+            //     //                                 maxLines: 2,
+            //     //                                 overflow: TextOverflow.ellipsis,
+            //     //                                 style: TextStyle(
+            //     //                                     color: themeProvider
+            //     //                                                 .isLightTheme !=
+            //     //                                             true
+            //     //                                         ? Colors.white
+            //     //                                             .withOpacity(0.5)
+            //     //                                         : kPrimaryColor
+            //     //                                             .withOpacity(0.5),
+            //     //                                     fontSize: SizeConfig
+            //     //                                             .safeBlockHorizontal *
+            //     //                                         4),
+            //     //                               ),
+            //     //                               SizedBox(
+            //     //                                 height: 5,
+            //     //                               ),
+            //     //                             ],
+            //     //                           ),
+            //     //                         )
+            //     //                       ],
+            //     //                     ),
+            //     //                   ),
+            //     //                 ),
+            //     //               );
+            //     //             }
+            //     //           }),
+            //     // ),
+            //     // Container(
+            //     //   child: communityResult != null &&
+            //     //           communityResult.length == 0
+            //     //       ? Stack(children: <Widget>[
+            //     //           Container(
+            //     //             height: double.infinity,
+            //     //             width: double.infinity,
+            //     //             decoration: BoxDecoration(
+            //     //                 image: DecorationImage(
+            //     //                     image: AssetImage(
+            //     //                         "assets/images/search.png"),
+            //     //                     fit: BoxFit.contain)),
+            //     //           ),
+            //     //           Column(
+            //     //               mainAxisAlignment: MainAxisAlignment.end,
+            //     //               children: <Widget>[
+            //     //                 Row(
+            //     //                   mainAxisAlignment: MainAxisAlignment.center,
+            //     //                   children: <Widget>[
+            //     //                     Flexible(
+            //     //                         child: Text("No Data Found",
+            //     //                             textScaleFactor: 0.75,
+            //     //                             style: TextStyle(
+            //     //                               color: Colors.grey,
+            //     //                               fontSize: SizeConfig
+            //     //                                       .safeBlockHorizontal *
+            //     //                                   5,
+            //     //                               fontWeight: FontWeight.w600,
+            //     //                             ))),
+            //     //                     SizedBox(
+            //     //                       height: 350,
+            //     //                     ),
+            //     //                   ],
+            //     //                 )
+            //     //               ])
+            //     //         ])
+            //     //       : ListView.builder(
+            //     //           controller: _communityScrollController,
+            //     //           itemCount: communityResult.length + 1,
+            //     //           itemBuilder: (BuildContext context, int index) {
+            //     //             if (index == communityResult.length) {
+            //     //               return isCommunityLoading == false
+            //     //                   ? SizedBox(
+            //     //                       height: 0,
+            //     //                       width: 0,
+            //     //                     )
+            //     //                   : Container(
+            //     //                       height: 10,
+            //     //                       width: double.infinity,
+            //     //                       child: LinearProgressIndicator(
+            //     //                         minHeight: 10,
+            //     //                         backgroundColor: Colors.blue,
+            //     //                         valueColor:
+            //     //                             AlwaysStoppedAnimation<Color>(
+            //     //                                 Color(0xff6249EF)),
+            //     //                       ),
+            //     //                     );
+            //     //             } else {
+            //     //               return InkWell(
+            //     //                   onTap: () {
+            //     //                     Navigator.push(context,
+            //     //                         MaterialPageRoute(builder: (context) {
+            //     //                       return CommunityProfileView(
+            //     //                           communityObject:
+            //     //                               communityResult[index]);
+            //     //                     }));
+            //     //                   },
+            //     //                   child: Padding(
+            //     //                     padding: EdgeInsets.all(
+            //     //                         SizeConfig.safeBlockHorizontal * 3),
+            //     //                     child: Container(
+            //     //                       width: double.infinity,
+            //     //                       height:
+            //     //                           MediaQuery.of(context).size.height,
+            //     //                       child: GridView.count(
+            //     //                           crossAxisCount: 3,
+            //     //                           mainAxisSpacing:
+            //     //                               SizeConfig.safeBlockHorizontal *
+            //     //                                   5,
+            //     //                           crossAxisSpacing:
+            //     //                               SizeConfig.blockSizeVertical *
+            //     //                                   1,
+            //     //                           children: [
+            //     //                             Container(
+            //     //                               decoration: BoxDecoration(
+            //     //                                   borderRadius:
+            //     //                                       BorderRadius.circular(
+            //     //                                           10),
+            //     //                                   border: Border.all(
+            //     //                                       color:
+            //     //                                           kSecondaryColor)),
+            //     //                               child: Column(
+            //     //                                 mainAxisAlignment:
+            //     //                                     MainAxisAlignment.center,
+            //     //                                 children: [
+            //     //                                   CircleAvatar(
+            //     //                                     backgroundColor:
+            //     //                                         Colors.transparent,
+            //     //                                     backgroundImage: communityResult[
+            //     //                                                     index][
+            //     //                                                 'profileImageUrl'] ==
+            //     //                                             null
+            //     //                                         ? AssetImage(
+            //     //                                             'assets/images/Favicon.png')
+            //     //                                         : NetworkImage(
+            //     //                                             communityResult[
+            //     //                                                     index][
+            //     //                                                 'profileImageUrl']),
+            //     //                                   ),
+            //     //                                   SizedBox(
+            //     //                                     height: 10,
+            //     //                                   ),
+            //     //                                   Padding(
+            //     //                                     padding: const EdgeInsets
+            //     //                                             .symmetric(
+            //     //                                         horizontal: 10),
+            //     //                                     child: Text(
+            //     //                                       communityResult[index]
+            //     //                                           ['name'],
+            //     //                                       textScaleFactor: 0.75,
+            //     //                                       maxLines: 2,
+            //     //                                       overflow: TextOverflow
+            //     //                                           .ellipsis,
+            //     //                                       textAlign:
+            //     //                                           TextAlign.center,
+            //     //                                       style: TextStyle(
+            //     //                                           color: Colors.white,
+            //     //                                           fontSize: SizeConfig
+            //     //                                                   .safeBlockHorizontal *
+            //     //                                               3),
+            //     //                                     ),
+            //     //                                   )
+            //     //                                 ],
+            //     //                               ),
+            //     //                             ),
+            //     //                           ]),
+            //     //                     ),
+            //     //                   ));
+            //     //             }
+            //     //           }),
+            //     // ),
+            //   ],
+            // ))
           ],
         ),
       ),

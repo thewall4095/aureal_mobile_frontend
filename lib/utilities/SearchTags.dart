@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class TagSelector extends StatefulWidget {
   static const String id = 'TagSelection';
@@ -29,18 +25,18 @@ class _TagSelectorState extends State<TagSelector> {
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              setState(() {});
-            },
-            child: Center(
-              child: Text(
-                "Clear",
-                textScaleFactor: 0.75,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          )
+          // FlatButton(
+          //   onPressed: () {
+          //     setState(() {});
+          //   },
+          //   child: Center(
+          //     child: Text(
+          //       "Clear",
+          //       textScaleFactor: 0.75,
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //   ),
+          // )
         ],
       ),
       body: Container(

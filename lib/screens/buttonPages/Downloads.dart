@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -224,7 +226,82 @@ class _DownloadPageState extends State<DownloadPage>
       ),
       body: Container(
         child: episodeList.length == 0
-            ? Container()
+            ? Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: MediaQuery.of(context).size.width / 2,
+                            child: Image.asset('assets/images/Mascot.png'),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "No Downloads..!",
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 5),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Icon(Icons.download_outlined),
+                          ),
+                          Text("You can now download your favourate podcast.")
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return FollowingPage();
+                              });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Color(0xff171b27))
+                              //  color: kSecondaryColor,
+                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(FontAwesomeIcons.download),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Text(
+                                  'Browse',
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ),
+                      SizedBox(
+                        height: 100,
+                      )
+                    ],
+                  ),
+                ),
+              )
             : ListView(
                 children: [
                   for (var v in episodeList)

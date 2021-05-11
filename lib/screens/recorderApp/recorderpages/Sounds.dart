@@ -1,15 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:audioplayer/audioplayer.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/utilities/constants.dart';
+import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:audioplayer/audioplayer.dart';
-import 'package:auditory/utilities/constants.dart';
-import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'dart:io';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:file_picker/file_picker.dart';
 
 enum PlayerState {
   playing,
@@ -51,7 +52,7 @@ class _SoundsState extends State<Sounds> {
   bool _loadingPath = false;
   bool _multiPick = false;
   FileType _pickingType = FileType.audio;
-  TextEditingController _controller = new TextEditingController();
+  // TextEditingController _controller = new TextEditingController();
 
   void _openFileExplorer() async {
     setState(() => _loadingPath = true);
@@ -190,10 +191,10 @@ class _SoundsState extends State<Sounds> {
 
   //////////////////////////////////////////////////////////////-----------------Pause Audio---------------////////////////////////////////////////////////////
 
-  Future _pause() async {
-    AudioPlayer player = AudioPlayer();
-    player.pause();
-  }
+  // Future _pause() async {
+  //   AudioPlayer player = AudioPlayer();
+  //   player.pause();
+  // }
 
   //////////////////////////////////////////////////////////////-----------------Stop Audio---------------////////////////////////////////////////////////////
 

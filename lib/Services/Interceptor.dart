@@ -1,12 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_share/flutter_share.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class Interceptor {
   Interceptor();
@@ -66,6 +64,7 @@ class Interceptor {
     print(hiveToken);
     Dio dio = Dio(BaseOptions(headers: {
       "Authorization": "Bearer $token",
+      'access-token': '$hiveToken'
     }));
     print('Hive token: $hiveToken');
     try {

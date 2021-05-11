@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/url_launcher/intermediates/res/merged/debug/drawable/notification_bg.xml",
+        "source": "/Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/fdd1d924d9d4aeba2785fceb0b790aec/core-1.1.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/url_launcher/intermediates/res/merged/debug/drawable/notification_tile_bg.xml",
+        "source": "/Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/fdd1d924d9d4aeba2785fceb0b790aec/core-1.1.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/url_launcher/intermediates/res/merged/debug/drawable/notification_bg_low.xml",
+        "source": "/Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/fdd1d924d9d4aeba2785fceb0b790aec/core-1.1.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/url_launcher/intermediates/res/merged/debug/drawable/notification_icon_background.xml",
+        "source": "/Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/fdd1d924d9d4aeba2785fceb0b790aec/core-1.1.0/res/drawable/notification_icon_background.xml"
+    }
+]

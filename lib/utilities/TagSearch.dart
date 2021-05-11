@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class TagSearch extends StatefulWidget {
@@ -21,7 +21,7 @@ class _TagSearchState extends State<TagSearch> {
 
   void getTags() async {
     print('getting the tags');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/getTag?word=$word';
 
     try {

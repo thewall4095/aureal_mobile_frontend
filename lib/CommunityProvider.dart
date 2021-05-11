@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityProvider extends ChangeNotifier {
@@ -153,7 +153,7 @@ class CommunityProvider extends ChangeNotifier {
     _isFetchedcommunityEpisodes = false;
 
     String url =
-        'https://api.aureal.one/public/getCommunityEpisodes?community_id=${communityId}';
+        'https://api.aureal.one/public/getCommunityEpisodes?community_id=$communityId';
     try {
       http.Response response = await http.get(Uri.parse(url));
       _isFetchedcommunityEpisodes = true;
@@ -192,8 +192,8 @@ class CommunityProvider extends ChangeNotifier {
   }
 
   void communitySearch(String query) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = 'https://api.aureal.one/public/searchCommunity?word=${query}';
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/searchCommunity?word=$query';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

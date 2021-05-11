@@ -44,7 +44,7 @@ class _CommunityViewState extends State<CommunityView>
     await FlutterShare.share(
         title: '${v['title']}',
         text:
-            "Hey There, I'm listening to ${v['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${v['podcast_id']}");
+            "Hey There, I'm listening to ${v['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${v['podcast_id']}");
   }
 
   File _image;

@@ -1,12 +1,10 @@
-import 'package:flutter/material.dart';
-
 class UserProfile {
   String userId;
 
   UserProfile({this.userId});
 
   void updateProfile() async {
-    String url = 'https://api.aureal.one/private/updateUser';
+    // String url = 'https://api.aureal.one/private/updateUser';
 
     var map = Map<String, dynamic>();
 
