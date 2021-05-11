@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:convert';
 
 class HiveAccount extends StatefulWidget {
   static const String id = "Hive Signer";

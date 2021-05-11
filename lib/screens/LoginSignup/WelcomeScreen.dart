@@ -164,154 +164,9 @@ class _WelcomeState extends State<Welcome> {
             SizedBox(
               height: 40,
             ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Center(
-            //     child: Padding(
-            //       padding: const EdgeInsets.symmetric(horizontal: 50),
-            //       child: InkWell(
-            //         onTap: () {
-            //           Navigator.pushNamed(context, Login.id);
-            //         },
-            //         child: Container(
-            //           width: double.infinity,
-            //           decoration: BoxDecoration(
-            //               borderRadius: BorderRadius.circular(30),
-            //               border:
-            //                   Border.all(color: kSecondaryColor, width: 2.5)),
-            //           child: Padding(
-            //             padding: const EdgeInsets.symmetric(
-            //                 horizontal: 20, vertical: 10),
-            //             child: Center(
-            //               child: Text(
-            //                 'Login',
-            //                 style: TextStyle(
-            //                     color: Color(0xffe8e8e8),
-            //                     fontSize: SizeConfig.safeBlockHorizontal * 5.5),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: Center(
-            //     child: Padding(
-            //       padding: const EdgeInsets.symmetric(horizontal: 50),
-            //       child: InkWell(
-            //         onTap: () {
-            //           Navigator.pushNamed(context, SignUp.id);
-            //         },
-            //         child: Container(
-            //           width: double.infinity,
-            //           decoration: BoxDecoration(
-            //               borderRadius: BorderRadius.circular(30),
-            //               gradient: LinearGradient(
-            //                   colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])),
-            //           child: Padding(
-            //             padding: const EdgeInsets.symmetric(
-            //                 horizontal: 20, vertical: 10),
-            //             child: Center(
-            //               child: Text(
-            //                 'Sign Up',
-            //                 style: TextStyle(
-            //                     color: Color(0xffe8e8e8),
-            //                     fontSize: SizeConfig.safeBlockHorizontal * 5.5),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            SizedBox(
-              height: 80,
-            ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Container(
-            //       decoration:
-            //           BoxDecoration(border: Border.all(color: kSecondaryColor)),
-            //       height: 0,
-            //       width: MediaQuery.of(context).size.width / 3.1,
-            //     ),
-            //     Padding(
-            //       padding: const EdgeInsets.all(8.0),
-            //       child: Text(
-            //         'or',
-            //         style: TextStyle(
-            //             color: Color(0xffe8e8e8),
-            //             fontSize: SizeConfig.safeBlockHorizontal * 5),
-            //       ),
-            //     ),
-            //     Container(
-            //       decoration:
-            //           BoxDecoration(border: Border.all(color: kSecondaryColor)),
-            //       height: 0,
-            //       width: MediaQuery.of(context).size.width / 3.1,
-            //     )
-            //   ],
-            // ),
-            // SizedBox(
-            //   height: 40,
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            //   children: [
-            //     GestureDetector(
-            //         child: CircleAvatar(
-            //           child: Icon(
-            //             FontAwesomeIcons.google,
-            //             color: Color(0xffe8e8e8),
-            //           ),
-            //           radius: 25,
-            //           backgroundColor: kSecondaryColor,
-            //         ),
-            //         onTap: () {
-            //           authBloc.loginGoogle(context);
-            //         }),
-            //     // InkWell(
-            //     //   onTap: () async {
-            //     //     initiateFacebookLogin();
-            //     //   },
-            //     //   child: CircleAvatar(
-            //     //     radius: 25,
-            //     //     backgroundColor: kSecondaryColor,
-            //     //     child: Icon(
-            //     //       FontAwesomeIcons.facebookF,
-            //     //       color: Color(0xffe8e8e8),
-            //     //     ),
-            //     //   ),
-            //     // ),
-            //     // InkWell(
-            //     //   onTap: () {
-            //     //     _login();
-            //     //   },
-            //     //   child: CircleAvatar(
-            //     //     radius: 25,
-            //     //     backgroundColor: kSecondaryColor,
-            //     //     child: Icon(
-            //     //       FontAwesomeIcons.twitter,
-            //     //       color: Color(0xffe8e8e8),
-            //     //     ),
-            //     //   ),
-            //     // )
-            //   ],
-            // ),
             InkWell(
               onTap: () {
                 authBloc.loginGoogle(context);
-                // print("Hive Signer Activated");
-                // showBarModalBottomSheet(
-                //     context: context,
-                //     builder: (context, ScrollController controller) {
-                //       return HiveAccount();
-                //     });
               },
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.3,
@@ -349,7 +204,6 @@ class _WelcomeState extends State<Welcome> {
             ),
             InkWell(
               onTap: () {
-                print("Hive Signer Activated");
                 showBarModalBottomSheet(
                     context: context,
                     builder: (context) {
@@ -375,6 +229,43 @@ class _WelcomeState extends State<Welcome> {
                       Center(
                         child: Text(
                           "Sign in using HiveSigner",
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              color: Color(0xffe8e8e8),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            InkWell(
+              onTap: () {
+                authBloc.loginApple(context);
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.3,
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(30)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.hive,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      Center(
+                        child: Text(
+                          "Sign in using Apple",
                           textScaleFactor: 1.0,
                           style: TextStyle(
                               color: Color(0xffe8e8e8),
