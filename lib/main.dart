@@ -30,7 +30,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:package_info/package_info.dart';
+
 // import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
@@ -181,19 +181,8 @@ class _MyAppState extends State<MyApp> {
   bool _flexibleUpdateAvailable = false;
   String _token;
 
-  PackageInfo _packageInfo = PackageInfo(
-    appName: 'Unknown',
-    packageName: 'Unknown',
-    version: 'Unknown',
-    buildNumber: 'Unknown',
-  );
 
-  Future<void> _initPackageInfo() async {
-    final PackageInfo info = await PackageInfo.fromPlatform();
-    setState(() {
-      _packageInfo = info;
-    });
-  }
+
 
   // Future<void> checkForUpdate() async {
   //   InAppUpdate.checkForUpdate().then((info) {
@@ -212,24 +201,13 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void getNewVersionCode() async {
-    String url = 'https://api.aureal.one/public/appversion';
 
-    try {
-      http.Response response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        print(_packageInfo.packageName);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   void initState() {
     // checkForUpdate();
     // TODO: implement initState
-    _initPackageInfo();
+
     super.initState();
   }
 

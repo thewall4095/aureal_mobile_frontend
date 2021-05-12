@@ -57,6 +57,7 @@
     <string msgid="5201977337835724196" name="common_open_on_phone">"Otvoriť v telefóne"</string>
     <string msgid="3441753203274453993" name="common_signin_button_text">"Prihlásiť sa"</string>
     <string msgid="669893613918351210" name="common_signin_button_text_long">"Prihlásiť sa účtom Google"</string>
+    <string msgid="8230469354668895088" name="copy_toast_msg">"Odkaz bol skopírovaný do schránky"</string>
     <string name="exo_controls_cc_disabled_description">Povoliť titulky</string>
     <string name="exo_controls_cc_enabled_description">Zakázať titulky</string>
     <string name="exo_controls_fastforward_description">Pretočiť dopredu</string>
@@ -106,6 +107,9 @@
     <string name="exo_track_surround_5_point_1">Priestorový zvuk 5.1</string>
     <string name="exo_track_surround_7_point_1">Priestorový zvuk 7.1</string>
     <string name="exo_track_unknown">Neznáme</string>
+    <string msgid="2615365786337886368" name="fallback_menu_item_copy_link">"Kopírovať odkaz"</string>
+    <string msgid="8984733760067120953" name="fallback_menu_item_open_in_browser">"Otvoriť v prehliadači"</string>
+    <string msgid="271185644269364308" name="fallback_menu_item_share_link">"Zdieľať odkaz"</string>
     <string msgid="4133737464567140336" name="fcm_fallback_notification_channel_label">"Rôzne"</string>
     <string msgid="730395136688082741" name="search_menu_title">"Hľadať"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>

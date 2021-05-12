@@ -27,6 +27,10 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Share with"</string>
     <string msgid="3300176832234831527" name="abc_shareactionprovider_share_with_application">"Share with <ns1:g id="APPLICATION_NAME">%s</ns1:g>"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Collapse"</string>
+    <string msgid="8230469354668895088" name="copy_toast_msg">"Link copied to clipboard"</string>
+    <string msgid="2615365786337886368" name="fallback_menu_item_copy_link">"Copy link"</string>
+    <string msgid="8984733760067120953" name="fallback_menu_item_open_in_browser">"Open in browser"</string>
+    <string msgid="271185644269364308" name="fallback_menu_item_share_link">"Share link"</string>
     <string msgid="146198913615257606" name="search_menu_title">"Search"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

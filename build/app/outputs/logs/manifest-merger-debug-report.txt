@@ -31,15 +31,14 @@ MERGED from /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/
 MERGED from [:file_picker] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-17:12
 MERGED from [:image_picker] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-22:12
 MERGED from [:flutter_plugin_android_lifecycle] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:sign_in_with_apple] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/sign_in_with_apple/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:audioplayer] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/audioplayer/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_local_notifications] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-23:12
-MERGED from [:flutter_image_compress] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_image_compress/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:google_sign_in] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/google_sign_in/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:flutter_media_notification] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_media_notification/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-25:12
 MERGED from [:firebase_auth] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-15:12
 MERGED from [:image_cropper] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/image_cropper/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:flutter_downloader] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_downloader/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
-MERGED from [:package_info] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/package_info/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:wakelock] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/wakelock/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:permission_handler] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/permission_handler/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:shared_preferences] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
@@ -61,7 +60,7 @@ MERGED from [com.google.firebase:firebase-core:18.0.0] /Users/shubhamupadhyay/.g
 MERGED from [com.google.firebase:firebase-analytics:18.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/44f1b76a40b14b3b0aebb3979b217d2a/jetified-firebase-analytics-18.0.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-messaging:21.0.1] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/7ce4ed73de768a06a32c29a049ac0d2c/jetified-firebase-messaging-21.0.1/AndroidManifest.xml:17:1-45:12
 MERGED from [com.google.firebase:firebase-inappmessaging-display:19.1.3] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/6c968b63295cbd7df4cd6c1680ffcbc7/jetified-firebase-inappmessaging-display-19.1.3/AndroidManifest.xml:2:1-24:12
-MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2f8c230071131e0b4d7165569908d8b7/heifwriter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.browser:browser:1.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bc6504492efd80efc4c1cc9effbe62f8/browser-1.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.github.yalantis:ucrop:2.2.6] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/060ada48e74ca2f772e27cd3422eb48f/jetified-ucrop-2.2.6/AndroidManifest.xml:2:1-11:12
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/eb3b68689ec5cdd6e6e50574be740457/jetified-glide-4.12.0/AndroidManifest.xml:2:1-12:12
 MERGED from [com.squareup.picasso:picasso:2.71828] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/ac2daf2d0bc4539768be24aee04086ea/jetified-picasso-2.71828/AndroidManifest.xml:2:1-14:12
@@ -96,7 +95,6 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:18.0.0] /U
 MERGED from [com.google.android.gms:play-services-measurement-base:18.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/ed19d992f0df32c0a733964cfe363d15/jetified-play-services-measurement-base-18.0.0/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.android.gms:play-services-basement:17.3.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/da9057c8f90aacbec652a7bec5a8c52b/jetified-play-services-basement-17.3.0/AndroidManifest.xml:17:1-28:12
 MERGED from [androidx.fragment:fragment:1.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/21b54d442162ed32d60a3134ecfab290/fragment-1.2.5/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.browser:browser:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/a5362f26dbb00c838c6bf02e46be4330/browser-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2be0aed1a4eda082dd636033387910b2/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/f0ab33f564174031f736f2362c7f3240/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/e34cabc738bf4b7d355287b10c1e1e78/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -129,10 +127,11 @@ MERGED from [androidx.lifecycle:lifecycle-livedata:2.1.0] /Users/shubhamupadhyay
 MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/cb48fde5bbd12b6b5d7ef4b35c4228d5/jetified-lifecycle-viewmodel-savedstate-2.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/96c2ec938125360f3ea7c55ce5e43078/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/b2133032cf21ebfe67da1b19cf0d87ce/jetified-savedstate-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/ba4ebe54f7bb977952bfbbd3e772a1c8/sqlite-framework-2.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bfd0499c8b5d5b657b58c4224309a55e/sqlite-2.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:17:1-27:12
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/43aefa5be4a54e3936b7cc2f2ea287e3/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-transformer:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/86371f3122ad08b25006dba81192f44e/jetified-exoplayer-transformer-2.13.2/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-core:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/e29838774b9fe3695a2bd5ed463a5458/jetified-exoplayer-core-2.13.2/AndroidManifest.xml:17:1-26:12
@@ -145,7 +144,6 @@ MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /Users/shubhamup
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/c1d42e869f3c10eb1d8a71cdf53e0680/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.exoplayer:exoplayer-extractor:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/db7a3f4e0de127788ee2b2a97b202e95/jetified-exoplayer-extractor-2.13.2/AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.android.exoplayer:exoplayer-common:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/eebff3ca904e21823f92c44463cee5e8/jetified-exoplayer-common-2.13.2/AndroidManifest.xml:17:1-26:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.datatransport:transport-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/f9cf9ee629c4755852f8c99aa0a78dec/jetified-transport-runtime-2.2.5/AndroidManifest.xml:15:1-41:12
 MERGED from [com.google.android.datatransport:transport-api:2.2.1] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/9ff973028d92089e9fbf8252e93d808f/jetified-transport-api-2.2.1/AndroidManifest.xml:15:1-22:12
 MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/09b85878c26982e8b467f81a1b872be6/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -376,10 +374,10 @@ MERGED from [androidx.work:work-runtime:2.4.0] /Users/shubhamupadhyay/.gradle/ca
 MERGED from [androidx.work:work-runtime:2.4.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/6c0fa5c8bfa708a54bb0bc178b1b6dc3/work-runtime-2.4.0/AndroidManifest.xml:30:5-141:19
 MERGED from [androidx.core:core:1.3.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/59ee1dc199be67cbc573a0a6ab54444e/core-1.3.2/AndroidManifest.xml:24:5-89
 MERGED from [androidx.core:core:1.3.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/59ee1dc199be67cbc573a0a6ab54444e/core-1.3.2/AndroidManifest.xml:24:5-89
-MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
-MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/53c60db708aca91aa5a7858ef635384f/jetified-gifdecoder-4.12.0/AndroidManifest.xml:9:5-20
 MERGED from [com.github.bumptech.glide:gifdecoder:4.12.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/53c60db708aca91aa5a7858ef635384f/jetified-gifdecoder-4.12.0/AndroidManifest.xml:9:5-20
 MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/fc8f51dea456bd1d77c5de38926ba8dd/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
@@ -524,12 +522,12 @@ MERGED from [:image_picker] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_
 MERGED from [:image_picker] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_plugin_android_lifecycle] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sign_in_with_apple] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/sign_in_with_apple/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sign_in_with_apple] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/sign_in_with_apple/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:audioplayer] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/audioplayer/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:audioplayer] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/audioplayer/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_local_notifications] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_local_notifications] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
-MERGED from [:flutter_image_compress] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_image_compress/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-9:55
-MERGED from [:flutter_image_compress] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_image_compress/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-9:55
 MERGED from [:google_sign_in] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/google_sign_in/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:google_sign_in] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/google_sign_in/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_media_notification] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_media_notification/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
@@ -540,8 +538,6 @@ MERGED from [:image_cropper] /Users/shubhamupadhyay/AndroidStudioProjects/aureal
 MERGED from [:image_cropper] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/image_cropper/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_downloader] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_downloader/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:flutter_downloader] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_downloader/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
-MERGED from [:package_info] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/package_info/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
-MERGED from [:package_info] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/package_info/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:wakelock] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/wakelock/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:wakelock] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/wakelock/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:permission_handler] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/permission_handler/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
@@ -584,8 +580,8 @@ MERGED from [com.google.firebase:firebase-messaging:21.0.1] /Users/shubhamupadhy
 MERGED from [com.google.firebase:firebase-messaging:21.0.1] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/7ce4ed73de768a06a32c29a049ac0d2c/jetified-firebase-messaging-21.0.1/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-inappmessaging-display:19.1.3] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/6c968b63295cbd7df4cd6c1680ffcbc7/jetified-firebase-inappmessaging-display-19.1.3/AndroidManifest.xml:7:5-9:41
 MERGED from [com.google.firebase:firebase-inappmessaging-display:19.1.3] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/6c968b63295cbd7df4cd6c1680ffcbc7/jetified-firebase-inappmessaging-display-19.1.3/AndroidManifest.xml:7:5-9:41
-MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2f8c230071131e0b4d7165569908d8b7/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.heifwriter:heifwriter:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2f8c230071131e0b4d7165569908d8b7/heifwriter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.browser:browser:1.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bc6504492efd80efc4c1cc9effbe62f8/browser-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.browser:browser:1.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bc6504492efd80efc4c1cc9effbe62f8/browser-1.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.github.yalantis:ucrop:2.2.6] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/060ada48e74ca2f772e27cd3422eb48f/jetified-ucrop-2.2.6/AndroidManifest.xml:7:5-9:41
 MERGED from [com.github.yalantis:ucrop:2.2.6] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/060ada48e74ca2f772e27cd3422eb48f/jetified-ucrop-2.2.6/AndroidManifest.xml:7:5-9:41
 MERGED from [com.github.bumptech.glide:glide:4.12.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/eb3b68689ec5cdd6e6e50574be740457/jetified-glide-4.12.0/AndroidManifest.xml:6:5-8:41
@@ -654,8 +650,6 @@ MERGED from [com.google.android.gms:play-services-basement:17.3.0] /Users/shubha
 MERGED from [com.google.android.gms:play-services-basement:17.3.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/da9057c8f90aacbec652a7bec5a8c52b/jetified-play-services-basement-17.3.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.fragment:fragment:1.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/21b54d442162ed32d60a3134ecfab290/fragment-1.2.5/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.fragment:fragment:1.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/21b54d442162ed32d60a3134ecfab290/fragment-1.2.5/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.browser:browser:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/a5362f26dbb00c838c6bf02e46be4330/browser-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.browser:browser:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/a5362f26dbb00c838c6bf02e46be4330/browser-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2be0aed1a4eda082dd636033387910b2/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/2be0aed1a4eda082dd636033387910b2/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/f0ab33f564174031f736f2362c7f3240/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
@@ -720,14 +714,16 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/shubhamupa
 MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/96c2ec938125360f3ea7c55ce5e43078/lifecycle-livedata-core-2.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/b2133032cf21ebfe67da1b19cf0d87ce/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/b2133032cf21ebfe67da1b19cf0d87ce/jetified-savedstate-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.room:room-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/12f4e7bdd78c04a85c8ef14cd1d93cf2/room-runtime-2.2.5/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/ba4ebe54f7bb977952bfbbd3e772a1c8/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/ba4ebe54f7bb977952bfbbd3e772a1c8/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bfd0499c8b5d5b657b58c4224309a55e/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/bfd0499c8b5d5b657b58c4224309a55e/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/0cb344f83f822523cccd3d991f0b64b6/versionedparcelable-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/43aefa5be4a54e3936b7cc2f2ea287e3/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.2.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/43aefa5be4a54e3936b7cc2f2ea287e3/lifecycle-viewmodel-2.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-transformer:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/86371f3122ad08b25006dba81192f44e/jetified-exoplayer-transformer-2.13.2/AndroidManifest.xml:20:5-22:41
@@ -752,8 +748,6 @@ MERGED from [com.google.android.exoplayer:exoplayer-extractor:2.13.2] /Users/shu
 MERGED from [com.google.android.exoplayer:exoplayer-extractor:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/db7a3f4e0de127788ee2b2a97b202e95/jetified-exoplayer-extractor-2.13.2/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-common:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/eebff3ca904e21823f92c44463cee5e8/jetified-exoplayer-common-2.13.2/AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.android.exoplayer:exoplayer-common:2.13.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/eebff3ca904e21823f92c44463cee5e8/jetified-exoplayer-common-2.13.2/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/8836020bb52bd47678702bd3b7885b42/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.datatransport:transport-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/f9cf9ee629c4755852f8c99aa0a78dec/jetified-transport-runtime-2.2.5/AndroidManifest.xml:18:5-20:41
 MERGED from [com.google.android.datatransport:transport-runtime:2.2.5] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/f9cf9ee629c4755852f8c99aa0a78dec/jetified-transport-runtime-2.2.5/AndroidManifest.xml:18:5-20:41
 MERGED from [com.google.android.datatransport:transport-api:2.2.1] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/9ff973028d92089e9fbf8252e93d808f/jetified-transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
@@ -778,8 +772,6 @@ MERGED from [io.reactivex.rxjava2:rxandroid:2.0.2] /Users/shubhamupadhyay/.gradl
 MERGED from [io.reactivex.rxjava2:rxandroid:2.0.2] /Users/shubhamupadhyay/.gradle/caches/transforms-2/files-2.1/85f569d728c0e0756b34c955f9b333b1/jetified-rxandroid-2.0.2/AndroidManifest.xml:19:5-43
 INJECTED from /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/android/app/src/debug/AndroidManifest.xml
 INJECTED from /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/android/app/src/debug/AndroidManifest.xml
-	tools:overrideLibrary
-		ADDED from [:flutter_image_compress] /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/build/flutter_image_compress/intermediates/library_manifest/debug/AndroidManifest.xml:9:9-52
 	android:targetSdkVersion
 		INJECTED from /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/android/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/shubhamupadhyay/AndroidStudioProjects/aureal_mobile_frontend/android/app/src/debug/AndroidManifest.xml

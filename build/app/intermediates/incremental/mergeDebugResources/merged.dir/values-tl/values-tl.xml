@@ -53,6 +53,7 @@
     <string msgid="5201977337835724196" name="common_open_on_phone">"Buksan sa telepono"</string>
     <string msgid="3441753203274453993" name="common_signin_button_text">"Mag-sign in"</string>
     <string msgid="669893613918351210" name="common_signin_button_text_long">"Mag-sign in sa Google"</string>
+    <string msgid="8230469354668895088" name="copy_toast_msg">"Nakopya sa clipboard ang link"</string>
     <string name="exo_controls_cc_disabled_description">I-enable ang mga subtitle</string>
     <string name="exo_controls_cc_enabled_description">I-disable ang mga subtitle</string>
     <string name="exo_controls_fastforward_description">I-fast forward</string>
@@ -102,6 +103,9 @@
     <string name="exo_track_surround_5_point_1">5.1 na surround sound</string>
     <string name="exo_track_surround_7_point_1">7.1 na surround sound</string>
     <string name="exo_track_unknown">Hindi Alam</string>
+    <string msgid="2615365786337886368" name="fallback_menu_item_copy_link">"Kopyahin ang link"</string>
+    <string msgid="8984733760067120953" name="fallback_menu_item_open_in_browser">"Buksan sa browser"</string>
+    <string msgid="271185644269364308" name="fallback_menu_item_share_link">"Ibahagi ang link"</string>
     <string msgid="4133737464567140336" name="fcm_fallback_notification_channel_label">"Iba Pa"</string>
     <string msgid="730395136688082741" name="search_menu_title">"Maghanap"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>

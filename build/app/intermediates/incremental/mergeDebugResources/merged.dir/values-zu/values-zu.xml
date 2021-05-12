@@ -53,6 +53,7 @@
     <string msgid="5201977337835724196" name="common_open_on_phone">"Vula kufoni"</string>
     <string msgid="3441753203274453993" name="common_signin_button_text">"Ngena ngemvume"</string>
     <string msgid="669893613918351210" name="common_signin_button_text_long">"Ngena ngemvume nge-Google"</string>
+    <string msgid="8230469354668895088" name="copy_toast_msg">"Isixhumanisi sikopishelwe ku-clipboard"</string>
     <string name="exo_controls_cc_disabled_description">Nika amandla imibhalo engezansi</string>
     <string name="exo_controls_cc_enabled_description">Khubaza imibhalo engezansi</string>
     <string name="exo_controls_fastforward_description">Dlulisela phambili</string>
@@ -102,6 +103,9 @@
     <string name="exo_track_surround_5_point_1">Umsindo ozungelezile ongu-5.1</string>
     <string name="exo_track_surround_7_point_1">Umsindo ozungelezile ongu-7.1</string>
     <string name="exo_track_unknown">Akwaziwa</string>
+    <string msgid="2615365786337886368" name="fallback_menu_item_copy_link">"Kopisha isixhumanisi"</string>
+    <string msgid="8984733760067120953" name="fallback_menu_item_open_in_browser">"Vula kusiphequluli"</string>
+    <string msgid="271185644269364308" name="fallback_menu_item_share_link">"Yabelana ngesixhumanisi"</string>
     <string msgid="4133737464567140336" name="fcm_fallback_notification_channel_label">"Okwahlukahlukene"</string>
     <string msgid="730395136688082741" name="search_menu_title">"Sesha"</string>
     <string msgid="6277540029070332960" name="status_bar_notification_info_overflow">"999+"</string>
