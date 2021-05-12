@@ -215,11 +215,7 @@ class _PlayerState extends State<Player> {
                               controller: controller,
                               children: [
                                 SizedBox(
-                                  height: SizeConfig.screenHeight / 7,
-                                ),
-                                Divider(
-                                  thickness: 1,
-                                  color: Color(0xff171b27),
+                                  height: SizeConfig.screenHeight / 5.5,
                                 ),
                                 ListTile(
                                   onTap: () {
@@ -499,7 +495,7 @@ class _PlayerState extends State<Player> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  height: SizeConfig.screenHeight / 5.8,
+                                  height: SizeConfig.screenHeight / 5,
                                   width: double.infinity,
                                   //color: Colors.white,
                                   child: Container(

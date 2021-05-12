@@ -245,25 +245,21 @@ class _WelcomeState extends State<Welcome> {
                 children: [
                   Platform.isAndroid == true
                       ? SizedBox()
-                      : Padding(
-                          padding: EdgeInsets.only(
-                              right: Platform.isIOS == true ? 10 : 0),
-                          child: InkWell(
-                            onTap: () {
-                              authBloc.loginApple(context);
-                            },
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(
-                                  FontAwesomeIcons.apple,
-                                  color: Colors.black,
-                                ),
+                      : InkWell(
+                          onTap: () {
+                            authBloc.loginApple(context);
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                FontAwesomeIcons.apple,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -300,13 +296,13 @@ class _WelcomeState extends State<Welcome> {
                           });
                     },
                     child: Container(
-                      width: MediaQuery.of(context).size.width / 2.5,
+                      width: MediaQuery.of(context).size.width / 2.7,
                       decoration: BoxDecoration(
                           color: Colors.red,
                           borderRadius: BorderRadius.circular(30)),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 25, vertical: 15),
+                            horizontal: 8, vertical: 15),
                         child: Row(
                           children: [
                             // Icon(
@@ -329,7 +325,7 @@ class _WelcomeState extends State<Welcome> {
                               style: TextStyle(
                                   color: Color(0xffe8e8e8),
                                   fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3.5),
+                                      SizeConfig.safeBlockHorizontal * 3.2),
                             ),
                           ],
                         ),

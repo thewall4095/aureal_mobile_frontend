@@ -875,7 +875,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   fontSize:
                                                                       SizeConfig
                                                                               .safeBlockHorizontal *
-                                                                          5.5,
+                                                                          5,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .normal),
@@ -975,7 +975,9 @@ class _FollowingPageState extends State<FollowingPage>
                                                   ),
                                                 ),
                                                 Container(
-                                                  width: double.infinity,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -1109,11 +1111,6 @@ class _FollowingPageState extends State<FollowingPage>
                                                               ),
                                                             ),
                                                           ),
-                                                          // SizedBox(
-                                                          //   width: SizeConfig
-                                                          //           .screenWidth /
-                                                          //       30,
-                                                          // ),
                                                           InkWell(
                                                             onTap: () {
                                                               if (prefs.getString(
@@ -1185,155 +1182,163 @@ class _FollowingPageState extends State<FollowingPage>
                                                                 ),
                                                               ),
                                                             ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          print(v
-                                                              .toString()
-                                                              .contains(
-                                                                  '.mp4'));
-                                                          if (v.toString().contains('.mp4') == true ||
-                                                              v.toString().contains(
-                                                                      '.m4v') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.flv') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.f4v') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.ogv') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.ogx') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.wmv') ==
-                                                                  true ||
-                                                              v.toString().contains(
-                                                                      '.webm') ==
-                                                                  true) {
-                                                            currentlyPlaying
-                                                                .stop();
-                                                            Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) {
-                                                              return PodcastVideoPlayer(
-                                                                  episodeObject:
-                                                                      v);
-                                                            }));
-                                                          } else {
-                                                            if (v
-                                                                    .toString()
-                                                                    .contains(
-                                                                        '.pdf') ==
-                                                                true) {
-                                                              // Navigator.push(
-                                                              //     context,
-                                                              //     MaterialPageRoute(
-                                                              //         builder:
-                                                              //             (context) {
-                                                              //   return PDFviewer(
-                                                              //       episodeObject:
-                                                              //           v);
-                                                              // }));
-                                                            } else {
-                                                              currentlyPlaying
-                                                                  .stop();
-                                                              currentlyPlaying
-                                                                  .episodeObject = v;
-                                                              print(currentlyPlaying
-                                                                  .episodeObject
-                                                                  .toString());
-                                                              currentlyPlaying
-                                                                  .play();
-                                                              showBarModalBottomSheet(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return Player();
-                                                                  });
-                                                            }
-                                                          }
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 80),
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: Color(
-                                                                        0xff171b27)),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            30)),
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              print(v
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.mp4'));
+                                                              if (v.toString().contains('.mp4') == true ||
+                                                                  v.toString().contains(
+                                                                          '.m4v') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.flv') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.f4v') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.ogv') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.ogx') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.wmv') ==
+                                                                      true ||
+                                                                  v.toString().contains(
+                                                                          '.webm') ==
+                                                                      true) {
+                                                                currentlyPlaying
+                                                                    .stop();
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) {
+                                                                  return PodcastVideoPlayer(
+                                                                      episodeObject:
+                                                                          v);
+                                                                }));
+                                                              } else {
+                                                                if (v
+                                                                        .toString()
+                                                                        .contains(
+                                                                            '.pdf') ==
+                                                                    true) {
+                                                                  // Navigator.push(
+                                                                  //     context,
+                                                                  //     MaterialPageRoute(
+                                                                  //         builder:
+                                                                  //             (context) {
+                                                                  //   return PDFviewer(
+                                                                  //       episodeObject:
+                                                                  //           v);
+                                                                  // }));
+                                                                } else {
+                                                                  currentlyPlaying
+                                                                      .stop();
+                                                                  currentlyPlaying
+                                                                      .episodeObject = v;
+                                                                  print(currentlyPlaying
+                                                                      .episodeObject
+                                                                      .toString());
+                                                                  currentlyPlaying
+                                                                      .play();
+                                                                  showBarModalBottomSheet(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return Player();
+                                                                      });
+                                                                }
+                                                              }
+                                                            },
                                                             child: Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                      .all(5),
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .play_circle_outline,
-                                                                    size: 15,
+                                                                          .only(
+                                                                      right:
+                                                                          80),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                        color: Color(
+                                                                            0xff171b27)),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            30)),
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .all(5),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .play_circle_outline,
+                                                                        size:
+                                                                            15,
+                                                                      ),
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(horizontal: 8),
+                                                                        child:
+                                                                            Text(
+                                                                          DurationCalculator(
+                                                                              v['duration']),
+                                                                          textScaleFactor:
+                                                                              0.75,
+                                                                          // style: TextStyle(
+                                                                          //      color: Color(0xffe8e8e8)
+                                                                          //     ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        horizontal:
-                                                                            8),
-                                                                    child: Text(
-                                                                      DurationCalculator(
-                                                                          v['duration']),
-                                                                      textScaleFactor:
-                                                                          0.75,
-                                                                      // style: TextStyle(
-                                                                      //      color: Color(0xffe8e8e8)
-                                                                      //     ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
+                                                        ],
+                                                      ),
+                                                      // Row(
+                                                      //   children: [
+                                                      //     IconButton(
+                                                      //       padding:
+                                                      //           EdgeInsets.zero,
+                                                      //       icon: Icon(
+                                                      //         FontAwesomeIcons
+                                                      //             .shareAlt,
+                                                      //         size: SizeConfig
+                                                      //                 .safeBlockHorizontal *
+                                                      //             4,
+                                                      //         // color: Color(
+                                                      //         //     0xffe8e8e8),
+                                                      //       ),
+                                                      //       onPressed:
+                                                      //           () async {
+                                                      //         share(
+                                                      //             episodeObject:
+                                                      //                 v);
+                                                      //       },
+                                                      //     ),
+                                                      //   ],
+                                                      // )
+                                                      InkWell(
+                                                        onTap: () {
+                                                          share(
+                                                              episodeObject: v);
+                                                        },
+                                                        child: Icon(
+                                                          FontAwesomeIcons
+                                                              .shareAlt,
+                                                          size: 14,
                                                         ),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          // IconButton(
-                                                          //   onPressed: () {},
-                                                          //   icon: Icon(Icons
-                                                          //       .arrow_circle_down_outlined),
-                                                          // ),
-                                                          IconButton(
-                                                            icon: Icon(
-                                                              FontAwesomeIcons
-                                                                  .shareAlt,
-                                                              size: SizeConfig
-                                                                      .safeBlockHorizontal *
-                                                                  4,
-                                                              // color: Color(
-                                                              //     0xffe8e8e8),
-                                                            ),
-                                                            onPressed:
-                                                                () async {
-                                                              share(
-                                                                  episodeObject:
-                                                                      v);
-                                                            },
-                                                          )
-                                                        ],
-                                                      )
                                                     ],
                                                   ),
                                                 ),
