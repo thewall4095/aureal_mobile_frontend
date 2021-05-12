@@ -14,6 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -811,6 +812,8 @@ class _PlayerState extends State<Player> {
                                                       ),
                                                     ),
                                                     onPressed: () {
+                                                      Fluttertoast.showToast(
+                                                          msg: 'Upvote done');
                                                       if (episodeObject
                                                               .permlink ==
                                                           null) {

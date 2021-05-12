@@ -1,13 +1,13 @@
 import 'dart:convert';
+
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 enum CommentState {
@@ -70,8 +70,9 @@ class _CommentsState extends State<Comments> {
       print(response.body);
       if (response.statusCode == 200) {
         setState(() {
-          comments = jsonDecode(response.body)['comments'];
           user = prefs.getString('userName');
+          comments = jsonDecode(response.body)['comments'];
+
           displayPicture = prefs.getString('displayPicture');
           for (var v in comments) {
             expanded.add("0");
@@ -189,10 +190,8 @@ class _CommentsState extends State<Comments> {
         ),
         title: Text(
           "Comments",
-          textScaleFactor: mediaQueryData
-              .textScaleFactor
-              .clamp(0, 1)
-              .toDouble(),
+          textScaleFactor:
+              mediaQueryData.textScaleFactor.clamp(0, 1).toDouble(),
           style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
         ),
       ),
@@ -251,10 +250,10 @@ class _CommentsState extends State<Comments> {
                                     ),
                                     Text(
                                       '${comments[index]['text']}',
-                                textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                      textScaleFactor: mediaQueryData
+                                          .textScaleFactor
+                                          .clamp(0.5, 1)
+                                          .toDouble(),
                                       style: TextStyle(
                                           // color: Colors.white,
                                           fontWeight: FontWeight.normal),
@@ -269,10 +268,10 @@ class _CommentsState extends State<Comments> {
                                         Text(
                                           timeago.format(DateTime.parse(
                                               comments[index]['createdAt'])),
-                                    textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1)
+                                              .toDouble(),
                                           style: TextStyle(
                                               // color: Colors.grey,
                                               fontSize: SizeConfig
@@ -293,10 +292,10 @@ class _CommentsState extends State<Comments> {
                                           },
                                           child: Text(
                                             "Reply",
-                                      textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1)
+                                                .toDouble(),
                                             style: TextStyle(
                                                 // color: Colors.grey,
                                                 fontSize: SizeConfig
@@ -319,10 +318,10 @@ class _CommentsState extends State<Comments> {
                                               alignment: Alignment.centerLeft,
                                               child: Text(
                                                 "View replies",
-                                          textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                                textScaleFactor: mediaQueryData
+                                                    .textScaleFactor
+                                                    .clamp(0.5, 1)
+                                                    .toDouble(),
                                                 style: TextStyle(
                                                   fontSize: SizeConfig
                                                           .safeBlockHorizontal *
@@ -438,10 +437,7 @@ class _CommentsState extends State<Comments> {
                                                                                                 children: <Widget>[
                                                                                                   Text(
                                                                                                     "Replying to $replyingTo",
-                                                                                              textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                                                                                    textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
                                                                                                     style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2),
                                                                                                   ),
                                                                                                   IconButton(
@@ -495,10 +491,7 @@ class _CommentsState extends State<Comments> {
                                                                                                     },
                                                                                                     child: Text(
                                                                                                       "Reply",
-                                                                                                textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                                                                                      textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
                                                                                                       style: TextStyle(color: kActiveColor, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
                                                                                                     ),
                                                                                                   )
@@ -621,10 +614,10 @@ class _CommentsState extends State<Comments> {
                                           children: <Widget>[
                                             Text(
                                               "Replying to $replyingTo",
-                                        textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1)
+                                                  .toDouble(),
                                               style: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: SizeConfig
@@ -702,10 +695,10 @@ class _CommentsState extends State<Comments> {
                                               },
                                               child: Text(
                                                 "Reply",
-                                          textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                                textScaleFactor: mediaQueryData
+                                                    .textScaleFactor
+                                                    .clamp(0.5, 1)
+                                                    .toDouble(),
                                                 style: TextStyle(
                                                     color: kActiveColor,
                                                     fontSize: SizeConfig
@@ -782,10 +775,10 @@ class _CommentsState extends State<Comments> {
                                         },
                                         child: Text(
                                           "Post",
-                                    textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1)
+                                              .toDouble(),
                                           style: TextStyle(
                                               color: kActiveColor,
                                               fontSize: SizeConfig

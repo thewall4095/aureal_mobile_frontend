@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:in_app_update/in_app_update.dart';
@@ -480,7 +481,10 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 upvoteEpisode(
                                     episode_id: episodeObject.id,
                                     permlink: episodeObject.permlink);
+                                Fluttertoast.showToast(msg: 'Upvote done');
                               } else {
+                                Fluttertoast.showToast(
+                                    msg: 'Please connect your Hive Account');
                                 showBarModalBottomSheet(
                                     context: context,
                                     builder: (context) {
