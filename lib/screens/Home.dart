@@ -15,7 +15,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:in_app_update/in_app_update.dart';
 import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // import 'package:music_player/music_player.dart';
@@ -188,27 +187,6 @@ class _HomeState extends State<Home> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  AppUpdateInfo _updateInfo;
-  Future<void> checkForUpdate() async {
-    try {
-      if (Platform.isAndroid) {
-        InAppUpdate.checkForUpdate().then((info) {
-          setState(() {
-            _updateInfo = info;
-          });
-        }).catchError((error) => print(error));
-
-        if (_updateInfo.updateAvailability ==
-            UpdateAvailability.updateAvailable) {
-          InAppUpdate.performImmediateUpdate()
-              .catchError((error) => print(error));
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   void showSnack(String text) {
     if (_scaffoldKey.currentContext != null) {
       Scaffold.of(_scaffoldKey.currentContext)
@@ -218,7 +196,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    checkForUpdate();
     setLocalData();
     // TODO: implement initState
 

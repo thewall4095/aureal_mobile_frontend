@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
@@ -29,6 +30,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
+import 'package:in_app_update/in_app_update.dart';
 // import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
@@ -196,9 +198,30 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  AppUpdateInfo _updateInfo;
+  Future<void> checkForUpdate() async {
+    try {
+      if (Platform.isAndroid) {
+        InAppUpdate.checkForUpdate().then((info) {
+          setState(() {
+            _updateInfo = info;
+          });
+        }).catchError((error) => print(error));
+
+        if (_updateInfo.updateAvailability ==
+            UpdateAvailability.updateAvailable) {
+          InAppUpdate.performImmediateUpdate()
+              .catchError((error) => print(error));
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
-    // checkForUpdate();
+    checkForUpdate();
     // TODO: implement initState
 
     super.initState();

@@ -183,6 +183,7 @@ class _FollowingPageState extends State<FollowingPage>
     } catch (e) {
       print(e);
     }
+    print("Following podcasts done");
 
     setState(() {
       isLoading = false;
