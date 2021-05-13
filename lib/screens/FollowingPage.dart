@@ -290,13 +290,13 @@ class _FollowingPageState extends State<FollowingPage>
     //
     Future<void> _pullRefreshEpisodes() async {
       // getCommunityEposidesForUser();
-      await communities.getAllCommunitiesForUser();
-      await communities.getUserCreatedCommunities();
-      await communities.getAllCommunity();
+      // await communities.getAllCommunitiesForUser();
+      // await communities.getUserCreatedCommunities();
+      // await communities.getAllCommunity();
       await getFollowedPodcasts();
       await getHiveFollowedEpisode();
 
-      await getFollowedPodcasts();
+      // await getFollowedPodcasts();
     }
 
     final mediaQueryData = MediaQuery.of(context);

@@ -29,8 +29,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
-
 // import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
@@ -181,9 +179,6 @@ class _MyAppState extends State<MyApp> {
   bool _flexibleUpdateAvailable = false;
   String _token;
 
-
-
-
   // Future<void> checkForUpdate() async {
   //   InAppUpdate.checkForUpdate().then((info) {
   //     setState(() {
@@ -200,8 +195,6 @@ class _MyAppState extends State<MyApp> {
           .showSnackBar(SnackBar(content: Text(text)));
     }
   }
-
-
 
   @override
   void initState() {
@@ -458,12 +451,11 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
           DiscoverProvider discoverData =
               Provider.of<DiscoverProvider>(context, listen: false);
-          if (discoverData.isFetcheddiscoverList == false) {
-            await discoverData.getDiscoverProvider();
-            setState(() {
-              _home = Home();
-            });
-          }
+          discoverData.getDiscoverProvider();
+          setState(() {
+            _home = Home();
+          });
+
           // var categoryBuild = Provider.of<CategoriesProvider>(context);
           // // var communities = Provider.of<CommunityProvider>(context);
           // categoryBuild.getCategories();

@@ -97,14 +97,14 @@ class _PodcastViewState extends State<PodcastView> {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}");
+            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}");
   }
 
   void share({var episodeId, String episodeName}) async {
     await FlutterShare.share(
         title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
+            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${podcastData['id']}?episode_id=${episodeId.toString()}");
   }
 
   // getMoreEpisodes() async {
@@ -678,15 +678,15 @@ class _PodcastViewState extends State<PodcastView> {
                 if (index == episodeList.length + 1) {
                   return episodeListLoading == false
                       ? Shimmer.fromColors(
-                    direction: ShimmerDirection.ttb,
-                    baseColor: Color(0xff3a3a3a),
-                    highlightColor: kPrimaryColor,
-                    child: Container(
-                      color: kSecondaryColor,
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  )
+                          direction: ShimmerDirection.ttb,
+                          baseColor: Color(0xff3a3a3a),
+                          highlightColor: kPrimaryColor,
+                          child: Container(
+                            color: kSecondaryColor,
+                            height: 200,
+                            width: MediaQuery.of(context).size.width,
+                          ),
+                        )
                       : Shimmer.fromColors(
                           direction: ShimmerDirection.ttb,
                           baseColor: Color(0xff3a3a3a),

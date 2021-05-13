@@ -6,5 +6,5 @@ void share({var episodeObject}) async {
   await FlutterShare.share(
       title: '${episodeObject['podcast_name']}',
       text:
-          "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${episodeObject['podcast_id']}?episode_id=${episodeObject['id']}");
+          "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, here's the link for you https://app.aureal.one/podcast/${episodeObject['podcast_id']}?episode_id=${episodeObject['id']}");
 }

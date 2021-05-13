@@ -140,13 +140,11 @@ class DiscoverProvider extends ChangeNotifier {
 
   void getDiscoverProvider() async {
     await getPreferences();
-    _isFetcheddiscoverList = false;
     getFeatured();
     getRecentlyPlayed();
     getNewPodcast();
     podcastInTrend();
     recommendedPodcast();
-    _isFetcheddiscoverList = true;
   }
 
   SharedPreferences prefs;
