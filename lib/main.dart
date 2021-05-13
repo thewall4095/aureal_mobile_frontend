@@ -451,11 +451,12 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
           DiscoverProvider discoverData =
               Provider.of<DiscoverProvider>(context, listen: false);
-          discoverData.getDiscoverProvider();
-          setState(() {
-            _home = Home();
-          });
-
+          if (discoverData.isFetcheddiscoverList == false) {
+            discoverData.getDiscoverProvider();
+            setState(() {
+              _home = Home();
+            });
+          }
           // var categoryBuild = Provider.of<CategoriesProvider>(context);
           // // var communities = Provider.of<CommunityProvider>(context);
           // categoryBuild.getCategories();

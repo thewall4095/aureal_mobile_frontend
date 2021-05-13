@@ -687,16 +687,21 @@ class _PodcastViewState extends State<PodcastView> {
                             width: MediaQuery.of(context).size.width,
                           ),
                         )
-                      : Shimmer.fromColors(
-                          direction: ShimmerDirection.ttb,
-                          baseColor: Color(0xff3a3a3a),
-                          highlightColor: kPrimaryColor,
-                          child: Container(
-                            color: kSecondaryColor,
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                        );
+                      : _controller.position.pixels == null
+                          ? SizedBox()
+                          : (_controller.position.pixels ==
+                                  _controller.position.maxScrollExtent
+                              ? Shimmer.fromColors(
+                                  direction: ShimmerDirection.ttb,
+                                  baseColor: Color(0xff3a3a3a),
+                                  highlightColor: kPrimaryColor,
+                                  child: Container(
+                                    color: kSecondaryColor,
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
+                                )
+                              : SizedBox());
                 }
                 return Padding(
                     padding: const EdgeInsets.symmetric(

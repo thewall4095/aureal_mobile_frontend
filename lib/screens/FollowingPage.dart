@@ -293,8 +293,8 @@ class _FollowingPageState extends State<FollowingPage>
       // await communities.getAllCommunitiesForUser();
       // await communities.getUserCreatedCommunities();
       // await communities.getAllCommunity();
-      await getFollowedPodcasts();
-      await getHiveFollowedEpisode();
+      getFollowedPodcasts();
+      getHiveFollowedEpisode();
 
       // await getFollowedPodcasts();
     }
@@ -538,78 +538,10 @@ class _FollowingPageState extends State<FollowingPage>
                                       child: Shimmer.fromColors(
                                         baseColor: Colors.white,
                                         highlightColor: Colors.white30,
-                                        // child: Container(
-                                        //   decoration: BoxDecoration(
-                                        //       borderRadius:
-                                        //           BorderRadius.circular(8),
-                                        //       border: Border.all(
-                                        //           color: Colors.grey,
-                                        //           width: 2)),
-                                        //   height: 80,
-                                        //   width: double.infinity,
-                                        //   child: Padding(
-                                        //     padding:
-                                        //         const EdgeInsets.symmetric(
-                                        //             horizontal: 10),
-                                        //     child: Row(
-                                        //       mainAxisAlignment:
-                                        //           MainAxisAlignment
-                                        //               .spaceBetween,
-                                        //       children: <Widget>[
-                                        //         Row(
-                                        //           children: <Widget>[
-                                        //             CircleAvatar(
-                                        //               radius: 25,
-                                        //             ),
-                                        //             SizedBox(
-                                        //               width: 15,
-                                        //             ),
-                                        //             Column(
-                                        //               mainAxisAlignment:
-                                        //                   MainAxisAlignment
-                                        //                       .center,
-                                        //               crossAxisAlignment:
-                                        //                   CrossAxisAlignment
-                                        //                       .start,
-                                        //               children: <Widget>[
-                                        //                 Container(
-                                        //                   width: MediaQuery.of(
-                                        //                               context)
-                                        //                           .size
-                                        //                           .width /
-                                        //                       2,
-                                        //                   height: 8,
-                                        //                   color: Colors
-                                        //                       .white30,
-                                        //                 ),
-                                        //                 SizedBox(
-                                        //                   height: 5,
-                                        //                 ),
-                                        //                 Container(
-                                        //                   width: MediaQuery.of(
-                                        //                               context)
-                                        //                           .size
-                                        //                           .width /
-                                        //                       4,
-                                        //                   height: 8,
-                                        //                   color: Colors
-                                        //                       .white30,
-                                        //                 ),
-                                        //               ],
-                                        //             )
-                                        //           ],
-                                        //         ),
-                                        //         Icon(Icons.more_vert)
-                                        //       ],
-                                        //     ),
-                                        //   ),
-                                        // ),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              border: Border(top: BorderSide())
-                                              // border: Border.all(
-                                              //     color: kSecondaryColor),
-                                              ),
+                                              border:
+                                                  Border(top: BorderSide())),
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height /
