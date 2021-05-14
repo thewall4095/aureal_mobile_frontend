@@ -643,8 +643,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       ),
                       Container(
                         constraints: BoxConstraints(
-                            maxHeight:
-                                MediaQuery.of(context).size.height / 5.6),
+                            maxHeight: MediaQuery.of(context).size.height / 4),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
