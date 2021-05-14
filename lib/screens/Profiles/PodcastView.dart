@@ -677,31 +677,29 @@ class _PodcastViewState extends State<PodcastView> {
                 if (episodeListLoading == true) {}
                 if (index == episodeList.length + 1) {
                   return episodeListLoading == false
-                      ? Shimmer.fromColors(
+                      ? (_controller.position.pixels !=
+                              _controller.position.maxScrollExtent
+                          ? SizedBox()
+                          : Shimmer.fromColors(
+                              direction: ShimmerDirection.ttb,
+                              baseColor: Color(0xff3a3a3a),
+                              highlightColor: kPrimaryColor,
+                              child: Container(
+                                color: kSecondaryColor,
+                                height: 200,
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            ))
+                      : Shimmer.fromColors(
                           direction: ShimmerDirection.ttb,
                           baseColor: Color(0xff3a3a3a),
                           highlightColor: kPrimaryColor,
                           child: Container(
                             color: kSecondaryColor,
-                            height: 200,
+                            height: MediaQuery.of(context).size.height,
                             width: MediaQuery.of(context).size.width,
                           ),
-                        )
-                      : _controller.position.pixels == null
-                          ? SizedBox()
-                          : (_controller.position.pixels ==
-                                  _controller.position.maxScrollExtent
-                              ? Shimmer.fromColors(
-                                  direction: ShimmerDirection.ttb,
-                                  baseColor: Color(0xff3a3a3a),
-                                  highlightColor: kPrimaryColor,
-                                  child: Container(
-                                    color: kSecondaryColor,
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
-                                )
-                              : SizedBox());
+                        );
                 }
                 return Padding(
                     padding: const EdgeInsets.symmetric(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -17,11 +16,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-// import 'package:music_player/music_player.dart';
 import 'package:provider/provider.dart';
-// import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../PlayerState.dart';
 import '../models/message.dart';
 import 'CommunityPage.dart';
@@ -129,7 +125,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 2;
 
   var currentlyPlaying;
 
@@ -398,11 +394,6 @@ class _BottomPlayerState extends State<BottomPlayer> {
               height: SizeConfig.safeBlockVertical * 6,
               width: double.infinity,
               decoration: BoxDecoration(
-                  //   color: kSecondaryColor,
-                  //     border: Border(
-                  //   top: BorderSide(color: Color(0xff171b27), width: 2.0),
-                  //   bottom: BorderSide(color: Color(0xff171b27), width: 2.0),
-                  // ),
                   ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -481,12 +472,6 @@ class _BottomPlayerState extends State<BottomPlayer> {
                               // color: _hasBeenPressed ? Colors.blue : Colors.black,
                               //color: Colors.white,
                             ),
-                            // onPressed: () => {
-                            // setState(() {
-                            // _hasBeenPressed = !_hasBeenPressed;
-                            // })
-
-                            // }
                           ),
                         ),
                       ),
@@ -501,7 +486,6 @@ class _BottomPlayerState extends State<BottomPlayer> {
                               //   color: Colors.white,
                               fontSize: SizeConfig.safeBlockHorizontal * 3.2),
                           blankSpace: 100,
-//                  scrollAxis: Axis.horizontal,
                         ),
                       ),
                       SizedBox(

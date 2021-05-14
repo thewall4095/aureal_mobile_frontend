@@ -104,63 +104,8 @@ class _FollowingPageState extends State<FollowingPage>
 
   var episodes = [];
 
-  // void getCommunityEposidesForUser() async {
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String url =
-  //       'https://api.aureal.one/public/getCommunityEpisodes?user_id=${prefs.getString('userId')}';
-  //
-  //   try {
-  //     http.Response response = await http.get(Uri.parse(url));
-  //     if (response.statusCode == 200) {
-  //       print('communityepisodes');
-  //       print(response.body);
-  //
-  //       episodes = jsonDecode(response.body)['EpisodeResult'];
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   // setState(() {
-  //   //   isLoading = false;
-  //   // });
-  // }
-
   TabController _tabController;
   RegExp htmlMatch = RegExp(r'(\w+)');
-
-  // void getCommunityEpisodesForUserPaginated() async {
-  //   print('pagination starting');
-  //   setState(() {
-  //     paginationLoading = true;
-  //   });
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String url =
-  //       'https://api.aureal.one/public/getCommunityEpisodes?user_id=${prefs.getString('userId')}&page=$pageNumber';
-  //
-  //   try {
-  //     http.Response response = await http.get(Uri.parse(url));
-  //     if (response.statusCode == 200) {
-  //       print('communityepisodes');
-  //       print(response.body);
-  //       setState(() {
-  //         episodes = episodes + jsonDecode(response.body)['EpisodeResult'];
-  //         pageNumber = pageNumber + 1;
-  //       });
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   setState(() {
-  //     paginationLoading = false;
-  //   });
-  // }
 
   List favPodcast = [];
 
@@ -200,7 +145,7 @@ class _FollowingPageState extends State<FollowingPage>
     // });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber";
+        "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=5";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
