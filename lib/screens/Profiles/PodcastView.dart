@@ -310,8 +310,8 @@ class _PodcastViewState extends State<PodcastView> {
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Shimmer.fromColors(
-                          baseColor: kSecondaryColor,
-                          highlightColor: Colors.white30,
+                          baseColor: kPrimaryColor,
+                          highlightColor: Color(0xff3a3a3a),
                           child: Container(
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
@@ -564,7 +564,9 @@ class _PodcastViewState extends State<PodcastView> {
                                           child: Column(
                                             children: <Widget>[
                                               IconButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  podcastShare();
+                                                },
                                                 icon: Icon(
                                                   FontAwesomeIcons.shareAlt,
                                                   //    color: Colors.grey,
@@ -682,8 +684,8 @@ class _PodcastViewState extends State<PodcastView> {
                           ? SizedBox()
                           : Shimmer.fromColors(
                               direction: ShimmerDirection.ttb,
-                              baseColor: Color(0xff3a3a3a),
-                              highlightColor: kPrimaryColor,
+                              baseColor: kPrimaryColor,
+                              highlightColor: Color(0xff3a3a3a),
                               child: Container(
                                 color: kSecondaryColor,
                                 height: 200,
@@ -692,8 +694,8 @@ class _PodcastViewState extends State<PodcastView> {
                             ))
                       : Shimmer.fromColors(
                           direction: ShimmerDirection.ttb,
-                          baseColor: Color(0xff3a3a3a),
-                          highlightColor: kPrimaryColor,
+                          baseColor: kPrimaryColor,
+                          highlightColor: Color(0xff3a3a3a),
                           child: Container(
                             color: kSecondaryColor,
                             height: MediaQuery.of(context).size.height,
