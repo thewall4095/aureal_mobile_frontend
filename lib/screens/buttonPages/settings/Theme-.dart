@@ -1,3 +1,4 @@
+import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -16,17 +17,16 @@ class ThemeProvider with ChangeNotifier {
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.light,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Color(0xFF000000),
+        systemNavigationBarColor: kPrimaryColor,
         systemNavigationBarIconBrightness: Brightness.dark,
-        systemNavigationBarDividerColor: Color(0xFF000000),
-
+        systemNavigationBarDividerColor: kPrimaryColor,
       ));
     } else {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark,
         statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: Color(0xFF000000),
+        systemNavigationBarColor: kPrimaryColor,
         systemNavigationBarIconBrightness: Brightness.light,
       ));
     }
@@ -47,16 +47,13 @@ class ThemeProvider with ChangeNotifier {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       accentColor: Colors.blue,
       primarySwatch: isLightTheme ? Colors.grey : Colors.grey,
-      primaryColor: isLightTheme ? Colors.white : Color(0xFF000000),
-      //  primaryColor: isLightTheme ? Colors.white : Color(0xFF000000),
+      primaryColor: isLightTheme ? Colors.white : kPrimaryColor,
+      //  primaryColor: isLightTheme ? Colors.white : kPrimaryColor,
       brightness: isLightTheme ? Brightness.light : Brightness.dark,
-      backgroundColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFF000000),
+      backgroundColor: isLightTheme ? Color(0xFFFFFFFF) : kPrimaryColor,
 
-
-
-      scaffoldBackgroundColor:
-      isLightTheme ? Color(0xFFFFFFFF) : Color(0xFF000000),
-      canvasColor: isLightTheme ? Color(0xffffffff) : Color(0xff000000),
+      scaffoldBackgroundColor: isLightTheme ? Color(0xFFFFFFFF) : kPrimaryColor,
+      canvasColor: isLightTheme ? Color(0xffffffff) : kPrimaryColor,
     );
   }
 
@@ -67,11 +64,9 @@ class ThemeProvider with ChangeNotifier {
         if (isLightTheme) ...[Color(0xDDFF0080), Color(0xDDFF8C00)],
         if (!isLightTheme) ...[Color(0xFF8983F7), Color(0xFFA3DAFB)]
       ],
-
-      textColor: isLightTheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
+      textColor: isLightTheme ? kPrimaryColor : Color(0xFFFFFFFF),
       toggleButtonColor: isLightTheme ? Color(0xFFFFFFFF) : Color(0xFf34323d),
-      toggleBackgroundColor:
-      isLightTheme ? Color(0xFFe7e7e8) : Color(0xFF000000),
+      toggleBackgroundColor: isLightTheme ? Color(0xFFe7e7e8) : kPrimaryColor,
       shadow: [
         if (isLightTheme)
           BoxShadow(
@@ -86,7 +81,6 @@ class ThemeProvider with ChangeNotifier {
               blurRadius: 10,
               offset: Offset(0, 5))
       ],
-
     );
   }
 }
@@ -101,17 +95,14 @@ class ThemeColor {
   Color iconTheme;
   List<BoxShadow> shadow;
 
-
-  ThemeColor({
-    this.gradient,
-    this.backgroundColor,
-    this.toggleBackgroundColor,
-    this.toggleButtonColor,
-    this.textColor,
-    this.shadow,
-    this.iconTheme
-
-  });
+  ThemeColor(
+      {this.gradient,
+      this.backgroundColor,
+      this.toggleBackgroundColor,
+      this.toggleButtonColor,
+      this.textColor,
+      this.shadow,
+      this.iconTheme});
 }
 
 class ZAnimatedToggle extends StatefulWidget {
@@ -180,7 +171,6 @@ class _ZAnimatedToggleState extends State<ZAnimatedToggle> {
                 _toggleFavorite();
               }),
         ),
-
       ],
     );
   }

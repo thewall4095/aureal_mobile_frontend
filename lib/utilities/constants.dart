@@ -4,7 +4,7 @@ const Color kActiveColor = Color(0xFF1765F2);
 const Color kSecondaryColor = Color(0xff171b27);
 // const Color kPrimaryColor = Color(0xff171B27);
 
-const Color kPrimaryColor = Colors.black;
+const Color kPrimaryColor = Color(0xff161616);
 
 const String communityView = "/CommunityView";
 const String hiveSigner = '/HiveSigner';
