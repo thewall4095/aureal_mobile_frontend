@@ -62,6 +62,7 @@ dependencies:
   flutter_ffmpeg: ^0.4.0
   image_picker: any
   image_cropper: any
+  socket_io_client: ^1.0.1
 
 #  in_app_update: any
 #  flutter_image_compress: ^1.0.0
@@ -75,6 +76,8 @@ dependencies:
 #  flutter_inappwebview: ^5.3.2
   otp_text_field: ^1.1.0
   pin_code_fields: ^7.0.0
+  flutter_background: ^1.0.0
+  flutter_webrtc: ^0.6.3
   async: ^2.4.2
 #  flutter_typeahead: ^2.0.0
   fluttertoast: ^8.0.3
@@ -85,10 +88,7 @@ dependencies:
   permission_handler: ^6.1.1
 
 
- # flutter_svg: ^0.19.0
 
- # firebase_auth: ^0.16.1
- # flutter_signin_button: ^1.1.0
 
 
   firebase_auth: ^1.0.3

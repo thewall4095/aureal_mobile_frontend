@@ -21,12 +21,14 @@ import 'package:auditory/screens/errorScreens/PopError.dart';
 import 'package:auditory/screens/errorScreens/TemporaryError.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/PostRSSFeed.dart';
 import 'package:auditory/utilities/TagSearch.dart';
+import 'package:auditory/utilities/appconfig.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
@@ -109,8 +111,12 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future main() async {
+  Config(environment: Env.dev());
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  if (Platform.isAndroid == true) {
+    // startForegroundService();
+  }
 
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -143,6 +149,18 @@ Future main() async {
     create: (_) => ThemeProvider(isLightTheme: isLightTheme),
     child: AppStart(),
   ));
+}
+
+Future<bool> startForegroundService() async {
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: 'Title of the notification',
+    notificationText: 'Text of the notification',
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(
+        name: 'background_icon',
+        defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
+  return FlutterBackground.initialize(androidConfig: androidConfig);
 }
 
 class AppStart extends StatelessWidget {

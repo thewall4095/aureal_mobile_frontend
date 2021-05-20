@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -18,13 +19,14 @@ import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../PlayerState.dart';
 import '../models/message.dart';
-import 'CommunityPage.dart';
 import 'DiscoverPage.dart';
 import 'FollowingPage.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
+import 'Rooms.dart';
 import 'buttonPages/Downloads.dart';
 import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
@@ -393,8 +395,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
             child: Container(
               height: SizeConfig.safeBlockVertical * 6,
               width: double.infinity,
-              decoration: BoxDecoration(
-                  ),
+              decoration: BoxDecoration(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
