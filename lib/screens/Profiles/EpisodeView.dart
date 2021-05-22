@@ -611,13 +611,30 @@ class _EpisodeViewState extends State<EpisodeView>
                                                       isUpvoteButtonLoading =
                                                           true;
                                                     });
-                                                    await upvoteEpisode(
-                                                        permlink:
-                                                            episodeContent[
-                                                                'permlink'],
-                                                        episode_id:
-                                                            episodeContent[
-                                                                'id']);
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              child: UpvoteEpisode(
+                                                                  permlink:
+                                                                      episodeContent[
+                                                                          'permlink'],
+                                                                  episode_id:
+                                                                      episodeContent[
+                                                                          'id']));
+                                                        }).then((value) async {
+                                                      print(value);
+                                                    });
+                                                    // await upvoteEpisode(
+                                                    //     permlink:
+                                                    //         episodeContent[
+                                                    //             'permlink'],
+                                                    //     episode_id:
+                                                    //         episodeContent[
+                                                    //             'id']);
                                                     setState(() {
                                                       episodeContent[
                                                               'ifVoted'] =
@@ -906,8 +923,20 @@ class _EpisodeViewState extends State<EpisodeView>
                                     ),
                                     trailing: IconButton(
                                       onPressed: () {
-                                        upVoteComment(
-                                            comments[index]['id'].toString());
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Dialog(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: UpvoteComment(
+                                                    comment_id: comments[index]
+                                                            ['id']
+                                                        .toString(),
+                                                  ));
+                                            }).then((value) async {
+                                          print(value);
+                                        });
                                       },
                                       icon: Icon(
                                         FontAwesomeIcons.chevronCircleUp,
@@ -998,8 +1027,22 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 ),
                                                 trailing: IconButton(
                                                   onPressed: () {
-                                                    upVoteComment(
-                                                        v['id'].toString());
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              child:
+                                                                  UpvoteComment(
+                                                                comment_id: v[
+                                                                        'id']
+                                                                    .toString(),
+                                                              ));
+                                                        }).then((value) async {
+                                                      print(value);
+                                                    });
                                                   },
                                                   icon: Icon(
                                                     FontAwesomeIcons

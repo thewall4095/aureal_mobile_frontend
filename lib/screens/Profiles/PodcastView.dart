@@ -858,12 +858,31 @@ class _PodcastViewState extends State<PodcastView> {
                                                       episodeList[index - 1]
                                                           ['isLoading'] = true;
                                                     });
-                                                    await upvoteEpisode(
-                                                        permlink: episodeList[
-                                                                index - 1]
-                                                            ['permlink'],
-                                                        episode_id: episodeList[
-                                                            index - 1]['id']);
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                              backgroundColor: Colors
+                                                                  .transparent,
+                                                              child: UpvoteEpisode(
+                                                                  permlink: episodeList[
+                                                                          index -
+                                                                              1]
+                                                                      [
+                                                                      'permlink'],
+                                                                  episode_id: episodeList[
+                                                                          index -
+                                                                              1]
+                                                                      ['id']));
+                                                        }).then((value) async {
+                                                      print(value);
+                                                    });
+                                                    // await upvoteEpisode(
+                                                    //     permlink: episodeList[
+                                                    //             index - 1]
+                                                    //         ['permlink'],
+                                                    //     episode_id: episodeList[
+                                                    //         index - 1]['id']);
                                                     setState(() {
                                                       episodeList[index - 1]
                                                               ['ifVoted'] =

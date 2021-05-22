@@ -326,7 +326,7 @@ class _FollowingPageState extends State<FollowingPage>
                 children: [
                   Column(
                     children: [
-                      favPodcast.length == 0
+                      favPodcast.length == 0 || favPodcast.length == null
                           ? SizedBox(
                               height: 0,
                               width: 0,
@@ -835,11 +835,22 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   v['isLoading'] =
                                                                       true;
                                                                 });
-                                                                await upvoteEpisode(
-                                                                    permlink: v[
-                                                                        'permlink'],
-                                                                    episode_id:
-                                                                        v['id']);
+                                                                double _value =
+                                                                    50.0;
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return Dialog(
+                                                                          backgroundColor: Colors
+                                                                              .transparent,
+                                                                          child: UpvoteEpisode(
+                                                                              permlink: v['permlink'],
+                                                                              episode_id: v['id']));
+                                                                    }).then((value) async {
+                                                                  print(value);
+                                                                });
                                                                 setState(() {
                                                                   v['ifVoted'] =
                                                                       !v['ifVoted'];

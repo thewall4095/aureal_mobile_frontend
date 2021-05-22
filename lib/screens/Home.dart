@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -18,6 +19,7 @@ import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../PlayerState.dart';
 import '../models/message.dart';
 import 'CommunityPage.dart';
@@ -393,8 +395,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
             child: Container(
               height: SizeConfig.safeBlockVertical * 6,
               width: double.infinity,
-              decoration: BoxDecoration(
-                  ),
+              decoration: BoxDecoration(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -446,9 +447,22 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             if (episodeObject.permlink == null) {
                             } else {
                               if (prefs.getString('HiveUserName') != null) {
-                                upvoteEpisode(
-                                    episode_id: episodeObject.id,
-                                    permlink: episodeObject.permlink);
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                          backgroundColor: Colors.transparent,
+                                          child: UpvoteEpisode(
+                                              episode_id: episodeObject.id,
+                                              permlink:
+                                                  episodeObject.permlink));
+                                    }).then((value) async {
+                                  print(value);
+                                });
+
+                                // upvoteEpisode(
+                                //     episode_id: episodeObject.id,
+                                //     permlink: episodeObject.permlink);
                                 Fluttertoast.showToast(msg: 'Upvote done');
                               } else {
                                 Fluttertoast.showToast(

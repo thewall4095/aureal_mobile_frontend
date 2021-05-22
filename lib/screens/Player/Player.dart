@@ -335,7 +335,19 @@ class _PlayerState extends State<Player> {
                                         ),
                                         trailing: IconButton(
                                           onPressed: () {
-                                            upVoteComment(v['id'].toString());
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return Dialog(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      child: UpvoteComment(
+                                                        comment_id:
+                                                            v['id'].toString(),
+                                                      ));
+                                                }).then((value) async {
+                                              print(value);
+                                            });
                                           },
                                           icon: Icon(
                                             FontAwesomeIcons.chevronCircleUp,
@@ -466,9 +478,20 @@ class _PlayerState extends State<Player> {
                                                                   IconButton(
                                                                     onPressed:
                                                                         () {
-                                                                      upVoteComment(
-                                                                          v['id']
-                                                                              .toString());
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (context) {
+                                                                            return Dialog(
+                                                                                backgroundColor: Colors.transparent,
+                                                                                child: UpvoteComment(
+                                                                                  comment_id: v['id'].toString(),
+                                                                                ));
+                                                                          }).then((value) async {
+                                                                        print(
+                                                                            value);
+                                                                      });
                                                                     },
                                                                     icon: Icon(
                                                                       FontAwesomeIcons
@@ -818,13 +841,31 @@ class _PlayerState extends State<Player> {
                                                               .permlink ==
                                                           null) {
                                                       } else {
-                                                        upvoteEpisode(
-                                                            episode_id:
-                                                                episodeObject
-                                                                    .id,
-                                                            permlink:
-                                                                episodeObject
-                                                                    .permlink);
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return Dialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  child: UpvoteEpisode(
+                                                                      episode_id:
+                                                                          episodeObject
+                                                                              .id,
+                                                                      permlink:
+                                                                          episodeObject
+                                                                              .permlink));
+                                                            }).then((value) async {
+                                                          print(value);
+                                                        });
+
+                                                        // upvoteEpisode(
+                                                        //     episode_id:
+                                                        //         episodeObject
+                                                        //             .id,
+                                                        //     permlink:
+                                                        //         episodeObject
+                                                        //             .permlink);
                                                       }
                                                     },
                                                   ),
