@@ -128,6 +128,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "date_time_picker",
+      "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/date_time_picker-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "datetime_picker_formfield",
       "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/datetime_picker_formfield-1.0.0",
       "packageUri": "lib/",
@@ -980,7 +986,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-05-19T19:27:17.567015Z",
+  "generated": "2021-05-22T13:39:56.357710Z",
   "generator": "pub",
   "generatorVersion": "2.12.2"
 }
