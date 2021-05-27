@@ -44,6 +44,7 @@ class ThemeProvider with ChangeNotifier {
   // Global theme data we are always check if the light theme is enabled #isLightTheme
   ThemeData themeData() {
     return ThemeData(
+      fontFamily: 'Open_sauce_sans',
       visualDensity: VisualDensity.adaptivePlatformDensity,
       accentColor: Colors.blue,
       primarySwatch: isLightTheme ? Colors.grey : Colors.grey,
