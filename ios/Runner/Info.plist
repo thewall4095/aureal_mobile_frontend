@@ -63,8 +63,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-    <string>$(PRODUCT_NAME) Camera Usage!</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>It requires app to function properly</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

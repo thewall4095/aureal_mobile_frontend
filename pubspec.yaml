@@ -105,6 +105,7 @@ dependencies:
   sign_in_with_apple: ^3.0.0
   page_transition: ^1.1.7+6
   path_provider: ^2.0.1
+  jitsi_meet: ^4.0.0
 
 
 

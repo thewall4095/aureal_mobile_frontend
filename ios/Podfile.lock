@@ -127,6 +127,10 @@ PODS:
     - Flutter
   - flutter_share (0.0.1):
     - Flutter
+  - flutter_webrtc (0.2.2):
+    - Flutter
+    - GoogleWebRTC (= 1.1.31999)
+    - Libyuv (= 1703)
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -167,6 +171,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.3.1):
     - GoogleUtilities/Logger
+  - GoogleWebRTC (1.1.31999)
   - GTMAppAuth (1.2.1):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
@@ -176,6 +181,11 @@ PODS:
     - TOCropViewController (~> 2.6.0)
   - image_picker (0.0.1):
     - Flutter
+  - jitsi_meet (0.0.1):
+    - Flutter
+    - JitsiMeetSDK (= 3.3.0)
+  - JitsiMeetSDK (3.3.0)
+  - Libyuv (1703)
   - mobile-ffmpeg-https (4.4)
   - nanopb (2.30906.0):
     - nanopb/decode (= 2.30906.0)
@@ -224,10 +234,12 @@ DEPENDENCIES:
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_media_notification (from `.symlinks/plugins/flutter_media_notification/ios`)
   - flutter_share (from `.symlinks/plugins/flutter_share/ios`)
+  - flutter_webrtc (from `.symlinks/plugins/flutter_webrtc/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - jitsi_meet (from `.symlinks/plugins/jitsi_meet/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
@@ -256,8 +268,11 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleSignIn
     - GoogleUtilities
+    - GoogleWebRTC
     - GTMAppAuth
     - GTMSessionFetcher
+    - JitsiMeetSDK
+    - Libyuv
     - mobile-ffmpeg-https
     - nanopb
     - PromisesObjC
@@ -295,6 +310,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_media_notification/ios"
   flutter_share:
     :path: ".symlinks/plugins/flutter_share/ios"
+  flutter_webrtc:
+    :path: ".symlinks/plugins/flutter_webrtc/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in:
@@ -303,6 +320,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_cropper/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  jitsi_meet:
+    :path: ".symlinks/plugins/jitsi_meet/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   permission_handler:
@@ -348,6 +367,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_media_notification: b950606ee6c7bc8b1fbecd8ad0f0b5c6f884d781
   flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
+  flutter_webrtc: 39898454258b54ba51996850d5da8d5d53bf1524
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
@@ -355,10 +375,14 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 116c84c4bdeb76be2a7a46de51244368f9794eab
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GoogleUtilities: e1d9ed4e544fc32a93e00e721400cbc3f377200d
+  GoogleWebRTC: b39a78c4f5cc6b0323415b9233db03a2faa7b0f0
   GTMAppAuth: 5b53231ef6920f149ab84b2969cb0ab572da3077
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
+  jitsi_meet: a797e5ffdbc1da9d424c52b1bfe3b2a803b05e31
+  JitsiMeetSDK: 3b1d3757f2166b28cd03f907b47091db064302b3
+  Libyuv: 5f79ced0ee66e60a612ca97de1e6ccacd187a437
   mobile-ffmpeg-https: 311fc4a8f671cf36d1d6b8f421e8246b790978d9
   nanopb: 1bf24dd71191072e120b83dd02d08f3da0d65e53
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

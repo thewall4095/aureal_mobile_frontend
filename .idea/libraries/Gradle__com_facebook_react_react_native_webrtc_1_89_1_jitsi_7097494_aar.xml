@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.react:react-native-webrtc:1.89.1-jitsi-7097494@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0943df52732fae6a1889fc1e60411acd/jetified-react-native-webrtc-1.89.1-jitsi-7097494/jars/libs/libwebrtc.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0943df52732fae6a1889fc1e60411acd/jetified-react-native-webrtc-1.89.1-jitsi-7097494/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0943df52732fae6a1889fc1e60411acd/jetified-react-native-webrtc-1.89.1-jitsi-7097494/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0943df52732fae6a1889fc1e60411acd/jetified-react-native-webrtc-1.89.1-jitsi-7097494/jars/libs/libjingle_peerconnection.so.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

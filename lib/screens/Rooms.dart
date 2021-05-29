@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -982,7 +981,8 @@ class RoomOptions extends StatefulWidget {
   _RoomOptionsState createState() => _RoomOptionsState();
 }
 
-class _RoomOptionsState extends State<RoomOptions> {
+class _RoomOptionsState extends State<RoomOptions>
+    with TickerProviderStateMixin {
   RoomType roomType = RoomType.public;
 
   Widget _bottomOptions() {
@@ -998,22 +998,30 @@ class _RoomOptionsState extends State<RoomOptions> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                          colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.link),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("Invite People"),
-                        )
-                      ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Room();
+                    }));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                            colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.link),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text("Invite People"),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -1032,22 +1040,30 @@ class _RoomOptionsState extends State<RoomOptions> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                          colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(FontAwesomeIcons.rocket),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("Let's go"),
-                        )
-                      ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Room();
+                    }));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                            colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.rocket),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text("Let's go"),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -1066,22 +1082,30 @@ class _RoomOptionsState extends State<RoomOptions> {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                          colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(FontAwesomeIcons.rocket),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("Let's go"),
-                        )
-                      ],
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Room();
+                    }));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: LinearGradient(
+                            colors: [Color(0xff6048F6), Color(0xff51C9F9)])),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.rocket),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text("Let's go"),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 )
@@ -1168,6 +1192,38 @@ class _RoomOptionsState extends State<RoomOptions> {
     );
   }
 
+  FocusNode _focusNode = FocusNode();
+  AnimationController _controller;
+  Animation _animation;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _animation = Tween(begin: 300.0, end: 50.0).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -1175,26 +1231,39 @@ class _RoomOptionsState extends State<RoomOptions> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          InkWell(
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      backgroundColor: kPrimaryColor,
-                      child: dialogOptions(),
-                    );
-                  });
-            },
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [Icon(Icons.add), Text("Add Topic")],
-              ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [Icon(Icons.add), Text("Add Topic")],
             ),
           ),
+          InkWell(
+              splashColor: Colors.transparent,
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+              },
+              child: Container(
+                  child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xff222222),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: TextField(
+                        decoration: InputDecoration(border: InputBorder.none),
+                        focusNode: _focusNode,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                ],
+              ))),
           SizedBox(
             height: 30,
           ),
@@ -1298,6 +1367,112 @@ class _RoomOptionsState extends State<RoomOptions> {
           ),
           _bottomOptions()
         ],
+      ),
+    );
+  }
+}
+
+class Room extends StatefulWidget {
+  @override
+  _RoomState createState() => _RoomState();
+}
+
+class _RoomState extends State<Room> with TickerProviderStateMixin {
+  TabController _controller;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller = TabController(vsync: this, length: 3);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: Drawer(
+        child: Container(),
+      ),
+      appBar: AppBar(
+        title: Text("Lobby",
+            style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+            textScaleFactor: 1.0),
+        centerTitle: true,
+        elevation: 0,
+      ),
+      bottomSheet: BarBottomSheet(
+        child: TabBarView(
+          controller: _controller,
+          children: [
+            Scaffold(
+              appBar: AppBar(
+                title: Text("Audience & Speakers"),
+              ),
+            ),
+            Scaffold(
+                appBar: AppBar(
+                  title: Text(
+                    "Room Topic",
+                    style: TextStyle(
+                        fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                    textScaleFactor: 1.0,
+                  ),
+                  automaticallyImplyLeading: false,
+                  elevation: 0,
+                  leading: Icon(Icons.stream),
+                ),
+                body: Container(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(10)),
+                          width: double.infinity,
+                          height: 220,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 20),
+                                      child: Text(
+                                        "🎃 What About CryptoCurrency ?",
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    6,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    Text(
+                                        "Talk about the presence of Cryptocurrencies being the future and how Elon Musk is fucking it up.")
+                                  ],
+                                ),
+                                Row()
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+            Scaffold(
+              appBar: AppBar(
+                title: Text("Chat"),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
