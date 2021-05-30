@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:206317282199:android:1904f70449ed612703dad2",
         "android_client_info": {
-          "package_name": "co.titandlt.auditory"
+          "package_name": "co.titandlt.aureal"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "206317282199-ofec19h5qhl23b8h6n65rffin9t6a6r9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "co.titandlt.auditory",
+            "package_name": "co.titandlt.aureal",
             "certificate_hash": "627f19381f2cb3b679b2b13510be2ceb1d4de3a6"
           }
         },

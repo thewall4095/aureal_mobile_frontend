@@ -1,4 +1,4 @@
-package co.titandlt.auditory
+package co.titandlt.aureal
 
 import io.flutter.app.FlutterApplication
 import io.flutter.plugin.common.PluginRegistry
