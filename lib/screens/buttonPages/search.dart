@@ -422,6 +422,7 @@ class _ResultsSectionState extends State<ResultsSection>
 
   @override
   Widget build(BuildContext context) {
+    final mediaQueryData = MediaQuery.of(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       body: Container(
@@ -609,14 +610,19 @@ class _ResultsSectionState extends State<ResultsSection>
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 15, vertical: 10),
                                           child: Container(
+                                           // height: double.infinity,
+                                            width: 180,
                                             child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     "${podcastResult[index]['name']}",
-                                                    textScaleFactor: 1.0,
-                                                    maxLines: 2,
+                                                    textScaleFactor: mediaQueryData
+                                                        .textScaleFactor
+                                                        .clamp(1, 1.3)
+                                                        .toDouble(),
+                                                    maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
@@ -625,15 +631,18 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                 true
                                                             ? Colors.white
                                                             : kPrimaryColor,
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            4,
+                                                        // fontSize: SizeConfig
+                                                        //         .safeBlockHorizontal *
+                                                        //     ,
                                                         fontWeight:
                                                             FontWeight.normal),
                                                   ),
                                                   Text(
                                                     '${podcastResult[index]['author']}',
-                                                    textScaleFactor: 0.75,
+                                                    textScaleFactor: mediaQueryData
+                                                        .textScaleFactor
+                                                        .clamp(0.5, 1.3)
+                                                        .toDouble(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -647,9 +656,10 @@ class _ResultsSectionState extends State<ResultsSection>
                                                             : kPrimaryColor
                                                                 .withOpacity(
                                                                     0.5),
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            4),
+                                                        // fontSize: SizeConfig
+                                                        //         .safeBlockHorizontal *
+                                                        //     4
+                                                    ),
                                                   ),
                                                 ]),
                                           ),
