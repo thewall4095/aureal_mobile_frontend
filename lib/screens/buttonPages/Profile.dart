@@ -31,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Home.dart';
+import '../Onboarding/HiveDetails.dart';
 import 'Bio.dart';
 import 'Downloads.dart';
 import 'Settings.dart';
@@ -722,13 +723,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 children: <Widget>[
                                   GestureDetector(
                                       onTap: () async {
-                                        await showBarModalBottomSheet(
-                                            context: context,
-                                            builder: (context) {
-                                              return EmailVerificationDialog(
-                                                  username: prefs
-                                                      .getString('userName'));
-                                            });
+                                        if(prefs.getString('HiveUserName') == null){
+                                          showBarModalBottomSheet(
+                                              context:
+                                              context,
+                                              builder:
+                                                  (context) {
+                                                return HiveDetails();
+                                              });
+                                        }else{
+                                          showBarModalBottomSheet(
+                                              context: context,
+                                              builder: (context) {
+                                                return EmailVerificationDialog(
+                                                  username: prefs.getString('userName'),
+                                                );
+                                              });
+                                        }
                                       },
                                       child: Container(
                                         child: Center(
@@ -741,7 +752,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                 color: Color(0xffe8e8e8),
                                               ),
                                               Text(
-                                                "Add more",
+                                                "Add Podcast",
                                                 textScaleFactor: 1.0,
                                                 style: TextStyle(
                                                     color: Color(0xffe8e8e8),
@@ -773,37 +784,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(color: kSecondaryColor))),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () async {
 
-                                await showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return EmailVerificationDialog(
-                                        username: prefs.getString('userName'),
-                                      );
-                                    });
-                              },
-                              child: Text(
-                                "Add your podcast",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                  //      color: Color(0xffe8e8e8),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
                         // Container(
                         //   width: double.infinity,
                         //   decoration: BoxDecoration(
