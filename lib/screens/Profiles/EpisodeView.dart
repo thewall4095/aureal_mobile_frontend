@@ -479,7 +479,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                                 border: Border.all(
-                                                    color: Color(0xff171b27),
+                                                    color: kSecondaryColor,
                                                     width: 2.5)),
                                             child: Center(
                                               child: Padding(

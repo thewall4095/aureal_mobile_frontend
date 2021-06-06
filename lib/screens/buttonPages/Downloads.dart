@@ -3,6 +3,7 @@ import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
 import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -270,7 +271,7 @@ class _DownloadPageState extends State<DownloadPage>
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Color(0xff171b27))
+                              border: Border.all(color: kSecondaryColor)
                               //  color: kSecondaryColor,
                               ),
                           child: Padding(
@@ -288,12 +289,10 @@ class _DownloadPageState extends State<DownloadPage>
                                       fontSize:
                                           SizeConfig.safeBlockHorizontal * 4),
                                 ),
-
                               ],
                             ),
                           ),
                         ),
-
                       ),
                       SizedBox(
                         height: 100,
@@ -312,7 +311,7 @@ class _DownloadPageState extends State<DownloadPage>
                             // color: Colors.blue,
                             border: Border(
                                 bottom: BorderSide(
-                                    color: Color(0xff171b27), width: 2))),
+                                    color: kSecondaryColor, width: 2))),
                         width: double.infinity,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 20),
@@ -454,8 +453,7 @@ class _DownloadPageState extends State<DownloadPage>
                                                             30))
                                                 : BoxDecoration(
                                                     border: Border.all(
-                                                        color:
-                                                            Color(0xff171b27)),
+                                                        color: kSecondaryColor),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             30)),

@@ -402,7 +402,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Color(0xff171b27),
+                                        color: kSecondaryColor,
                                       ),
                                       borderRadius: BorderRadius.circular(20)),
                                   child: Padding(
@@ -460,7 +460,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           ),
                         ),
                         Divider(
-                          color: Color(0xff171b27),
+                          color: kSecondaryColor,
                         )
                       ],
                     ),
@@ -620,7 +620,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   //     Padding(
                   //       padding: const EdgeInsets.symmetric(horizontal: 5),
                   //       child: Divider(
-                  //         color: Color(0xff171b27),
+                  //         color: kSecondaryColor,
                   //       ),
                   //     )
                   //   ],
@@ -777,8 +777,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           width: double.infinity,
                           decoration: BoxDecoration(
                               border: Border(
-                                  bottom:
-                                      BorderSide(color: Color(0xff171b27)))),
+                                  bottom: BorderSide(color: kSecondaryColor))),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: InkWell(
@@ -809,7 +808,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //   decoration: BoxDecoration(
                         //       border: Border(
                         //           bottom:
-                        //               BorderSide(color: Color(0xff171b27)))),
+                        //               BorderSide(color: kSecondaryColor))),
                         //   child: Padding(
                         //     padding: const EdgeInsets.symmetric(vertical: 15),
                         //     child: InkWell(
@@ -839,7 +838,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),
@@ -870,7 +869,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),
@@ -902,7 +901,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),
@@ -957,7 +956,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),
@@ -990,7 +989,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),
@@ -1022,7 +1021,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: Color(0xff171b27),
+                                color: kSecondaryColor,
                               ),
                             ),
                           ),

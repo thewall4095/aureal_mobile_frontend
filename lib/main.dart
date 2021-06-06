@@ -31,7 +31,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:in_app_update/in_app_update.dart';
-// import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,7 +45,6 @@ import 'screens/Onboarding/Categories.dart';
 import 'screens/Onboarding/LanguageSelection.dart';
 import 'screens/Player/Player.dart';
 import 'screens/buttonPages/Downloads.dart';
-// import 'screens/recorderApp/recorder/Recorder.dart';
 import 'screens/buttonPages/Messages.dart';
 import 'screens/buttonPages/Notification.dart';
 import 'screens/buttonPages/Profile.dart';
@@ -61,27 +59,6 @@ import 'screens/recorderApp/RecorderDashboard.dart';
 import 'screens/recorderApp/recorderpages/CreatePodcast.dart';
 import 'screens/recorderApp/recorderpages/SoundEditor/SoundEditor.dart';
 import 'screens/recorderApp/recorderpages/selectPodcast.dart';
-
-// Future main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   final appDocumentDirectory =
-//   await pathProvider.getApplicationDocumentsDirectory();
-//   Hive.init(appDocumentDirectory.path);
-//
-//   AssetsAudioPlayer.setupNotificationsOpenAction((notification) {
-//     return true;
-//   });
-//
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     SystemChrome.setPreferredOrientations([
-//       DeviceOrientation.portraitUp,
-//     ]);
 
 const debug = true;
 

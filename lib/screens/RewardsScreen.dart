@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class Rewards extends StatefulWidget {
   static const String id = 'Rewards Screen';
@@ -250,7 +251,7 @@ class _RewardsState extends State<Rewards> {
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: Color(0xff171b27),
+                                      color: kSecondaryColor,
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -279,7 +280,7 @@ class _RewardsState extends State<Rewards> {
                             ? SizedBox(height: 0)
                             : LinearProgressIndicator(
                                 minHeight: SizeConfig.safeBlockVertical * 5,
-                                backgroundColor: Color(0xff171b27),
+                                backgroundColor: kSecondaryColor,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     Color(0xffe8e8e8)),
                               ),

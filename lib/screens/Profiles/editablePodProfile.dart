@@ -1,19 +1,19 @@
 import 'dart:convert';
 import 'dart:ui';
+
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Profiles/EditPodcast.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/utilities/constants.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
+
 import 'Distribution.dart';
 import 'EditEpisode.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-import 'EpisodeView.dart';
 
 class EditablePodcastProfile extends StatefulWidget {
   var podcastObject;
@@ -146,7 +146,7 @@ class _EditablePodcastProfileState extends State<EditablePodcastProfile>
         slivers: [
           SliverAppBar(
             pinned: true,
-            backgroundColor: Color(0xff171b27),
+            backgroundColor: kSecondaryColor,
             expandedHeight: MediaQuery.of(context).size.height / 2.5,
             flexibleSpace: FlexibleSpaceBar(
                 background: Container(

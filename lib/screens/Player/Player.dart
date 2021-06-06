@@ -205,7 +205,7 @@ class _PlayerState extends State<Player> {
                     // color: Colors.white,
                     child: Scaffold(
                       resizeToAvoidBottomInset: true,
-                      //   backgroundColor: Color(0xff171b27),
+                      //   backgroundColor: kSecondaryColor,
 
                       body: Stack(
                         children: [
@@ -221,7 +221,7 @@ class _PlayerState extends State<Player> {
                                 ListTile(
                                   onTap: () {
                                     showModalBottomSheet(
-                                        //   backgroundColor: Color(0xff171b27),
+                                        //   backgroundColor: kSecondaryColor,
                                         context: context,
                                         builder: (context) {
                                           return Comments(
@@ -523,7 +523,7 @@ class _PlayerState extends State<Player> {
                                   width: double.infinity,
                                   //color: Colors.white,
                                   child: Container(
-                                    // color: Color(0xff171b27),
+                                    // color: kSecondaryColor,
                                     child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,

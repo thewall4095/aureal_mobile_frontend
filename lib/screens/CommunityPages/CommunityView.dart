@@ -9,6 +9,7 @@ import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -330,10 +331,10 @@ class _CommunityViewState extends State<CommunityView>
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20),
-                                                      // color: Color(0xff171b27),
+                                                      // color: kSecondaryColor,
                                                       border: Border.all(
                                                           width: 2,
-                                                          // color: Color(0xff171b27)
+                                                          // color: kSecondaryColor
                                                           color: Color(
                                                               0xff171b27)),
                                                     ),
@@ -374,7 +375,7 @@ class _CommunityViewState extends State<CommunityView>
                                                       border: Border.all(
                                                         width: 2,
                                                         color:
-                                                            Color(0xff171b27),
+                                                            kSecondaryColor,
                                                       ),
                                                     ),
                                                     child: Padding(
@@ -537,7 +538,7 @@ class _CommunityViewState extends State<CommunityView>
                       child: Container(
                         decoration: BoxDecoration(
                             border: Border(
-                                bottom: BorderSide(color: Color(0xff171b27)))),
+                                bottom: BorderSide(color: kSecondaryColor))),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -664,7 +665,7 @@ class _CommunityViewState extends State<CommunityView>
                                                       BorderRadius.circular(30))
                                               : BoxDecoration(
                                                   border: Border.all(
-                                                      color: Color(0xff171b27)),
+                                                      color: kSecondaryColor),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           30)),
@@ -717,7 +718,7 @@ class _CommunityViewState extends State<CommunityView>
                                         child: Container(
                                           decoration: BoxDecoration(
                                               border: Border.all(
-                                                  color: Color(0xff171b27)),
+                                                  color: kSecondaryColor),
                                               borderRadius:
                                                   BorderRadius.circular(30)),
                                           child: Padding(

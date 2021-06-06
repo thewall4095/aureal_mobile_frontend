@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Home.dart';
@@ -308,7 +308,7 @@ class _EditEpisodeState extends State<EditEpisode> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff171b27)),
+                      border: Border.all(color: kSecondaryColor),
                       // color: Colors.white,
                       borderRadius: BorderRadius.circular(10)),
                   height: 100,
@@ -359,7 +359,7 @@ class _EditEpisodeState extends State<EditEpisode> {
                   height: 330,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xff171b27)),
+                    border: Border.all(color: kSecondaryColor),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextField(
@@ -460,7 +460,7 @@ class _EditEpisodeState extends State<EditEpisode> {
                         height: 90,
                         width: 90,
                         decoration: BoxDecoration(
-                          //border: Border.all(color: Color(0xff171b27)),
+                          //border: Border.all(color: kSecondaryColor),
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -477,7 +477,7 @@ class _EditEpisodeState extends State<EditEpisode> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff171b27)),
+                      border: Border.all(color: kSecondaryColor),
                       //   color: kActiveColor,
                       borderRadius: BorderRadius.circular(30),
                     ),

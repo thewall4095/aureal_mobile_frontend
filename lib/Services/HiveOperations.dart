@@ -170,7 +170,7 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
 
   SharedPreferences prefs;
 
-  double factor;
+  double factor = 0.0000001;
 
   void getFactor() async {
     prefs = await SharedPreferences.getInstance();

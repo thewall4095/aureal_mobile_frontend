@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 // import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:image/image.dart' as img;
@@ -16,8 +18,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:shared_preferences/shared_preferences.dart';
 
 List tags = [];
@@ -482,8 +482,8 @@ class _EditCommunityState extends State<EditCommunity> {
                                       const EdgeInsets.symmetric(vertical: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xff171b27))),
+                                        border:
+                                            Border.all(color: kSecondaryColor)),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8),
@@ -511,8 +511,8 @@ class _EditCommunityState extends State<EditCommunity> {
                                       const EdgeInsets.symmetric(vertical: 10),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xff171b27))),
+                                        border:
+                                            Border.all(color: kSecondaryColor)),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8),
@@ -583,8 +583,8 @@ class _EditCommunityState extends State<EditCommunity> {
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xff171b27)),
+                                        border:
+                                            Border.all(color: kSecondaryColor),
                                         color: Colors.transparent,
                                         borderRadius: BorderRadius.circular(20),
                                       ),
@@ -624,8 +624,8 @@ class _EditCommunityState extends State<EditCommunity> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                          width: 2, color: Color(0xff171b27)
-                                          // color: Color(0xff171b27),
+                                          width: 2, color: kSecondaryColor
+                                          // color: kSecondaryColor,
                                           ),
                                     ),
                                     child: Padding(
@@ -667,8 +667,8 @@ class _EditCommunityState extends State<EditCommunity> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                          width: 2, color: Color(0xff171b27)
-                                          // color: Color(0xff171b27),
+                                          width: 2, color: kSecondaryColor
+                                          // color: kSecondaryColor,
                                           ),
                                     ),
                                     child: Padding(

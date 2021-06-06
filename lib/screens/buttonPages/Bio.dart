@@ -1,22 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:dio/dio.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image/image.dart' as img;
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Bio extends StatefulWidget {
   static const String id = 'Bio';
@@ -402,7 +399,7 @@ class _BioState extends State<Bio> {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff171b27)),
+                          border: Border.all(color: kSecondaryColor),
                           borderRadius: BorderRadius.circular(8),
                           //    color: kSecondaryColor,
                         ),

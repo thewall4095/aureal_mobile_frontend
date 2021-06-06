@@ -1,7 +1,5 @@
+import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PopError extends StatefulWidget {
   static const String id = "PopError";
@@ -27,7 +25,7 @@ class _PopErrorState extends State<PopError> {
         child: Padding(
       padding: const EdgeInsets.all(60.0),
       child: AlertDialog(
-        backgroundColor: Color(0xff171b27),
+        backgroundColor: kSecondaryColor,
         title: Image.asset("assets/images/animatedtick.gif"),
         // title:  Text('Errors',
         // style: TextStyle(

@@ -190,7 +190,8 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                             Navigator.pop(context);
                           },
                         ),
-                        expandedHeight: MediaQuery.of(context).size.height / 4,
+                        expandedHeight:
+                            MediaQuery.of(context).size.height / 3.8,
                         pinned: true,
                         flexibleSpace: FlexibleSpaceBar(
                           background: Padding(
@@ -198,18 +199,10 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Color(0xff171b27)),
-                                // border:
-                                // Border.all(color: Color(0xff171b27)),
-                                // // border: Border.all(
-                                // //   color: Color(0xff171b27),
+                                border: Border.all(color: kSecondaryColor),
                                 color: themeProvider.isLightTheme == true
                                     ? Colors.white
                                     : kSecondaryColor,
-                                // color: kSecondaryColor,
-                                //),
-
-                                // color: Color(0xff171b27),
                               ),
                               child: SafeArea(
                                 child: TabBarView(
@@ -372,48 +365,6 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        bottom: PreferredSize(
-                          preferredSize: Size.fromHeight(0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              child: TabBar(controller: _tabController, tabs: [
-                                Tab(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    height: 10,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                                Tab(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    height: 10,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                                Tab(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    height: 10,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                                Tab(
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    height: 10,
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                              ]),
-                            ),
-                          ),
-                        ),
                       )
                     ];
                   },
@@ -455,9 +406,9 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     border:
-                                        Border.all(color: Color(0xff171b27)),
+                                        Border.all(color: kSecondaryColor),
                                     // border: Border.all(
-                                    //   color: Color(0xff171b27),
+                                    //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
                                         ? Colors.white
                                         : kSecondaryColor,
@@ -514,9 +465,9 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     border:
-                                        Border.all(color: Color(0xff171b27)),
+                                        Border.all(color: kSecondaryColor),
                                     // border: Border.all(
-                                    //   color: Color(0xff171b27),
+                                    //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
                                         ? Colors.white
                                         : kSecondaryColor,

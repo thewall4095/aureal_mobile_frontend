@@ -73,7 +73,7 @@
 //             child: Container(
 //               height: SizeConfig.safeBlockVertical * 6,
 //               width: double.infinity,
-//               decoration: BoxDecoration(color: Color(0xff171b27)),
+//               decoration: BoxDecoration(color: kSecondaryColor),
 //               child: Row(
 //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                 children: [

@@ -280,8 +280,8 @@ class _FollowingPageState extends State<FollowingPage>
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xff171b27)),
+                                        border:
+                                            Border.all(color: kSecondaryColor),
                                         // color: Color(0xff3a3a3a),
                                         borderRadius:
                                             BorderRadius.circular(20)),
@@ -527,8 +527,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                             .start,
                                                     children: [
                                                       Container(
-                                                        color:
-                                                            Color(0xff171b27),
+                                                        color: kSecondaryColor,
                                                         height: 10,
                                                         width: MediaQuery.of(
                                                                     context)
@@ -540,8 +539,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                         height: 10,
                                                       ),
                                                       Container(
-                                                        color:
-                                                            Color(0xff171b27),
+                                                        color: kSecondaryColor,
                                                         height: 10,
                                                         width: MediaQuery.of(
                                                                     context)
@@ -561,7 +559,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                  color: Color(0xff171b27),
+                                                  color: kSecondaryColor,
                                                 ),
                                               ),
                                               Column(
@@ -579,7 +577,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                           MediaQuery.of(context)
                                                               .size
                                                               .width,
-                                                      color: Color(0xff171b27),
+                                                      color: kSecondaryColor,
                                                     ),
                                                   ),
                                                   Padding(
@@ -593,7 +591,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                           MediaQuery.of(context)
                                                               .size
                                                               .width,
-                                                      color: Color(0xff171b27),
+                                                      color: kSecondaryColor,
                                                     ),
                                                   ),
                                                 ],
@@ -626,9 +624,9 @@ class _FollowingPageState extends State<FollowingPage>
                                           decoration: BoxDecoration(
                                               border: Border(
                                                   top: BorderSide(
-                                                      color: Color(0xff171b27)),
+                                                      color: kSecondaryColor),
                                                   bottom: BorderSide(
-                                                      color: Color(0xff171b27),
+                                                      color: kSecondaryColor,
                                                       width: 1))),
                                           width: double.infinity,
                                           child: Padding(
@@ -992,8 +990,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                               child: Container(
                                                                 decoration: BoxDecoration(
                                                                     border: Border.all(
-                                                                        color: Color(
-                                                                            0xff171b27)),
+                                                                        color:
+                                                                            kSecondaryColor),
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                             30)),
@@ -1115,8 +1113,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                               child: Container(
                                                                 decoration: BoxDecoration(
                                                                     border: Border.all(
-                                                                        color: Color(
-                                                                            0xff171b27)),
+                                                                        color:
+                                                                            kSecondaryColor),
                                                                     borderRadius:
                                                                         BorderRadius.circular(
                                                                             30)),

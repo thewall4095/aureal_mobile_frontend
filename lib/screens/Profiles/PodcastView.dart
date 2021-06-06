@@ -490,8 +490,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                           BorderRadius.circular(
                                                               20),
                                                       border: Border.all(
-                                                          color:
-                                                              Color(0xff171b27)
+                                                          color: kSecondaryColor
                                                           //    color: Color(0xffe8e8e8),
                                                           ,
                                                           width: 0.5)),
@@ -534,7 +533,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                               20),
                                                       border: Border.all(
                                                           color:
-                                                              Color(0xff171b27),
+                                                              kSecondaryColor,
                                                           //    color: Color(0xffe8e8e8),
                                                           width: 0.5)
                                                       //color: Color(0xffe8e8e8)
@@ -652,7 +651,7 @@ class _PodcastViewState extends State<PodcastView> {
                             height: 10,
                           ),
                           Divider(
-                            color: Color(0xff171b27),
+                            color: kSecondaryColor,
                           ),
                           SizedBox(
                             height: 10,
@@ -711,7 +710,7 @@ class _PodcastViewState extends State<PodcastView> {
                           border: Border(
                               // top: BorderSide(color: Color(0xff3a3a3a)),
                               bottom: BorderSide(
-                                  color: Color(0xff171b27), width: 1))),
+                                  color: kSecondaryColor, width: 1))),
                       width: double.infinity,
                       child: ListTile(
                         contentPadding: EdgeInsets.zero,
@@ -1028,8 +1027,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
-                                                            color: Color(
-                                                                0xff171b27)),
+                                                            color:
+                                                                kSecondaryColor),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(30)),
@@ -1151,7 +1150,7 @@ class _PodcastViewState extends State<PodcastView> {
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 border: Border.all(
-                                                    color: Color(0xff171b27)),
+                                                    color: kSecondaryColor),
                                                 borderRadius:
                                                     BorderRadius.circular(30)),
                                             child: Padding(
@@ -1215,7 +1214,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                                           1],
                                                             ),
                                                             // color:
-                                                            //     Color(0xff171b27),
+                                                            //     kSecondaryColor,
                                                           );
                                                         });
                                                   },
@@ -1442,7 +1441,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
             title: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Color(0xff171b27)
+                  border: Border.all(color: kSecondaryColor
                       //      color: Color(0xffe8e8e8),
                       )),
               width: double.infinity,
@@ -1502,13 +1501,13 @@ class _AddToCommunityState extends State<AddToCommunity> {
                     Container(
                       decoration: BoxDecoration(
                           border: Border(
-                              bottom: BorderSide(color: Color(0xff171b27)))),
+                              bottom: BorderSide(color: kSecondaryColor))),
                       constraints: BoxConstraints(
                           maxHeight: MediaQuery.of(context).size.height / 3.6),
                       child: recommendedLoading == true
                           ? LinearProgressIndicator(
                               minHeight: double.infinity,
-                              //       backgroundColor: Color(0xff171b27),
+                              //       backgroundColor: kSecondaryColor,
                             )
                           : ListView(
                               scrollDirection: Axis.horizontal,
@@ -1524,8 +1523,8 @@ class _AddToCommunityState extends State<AddToCommunity> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                           border: Border.all(
-                                              color: Color(0xff171b27)),
-                                          //     color: Color(0xff171b27),
+                                              color: kSecondaryColor),
+                                          //     color: kSecondaryColor,
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       width: MediaQuery.of(context).size.width /
@@ -1596,7 +1595,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                   border: Border.all(
-                                                      color: Color(0xff171b27))
+                                                      color: kSecondaryColor)
                                                   //   color: Color(0xffe8e8e8)
                                                   ),
                                               child: Padding(
@@ -1614,7 +1613,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
                                                     Icon(
                                                       Icons.add,
                                                       size: 20,
-                                                      //    color: Color(0xff171b27),
+                                                      //    color: kSecondaryColor,
                                                     ),
                                                     SizedBox(
                                                       width: 10,
@@ -1628,7 +1627,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
                                                               .toDouble(),
                                                       style: TextStyle(
                                                           // colo r:
-                                                          //     Color(0xff171b27),
+                                                          //     kSecondaryColor,
                                                           fontSize: SizeConfig
                                                                   .safeBlockHorizontal *
                                                               4),
@@ -1669,7 +1668,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
                       child: addedLoading == true
                           ? LinearProgressIndicator(
                               minHeight: double.infinity,
-                              // backgroundColor: Color(0xff171b27),
+                              // backgroundColor: kSecondaryColor,
                             )
                           : ListView(
                               scrollDirection: Axis.horizontal,
@@ -1681,9 +1680,9 @@ class _AddToCommunityState extends State<AddToCommunity> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                              // color: Color(0xff171b27),
+                                              // color: kSecondaryColor,
                                               border: Border.all(
-                                                  color: Color(0xff171b27)),
+                                                  color: kSecondaryColor),
                                               borderRadius:
                                                   BorderRadius.circular(10)),
                                           width: MediaQuery.of(context)
@@ -1784,7 +1783,7 @@ class _AddToCommunityState extends State<AddToCommunity> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                              border: Border.all(color: Color(0xff171b27)),
+                              border: Border.all(color: kSecondaryColor),
                               borderRadius: BorderRadius.circular(20)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
