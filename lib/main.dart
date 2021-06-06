@@ -364,6 +364,16 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
+          if(message.data['type'] == 'episode_published'){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return EpisodeView(episodeId: message.data['episode_id'],);
+            }));
+          }
+          if(message.data['type'] == 'new_episode'){
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return EpisodeView(episodeId: message.data['episode_id'],);
+            }));
+          }
         } else {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return _home;
