@@ -782,6 +782,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: InkWell(
                               onTap: () async {
+
                                 await showBarModalBottomSheet(
                                     context: context,
                                     builder: (context) {

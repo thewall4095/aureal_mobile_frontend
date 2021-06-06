@@ -39,6 +39,8 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
   String podcastImage;
   String authorName;
 
+  String kRSSMail = '';
+
   void sendOTP() async {
     setState(() {
       isLoading = true;
@@ -56,6 +58,12 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
     var response = await intercept.postRequest(formData, url);
     print(response.runtimeType);
     print(jsonDecode(response.toString()));
+
+    setState(() {
+      kRSSMail = jsonDecode(response.toString())['email'];
+    });
+
+
     if (jsonDecode(response.toString())['msg'] != null) {
       showInSnackBar('${jsonDecode(response.toString())['msg']}');
     } else {
@@ -271,7 +279,7 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                       .createShader(rect);
                 },
                 child: Text(
-                  "Please enter the OTP",
+                  "Please enter the One Time Password received on: $kRSSMail",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
