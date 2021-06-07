@@ -158,7 +158,11 @@ class _HiveAccountState extends State<HiveAccount> {
                           print(
                               'this is the code motherfucker: ${prefs.getString('code')}');
                         }
-                        hiveAuth();
+                        if (prefs.getString('userId') != null) {
+                          registerHiveUser();
+                        } else {
+                          hiveAuth();
+                        }
                       }
                     });
                   },
