@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/CommunityService.dart';
@@ -24,7 +23,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
 import '../PlayerState.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';

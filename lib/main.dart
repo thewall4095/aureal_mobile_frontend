@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
 import 'package:auditory/CategoriesProvider.dart';
@@ -34,7 +33,6 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'SearchProvider.dart';
 import 'screens/Home.dart';
 import 'screens/LoginSignup/Auth.dart';
