@@ -148,37 +148,40 @@ class _SettingsState extends State<Settings> {
                                     Navigator.pushNamed(context, Prefrences.id);
                                   },
                                   child: Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "Preferences",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1.5)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //  color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  4),
-                                        ),
-                                        Text(
-                                          "Dark Mode, Background Audio, Language, Categories",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 0.8)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //       color: Colors.white70,
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  3.4),
-                                        )
-                                      ],
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 160),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Preferences",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //  color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          Text(
+                                            "Dark Mode, Background Audio",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

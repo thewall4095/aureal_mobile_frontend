@@ -22,7 +22,7 @@ class Bio extends StatefulWidget {
   String fullname;
   String displayPicture;
 
-  // var bioObject;
+  var bioObject;
 
   Bio({@required this.bio, this.fullname, this.displayPicture});
 
@@ -419,6 +419,7 @@ class _BioState extends State<Bio> {
                           decoration: InputDecoration(
                             disabledBorder: OutlineInputBorder(),
                             labelText: 'Bio',
+                            // hintText: "XYZ TYX",
                             //   labelStyle: TextStyle(color: Color(0xffe8e8e8)),
                             border: OutlineInputBorder(),
                           ),

@@ -476,18 +476,62 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             }
                           }
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: IconButton(
-                            onPressed: () {},
-                            splashColor: Colors.blue,
-                            icon: Icon(
-                              FontAwesomeIcons.chevronCircleUp,
-                              // color: _hasBeenPressed ? Colors.blue : Colors.black,
-                              //color: Colors.white,
-                            ),
-                          ),
+                      child:  IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons
+                              .chevronCircleUp,
+                          size: 20,
+                          //     color: Colors.black,
                         ),
+                        onPressed: () {
+                          Fluttertoast.showToast(
+                              msg: 'Upvote done');
+                          if (episodeObject
+                              .permlink ==
+                              null) {
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                      backgroundColor:
+                                      Colors
+                                          .transparent,
+                                      child: UpvoteEpisode(
+                                          episode_id:
+                                          episodeObject
+                                              .id,
+                                          permlink:
+                                          episodeObject
+                                              .permlink));
+                                }).then((value) async {
+                              print(value);
+                            });
+
+                            // upvoteEpisode(
+                            //     episode_id:
+                            //         episodeObject
+                            //             .id,
+                            //     permlink:
+                            //         episodeObject
+                            //             .permlink);
+                          }
+                        },
+                      ),
+                        // child: Padding(
+                        //   padding: const EdgeInsets.all(3.0),
+                        //   child: IconButton(
+                        //     onPressed: () {},
+                        //     splashColor: Colors.blue,
+                        //     icon: Icon(
+                        //       FontAwesomeIcons.chevronCircleUp,
+                        //       // color: _hasBeenPressed ? Colors.blue : Colors.black,
+                        //       //color: Colors.white,
+                        //     ),
+                        //
+                        //   ),
+                        //
+                        // ),
                       ),
                       Container(
                         height: 40,

@@ -121,26 +121,26 @@ class _NotificationPageState extends State<NotificationPage>
             SliverAppBar(
               elevation: 0,
               backgroundColor: Colors.transparent,
-              leading: IconButton(
-                icon: displayPicture != null
-                    ? CircleAvatar(
-                        radius: 14,
-                        backgroundImage: NetworkImage(displayPicture),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(width: 1.5)),
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/user.png'),
-                          radius: 14,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                onPressed: () {
-                  Navigator.pushNamed(context, Profile.id);
-                },
-              ),
+              // leading: IconButton(
+              //   icon: displayPicture != null
+              //       ? CircleAvatar(
+              //           radius: 14,
+              //           backgroundImage: NetworkImage(displayPicture),
+              //         )
+              //       : Container(
+              //           decoration: BoxDecoration(
+              //               shape: BoxShape.circle,
+              //               border: Border.all(width: 1.5)),
+              //           child: CircleAvatar(
+              //             backgroundImage: AssetImage('assets/images/user.png'),
+              //             radius: 14,
+              //             backgroundColor: Colors.transparent,
+              //           ),
+              //         ),
+              //   onPressed: () {
+              //     Navigator.pushNamed(context, Profile.id);
+              //   },
+              // ),
               actions: <Widget>[
 //                IconButton(
 //                  icon: Icon(

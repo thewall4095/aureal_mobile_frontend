@@ -64,57 +64,57 @@ class _PrefrencesState extends State<Prefrences> {
               SizedBox(
                 height: 20,
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  GestureDetector(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Language",
-                          style: TextStyle(
-                            // color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, SelectLanguage.id);
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 35),// SizedBox(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, OnboardingCategories.id);
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Categories",
-                          style: TextStyle(
-                            // color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30,),
+              // SizedBox(
+              //   height: 20,
+              // ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     GestureDetector(
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: <Widget>[
+              //           Text(
+              //             "Language",
+              //             style: TextStyle(
+              //               // color: Colors.white,
+              //                 fontSize: 16,
+              //                 fontWeight: FontWeight.bold),
+              //           ),
+              //         ],
+              //       ),
+              //       onTap: () {
+              //         Navigator.pushNamed(
+              //             context, SelectLanguage.id);
+              //       },
+              //     ),
+              //   ],
+              // ),
+           //   SizedBox(height: 35),// SizedBox(
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: <Widget>[
+              //     GestureDetector(
+              //       onTap: () {
+              //         Navigator.pushNamed(
+              //             context, OnboardingCategories.id);
+              //       },
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: <Widget>[
+              //           Text(
+              //             "Categories",
+              //             style: TextStyle(
+              //               // color: Colors.white,
+              //                 fontSize: 16,
+              //                 fontWeight: FontWeight.bold),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+      //        SizedBox(height: 30,),
               //    Row(
               //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //   children: <Widget>[

@@ -439,19 +439,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           padding: const EdgeInsets.only(bottom: 20),
                           child: Text(
                             'Bio',
+
                             textScaleFactor: mediaQueryData.textScaleFactor
                                 .clamp(0.2, 1)
                                 .toDouble(),
                             style: TextStyle(
+
                                 //   color: Color(0xffe8e8e8),
                                 fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                fontWeight: FontWeight.w700),
+                                fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Text(
                             '$bio',
+
                             textScaleFactor: mediaQueryData.textScaleFactor
                                 .clamp(0.2, 1)
                                 .toDouble(),
@@ -778,6 +782,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         ),
                       ),
                     ],
+                  ),
+                  Divider(
+                    color: kSecondaryColor,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
