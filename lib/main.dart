@@ -57,8 +57,11 @@ import 'screens/recorderApp/RecorderDashboard.dart';
 import 'screens/recorderApp/recorderpages/CreatePodcast.dart';
 import 'screens/recorderApp/recorderpages/SoundEditor/SoundEditor.dart';
 import 'screens/recorderApp/recorderpages/selectPodcast.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 const debug = true;
+bool _initialUriIsHandled = false;
 
 /// Define a top-level named handler which background/terminated messages will
 /// call.
@@ -155,7 +158,10 @@ class _MyAppState extends State<MyApp> {
 
   bool _flexibleUpdateAvailable = false;
   String _token;
-
+  Uri _initialUri;
+  Uri _latestUri;
+  Object _err;
+  StreamSubscription _sub;
   // Future<void> checkForUpdate() async {
   //   InAppUpdate.checkForUpdate().then((info) {
   //     setState(() {
@@ -200,6 +206,81 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
 
     super.initState();
+    _handleIncomingLinks();
+    _handleInitialUri();
+  }
+
+  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// while already started.
+  void _handleIncomingLinks() {
+    if (!kIsWeb) {
+      // It will handle app links while the app is already started - be it in
+      // the foreground or in the background.
+      _sub = uriLinkStream.listen((Uri uri) {
+        if (!mounted) return;
+        print('got uri: $uri');
+        setState(() {
+          _latestUri = uri;
+          _err = null;
+        });
+      }, onError: (Object err) {
+        if (!mounted) return;
+        print('got err: $err');
+        setState(() {
+          _latestUri = null;
+          if (err is FormatException) {
+            _err = err;
+          } else {
+            _err = null;
+          }
+        });
+      });
+    }
+  }
+
+  /// Handle the initial Uri - the one the app was started with
+  ///
+  /// **ATTENTION**: `getInitialLink`/`getInitialUri` should be handled
+  /// ONLY ONCE in your app's lifetime, since it is not meant to change
+  /// throughout your app's life.
+  ///
+  /// We handle all exceptions, since it is called from initState.
+  Future<void> _handleInitialUri() async {
+    // In this example app this is an almost useless guard, but it is here to
+    // show we are not going to call getInitialUri multiple times, even if this
+    // was a weidget that will be disposed of (ex. a navigation route change).
+    if (!_initialUriIsHandled) {
+      _initialUriIsHandled = true;
+      _showSnackBar('_handleInitialUri called');
+      try {
+        final uri = await getInitialUri();
+        if (uri == null) {
+          print('no initial uri');
+        } else {
+          print('got initial uri: $uri');
+        }
+        if (!mounted) return;
+        setState(() => _initialUri = uri);
+      } on PlatformException {
+        // Platform messages may fail but we ignore the exception
+        print('falied to get initial uri');
+      } on FormatException catch (err) {
+        if (!mounted) return;
+        print('malformed initial uri');
+        setState(() => _err = err);
+      }
+    }
+  }
+
+  void _showSnackBar(String msg) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final context = _scaffoldKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+        ));
+      }
+    });
   }
 
   int _messageCount = 0;
@@ -362,14 +443,18 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
-          if(message.data['type'] == 'episode_published'){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return EpisodeView(episodeId: message.data['episode_id'],);
+          if (message.data['type'] == 'episode_published') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(
+                episodeId: message.data['episode_id'],
+              );
             }));
           }
-          if(message.data['type'] == 'new_episode'){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return EpisodeView(episodeId: message.data['episode_id'],);
+          if (message.data['type'] == 'new_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(
+                episodeId: message.data['episode_id'],
+              );
             }));
           }
         } else {
