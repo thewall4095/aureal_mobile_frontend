@@ -12,6 +12,7 @@ import 'package:auditory/Wrapper.dart';
 import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/buttonPages/Bio.dart';
 import 'package:auditory/screens/buttonPages/HiveWallet.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
@@ -277,7 +278,7 @@ class _MyAppState extends State<MyApp> {
                                         CreatePodcast(),
 
                                     Wrapper.id: (context) => Wrapper(),
-                                    // Bio.id: (context) => Bio(),
+                                     Bio.id: (context) => Bio(),
                                     Presence.id: (context) => Presence(),
                                     SelectLanguage.id: (context) =>
                                         SelectLanguage(),

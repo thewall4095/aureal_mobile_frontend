@@ -610,8 +610,8 @@ class _ResultsSectionState extends State<ResultsSection>
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 15, vertical: 10),
                                           child: Container(
-                                           // height: double.infinity,
-                                            width: 180,
+                                         //   height: double.infinity,
+                                            width: 240,
                                             child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
