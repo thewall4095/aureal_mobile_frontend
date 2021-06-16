@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
 import 'package:auditory/CategoriesProvider.dart';
@@ -33,6 +34,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'SearchProvider.dart';
 import 'screens/Home.dart';
 import 'screens/LoginSignup/Auth.dart';
@@ -57,11 +59,8 @@ import 'screens/recorderApp/RecorderDashboard.dart';
 import 'screens/recorderApp/recorderpages/CreatePodcast.dart';
 import 'screens/recorderApp/recorderpages/SoundEditor/SoundEditor.dart';
 import 'screens/recorderApp/recorderpages/selectPodcast.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:flutter/services.dart' show PlatformException;
 
 const debug = true;
-bool _initialUriIsHandled = false;
 
 /// Define a top-level named handler which background/terminated messages will
 /// call.
@@ -158,10 +157,7 @@ class _MyAppState extends State<MyApp> {
 
   bool _flexibleUpdateAvailable = false;
   String _token;
-  Uri _initialUri;
-  Uri _latestUri;
-  Object _err;
-  StreamSubscription _sub;
+
   // Future<void> checkForUpdate() async {
   //   InAppUpdate.checkForUpdate().then((info) {
   //     setState(() {
@@ -206,70 +202,6 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
 
     super.initState();
-    _handleIncomingLinks();
-    _handleInitialUri();
-  }
-
-  /// Handle incoming links - the ones that the app will recieve from the OS
-  /// while already started.
-  void _handleIncomingLinks() {
-    if (!kIsWeb) {
-      // It will handle app links while the app is already started - be it in
-      // the foreground or in the background.
-      _sub = uriLinkStream.listen((Uri uri) {
-        if (!mounted) return;
-        print('got uri: $uri');
-        setState(() {
-          _latestUri = uri;
-          _err = null;
-        });
-      }, onError: (Object err) {
-        if (!mounted) return;
-        print('got err: $err');
-        setState(() {
-          _latestUri = null;
-          if (err is FormatException) {
-            _err = err;
-          } else {
-            _err = null;
-          }
-        });
-      });
-    }
-  }
-
-  /// Handle the initial Uri - the one the app was started with
-  ///
-  /// **ATTENTION**: `getInitialLink`/`getInitialUri` should be handled
-  /// ONLY ONCE in your app's lifetime, since it is not meant to change
-  /// throughout your app's life.
-  ///
-  /// We handle all exceptions, since it is called from initState.
-  Future<void> _handleInitialUri() async {
-    // In this example app this is an almost useless guard, but it is here to
-    // show we are not going to call getInitialUri multiple times, even if this
-    // was a weidget that will be disposed of (ex. a navigation route change).
-    if (!_initialUriIsHandled) {
-      _initialUriIsHandled = true;
-      _showSnackBar('_handleInitialUri called');
-      try {
-        final uri = await getInitialUri();
-        if (uri == null) {
-          print('no initial uri');
-        } else {
-          print('got initial uri: $uri');
-        }
-        if (!mounted) return;
-        setState(() => _initialUri = uri);
-      } on PlatformException {
-        // Platform messages may fail but we ignore the exception
-        print('falied to get initial uri');
-      } on FormatException catch (err) {
-        if (!mounted) return;
-        print('malformed initial uri');
-        setState(() => _err = err);
-      }
-    }
   }
 
   void _showSnackBar(String msg) {
@@ -408,19 +340,33 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     // TODO: implement initState
+
     init();
     super.initState();
+  }
+
+  void _showSnackBar(String msg) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final context = _scaffoldKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+        ));
+      }
+    });
   }
 
   void init() async {
     if (counter < 1) {
       await checkAuthenticity(context);
     }
+
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
       // print('${message.data}');
       // print(message.contentAvailable);
+
       if (message != null) {
         if (message.data['type'] != null) {
           if (message.data['type'] == 'vote_episode') {
