@@ -218,6 +218,44 @@ class _HomeState extends State<Home> {
           _latestUri = uri;
           _err = null;
         });
+
+        if (_latestUri.toString().contains('episode') == true) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return EpisodeView(
+              episodeId: _latestUri
+                  .toString()
+                  .split('/')[_latestUri.toString().split('/').length - 1],
+            );
+          }));
+        }
+        if (_latestUri.toString().contains('podcast') == true) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return PodcastView(
+              _latestUri
+                  .toString()
+                  .split('/')[_latestUri.toString().split('/').length - 1],
+            );
+          }));
+        }
+        // if (uri.toString().contains('episode') == true) {
+        //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //     return EpisodeView(
+        //       episodeId: uri
+        //           .toString()
+        //           .split('/')[uri.toString().split('/').length - 1],
+        //     );
+        //   }));
+        // }
+        // if (uri.toString().contains('episode') == true) {
+        //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //     return EpisodeView(
+        //       episodeId: uri
+        //           .toString()
+        //           .split('/')[uri.toString().split('/').length - 1],
+        //     );
+        //   }));
+        // }
+
         print(_latestUri);
       }, onError: (Object err) {
         if (!mounted) return;
