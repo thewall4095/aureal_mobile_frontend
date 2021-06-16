@@ -40,7 +40,7 @@ import 'buttonPages/Profile.dart';
 import 'buttonPages/search.dart';
 import 'buttonPages/settings/Theme-.dart';
 
-bool _initialUriIsHandled = false;
+bool _initialUriIsHandled = true;
 
 enum PlayerState {
   playing,
@@ -329,6 +329,13 @@ class _HomeState extends State<Home> {
   bool open = false;
 
   Launcher launcher = Launcher();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _sub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
