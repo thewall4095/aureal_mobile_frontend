@@ -329,7 +329,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
       await (getUserDetails());
     }
-
+    Future<bool> _onBackPressed() async {
+      Navigator.pushNamedAndRemoveUntil(
+          context,
+          Home.id,
+          ModalRoute.withName("/")
+      );
+      return false; // return true if the route to be popped
+    }
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
 
     final mediaQueryData = MediaQuery.of(context);
@@ -337,713 +344,722 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     final user = FirebaseAuth.instance.currentUser;
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            // backgroundColor: Colors.transparent,
-            title: Text(
-              'My Profile',
-              textScaleFactor:
-                  mediaQueryData.textScaleFactor.clamp(0.2, 1).toDouble(),
-              style: TextStyle(
-                  //    color: Color(0xffe8e8e8),
-                  fontSize: SizeConfig.safeBlockHorizontal * 7,
-                  fontWeight: FontWeight.bold),
+        return WillPopScope(
+              onWillPop:_onBackPressed ,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              // backgroundColor: Colors.transparent,
+              title: Text(
+                'My Profile',
+                textScaleFactor:
+                    mediaQueryData.textScaleFactor.clamp(0.2, 1).toDouble(),
+                style: TextStyle(
+                    //    color: Color(0xffe8e8e8),
+                    fontSize: SizeConfig.safeBlockHorizontal * 7,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          body: Container(
-            child: RefreshIndicator(
-              onRefresh: _pullRefresh,
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.width / 4,
-                          width: MediaQuery.of(context).size.width / 4,
-                          child: CachedNetworkImage(
-                            imageUrl: displayPicture == null
-                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                : displayPicture,
-                            memCacheHeight:
-                                MediaQuery.of(context).size.height.floor(),
-                            errorWidget: (BuildContext context, url, error) {
-                              return Container();
-                            },
+            body: Container(
+              child: RefreshIndicator(
+                onRefresh: _pullRefresh,
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.width / 4,
+                            width: MediaQuery.of(context).size.width / 4,
+                            child: CachedNetworkImage(
+                              imageUrl: displayPicture == null
+                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  : displayPicture,
+                              memCacheHeight:
+                                  MediaQuery.of(context).size.height.floor(),
+                              errorWidget: (BuildContext context, url, error) {
+                                return Container();
+                              },
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "$userName",
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "$userName",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1.3)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                      //         color: Color(0xffe8e8e8),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 5.5,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, Bio.id);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: kSecondaryColor,
+                                        ),
+                                        borderRadius: BorderRadius.circular(20)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 5),
+                                      child: Text(
+                                        'Edit Profile',
+                                        textScaleFactor: mediaQueryData
+                                            .textScaleFactor
+                                            .clamp(0.2, 1)
+                                            .toDouble(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3.5),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: GestureDetector(
+                              onTap: (){
+                                print('$bio');
+                              },
+                              child: Text(
+                                'Bio',
+
                                 textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1.3)
+                                    .clamp(0.2, 1)
                                     .toDouble(),
                                 style: TextStyle(
-                                    //         color: Color(0xffe8e8e8),
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 5.5,
-                                    fontWeight: FontWeight.bold),
+
+                                    //   color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                    fontWeight: FontWeight.w700,
+                                ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, Bio.id);
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: kSecondaryColor,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 5),
-                                    child: Text(
-                                      'Edit Profile',
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.2, 1)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3.5),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              '$bio',
+
+                              textScaleFactor: mediaQueryData.textScaleFactor
+                                  .clamp(0.2, 1)
+                                  .toDouble(),
+                              style: TextStyle(
+                                  //     color: Color(0xffe8e8e8),
+                                  fontSize: SizeConfig.safeBlockHorizontal * 4),
+                            ),
+                          ),
+                          Divider(
+                            color: kSecondaryColor,
+                          )
+                        ],
+                      ),
+                    ),
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(10),
+                    //       child: Text(
+                    //         "Your Communities",
+                    //         textScaleFactor: mediaQueryData.textScaleFactor
+                    //             .clamp(0.2, 1)
+                    //             .toDouble(),
+                    //         style: TextStyle(
+                    //           //         color: Color(0xffe8e8e8),
+                    //           fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Container(
+                    //       constraints: BoxConstraints(
+                    //           maxHeight:
+                    //               MediaQuery.of(context).size.height / 5.6),
+                    //       child: ListView(
+                    //         scrollDirection: Axis.horizontal,
+                    //         children: [
+                    //           for (var v in communities.userCreatedCommunities)
+                    //             Padding(
+                    //               padding: const EdgeInsets.all(8.0),
+                    //               child: InkWell(
+                    //                 onTap: () {
+                    //                   Navigator.push(context,
+                    //                       MaterialPageRoute(builder: (context) {
+                    //                     return CommunityView(communityObject: v);
+                    //                   }));
+                    //                 },
+                    //                 child: Column(
+                    //                   crossAxisAlignment:
+                    //                       CrossAxisAlignment.start,
+                    //                   mainAxisAlignment: MainAxisAlignment.start,
+                    //                   children: [
+                    //                     Container(
+                    //                       //color: Color(0xffe8e8e8),
+                    //                       width:
+                    //                           MediaQuery.of(context).size.width /
+                    //                               4,
+                    //                       height:
+                    //                           MediaQuery.of(context).size.width /
+                    //                               4,
+                    //                       child: CachedNetworkImage(
+                    //                         imageUrl: v['profileImageUrl'] == null
+                    //                             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                    //                             : v['profileImageUrl'],
+                    //                         memCacheHeight: MediaQuery.of(context)
+                    //                             .size
+                    //                             .height
+                    //                             .floor(),
+                    //                         placeholder: (context, url) =>
+                    //                             Container(
+                    //                           child: Image.asset(
+                    //                               'assets/images/Thumbnail.png'),
+                    //                         ),
+                    //                         errorWidget: (context, url, error) =>
+                    //                             Icon(Icons.error),
+                    //                       ),
+                    //                     ),
+                    //                     Padding(
+                    //                       padding: const EdgeInsets.symmetric(
+                    //                           vertical: 10),
+                    //                       child: Container(
+                    //                         width: MediaQuery.of(context)
+                    //                                 .size
+                    //                                 .width /
+                    //                             4,
+                    //                         child: Text(
+                    //                           v['name'],
+                    //                           textScaleFactor: mediaQueryData
+                    //                               .textScaleFactor
+                    //                               .clamp(0.2, 0.9)
+                    //                               .toDouble(),
+                    //                           overflow: TextOverflow.ellipsis,
+                    //                           maxLines: 2,
+                    //                           style: TextStyle(
+                    //                             //    color: Colors.white,
+                    //                             fontSize: SizeConfig
+                    //                                     .safeBlockHorizontal *
+                    //                                 4,
+                    //                           ),
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           Padding(
+                    //             padding: const EdgeInsets
+                    //                 .fromLTRB(
+                    //                 15, 8, 0, 8),
+                    //             child: Column(
+                    //               crossAxisAlignment:
+                    //               CrossAxisAlignment
+                    //                   .start,
+                    //               children: <Widget>[
+                    //                 GestureDetector(
+                    //                     onTap: () {
+                    //                         Navigator.push(context,
+                    //                         MaterialPageRoute(builder: (context) {
+                    //                         return CreateCommunity();
+                    //                         })).then((value) async {
+                    //                         await _pullRefreshEpisodes();
+                    //                         });
+                    //                     },
+                    //                     child:   Container(
+                    //                       child: Center(
+                    //                         child: Column(
+                    //                           mainAxisAlignment:
+                    //                           MainAxisAlignment
+                    //                               .center,
+                    //                           children: [
+                    //                             Icon(
+                    //                               Icons.add,
+                    //                               color: Color(
+                    //                                   0xffe8e8e8),
+                    //                             ),
+                    //
+                    //                               Text(
+                    //                                 "Add more",
+                    //                                 textScaleFactor:
+                    //                                 1.0,
+                    //                                 style: TextStyle(
+                    //                                     color:
+                    //                                     Color(0xffe8e8e8),
+                    //                                     fontSize: SizeConfig.safeBlockHorizontal * 4),
+                    //                               ),
+                    //
+                    //                           ],
+                    //                         ),
+                    //                       ),
+                    //                       color: Color(
+                    //                           0xff3a3a3a),
+                    //                       width:
+                    //                       MediaQuery.of(context).size.width /
+                    //                           4,
+                    //                       height:
+                    //                       MediaQuery.of(context).size.width /
+                    //                           4,
+                    //
+                    //                     ))],
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(horizontal: 5),
+                    //       child: Divider(
+                    //         color: kSecondaryColor,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            "Your podcasts and episodes",
+                            textScaleFactor: mediaQueryData.textScaleFactor
+                                .clamp(0.2, 1)
+                                .toDouble(),
+                            style: TextStyle(
+                              //   color: Color(0xffe8e8e8),
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          constraints: BoxConstraints(
+                              maxHeight: MediaQuery.of(context).size.height / 4),
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              for (var v in podcastList)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return PodcastView(v['id']);
+                                      }));
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          //   color: Color(0xffe8e8e8),
+                                          width:
+                                              MediaQuery.of(context).size.width /
+                                                  4,
+                                          height:
+                                              MediaQuery.of(context).size.width /
+                                                  4,
+                                          child: CachedNetworkImage(
+                                            imageUrl: v['image'] == null
+                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                : v['image'],
+                                            memCacheHeight: MediaQuery.of(context)
+                                                .size
+                                                .height
+                                                .floor(),
+                                            placeholder: (context, url) =>
+                                                Container(
+                                              child: Image.network(
+                                                  'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'),
+                                            ),
+                                            errorWidget: (context, url, error) =>
+                                                Icon(Icons.error),
+                                          ),
+                                        ),
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width /
+                                                  4,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Text(
+                                              v['name'],
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.2, 1)
+                                                  .toDouble(),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                //     color: Colors.white,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    4,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            'Bio',
-
-                            textScaleFactor: mediaQueryData.textScaleFactor
-                                .clamp(0.2, 1)
-                                .toDouble(),
-                            style: TextStyle(
-
-                                //   color: Color(0xffe8e8e8),
-                                fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            '$bio',
-
-                            textScaleFactor: mediaQueryData.textScaleFactor
-                                .clamp(0.2, 1)
-                                .toDouble(),
-                            style: TextStyle(
-                                //     color: Color(0xffe8e8e8),
-                                fontSize: SizeConfig.safeBlockHorizontal * 4),
-                          ),
-                        ),
-                        Divider(
-                          color: kSecondaryColor,
-                        )
-                      ],
-                    ),
-                  ),
-                  // Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Padding(
-                  //       padding: const EdgeInsets.all(10),
-                  //       child: Text(
-                  //         "Your Communities",
-                  //         textScaleFactor: mediaQueryData.textScaleFactor
-                  //             .clamp(0.2, 1)
-                  //             .toDouble(),
-                  //         style: TextStyle(
-                  //           //         color: Color(0xffe8e8e8),
-                  //           fontSize: SizeConfig.safeBlockHorizontal * 5,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     Container(
-                  //       constraints: BoxConstraints(
-                  //           maxHeight:
-                  //               MediaQuery.of(context).size.height / 5.6),
-                  //       child: ListView(
-                  //         scrollDirection: Axis.horizontal,
-                  //         children: [
-                  //           for (var v in communities.userCreatedCommunities)
-                  //             Padding(
-                  //               padding: const EdgeInsets.all(8.0),
-                  //               child: InkWell(
-                  //                 onTap: () {
-                  //                   Navigator.push(context,
-                  //                       MaterialPageRoute(builder: (context) {
-                  //                     return CommunityView(communityObject: v);
-                  //                   }));
-                  //                 },
-                  //                 child: Column(
-                  //                   crossAxisAlignment:
-                  //                       CrossAxisAlignment.start,
-                  //                   mainAxisAlignment: MainAxisAlignment.start,
-                  //                   children: [
-                  //                     Container(
-                  //                       //color: Color(0xffe8e8e8),
-                  //                       width:
-                  //                           MediaQuery.of(context).size.width /
-                  //                               4,
-                  //                       height:
-                  //                           MediaQuery.of(context).size.width /
-                  //                               4,
-                  //                       child: CachedNetworkImage(
-                  //                         imageUrl: v['profileImageUrl'] == null
-                  //                             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                  //                             : v['profileImageUrl'],
-                  //                         memCacheHeight: MediaQuery.of(context)
-                  //                             .size
-                  //                             .height
-                  //                             .floor(),
-                  //                         placeholder: (context, url) =>
-                  //                             Container(
-                  //                           child: Image.asset(
-                  //                               'assets/images/Thumbnail.png'),
-                  //                         ),
-                  //                         errorWidget: (context, url, error) =>
-                  //                             Icon(Icons.error),
-                  //                       ),
-                  //                     ),
-                  //                     Padding(
-                  //                       padding: const EdgeInsets.symmetric(
-                  //                           vertical: 10),
-                  //                       child: Container(
-                  //                         width: MediaQuery.of(context)
-                  //                                 .size
-                  //                                 .width /
-                  //                             4,
-                  //                         child: Text(
-                  //                           v['name'],
-                  //                           textScaleFactor: mediaQueryData
-                  //                               .textScaleFactor
-                  //                               .clamp(0.2, 0.9)
-                  //                               .toDouble(),
-                  //                           overflow: TextOverflow.ellipsis,
-                  //                           maxLines: 2,
-                  //                           style: TextStyle(
-                  //                             //    color: Colors.white,
-                  //                             fontSize: SizeConfig
-                  //                                     .safeBlockHorizontal *
-                  //                                 4,
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ],
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           Padding(
-                  //             padding: const EdgeInsets
-                  //                 .fromLTRB(
-                  //                 15, 8, 0, 8),
-                  //             child: Column(
-                  //               crossAxisAlignment:
-                  //               CrossAxisAlignment
-                  //                   .start,
-                  //               children: <Widget>[
-                  //                 GestureDetector(
-                  //                     onTap: () {
-                  //                         Navigator.push(context,
-                  //                         MaterialPageRoute(builder: (context) {
-                  //                         return CreateCommunity();
-                  //                         })).then((value) async {
-                  //                         await _pullRefreshEpisodes();
-                  //                         });
-                  //                     },
-                  //                     child:   Container(
-                  //                       child: Center(
-                  //                         child: Column(
-                  //                           mainAxisAlignment:
-                  //                           MainAxisAlignment
-                  //                               .center,
-                  //                           children: [
-                  //                             Icon(
-                  //                               Icons.add,
-                  //                               color: Color(
-                  //                                   0xffe8e8e8),
-                  //                             ),
-                  //
-                  //                               Text(
-                  //                                 "Add more",
-                  //                                 textScaleFactor:
-                  //                                 1.0,
-                  //                                 style: TextStyle(
-                  //                                     color:
-                  //                                     Color(0xffe8e8e8),
-                  //                                     fontSize: SizeConfig.safeBlockHorizontal * 4),
-                  //                               ),
-                  //
-                  //                           ],
-                  //                         ),
-                  //                       ),
-                  //                       color: Color(
-                  //                           0xff3a3a3a),
-                  //                       width:
-                  //                       MediaQuery.of(context).size.width /
-                  //                           4,
-                  //                       height:
-                  //                       MediaQuery.of(context).size.width /
-                  //                           4,
-                  //
-                  //                     ))],
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //
-                  //     Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
-                  //       child: Divider(
-                  //         color: kSecondaryColor,
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "Your podcasts and episodes",
-                          textScaleFactor: mediaQueryData.textScaleFactor
-                              .clamp(0.2, 1)
-                              .toDouble(),
-                          style: TextStyle(
-                            //   color: Color(0xffe8e8e8),
-                            fontSize: SizeConfig.safeBlockHorizontal * 5,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        constraints: BoxConstraints(
-                            maxHeight: MediaQuery.of(context).size.height / 4),
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            for (var v in podcastList)
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return PodcastView(v['id']);
-                                    }));
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        //   color: Color(0xffe8e8e8),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        child: CachedNetworkImage(
-                                          imageUrl: v['image'] == null
-                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                              : v['image'],
-                                          memCacheHeight: MediaQuery.of(context)
-                                              .size
-                                              .height
-                                              .floor(),
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            child: Image.asset(
-                                                'assets/images/Thumbnail.png'),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
-                                        ),
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: Text(
-                                            v['name'],
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.2, 1)
-                                                .toDouble(),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              //     color: Colors.white,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  4,
+                                padding: const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                        onTap: () async {
+                                          if(prefs.getString('HiveUserName') == null){
+                                            showBarModalBottomSheet(
+                                                context:
+                                                context,
+                                                builder:
+                                                    (context) {
+                                                  return HiveDetails();
+                                                });
+                                          }else{
+                                            showBarModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return EmailVerificationDialog(
+                                                    username: prefs.getString('userName'),
+                                                  );
+                                                });
+                                          }
+                                        },
+                                        child: Container(
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
+                                                  color: Color(0xffe8e8e8),
+                                                ),
+                                                Text(
+                                                  "Add Podcast",
+                                                  textScaleFactor: 0.5,
+                                                  style: TextStyle(
+                                                      color: Color(0xffe8e8e8),
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          4),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                          color: Color(0xff3a3a3a),
+                                          width:
+                                              MediaQuery.of(context).size.width /
+                                                  4,
+                                          height:
+                                              MediaQuery.of(context).size.width /
+                                                  4,
+                                        ))
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: kSecondaryColor,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          // Container(
+                          //   width: double.infinity,
+                          //   decoration: BoxDecoration(
+                          //       border: Border(
+                          //           bottom:
+                          //               BorderSide(color: kSecondaryColor))),
+                          //   child: Padding(
+                          //     padding: const EdgeInsets.symmetric(vertical: 15),
+                          //     child: InkWell(
+                          //       onTap: () {
+                          //         Navigator.push(context,
+                          //             MaterialPageRoute(builder: (context) {
+                          //           return CreateCommunity();
+                          //         })).then((value) async {
+                          //           await _pullRefreshEpisodes();
+                          //         });
+                          //       },
+                          //       child: Text(
+                          //         "Add your community",
+                          //         textScaleFactor: mediaQueryData.textScaleFactor
+                          //             .clamp(0.2, 1)
+                          //             .toDouble(),
+                          //         style: TextStyle(
+                          //           fontSize: SizeConfig.safeBlockHorizontal * 4,
+                          //           //      color: Color(0xffe8e8e8),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return Rewards();
+                                  }));
+                                },
+                                child: Text(
+                                  "Your rewards",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //    color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
                                   ),
                                 ),
                               ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  GestureDetector(
-                                      onTap: () async {
-                                        if(prefs.getString('HiveUserName') == null){
-                                          showBarModalBottomSheet(
-                                              context:
-                                              context,
-                                              builder:
-                                                  (context) {
-                                                return HiveDetails();
-                                              });
-                                        }else{
-                                          showBarModalBottomSheet(
-                                              context: context,
-                                              builder: (context) {
-                                                return EmailVerificationDialog(
-                                                  username: prefs.getString('userName'),
-                                                );
-                                              });
-                                        }
-                                      },
-                                      child: Container(
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.add,
-                                                color: Color(0xffe8e8e8),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return DownloadPage();
+                                      });
+                                },
+                                child: Text(
+                                  "Library",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //        color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          height:
+                                              MediaQuery.of(context).size.height,
+                                          // child: InAppWebView(
+                                          //     gestureRecognizers:
+                                          //         gestureRecognizers,
+                                          //     initialFile:
+                                          //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
+                                          child: WebView(
+                                            gestureRecognizers: Set()
+                                              ..add(
+                                                Factory<
+                                                    VerticalDragGestureRecognizer>(
+                                                  () =>
+                                                      VerticalDragGestureRecognizer(),
+                                                ), // or null
                                               ),
-                                              Text(
-                                                "Add Podcast",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    color: Color(0xffe8e8e8),
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4),
-                                              ),
-                                            ],
+                                            gestureNavigationEnabled: true,
+                                            javascriptMode:
+                                                JavascriptMode.unrestricted,
+                                            initialUrl:
+                                                'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
                                           ),
-                                        ),
-                                        color: Color(0xff3a3a3a),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4,
-                                      ))
-                                ],
+                                        );
+                                      });
+                                },
+                                child: Text(
+                                  "Your wallet",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //        color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  hiveUserName == null
+                                      ? Navigator.pushNamedAndRemoveUntil(context,
+                                          HiveAccount.id, (route) => false)
+                                      : print('nothing');
+                                },
+                                child: Text(
+                                  hiveUserName != null
+                                      ? "Connected with your Hive Account ( @${hiveUserName} )"
+                                      : "Connect your Hive Account",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //     color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Settings();
+                                      });
+                                },
+                                child: Text(
+                                  "Setting",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //  color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: kSecondaryColor,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: InkWell(
+                                onTap: () {
+                                  logout();
+                                  prefs.clear();
+                                },
+                                child: Text(
+                                  "Log Out",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.2, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //    color: Color(0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // SignInButton(Buttons.Google,
+                          //     text: 'Sign Out of Google',
+                          //     onPressed: () => authBloc.logout())
+                        ],
                       ),
-                    ],
-                  ),
-                  Divider(
-                    color: kSecondaryColor,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        // Container(
-                        //   width: double.infinity,
-                        //   decoration: BoxDecoration(
-                        //       border: Border(
-                        //           bottom:
-                        //               BorderSide(color: kSecondaryColor))),
-                        //   child: Padding(
-                        //     padding: const EdgeInsets.symmetric(vertical: 15),
-                        //     child: InkWell(
-                        //       onTap: () {
-                        //         Navigator.push(context,
-                        //             MaterialPageRoute(builder: (context) {
-                        //           return CreateCommunity();
-                        //         })).then((value) async {
-                        //           await _pullRefreshEpisodes();
-                        //         });
-                        //       },
-                        //       child: Text(
-                        //         "Add your community",
-                        //         textScaleFactor: mediaQueryData.textScaleFactor
-                        //             .clamp(0.2, 1)
-                        //             .toDouble(),
-                        //         style: TextStyle(
-                        //           fontSize: SizeConfig.safeBlockHorizontal * 4,
-                        //           //      color: Color(0xffe8e8e8),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return Rewards();
-                                }));
-                              },
-                              child: Text(
-                                "Your rewards",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //    color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return DownloadPage();
-                                    });
-                              },
-                              child: Text(
-                                "Library",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //        color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        // child: InAppWebView(
-                                        //     gestureRecognizers:
-                                        //         gestureRecognizers,
-                                        //     initialFile:
-                                        //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
-                                        child: WebView(
-                                          gestureRecognizers: Set()
-                                            ..add(
-                                              Factory<
-                                                  VerticalDragGestureRecognizer>(
-                                                () =>
-                                                    VerticalDragGestureRecognizer(),
-                                              ), // or null
-                                            ),
-                                          gestureNavigationEnabled: true,
-                                          javascriptMode:
-                                              JavascriptMode.unrestricted,
-                                          initialUrl:
-                                              'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
-                                        ),
-                                      );
-                                    });
-                              },
-                              child: Text(
-                                "Your wallet",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //        color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                hiveUserName == null
-                                    ? Navigator.pushNamedAndRemoveUntil(context,
-                                        HiveAccount.id, (route) => false)
-                                    : print('nothing');
-                              },
-                              child: Text(
-                                hiveUserName != null
-                                    ? "Connected with your Hive Account ( @${hiveUserName} )"
-                                    : "Connect your Hive Account",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //     color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Settings();
-                                    });
-                              },
-                              child: Text(
-                                "Setting",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //  color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color: kSecondaryColor,
-                              ),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            child: InkWell(
-                              onTap: () {
-                                logout();
-                                prefs.clear();
-                              },
-                              child: Text(
-                                "Log Out",
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.2, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                  //    color: Color(0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        // SignInButton(Buttons.Google,
-                        //     text: 'Sign Out of Google',
-                        //     onPressed: () => authBloc.logout())
-                      ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 100,
-                  ),
-                ],
+                    SizedBox(
+                      height: 100,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

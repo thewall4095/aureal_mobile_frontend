@@ -150,7 +150,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                           child: Container(
                             width: double.infinity,
                             child: FadeInImage.assetNetwork(
-                              placeholder: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                              placeholder: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                               image:
                                   '${widget.communityObject['bannerImageUrl']}',
                               fit: BoxFit.cover,
@@ -514,7 +514,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                                       width: 120,
                                       child: FadeInImage.assetNetwork(
                                           placeholder:
-                                         ' https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                         ' https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                                           image: v['image'] == null
                                               ? 'assets/images/Thumbnail.png'
                                               : v['image']),

@@ -124,7 +124,7 @@ class _NotificationPageState extends State<NotificationPage>
           return <Widget>[
             SliverAppBar(
               elevation: 0,
-              backgroundColor: Colors.transparent,
+            //  backgroundColor: Colors.transparent,
               // leading: IconButton(
               //   icon: displayPicture != null
               //       ? CircleAvatar(
@@ -212,6 +212,7 @@ class _NotificationPageState extends State<NotificationPage>
                                     ),
                                     Expanded(
                                       child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           GestureDetector(
                                             child: Text(
