@@ -1160,8 +1160,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                   Icon(
                                                     Icons.play_circle_outline,
                                                     size: 15,
-                                                    // color:
-                                                    //     Color(0xffe8e8e8),
+                                                   
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets

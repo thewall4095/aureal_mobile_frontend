@@ -46,6 +46,7 @@ class _NotificationPageState extends State<NotificationPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}';
+    print( 'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}');
     try {
       http.Response response = await http.get(Uri.parse(url));
 
@@ -60,10 +61,12 @@ class _NotificationPageState extends State<NotificationPage>
     }
   }
 
+
   void sendNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String url = 'https://api.aureal.one/public/send';
+
     var map = Map<String, dynamic>();
 
     print(registrationToken);
@@ -92,6 +95,7 @@ class _NotificationPageState extends State<NotificationPage>
 
     var response = await dio.post(url, data: formData);
     print(response.toString());
+   print('notification_id');
   }
 
   @override
@@ -183,7 +187,7 @@ class _NotificationPageState extends State<NotificationPage>
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: GestureDetector(
                               onTap: () {
-                                viewedNotification(v['id']);
+                               // viewedNotification(v['id']);
                               },
                               child: Container(
                                 width: double.infinity,
@@ -196,11 +200,11 @@ class _NotificationPageState extends State<NotificationPage>
                                       width: 65,
                                       child: FadeInImage.assetNetwork(
                                         placeholder:
-                                            'assets/images/Thumbnail.png',
+                                            'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                                         image: v['data']['image'] == null
-                                            ? 'assets/images/Thumbnail.png'
+                                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
                                             : v['data']['image'],
-                                        fit: BoxFit.cover,
+                                       // fit: BoxFit.cover,
                                       ),
                                     ),
                                     SizedBox(
@@ -209,13 +213,15 @@ class _NotificationPageState extends State<NotificationPage>
                                     Expanded(
                                       child: Column(
                                         children: <Widget>[
-                                          Text(
-                                            v['title'],
-                                            textScaleFactor: 0.75,
-                                            style: TextStyle(
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3.2),
+                                          GestureDetector(
+                                            child: Text(
+                                              v['title'],
+                                              textScaleFactor: 0.75,
+                                              style: TextStyle(
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      3.2),
+                                            ),
                                           ),
                                         ],
                                       ),
