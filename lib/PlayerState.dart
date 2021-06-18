@@ -1,10 +1,10 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 
 enum PlayerState {
   playing,
@@ -15,9 +15,12 @@ enum PlayerState {
 class PlayerChange extends ChangeNotifier {
   PlayerState state = PlayerState.playing;
 
+  RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
+
   double position;
 
   var _episodeObject;
+  var _currentPosition;
 
   String episodeName;
   String podcastName;
@@ -100,6 +103,13 @@ class PlayerChange extends ChangeNotifier {
       notificationSettings: NotificationSettings(
           nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
     );
+
+    // if(dursaver.getEpisode(id) == true){
+    //   // audioPlayer.seek()
+    // }
+
+    dursaver.getEpisodeDuration(_episodeObject['id']);
+
     // audioPlayer.open(_episodeObject['url']);
     view();
 
@@ -112,6 +122,14 @@ class PlayerChange extends ChangeNotifier {
   void stop() {
     state = PlayerState.stopped;
     audioPlayer.stop();
+    print(
+        '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
+    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    if (audioPlayer.isPlaying == true) {
+      print(episodeObject);
+      dursaver.addToDatabase(
+          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+    }
   }
 
   void pause() {
@@ -121,6 +139,9 @@ class PlayerChange extends ChangeNotifier {
         isPlaying: false);
     state = PlayerState.paused;
     audioPlayer.pause();
+    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    dursaver.addToDatabase(
+        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
   }
 
   void resume() {

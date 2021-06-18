@@ -194,7 +194,7 @@ class _EpisodeViewState extends State<EpisodeView>
         await _episodeBloc.addEpisode(_getFinalEpisode(id));
       }
     } else {
-      print("Permission deined");
+      print("Permission denied");
     }
   }
 

@@ -153,6 +153,16 @@ class _PlayerState extends State<Player> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    print('Dispose Called//////////////////////////////////////////////');
+    var episodeObject = Provider.of<PlayerChange>(context);
+    episodeObject.dursaver.addToDatabase(episodeObject.episodeObject['id'],
+        episodeObject.audioPlayer.currentPosition.valueWrapper.value);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
 
@@ -202,14 +212,10 @@ class _PlayerState extends State<Player> {
                 maxChildSize: 1.0,
                 builder: (BuildContext context, ScrollController controller) {
                   return Container(
-                    // color: Colors.white,
                     child: Scaffold(
                       resizeToAvoidBottomInset: true,
-                      //   backgroundColor: kSecondaryColor,
-
                       body: Stack(
                         children: [
-                          //  for (var v in comments)
                           Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: ListView(
