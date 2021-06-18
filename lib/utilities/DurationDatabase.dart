@@ -37,8 +37,10 @@ class RecentlyPlayedProvider {
       _dropTables(db: db);
       _createTables(db: db);
     }, onOpen: (Database db) {
-      _db = db;
       debugPrint('on database open recentlyplayed');
+
+
+      _db = db;
     });
 
     _isInit = true;
@@ -61,7 +63,7 @@ class RecentlyPlayedProvider {
       CREATE TABLE $_tblRecentlyPlayed (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           episodeId INTEGER,
-          currentDuration TEXT,
+          currentDuration TEXT
         );
       ''');
 

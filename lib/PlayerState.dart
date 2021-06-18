@@ -104,19 +104,12 @@ class PlayerChange extends ChangeNotifier {
           nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
     );
 
-    // if(dursaver.getEpisode(id) == true){
-    //   // audioPlayer.seek()
-    // }
 
-    dursaver.getEpisodeDuration(_episodeObject['id']);
+    // dursaver.getEpisodeDuration(_episodeObject['id']);
 
-    // audioPlayer.open(_episodeObject['url']);
     view();
 
-//    MediaNotification.showNotification(
-//        title: _episodeObject['name'],
-//        author: _episodeObject['podcast_name'],
-//        isPlaying: true);
+
   }
 
   void stop() {
