@@ -37,19 +37,30 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+
   int counter = 0;
   Dio dio = Dio();
   String status = 'hidden';
   String userId;
+  String registrationToken;
+
   // List<Message> messages = [];
   void checkAuthenticity() async {
     // var setCategories = Provider.of<CategoriesProvider>(context);
     // await setCategories.getCategories();
+    await _messaging.getToken().then((token) {
+      setState(() {
+        registrationToken = token;
+      });
+    });
     String url = 'https://api.aureal.one/public/getToken';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('userId')) {
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
+      map['registration_token'] = registrationToken;
+      print('madarchod');
+      print(registrationToken);
       print(map.toString());
       print(prefs.containsKey('userId'));
 

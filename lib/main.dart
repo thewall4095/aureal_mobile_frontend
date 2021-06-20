@@ -320,7 +320,8 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  String registrationToken;
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   Widget _home = Welcome();
 
   Dio dio = Dio();
@@ -438,13 +439,19 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     String url = 'https://api.aureal.one/public/getToken';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('userId')) {
+      await _messaging.getToken().then((token) {
+        setState(() {
+          registrationToken = token;
+        });
+      });
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
-
+      map['registration_token'] = registrationToken;
+      print('madarchod');
+      print(registrationToken);
       FormData formData = FormData.fromMap(map);
       try {
-        // print(url);
-        // print(map.toString());
+
         var response = await dio.post(url, data: formData);
 
         if (response.statusCode == 200) {

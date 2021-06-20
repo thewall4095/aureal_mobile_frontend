@@ -76,6 +76,9 @@ class _LoginState extends State<Login> {
     var map = Map<String, dynamic>();
     map['username'] = username;
     map['password'] = password;
+
+    print(registrationToken);
+
     map['registration_token'] = registrationToken;
     FormData formData = FormData.fromMap(map);
 
