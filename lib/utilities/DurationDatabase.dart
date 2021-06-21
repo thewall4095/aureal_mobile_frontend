@@ -39,7 +39,6 @@ class RecentlyPlayedProvider {
     }, onOpen: (Database db) {
       debugPrint('on database open recentlyplayed');
 
-
       _db = db;
     });
 
@@ -104,25 +103,60 @@ class RecentlyPlayedProvider {
     return r != 0;
   }
 
-  getEpisodeDuration(var episodeId) async {
+  Future<Duration> getEpisodeDuration(var episodeId) async {
+    print(
+        "Its coming here //////////////////////////////////////////////////////////////");
+
+    print(episodeId);
     Database db = await _init();
     _database ??= db;
 
-    final List<Map<String, dynamic>> rows = await _database.rawQuery(
+    var rows = await _database.rawQuery(
         'SELECT * FROM $_tblRecentlyPlayed WHERE episodeId = $episodeId;');
 
-    if (rows.length == 0) {
-      print(rows[0]);
-      return rows[0];
+    if (rows.length != 0) {
+      print(
+          '${rows[0]['currentDuration']} ////////////////////////////////////////////////');
+      print(Duration(
+          minutes:
+              int.parse(rows[0]['currentDuration'].toString().split(':')[1]),
+          seconds: int.parse(rows[0]['currentDuration']
+              .toString()
+              .split(':')[2]
+              .split('.')[0]),
+          hours:
+              int.parse(rows[0]['currentDuration'].toString().split(':')[0])));
+      return Duration(
+          minutes:
+              int.parse(rows[0]['currentDuration'].toString().split(':')[1]),
+          seconds: int.parse(rows[0]['currentDuration']
+              .toString()
+              .split(':')[2]
+              .split('.')[0]),
+          hours:
+              int.parse(rows[0]['currentDuration'].toString().split(':')[0]));
     } else {
-      return true;
+      return null;
     }
+
+    // print(rows.first);
+
+    // if (rows.length != 0) {
+    //   print(rows);
+    //   // return rows[0];
+    // } else {
+    //   // return null;
+    // }
   }
 
   void addToDatabase(var episodeId, var currentPosition) {
     if (getEpisode(episodeId) == true) {
+      print(
+          'update episode called /////////////////////////////////////////////');
       updateEpisode(episodeId, currentPosition);
     } else {
+      print(
+          'add episode called//////////////////////////////////////////////////');
       addEpisode(episodeId, currentPosition);
     }
   }
@@ -131,14 +165,14 @@ class RecentlyPlayedProvider {
     Database db = await _init();
     _database ??= db;
 
-    print('$episodeId $currentPosition');
+    // print('$episodeId $currentPosition');
 
     final int i = await _database.rawInsert(
         'INSERT INTO $_tblRecentlyPlayed '
         'VALUES (NULL, ?, ?)',
         [
           episodeId,
-          currentPosition,
+          currentPosition.toString(),
         ]);
 
     return i >= 1;

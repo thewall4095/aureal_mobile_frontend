@@ -57,6 +57,10 @@ class PlayerChange extends ChangeNotifier {
   }
 
   void view() async {
+    // if (dursaver.getEpisode(episodeObject['id']) == false) {
+    //   print(
+    //       '${dursaver.getEpisodeDuration(episodeObject['id'])} /////////////////////////////////////////////////////////////////////');
+    // }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/views';
 
@@ -74,8 +78,25 @@ class PlayerChange extends ChangeNotifier {
     }
   }
 
-  void play() {
+  void play() async {
+    Duration dur = await dursaver.getEpisodeDuration(episodeObject['id']);
+    print(dur);
+    print(dur.runtimeType);
     state = PlayerState.playing;
+
+    audioPlayer.open(
+      Audio.network(_episodeObject['url'],
+          metas: Metas(
+            title: _episodeObject['name'],
+            album: _episodeObject['podcast_name'],
+            artist: _episodeObject['author'],
+            image: MetasImage.network(_episodeObject['image']),
+          )),
+      seek: dur,
+      showNotification: true,
+      notificationSettings: NotificationSettings(
+          nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
+    );
 //    audioPlayer.play(kUrl, isLocal: false);
 //    setState(() {
 //      playerState = PlayerState.playing;
@@ -91,35 +112,36 @@ class PlayerChange extends ChangeNotifier {
 //      ),
 //    );
 
-    audioPlayer.open(
-      Audio.network(_episodeObject['url'],
-          metas: Metas(
-            title: _episodeObject['name'],
-            album: _episodeObject['podcast_name'],
-            artist: _episodeObject['author'],
-            image: MetasImage.network(_episodeObject['image']),
-          )),
-      showNotification: true,
-      notificationSettings: NotificationSettings(
-          nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
-    );
-
-
-    // dursaver.getEpisodeDuration(_episodeObject['id']);
+    // if (dursaver.getEpisode(episodeObject['id']) == true) {
+    //   print('The episode exists');
+    //   print(jsonDecode(dursaver.getEpisode(episodeObject['id']).toString())[
+    //       'currentPosition']);
+    //
+    // } else {
+    //   audioPlayer.open(
+    //     Audio.network(_episodeObject['url'],
+    //         metas: Metas(
+    //           title: _episodeObject['name'],
+    //           album: _episodeObject['podcast_name'],
+    //           artist: _episodeObject['author'],
+    //           image: MetasImage.network(_episodeObject['image']),
+    //         )),
+    //     showNotification: true,
+    //     notificationSettings: NotificationSettings(
+    //         nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
+    //   );
+    // }
 
     view();
-
-
   }
 
   void stop() {
     state = PlayerState.stopped;
     audioPlayer.stop();
-    print(
-        '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
+    // print(
+    //     '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
     _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
     if (audioPlayer.isPlaying == true) {
-      print(episodeObject);
       dursaver.addToDatabase(
           episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
     }
