@@ -1133,8 +1133,13 @@ class _PodcastViewState extends State<PodcastView> {
                                                 // }));
                                               } else {
                                                 currentlyPlaying.stop();
+
                                                 currentlyPlaying.episodeObject =
                                                     episodeList[index - 1];
+                                                currentlyPlaying.playList =
+                                                    episodeList;
+                                                print(
+                                                    currentlyPlaying.playList);
                                                 print(currentlyPlaying
                                                     .episodeObject
                                                     .toString());

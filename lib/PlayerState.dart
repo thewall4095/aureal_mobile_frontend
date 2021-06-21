@@ -22,6 +22,8 @@ class PlayerChange extends ChangeNotifier {
   var _episodeObject;
   var _currentPosition;
 
+  var _playList;
+
   String episodeName;
   String podcastName;
   String author;
@@ -43,6 +45,15 @@ class PlayerChange extends ChangeNotifier {
 //    print(_musicPlaylist);
 //    print(_musicPlaylist.runtimeType);
 //  }
+
+  List<dynamic> get playList => _playList;
+
+  set playList(var newValue) {
+    _playList = newValue;
+
+    notifyListeners();
+    print(_playList);
+  }
 
   set episodeObject(var newValue) {
     _episodeObject = newValue;
@@ -78,11 +89,31 @@ class PlayerChange extends ChangeNotifier {
     }
   }
 
+  NotificationAction customNextAction(AssetsAudioPlayer audioplayer) {
+    if (currentIndex != playList.length - 1) {
+      _episodeObject = playList[currentIndex + 1];
+      stop();
+      play();
+    }
+  }
+
+  NotificationAction customPreviousAction(AssetsAudioPlayer audioplayer) {
+    if (currentIndex != 0) {
+      _episodeObject = playList[currentIndex - 1];
+      stop();
+      play();
+    }
+  }
+
   void play() async {
     Duration dur = await dursaver.getEpisodeDuration(episodeObject['id']);
     print(dur);
     print(dur.runtimeType);
     state = PlayerState.playing;
+
+    currentIndex = _playList.indexOf(_episodeObject);
+    print(
+        '$currentIndex ////////////////////////////////////////////////////////////////////');
 
     audioPlayer.open(
       Audio.network(_episodeObject['url'],
@@ -95,7 +126,7 @@ class PlayerChange extends ChangeNotifier {
       seek: dur,
       showNotification: true,
       notificationSettings: NotificationSettings(
-          nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
+          nextEnabled: true, prevEnabled: true, seekBarEnabled: true),
     );
 //    audioPlayer.play(kUrl, isLocal: false);
 //    setState(() {
