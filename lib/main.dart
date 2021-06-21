@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
 import 'package:auditory/CategoriesProvider.dart';
@@ -34,6 +35,7 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'SearchProvider.dart';
 import 'screens/Home.dart';
 import 'screens/LoginSignup/Auth.dart';
@@ -203,6 +205,17 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+  void _showSnackBar(String msg) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final context = _scaffoldKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+        ));
+      }
+    });
+  }
+
   int _messageCount = 0;
 
   final navigatorKey = GlobalKey<NavigatorState>();
@@ -329,19 +342,33 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     // TODO: implement initState
+
     init();
     super.initState();
+  }
+
+  void _showSnackBar(String msg) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final context = _scaffoldKey.currentContext;
+      if (context != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(msg),
+        ));
+      }
+    });
   }
 
   void init() async {
     if (counter < 1) {
       await checkAuthenticity(context);
     }
+
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage message) {
       // print('${message.data}');
       // print(message.contentAvailable);
+
       if (message != null) {
         if (message.data['type'] != null) {
           if (message.data['type'] == 'vote_episode') {
@@ -364,14 +391,18 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
-          if(message.data['type'] == 'episode_published'){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return EpisodeView(episodeId: message.data['episode_id'],);
+          if (message.data['type'] == 'episode_published') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(
+                episodeId: message.data['episode_id'],
+              );
             }));
           }
-          if(message.data['type'] == 'new_episode'){
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return EpisodeView(episodeId: message.data['episode_id'],);
+          if (message.data['type'] == 'new_episode') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return EpisodeView(
+                episodeId: message.data['episode_id'],
+              );
             }));
           }
         } else {

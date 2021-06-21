@@ -1,10 +1,10 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
 
 enum PlayerState {
   playing,
@@ -15,9 +15,14 @@ enum PlayerState {
 class PlayerChange extends ChangeNotifier {
   PlayerState state = PlayerState.playing;
 
+  RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
+
   double position;
 
   var _episodeObject;
+  var _currentPosition;
+
+  var _playList;
 
   String episodeName;
   String podcastName;
@@ -41,6 +46,15 @@ class PlayerChange extends ChangeNotifier {
 //    print(_musicPlaylist.runtimeType);
 //  }
 
+  List<dynamic> get playList => _playList;
+
+  set playList(var newValue) {
+    _playList = newValue;
+
+    notifyListeners();
+    print(_playList);
+  }
+
   set episodeObject(var newValue) {
     _episodeObject = newValue;
     episodeName = _episodeObject['name'];
@@ -54,6 +68,10 @@ class PlayerChange extends ChangeNotifier {
   }
 
   void view() async {
+    // if (dursaver.getEpisode(episodeObject['id']) == false) {
+    //   print(
+    //       '${dursaver.getEpisodeDuration(episodeObject['id'])} /////////////////////////////////////////////////////////////////////');
+    // }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/views';
 
@@ -71,8 +89,45 @@ class PlayerChange extends ChangeNotifier {
     }
   }
 
-  void play() {
+  NotificationAction customNextAction(AssetsAudioPlayer audioplayer) {
+    if (currentIndex != playList.length - 1) {
+      _episodeObject = playList[currentIndex + 1];
+      stop();
+      play();
+    }
+  }
+
+  NotificationAction customPreviousAction(AssetsAudioPlayer audioplayer) {
+    if (currentIndex != 0) {
+      _episodeObject = playList[currentIndex - 1];
+      stop();
+      play();
+    }
+  }
+
+  void play() async {
+    Duration dur = await dursaver.getEpisodeDuration(episodeObject['id']);
+    print(dur);
+    print(dur.runtimeType);
     state = PlayerState.playing;
+
+    currentIndex = _playList.indexOf(_episodeObject);
+    print(
+        '$currentIndex ////////////////////////////////////////////////////////////////////');
+
+    audioPlayer.open(
+      Audio.network(_episodeObject['url'],
+          metas: Metas(
+            title: _episodeObject['name'],
+            album: _episodeObject['podcast_name'],
+            artist: _episodeObject['author'],
+            image: MetasImage.network(_episodeObject['image']),
+          )),
+      seek: dur,
+      showNotification: true,
+      notificationSettings: NotificationSettings(
+          nextEnabled: true, prevEnabled: true, seekBarEnabled: true),
+    );
 //    audioPlayer.play(kUrl, isLocal: false);
 //    setState(() {
 //      playerState = PlayerState.playing;
@@ -88,30 +143,39 @@ class PlayerChange extends ChangeNotifier {
 //      ),
 //    );
 
-    audioPlayer.open(
-      Audio.network(_episodeObject['url'],
-          metas: Metas(
-            title: _episodeObject['name'],
-            album: _episodeObject['podcast_name'],
-            artist: _episodeObject['author'],
-            image: MetasImage.network(_episodeObject['image']),
-          )),
-      showNotification: true,
-      notificationSettings: NotificationSettings(
-          nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
-    );
-    // audioPlayer.open(_episodeObject['url']);
-    view();
+    // if (dursaver.getEpisode(episodeObject['id']) == true) {
+    //   print('The episode exists');
+    //   print(jsonDecode(dursaver.getEpisode(episodeObject['id']).toString())[
+    //       'currentPosition']);
+    //
+    // } else {
+    //   audioPlayer.open(
+    //     Audio.network(_episodeObject['url'],
+    //         metas: Metas(
+    //           title: _episodeObject['name'],
+    //           album: _episodeObject['podcast_name'],
+    //           artist: _episodeObject['author'],
+    //           image: MetasImage.network(_episodeObject['image']),
+    //         )),
+    //     showNotification: true,
+    //     notificationSettings: NotificationSettings(
+    //         nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
+    //   );
+    // }
 
-//    MediaNotification.showNotification(
-//        title: _episodeObject['name'],
-//        author: _episodeObject['podcast_name'],
-//        isPlaying: true);
+    view();
   }
 
   void stop() {
     state = PlayerState.stopped;
     audioPlayer.stop();
+    // print(
+    //     '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
+    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    if (audioPlayer.isPlaying == true) {
+      dursaver.addToDatabase(
+          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+    }
   }
 
   void pause() {
@@ -121,6 +185,9 @@ class PlayerChange extends ChangeNotifier {
         isPlaying: false);
     state = PlayerState.paused;
     audioPlayer.pause();
+    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    dursaver.addToDatabase(
+        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
   }
 
   void resume() {
