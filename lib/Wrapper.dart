@@ -59,7 +59,6 @@ class _WrapperState extends State<Wrapper> {
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
       map['registration_token'] = registrationToken;
-      print('madarchod');
       print(registrationToken);
       print(map.toString());
       print(prefs.containsKey('userId'));

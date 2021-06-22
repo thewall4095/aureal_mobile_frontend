@@ -108,7 +108,7 @@ class _WelcomeState extends State<Welcome> {
   //
   //   var facebookLoginResult = await facebookLogin.logIn(['email']);
   //
-  //   print('//////////////////fucking it here');
+  //   print('////////////////// it here');
   //   print(facebookLoginResult.status);
   //   print(facebookLoginResult.errorMessage);
   //

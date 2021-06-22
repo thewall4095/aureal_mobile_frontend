@@ -104,8 +104,6 @@ class RecentlyPlayedProvider {
   }
 
   Future<Duration> getEpisodeDuration(var episodeId) async {
-    print(
-        "Its coming here //////////////////////////////////////////////////////////////");
 
     print(episodeId);
     Database db = await _init();
