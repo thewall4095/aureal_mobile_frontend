@@ -93,19 +93,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
       print('proceedd');
       await discoverData.getDiscoverProvider();
     }
+
     Future<bool> _onBackPressed() async {
       Navigator.pushNamedAndRemoveUntil(
-          context,
-          Home.id,
-          ModalRoute.withName("/")
-      );
+          context, Home.id, ModalRoute.withName("/"));
       return false; // return true if the route to be popped
     }
+
     final mediaQueryData = MediaQuery.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         return WillPopScope(
-          onWillPop:_onBackPressed ,
+          onWillPop: _onBackPressed,
           child: Scaffold(
             extendBody: true,
             body: ModalProgressHUD(
@@ -141,10 +140,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                         horizontal: 15),
                                                 child: Text(
                                                   v['topic'],
-                                                  textScaleFactor: mediaQueryData
-                                                      .textScaleFactor
-                                                      .clamp(0.1, 1.3)
-                                                      .toDouble(),
+                                                  textScaleFactor:
+                                                      mediaQueryData
+                                                          .textScaleFactor
+                                                          .clamp(0.1, 1.3)
+                                                          .toDouble(),
                                                   style: TextStyle(
                                                       //  color: Color(0xffe8e8e8),
                                                       fontSize: SizeConfig
@@ -160,8 +160,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                         v['topic'] == 'Featured Podcasts'
                                             ? v['isLoaded'] == false
                                                 ? Shimmer.fromColors(
-                                                    baseColor: Color(0xff3a3a3a),
-                                                    highlightColor: kPrimaryColor,
+                                                    baseColor:
+                                                        Color(0xff3a3a3a),
+                                                    highlightColor:
+                                                        kPrimaryColor,
                                                     child: Container(
                                                       height:
                                                           MediaQuery.of(context)
@@ -177,10 +179,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                     ),
                                                   )
                                                 : Container(
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        1.22,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            1.22,
                                                     width: double.infinity,
                                                     child: CarouselSlider(
                                                       options: CarouselOptions(
@@ -240,8 +243,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           Container(
                                                                         child:
                                                                             CachedNetworkImage(
-                                                                          imageUrl: v['image'] ==
-                                                                                  null
+                                                                          imageBuilder:
+                                                                              (context, imageProvider) {
+                                                                            return Container(
+                                                                              decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                              ),
+                                                                              height: MediaQuery.of(context).size.width,
+                                                                              width: MediaQuery.of(context).size.width,
+                                                                            );
+                                                                          },
+                                                                          imageUrl: v['image'] == null
                                                                               ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
                                                                               : v['image'],
                                                                           // memCacheHeight:
@@ -255,9 +268,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               .height
                                                                               .floor(),
 
-                                                                          errorWidget: (context,
-                                                                                  url,
-                                                                                  error) =>
+                                                                          errorWidget: (context, url, error) =>
                                                                               Icon(Icons.error),
                                                                         ),
                                                                       ),
@@ -278,15 +289,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             : ' ',
                                                                         textScaleFactor: mediaQueryData
                                                                             .textScaleFactor
-                                                                            .clamp(
-                                                                                0.2,
+                                                                            .clamp(0.2,
                                                                                 1.1)
                                                                             .toDouble(),
                                                                         maxLines:
                                                                             2,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         style: TextStyle(
                                                                             //color: Colors
                                                                             //       .white,
@@ -303,13 +312,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         maxLines:
                                                                             1,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         style:
                                                                             TextStyle(
                                                                           fontSize:
-                                                                              SizeConfig.safeBlockHorizontal *
-                                                                                  3.4,
+                                                                              SizeConfig.safeBlockHorizontal * 3.4,
                                                                           //   color: Colors
                                                                           //     .grey
                                                                         ),
@@ -325,9 +332,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                   )
                                             : Container(
                                                 width: double.infinity,
-                                                height:
-                                                    SizeConfig.blockSizeVertical *
-                                                        26,
+                                                height: SizeConfig
+                                                        .blockSizeVertical *
+                                                    26,
                                                 constraints: BoxConstraints(
                                                     minHeight:
                                                         MediaQuery.of(context)
@@ -340,9 +347,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                   children: <Widget>[
                                                     for (var a in v['data'])
                                                       Padding(
-                                                        padding: const EdgeInsets
-                                                                .fromLTRB(
-                                                            15, 8, 0, 8),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                15, 8, 0, 8),
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -369,29 +377,39 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   }));
                                                                 }
                                                               },
-                                                              child: Container(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4,
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4,
-                                                                child:
-                                                                    CachedNetworkImage(
-                                                                  memCacheHeight:
-                                                                      (MediaQuery.of(context)
-                                                                              .size
-                                                                              .height)
-                                                                          .floor(),
-                                                                  imageUrl: a['image'] !=
-                                                                          null
-                                                                      ? a['image']
-                                                                      : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                                ),
+                                                              child:
+                                                                  CachedNetworkImage(
+                                                                imageBuilder:
+                                                                    (context,
+                                                                        imageProvider) {
+                                                                  return Container(
+                                                                    decoration: BoxDecoration(
+                                                                        image: DecorationImage(
+                                                                            image:
+                                                                                imageProvider,
+                                                                            fit: BoxFit
+                                                                                .cover),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(8)),
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        4,
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        4,
+                                                                  );
+                                                                },
+                                                                memCacheHeight:
+                                                                    (MediaQuery.of(context)
+                                                                            .size
+                                                                            .height)
+                                                                        .floor(),
+                                                                imageUrl: a['image'] !=
+                                                                        null
+                                                                    ? a['image']
+                                                                    : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                                                               ),
                                                             ),
                                                             SizedBox(
@@ -421,7 +439,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               0.5,
                                                                               1)
                                                                           .toDouble(),
-                                                                      maxLines: 2,
+                                                                      maxLines:
+                                                                          2,
                                                                       overflow:
                                                                           TextOverflow
                                                                               .ellipsis,
@@ -437,18 +456,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             '  ')
                                                                         : Text(
                                                                             a['author'],
-                                                                            textScaleFactor: mediaQueryData
-                                                                                .textScaleFactor
-                                                                                .clamp(0.5, 1)
-                                                                                .toDouble(),
+                                                                            textScaleFactor:
+                                                                                mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
                                                                             maxLines:
                                                                                 1,
                                                                             overflow:
                                                                                 TextOverflow.ellipsis,
                                                                             style:
                                                                                 TextStyle(
-                                                                              fontSize:
-                                                                                  SizeConfig.safeBlockHorizontal * 2.5,
+                                                                              fontSize: SizeConfig.safeBlockHorizontal * 2.5,
                                                                               //    color: Colors.black54
                                                                             ),
                                                                           )

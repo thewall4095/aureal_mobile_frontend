@@ -450,6 +450,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
         elevation: 10,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
@@ -552,7 +553,13 @@ class _BottomPlayerState extends State<BottomPlayer> {
             child: Container(
               height: SizeConfig.safeBlockVertical * 6,
               width: double.infinity,
-              decoration: BoxDecoration(),
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 1,
+                )
+              ]),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
