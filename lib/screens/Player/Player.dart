@@ -193,12 +193,34 @@ class _PlayerState extends State<Player> {
             child: Column(
               children: [
                 Expanded(
-                  child: CachedNetworkImage(
-                    imageUrl: episodeObject.episodeObject['image'] == null
-                        ? episodeObject.episodeObject['podcast_image']
-                        : episodeObject.episodeObject['image'],
-                  ),
-                ),
+                child:  CachedNetworkImage(
+                imageBuilder:
+                (context, imageProvider) {
+    return Container(
+    decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+    ),
+    height: MediaQuery.of(context).size.width,
+    width: MediaQuery.of(context).size.width,
+    );
+    },
+      imageUrl: episodeObject.episodeObject['image'] == null
+          ? episodeObject.episodeObject['podcast_image']
+          : episodeObject.episodeObject['image'],
+
+
+      memCacheHeight: MediaQuery.of(context)
+          .size
+          .height
+          .floor(),
+
+      errorWidget: (context, url, error) =>
+          Icon(Icons.error),
+    ),),
+
+
+
                 Expanded(
                   child: Container(),
                 )

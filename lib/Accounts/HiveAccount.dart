@@ -156,7 +156,7 @@ class _HiveAccountState extends State<HiveAccount> {
                         print(prefs.getString(key));
                         if (prefs.getString('code') != null) {
                           print(
-                              'this is the code motherfucker: ${prefs.getString('code')}');
+                              'this is the code : ${prefs.getString('code')}');
                         }
                         if (prefs.getString('userId') != null) {
                           registerHiveUser();
@@ -205,7 +205,7 @@ class _HiveAccountState extends State<HiveAccount> {
 // print(prefs.getString(key));
 // if (prefs.getString('code') != null) {
 // print(
-// 'this is the code motherfucker: ${prefs.getString('code')}');
+// 'this is the code : ${prefs.getString('code')}');
 // }
 // HiveAuth();
 // }
