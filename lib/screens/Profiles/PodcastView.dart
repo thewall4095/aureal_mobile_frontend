@@ -403,21 +403,39 @@ class _PodcastViewState extends State<PodcastView> {
                                 height: MediaQuery.of(context).size.width / 2.5,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: CachedNetworkImage(
-                                    memCacheHeight:
-                                        (MediaQuery.of(context).size.height)
-                                            .floor(),
-                                    placeholder: (context, url) => Container(
-                                      child: Image.asset(
-                                          'assets/images/Thumbnail.png'),
-                                    ),
-                                    imageUrl: podcastData == null
-                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                        : podcastData['image'],
-                                    fit: BoxFit.cover,
-                                  ),
+                                    child:  CachedNetworkImage(
+                                      imageBuilder:
+                                          (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                          ),
+                                          height: MediaQuery.of(context).size.width,
+                                          width: MediaQuery.of(context).size.width,
+                                        );
+                                      },
+                                      imageUrl: podcastData == null
+                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          : podcastData['image'],
+                                      fit: BoxFit.cover,
+                                      // memCacheHeight:
+                                      //     MediaQuery.of(
+                                      //             context)
+                                      //         .size
+                                      //         .width
+                                      //         .ceil(),
+                                      memCacheHeight: MediaQuery.of(context)
+                                          .size
+                                          .height
+                                          .floor(),
+
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    )
                                 ),
                               ),
+
                               SizedBox(
                                 width: 10,
                               ),

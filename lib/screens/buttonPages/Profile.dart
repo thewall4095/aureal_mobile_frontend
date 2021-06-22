@@ -372,16 +372,37 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           Container(
                             height: MediaQuery.of(context).size.width / 4,
                             width: MediaQuery.of(context).size.width / 4,
-                            child: CachedNetworkImage(
-                              imageUrl: displayPicture == null
-                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                  : displayPicture,
-                              memCacheHeight:
-                                  MediaQuery.of(context).size.height.floor(),
-                              errorWidget: (BuildContext context, url, error) {
-                                return Container();
-                              },
-                            ),
+                          child:  CachedNetworkImage(
+                  imageBuilder:
+                      (context, imageProvider) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                      ),
+                      height: MediaQuery.of(context).size.width,
+                      width: MediaQuery.of(context).size.width,
+                    );
+                  },
+                  imageUrl: displayPicture == null
+                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                      : displayPicture,
+                  fit: BoxFit.cover,
+                  // memCacheHeight:
+                  //     MediaQuery.of(
+                  //             context)
+                  //         .size
+                  //         .width
+                  //         .ceil(),
+                  memCacheHeight: MediaQuery.of(context)
+                      .size
+                      .height
+                      .floor(),
+
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.error),
+                )
+
                           ),
                           SizedBox(
                             width: 15,

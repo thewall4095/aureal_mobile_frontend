@@ -237,13 +237,35 @@ class _CategoryViewState extends State<CategoryView> {
                           // child: FadeInImage.assetNetwork(
                           //     placeholder: 'assets/images/Thumbnail.png',
                           //     image: '${result[index]['image']}'),
-                          child: CachedNetworkImage(
-                            imageUrl: '${result[index]['image']}',
-                            memCacheHeight:
-                                MediaQuery.of(context).size.height.floor(),
-                          ),
-                          decoration: BoxDecoration(),
-                        ),
+                      child:  CachedNetworkImage(
+                        imageBuilder:
+                            (context, imageProvider) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                            ),
+                            height: MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width,
+                          );
+                        },
+                        imageUrl: '${result[index]['image']}',
+                        fit: BoxFit.cover,
+                        // memCacheHeight:
+                        //     MediaQuery.of(
+                        //             context)
+                        //         .size
+                        //         .width
+                        //         .ceil(),
+                        memCacheHeight: MediaQuery.of(context)
+                            .size
+                            .height
+                            .floor(),
+
+                        errorWidget: (context, url, error) =>
+                            Icon(Icons.error),
+                      ),),
+
                         SizedBox(width: 10),
                         Expanded(
                           child: Column(

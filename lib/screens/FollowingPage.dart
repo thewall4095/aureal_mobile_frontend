@@ -395,30 +395,35 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   .width /
                                                               4,
                                                       //   color: Colors.white,
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: v['image'],
-                                                        memCacheWidth:
-                                                            (MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width)
-                                                                .floor(),
-                                                        memCacheHeight:
-                                                            (MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width)
-                                                                .floor(),
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                Container(
-                                                          child: Image.asset(
-                                                              'assets/images/Thumbnail.png'),
-                                                        ),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Icon(Icons.error),
-                                                      ),
+                                                      child:  CachedNetworkImage(
+                                                          imageBuilder:
+                                                              (context, imageProvider) {
+                                                            return Container(
+                                                              decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                              ),
+                                                              height: MediaQuery.of(context).size.width,
+                                                              width: MediaQuery.of(context).size.width,
+                                                            );
+                                                          },
+                                                          imageUrl: v['image'] == null
+                                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                              : v['image'],
+                                                          // memCacheHeight:
+                                                          //     MediaQuery.of(
+                                                          //             context)
+                                                          //         .size
+                                                          //         .width
+                                                          //         .ceil(),
+                                                          memCacheHeight: MediaQuery.of(context)
+                                                              .size
+                                                              .height
+                                                              .floor(),
+
+                                                          errorWidget: (context, url, error) =>
+                                                              Icon(Icons.error),
+                                                        )
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets
@@ -658,30 +663,35 @@ class _FollowingPageState extends State<FollowingPage>
                                                                     .size
                                                                     .width /
                                                                 7,
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: v['image'],
-                                                          memCacheWidth:
-                                                              MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width
-                                                                  .floor(),
-                                                          memCacheHeight:
-                                                              MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width
-                                                                  .floor(),
-                                                          placeholder:
-                                                              (context, url) =>
-                                                                  Container(
-                                                            child: Image.asset(
-                                                                'assets/images/Thumbnail.png'),
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Icon(Icons.error),
-                                                        ),
+                                                          child:  CachedNetworkImage(
+                                                            imageBuilder:
+                                                                (context, imageProvider) {
+                                                              return Container(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                ),
+                                                                height: MediaQuery.of(context).size.width,
+                                                                width: MediaQuery.of(context).size.width,
+                                                              );
+                                                            },
+                                                            imageUrl: v['image'] == null
+                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                : v['image'],
+                                                            // memCacheHeight:
+                                                            //     MediaQuery.of(
+                                                            //             context)
+                                                            //         .size
+                                                            //         .width
+                                                            //         .ceil(),
+                                                            memCacheHeight: MediaQuery.of(context)
+                                                                .size
+                                                                .height
+                                                                .floor(),
+
+                                                            errorWidget: (context, url, error) =>
+                                                                Icon(Icons.error),
+                                                          )
                                                       ),
                                                       SizedBox(
                                                           width: SizeConfig
