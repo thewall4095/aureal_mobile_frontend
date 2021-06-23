@@ -6,6 +6,7 @@ import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -585,26 +586,49 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   .size
                                                   .width /
                                               5,
-                                          child: FadeInImage.assetNetwork(
-                                              height:
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      5,
-                                              width:
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      5,
-                                              fit: BoxFit.cover,
-                                              placeholder:
-                                                  'assets/images/Thumbnail.png',
-                                              image: podcastResult[index]
-                                                          ['image'] ==
-                                                      null
-                                                  ? 'assets/images/Thumbnail.png'
-                                                  : podcastResult[index]
-                                                      ['image']),
+                                      child:  CachedNetworkImage(
+                                          height:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              5,
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              5,
+                                        imageBuilder:
+                                            (context, imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                            ),
+                                            height: MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context).size.width,
+                                          );
+                                        },
+                                        imageUrl: podcastResult[index]
+                                        ['image'] ==
+                                            null
+                                            ? 'assets/images/Thumbnail.png'
+                                            : podcastResult[index]
+                                        ['image'],
+                                        fit: BoxFit.cover,
+                                        // memCacheHeight:
+                                        //     MediaQuery.of(
+                                        //             context)
+                                        //         .size
+                                        //         .width
+                                        //         .ceil(),
+                                        memCacheHeight: MediaQuery.of(context)
+                                            .size
+                                            .height
+                                            .floor(),
+
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(

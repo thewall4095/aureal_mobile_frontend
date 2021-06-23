@@ -481,7 +481,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
       map['registration_token'] = registrationToken;
-      print('madarchod');
       print(registrationToken);
       FormData formData = FormData.fromMap(map);
       try {

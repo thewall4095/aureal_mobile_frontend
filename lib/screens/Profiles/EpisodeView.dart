@@ -331,16 +331,46 @@ class _EpisodeViewState extends State<EpisodeView>
                               : Container(
                                   height: 90,
                                   width: 80,
-                                  child: FadeInImage.assetNetwork(
-                                      placeholder:
-                                          'assets/images/Thumbnail.png',
-                                      image: episodeContent['image'] != null
-                                          ? episodeContent['image']
-                                          : 'assets/images/Thumbnail.png'),
-                                  decoration: BoxDecoration(
-                                      //   color: Colors.white,
-                                      borderRadius: BorderRadius.circular(5)),
-                                ),
+          child:  CachedNetworkImage(
+          imageBuilder:
+          (context, imageProvider) {
+          return Container(
+          decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+          height: MediaQuery.of(context).size.width,
+          width: MediaQuery.of(context).size.width,
+          );
+          },
+          imageUrl: episodeContent['image'] != null
+          ? episodeContent['image']
+              : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+          fit: BoxFit.cover,
+          // memCacheHeight:
+          //     MediaQuery.of(
+          //             context)
+          //         .size
+          //         .width
+          //         .ceil(),
+          memCacheHeight: MediaQuery.of(context)
+              .size
+              .height
+              .floor(),
+
+          errorWidget: (context, url, error) =>
+          Icon(Icons.error),
+          ),
+                                //   child: FadeInImage.assetNetwork(
+                                //       placeholder:
+                                //           'assets/images/Thumbnail.png',
+                                //       image: episodeContent['image'] != null
+                                //           ? episodeContent['image']
+                                //           : 'assets/images/Thumbnail.png'),
+                                //   decoration: BoxDecoration(
+                                //       //   color: Colors.white,
+                                //       borderRadius: BorderRadius.circular(5)),
+                                 ),
                           SizedBox(
                             height: 25,
                           ),

@@ -173,6 +173,8 @@ class PlayerChange extends ChangeNotifier {
     //     '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
     _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
     if (audioPlayer.isPlaying == true) {
+      var a = dursaver.getAllEpisodes();
+      print(a.toString());
       dursaver.addToDatabase(
           episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
     }

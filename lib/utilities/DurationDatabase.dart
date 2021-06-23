@@ -91,7 +91,7 @@ class RecentlyPlayedProvider {
     await _database.transaction((Transaction tx) async {
       r = await tx.rawDelete(
           'DELETE FROM $_tblRecentlyPlayed '
-          'WHERE id = ?',
+          'WHERE episodeId = ?',
           [episodeId]);
 
       /*await tx.rawDelete('''
@@ -104,8 +104,6 @@ class RecentlyPlayedProvider {
   }
 
   Future<Duration> getEpisodeDuration(var episodeId) async {
-    print(
-        "Its coming here //////////////////////////////////////////////////////////////");
 
     print(episodeId);
     Database db = await _init();
@@ -149,8 +147,11 @@ class RecentlyPlayedProvider {
     // }
   }
 
-  void addToDatabase(var episodeId, var currentPosition) {
-    if (getEpisode(episodeId) == true) {
+  void addToDatabase(var episodeId, var currentPosition) async {
+    var durr = await getEpisode(episodeId);
+    print(episodeId);
+    print(currentPosition);
+    if (durr == true) {
       print(
           'update episode called /////////////////////////////////////////////');
       updateEpisode(episodeId, currentPosition);
@@ -185,12 +186,12 @@ class RecentlyPlayedProvider {
 
     final int i = await _database.rawUpdate(
         'UPDATE $_tblRecentlyPlayed '
-        'SET episodeId = ?, '
-        'currentDuration = ?, '
-        'WHERE id = ?',
+        'SET '
+        'currentDuration = ? '
+        'WHERE episodeId = ?',
         [
+          currentPosition.toString(),
           episodeId,
-          currentPosition,
         ]);
 
     return i >= 1;
@@ -203,7 +204,8 @@ class RecentlyPlayedProvider {
 
     final List<Map<String, dynamic>> rows = await _database
         .rawQuery('SELECT * FROM $_tblRecentlyPlayed WHERE episodeId = $id;');
-
+  print(rows.length);
+    print('lodaloda');
     if (rows.length == 0)
       return false;
     else {
