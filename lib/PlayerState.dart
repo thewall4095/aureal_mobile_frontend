@@ -111,9 +111,9 @@ class PlayerChange extends ChangeNotifier {
     print(dur.runtimeType);
     state = PlayerState.playing;
 
-    currentIndex = _playList.indexOf(_episodeObject);
-    print(
-        '$currentIndex ////////////////////////////////////////////////////////////////////');
+    // currentIndex = _playList.indexOf(_episodeObject);
+    // print(
+    //     '$currentIndex ////////////////////////////////////////////////////////////////////');
 
     audioPlayer.open(
       Audio.network(_episodeObject['url'],

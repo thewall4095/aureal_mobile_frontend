@@ -155,7 +155,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                 ),
                                               ),
                                         SizedBox(
-                                          height: 5,
+                                          height: 10,
                                         ),
                                         v['topic'] == 'Featured Podcasts'
                                             ? v['isLoaded'] == false
@@ -178,163 +178,179 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       color: kSecondaryColor,
                                                     ),
                                                   )
-                                                : Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            1.22,
-                                                    width: double.infinity,
-                                                    child: CarouselSlider(
-                                                      options: CarouselOptions(
-                                                          height: MediaQuery.of(
-                                                                      context)
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 20),
+                                                    child: Container(
+                                                      height:
+                                                          MediaQuery.of(context)
                                                                   .size
-                                                                  .height *
-                                                              0.8,
-                                                          autoPlay: true,
-                                                          enableInfiniteScroll:
-                                                              true,
-                                                          viewportFraction: 1,
+                                                                  .width *
+                                                              1.03,
+                                                      width: double.infinity,
+                                                      child: CarouselSlider(
+                                                        options:
+                                                            CarouselOptions(
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height *
+                                                                    0.8,
+                                                                autoPlay: true,
+                                                                enableInfiniteScroll:
+                                                                    true,
+                                                                viewportFraction:
+                                                                    0.85,
 //
-                                                          aspectRatio: 4 / 3,
-                                                          pauseAutoPlayOnTouch:
-                                                              true,
-                                                          enlargeCenterPage:
-                                                              false),
-                                                      items: <Widget>[
-                                                        for (var v in featured)
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(15),
-                                                            child: Container(
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  GestureDetector(
-                                                                    onTap: () {
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          MaterialPageRoute(builder:
-                                                                              (context) {
-                                                                        return PodcastView(
-                                                                            v['id']);
-                                                                      }));
-                                                                    },
-                                                                    child:
-                                                                        Container(
-                                                                      height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width,
-                                                                      width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width,
-
-//
+                                                                aspectRatio:
+                                                                    4 / 3,
+                                                                pauseAutoPlayOnTouch:
+                                                                    true,
+                                                                enlargeCenterPage:
+                                                                    false),
+                                                        items: <Widget>[
+                                                          for (var v
+                                                              in featured)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    color: Color(
+                                                                        0xff222222),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            15)),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder:
+                                                                                (context) {
+                                                                          return PodcastView(
+                                                                              v['id']);
+                                                                        }));
+                                                                      },
                                                                       child:
                                                                           Container(
-                                                                        child:
-                                                                            CachedNetworkImage(
-                                                                          imageBuilder:
-                                                                              (context, imageProvider) {
-                                                                            return Container(
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                                                              ),
-                                                                              height: MediaQuery.of(context).size.width,
-                                                                              width: MediaQuery.of(context).size.width,
-                                                                            );
-                                                                          },
-                                                                          imageUrl: v['image'] == null
-                                                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                              : v['image'],
-                                                                          // memCacheHeight:
-                                                                          //     MediaQuery.of(
-                                                                          //             context)
-                                                                          //         .size
-                                                                          //         .width
-                                                                          //         .ceil(),
-                                                                          memCacheHeight: MediaQuery.of(context)
-                                                                              .size
-                                                                              .height
-                                                                              .floor(),
+                                                                        height: MediaQuery.of(context).size.width *
+                                                                            0.8,
+                                                                        width: MediaQuery.of(context).size.width *
+                                                                            0.8,
 
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(Icons.error),
+//
+                                                                        child:
+                                                                            Container(
+                                                                          child:
+                                                                              CachedNetworkImage(
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                                ),
+                                                                                height: MediaQuery.of(context).size.width,
+                                                                                width: MediaQuery.of(context).size.width,
+                                                                              );
+                                                                            },
+                                                                            imageUrl: v['image'] == null
+                                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                                : v['image'],
+                                                                            // memCacheHeight:
+                                                                            //     MediaQuery.of(
+                                                                            //             context)
+                                                                            //         .size
+                                                                            //         .width
+                                                                            //         .ceil(),
+                                                                            memCacheHeight:
+                                                                                MediaQuery.of(context).size.height.floor(),
+
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(Icons.error),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .end,
-                                                                    children: [
-                                                                      Text(
-                                                                        v['name'] !=
-                                                                                null
-                                                                            ? v['name']
-                                                                            : ' ',
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.2,
-                                                                                1.1)
-                                                                            .toDouble(),
-                                                                        maxLines:
-                                                                            2,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style: TextStyle(
-                                                                            //color: Colors
-                                                                            //       .white,
-                                                                            fontSize: SizeConfig.blockSizeHorizontal * 4.7,
-                                                                            fontWeight: FontWeight.normal),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .fromLTRB(
+                                                                          20,
+                                                                          0,
+                                                                          20,
+                                                                          10),
+                                                                      child:
+                                                                          Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Text(
+                                                                            v['name'] != null
+                                                                                ? v['name']
+                                                                                : ' ',
+                                                                            textScaleFactor:
+                                                                                mediaQueryData.textScaleFactor.clamp(0.2, 1.1).toDouble(),
+                                                                            maxLines:
+                                                                                2,
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            style: TextStyle(
+                                                                                color: Color(0xffe8e8e8),
+                                                                                fontSize: SizeConfig.blockSizeHorizontal * 4.7,
+                                                                                fontWeight: FontWeight.normal),
+                                                                          ),
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(top: 5),
+                                                                            child:
+                                                                                Text(
+                                                                              v['author'] != null ? v['author'] : ' ',
+                                                                              textScaleFactor: 1.0,
+                                                                              maxLines: 1,
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              style: TextStyle(
+                                                                                color: Color(0xff777777),
+                                                                                fontSize: SizeConfig.safeBlockHorizontal * 3,
+                                                                                //   color: Colors
+                                                                                //     .grey
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                5.0,
+                                                                          )
+                                                                        ],
                                                                       ),
-                                                                      Text(
-                                                                        v['author'] !=
-                                                                                null
-                                                                            ? v['author']
-                                                                            : ' ',
-                                                                        textScaleFactor:
-                                                                            1.0,
-                                                                        maxLines:
-                                                                            1,
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              SizeConfig.safeBlockHorizontal * 3.4,
-                                                                          //   color: Colors
-                                                                          //     .grey
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
+                                                                    )
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                   )
                                             : Container(
                                                 width: double.infinity,
                                                 height: SizeConfig
                                                         .blockSizeVertical *
-                                                    26,
+                                                    24,
                                                 constraints: BoxConstraints(
                                                     minHeight:
                                                         MediaQuery.of(context)
@@ -464,6 +480,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 TextOverflow.ellipsis,
                                                                             style:
                                                                                 TextStyle(
+                                                                              color: Color(0xff777777),
                                                                               fontSize: SizeConfig.safeBlockHorizontal * 2.5,
                                                                               //    color: Colors.black54
                                                                             ),

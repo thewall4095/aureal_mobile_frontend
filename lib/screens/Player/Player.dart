@@ -140,11 +140,19 @@ class _PlayerState extends State<Player> {
 
   int counter = 0;
 
+  Color dominantColor = Color(0xff3a3a3a);
+
   final List<StreamSubscription> _subscriptions = [];
 
   @override
   void initState() {
     _controller = ScrollController();
+
+    // var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    //
+    // setState(() {
+    //   dominantColor = getColor(episodeObject.episodeObject['podcast_image']);
+    // });
 
     // TODO: implement initState
 
@@ -187,711 +195,722 @@ class _PlayerState extends State<Player> {
     SizeConfig().init(context);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                Expanded(
-                  child: CachedNetworkImage(
-                    imageUrl: episodeObject.episodeObject['image'] == null
-                        ? episodeObject.episodeObject['podcast_image']
-                        : episodeObject.episodeObject['image'],
+      body: Container(
+        // color: dominantColor == null ? Color(0xff3a3a3a) : dominantColor,
+        child: Stack(
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: CachedNetworkImage(
+                      imageUrl: episodeObject.episodeObject['image'] == null
+                          ? episodeObject.episodeObject['podcast_image']
+                          : episodeObject.episodeObject['image'],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Container(),
-                )
-              ],
+                  Expanded(
+                    child: Container(),
+                  )
+                ],
+              ),
             ),
-          ),
-          SafeArea(
-            child: DraggableScrollableSheet(
-                initialChildSize: 0.5,
-                minChildSize: 0.5,
-                maxChildSize: 1.0,
-                builder: (BuildContext context, ScrollController controller) {
-                  return Container(
-                    child: Scaffold(
-                      resizeToAvoidBottomInset: true,
-                      body: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: ListView(
-                              controller: controller,
-                              children: [
-                                SizedBox(
-                                  height: SizeConfig.screenHeight / 5.5,
-                                ),
-                                ListTile(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                        //   backgroundColor: kSecondaryColor,
-                                        context: context,
-                                        builder: (context) {
-                                          return Comments(
-                                            episodeObject:
-                                                episodeObject.episodeObject,
-                                          );
-                                        });
-                                  },
-                                  leading: CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        prefs.getString('displayPicture') ==
-                                                null
-                                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                            : prefs
-                                                .getString('displayPicture')),
+            SafeArea(
+              child: DraggableScrollableSheet(
+                  initialChildSize: 0.5,
+                  minChildSize: 0.5,
+                  maxChildSize: 1.0,
+                  builder: (BuildContext context, ScrollController controller) {
+                    return Container(
+                      child: Scaffold(
+                        resizeToAvoidBottomInset: true,
+                        body: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: ListView(
+                                controller: controller,
+                                children: [
+                                  SizedBox(
+                                    height: SizeConfig.screenHeight / 5.5,
                                   ),
-                                  title: Text(
-                                    "Add a public comment",
-                                    textScaleFactor: 0.75,
-                                    style: TextStyle(),
+                                  ListTile(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                          //   backgroundColor: kSecondaryColor,
+                                          context: context,
+                                          builder: (context) {
+                                            return Comments(
+                                              episodeObject:
+                                                  episodeObject.episodeObject,
+                                            );
+                                          });
+                                    },
+                                    leading: CircleAvatar(
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(prefs
+                                                      .getString(
+                                                          'displayPicture') ==
+                                                  null
+                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                              : prefs
+                                                  .getString('displayPicture')),
+                                    ),
+                                    title: Text(
+                                      "Add a public comment",
+                                      textScaleFactor: 0.75,
+                                      style: TextStyle(),
+                                    ),
                                   ),
-                                ),
-                                for (var v in comments)
-                                  Column(
-                                    children: [
-                                      ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(v[
-                                                          'user_image'] ==
-                                                      null
-                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                  : v['user_image']),
-                                        ),
-                                        title: Text(
-                                          '${v['author']}',
-                                          textScaleFactor: 0.75,
-                                        ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 5),
-                                              child: Text(
-                                                "${v['text']}",
-                                                textScaleFactor: 0.75,
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    showModalBottomSheet(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return ListTile(
-                                                            leading: InkWell(
-                                                              onTap: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              child: Icon(
-                                                                Icons.close,
-                                                              ),
-                                                            ),
-                                                            title: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                TextField(
-                                                                    controller:
-                                                                        _replyController,
-                                                                    autofocus:
-                                                                        true,
-                                                                    maxLines:
-                                                                        10,
-                                                                    minLines:
-                                                                        1),
-                                                              ],
-                                                            ),
-                                                            trailing: InkWell(
-                                                              onTap: () {
-                                                                postReply(
-                                                                    v['id'],
-                                                                    _replyController
-                                                                        .text,
-                                                                    episodeObject
-                                                                        .episodeObject);
-                                                                _commentsController
-                                                                    .clear();
-                                                              },
-                                                              child: Icon(
-                                                                Icons.send,
-                                                              ),
-                                                            ),
-                                                          );
-                                                        });
-                                                  },
-                                                  child: Text(
-                                                    "Reply",
-                                                    textScaleFactor: 0.75,
-// style:TextStyle(color:Colors.blue)
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        trailing: IconButton(
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return Dialog(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      child: UpvoteComment(
-                                                        comment_id:
-                                                            v['id'].toString(),
-                                                      ));
-                                                }).then((value) async {
-                                              print(value);
-                                            });
-                                          },
-                                          icon: Icon(
-                                            FontAwesomeIcons.chevronCircleUp,
+                                  for (var v in comments)
+                                    Column(
+                                      children: [
+                                        ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(v[
+                                                            'user_image'] ==
+                                                        null
+                                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                    : v['user_image']),
                                           ),
-                                        ),
-                                        isThreeLine: true,
-                                      ),
-                                      v['comments'] == null
-                                          ? SizedBox(
-                                              height: 0,
-                                            )
-                                          : ExpansionTile(
-                                              // backgroundColor: Colors.transparent,
-                                              trailing: SizedBox(
-                                                width: 0,
-                                              ),
-                                              title: Align(
-                                                alignment: Alignment.centerLeft,
+                                          title: Text(
+                                            '${v['author']}',
+                                            textScaleFactor: 0.75,
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 5),
                                                 child: Text(
-                                                  "View replies",
+                                                  "${v['text']}",
                                                   textScaleFactor: 0.75,
-                                                  style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        3,
-                                                    // color: Colors.grey,
-                                                  ),
                                                 ),
                                               ),
-                                              children: <Widget>[
-                                                for (var c in v['comments'])
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 10),
-                                                      child: Container(
-                                                        child: Row(
-                                                          children: <Widget>[
-                                                            CircleAvatar(
-                                                              radius: 20,
-                                                              backgroundImage: v[
-                                                                          'user_image'] ==
-                                                                      null
-                                                                  ? AssetImage(
-                                                                      'assets/images/person.png')
-                                                                  : NetworkImage(
-                                                                      v['user_image']),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Expanded(
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: <
-                                                                        Widget>[
-                                                                      Text(
-                                                                        '${c['author']}',
-                                                                        textScaleFactor:
-                                                                            1.0,
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
-                                                                      ),
-                                                                      Text(
-                                                                        '${c['text']}',
-                                                                        textScaleFactor:
-                                                                            1.0,
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.normal),
-                                                                      ),
-                                                                      Row(
-                                                                        children: <
-                                                                            Widget>[
-                                                                          GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              showModalBottomSheet(
-                                                                                  context: context,
-                                                                                  builder: (context) {
-                                                                                    return ListTile(
-                                                                                      leading: InkWell(
-                                                                                        onTap: () {
-                                                                                          Navigator.pop(context);
-                                                                                        },
-                                                                                        child: Icon(
-                                                                                          Icons.close,
-                                                                                        ),
-                                                                                      ),
-                                                                                      title: Column(
-                                                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                                                        children: [
-                                                                                          TextField(controller: _replyController, autofocus: true, maxLines: 10, minLines: 1),
-                                                                                        ],
-                                                                                      ),
-                                                                                      trailing: InkWell(
-                                                                                        onTap: () {
-                                                                                          postReply(c['id'], _replyController.text, episodeObject.episodeObject);
-                                                                                          _commentsController.clear();
-                                                                                          //  postComment;
-                                                                                        },
-                                                                                        child: Icon(
-                                                                                          Icons.send,
-                                                                                        ),
-                                                                                      ),
-                                                                                    );
-                                                                                  });
-                                                                            },
-                                                                            child:
-                                                                                Text(
-                                                                              "Reply",
-                                                                              textScaleFactor: 1.0,
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  IconButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      showDialog(
-                                                                          context:
-                                                                              context,
-                                                                          builder:
-                                                                              (context) {
-                                                                            return Dialog(
-                                                                                backgroundColor: Colors.transparent,
-                                                                                child: UpvoteComment(
-                                                                                  comment_id: v['id'].toString(),
-                                                                                ));
-                                                                          }).then((value) async {
-                                                                        print(
-                                                                            value);
-                                                                      });
-                                                                    },
-                                                                    icon: Icon(
-                                                                      FontAwesomeIcons
-                                                                          .chevronCircleUp,
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                              ],
-                                            )
-                                    ],
-                                  )
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  height: SizeConfig.screenHeight / 5,
-                                  width: double.infinity,
-                                  //color: Colors.white,
-                                  child: Container(
-                                    // color: kSecondaryColor,
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 5),
-                                            child: episodeObject.audioPlayer
-                                                .builderRealtimePlayingInfos(
-                                              builder: (context, infos) {
-                                                if (infos == null) {
-                                                  return SizedBox(
-                                                    height: 0,
-                                                  );
-                                                } else {
-                                                  return Seekbar(
-                                                    currentPosition:
-                                                        infos.currentPosition,
-                                                    duration: infos.duration,
-                                                    episodeName: episodeObject
-                                                        .episodeName,
-                                                    seekTo: (to) {
-                                                      episodeObject.audioPlayer
-                                                          .seek(to);
-                                                    },
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 5),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: <Widget>[
-                                                CircleAvatar(
-                                                  radius: 20,
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      kSecondaryColor,
-                                                  //      backgroundColor: Colors.white,
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      FontAwesomeIcons.bolt,
-                                                      size: 16,
-                                                      //  color: Colors.black,
-                                                    ),
-                                                    onPressed: () {
-                                                      showDialog(
+                                              Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      showModalBottomSheet(
                                                           context: context,
                                                           builder: (context) {
-                                                            return Dialog(
-                                                              shape:
-                                                                  RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            30),
-                                                              ),
-                                                              child: Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color:
-                                                                      kSecondaryColor,
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
+                                                            return ListTile(
+                                                              leading: InkWell(
+                                                                onTap: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: Icon(
+                                                                  Icons.close,
                                                                 ),
-                                                                height: 260,
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      horizontal:
-                                                                          15,
-                                                                      vertical:
-                                                                          10),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          // episodeObject
-                                                                          //     .audioPlayer
-                                                                          //     .setPlaySpeed(0.25);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "0.25X",
-                                                                              textScaleFactor: 0.75,
-                                                                              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          // episodeObject
-                                                                          //     .audioPlayer
-                                                                          //     .setPlaySpeed(0.5);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "0.5X",
-                                                                              textScaleFactor: 0.75,
-                                                                              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          // episodeObject
-                                                                          //     .audioPlayer
-                                                                          //     .setPlaySpeed(1.0);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "1X",
-                                                                              textScaleFactor: 0.75,
-                                                                              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          // episodeObject
-                                                                          //     .audioPlayer
-                                                                          //     .setPlaySpeed(1.5);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "1.5X",
-                                                                              textScaleFactor: 0.75,
-                                                                              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      FlatButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          // episodeObject
-                                                                          //     .audioPlayer
-                                                                          //     .setPlaySpeed(2.0);
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child:
-                                                                            Row(
-                                                                          children: [
-                                                                            Text(
-                                                                              "2X",
-                                                                              textScaleFactor: 0.75,
-                                                                              style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                              ),
+                                                              title: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  TextField(
+                                                                      controller:
+                                                                          _replyController,
+                                                                      autofocus:
+                                                                          true,
+                                                                      maxLines:
+                                                                          10,
+                                                                      minLines:
+                                                                          1),
+                                                                ],
+                                                              ),
+                                                              trailing: InkWell(
+                                                                onTap: () {
+                                                                  postReply(
+                                                                      v['id'],
+                                                                      _replyController
+                                                                          .text,
+                                                                      episodeObject
+                                                                          .episodeObject);
+                                                                  _commentsController
+                                                                      .clear();
+                                                                },
+                                                                child: Icon(
+                                                                  Icons.send,
                                                                 ),
                                                               ),
                                                             );
                                                           });
                                                     },
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.replay_10,
-                                                    //  color: Colors.white,
-                                                    size: 20,
-                                                  ),
-                                                  onPressed: () {
-                                                    episodeObject.audioPlayer
-                                                        .seekBy(Duration(
-                                                            seconds: -10));
-                                                  },
-                                                ),
-                                                CircleAvatar(
-                                                  radius: 20,
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      kSecondaryColor,
-                                                  //   backgroundColor: Colors.white,
-                                                  child: episodeObject
-                                                      .audioPlayer
-                                                      .builderRealtimePlayingInfos(
-                                                          builder:
-                                                              (context, infos) {
-                                                    if (infos == null) {
-                                                      return SpinKitPulse(
-                                                        color: Colors.white,
-                                                      );
-                                                    } else {
-                                                      if (infos.isBuffering ==
-                                                          true) {
-                                                        return SpinKitCircle(
-                                                          size: 16,
-                                                          color: Colors.white,
-                                                        );
-                                                      } else {
-                                                        if (infos.isPlaying ==
-                                                            true) {
-                                                          return IconButton(
-                                                            icon: Icon(
-                                                              Icons.pause,
-                                                              // color:
-                                                              //     Colors.black,
-                                                            ),
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .pause();
-                                                              setState(() {
-                                                                playerState =
-                                                                    PlayerState
-                                                                        .paused;
-                                                              });
-                                                            },
-                                                          );
-                                                        } else {
-                                                          return IconButton(
-                                                            icon: Icon(
-                                                              Icons.play_arrow,
-                                                              // color:
-                                                              //     Colors.black,
-                                                            ),
-                                                            onPressed: () {
-//                                    play(url);
-                                                              episodeObject
-                                                                  .resume();
-                                                              setState(() {
-                                                                playerState =
-                                                                    PlayerState
-                                                                        .playing;
-                                                              });
-                                                            },
-                                                          );
-                                                        }
-                                                      }
-                                                    }
-                                                  }),
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(
-                                                    Icons.forward_10,
-                                                    //  color: Colors.white,
-                                                    size: 20,
-                                                  ),
-                                                  onPressed: () {
-                                                    episodeObject.audioPlayer
-                                                        .seekBy(
-                                                      Duration(seconds: 10),
-                                                    );
-                                                  },
-                                                ),
-                                                // hiveToken == null
-                                                //     ? SizedBox(
-                                                //         width: 50,
-                                                //       )
-                                                //     :
-                                                CircleAvatar(
-                                                  radius: 20,
-                                                  foregroundColor: Colors.white,
-                                                  backgroundColor:
-                                                      kSecondaryColor,
-                                                  // backgroundColor:
-                                                  //     Color(0xff37a1f7),
-                                                  child: IconButton(
-                                                    icon: Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons
-                                                            .chevronCircleUp,
-                                                        size: 16,
-                                                        //     color: Colors.black,
-                                                      ),
+                                                    child: Text(
+                                                      "Reply",
+                                                      textScaleFactor: 0.75,
+// style:TextStyle(color:Colors.blue)
                                                     ),
-                                                    onPressed: () {
-                                                      Fluttertoast.showToast(
-                                                          msg: 'Upvote done');
-                                                      if (episodeObject
-                                                              .permlink ==
-                                                          null) {
-                                                      } else {
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                          trailing: IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        child: UpvoteComment(
+                                                          comment_id: v['id']
+                                                              .toString(),
+                                                        ));
+                                                  }).then((value) async {
+                                                print(value);
+                                              });
+                                            },
+                                            icon: Icon(
+                                              FontAwesomeIcons.chevronCircleUp,
+                                            ),
+                                          ),
+                                          isThreeLine: true,
+                                        ),
+                                        v['comments'] == null
+                                            ? SizedBox(
+                                                height: 0,
+                                              )
+                                            : ExpansionTile(
+                                                // backgroundColor: Colors.transparent,
+                                                trailing: SizedBox(
+                                                  width: 0,
+                                                ),
+                                                title: Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    "View replies",
+                                                    textScaleFactor: 0.75,
+                                                    style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3,
+                                                      // color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                                children: <Widget>[
+                                                  for (var c in v['comments'])
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                bottom: 10),
+                                                        child: Container(
+                                                          child: Row(
+                                                            children: <Widget>[
+                                                              CircleAvatar(
+                                                                radius: 20,
+                                                                backgroundImage: v[
+                                                                            'user_image'] ==
+                                                                        null
+                                                                    ? AssetImage(
+                                                                        'assets/images/person.png')
+                                                                    : NetworkImage(
+                                                                        v['user_image']),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 10),
+                                                              Expanded(
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Text(
+                                                                          '${c['author']}',
+                                                                          textScaleFactor:
+                                                                              1.0,
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.w600),
+                                                                        ),
+                                                                        Text(
+                                                                          '${c['text']}',
+                                                                          textScaleFactor:
+                                                                              1.0,
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.normal),
+                                                                        ),
+                                                                        Row(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            GestureDetector(
+                                                                              onTap: () {
+                                                                                showModalBottomSheet(
+                                                                                    context: context,
+                                                                                    builder: (context) {
+                                                                                      return ListTile(
+                                                                                        leading: InkWell(
+                                                                                          onTap: () {
+                                                                                            Navigator.pop(context);
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.close,
+                                                                                          ),
+                                                                                        ),
+                                                                                        title: Column(
+                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                          children: [
+                                                                                            TextField(controller: _replyController, autofocus: true, maxLines: 10, minLines: 1),
+                                                                                          ],
+                                                                                        ),
+                                                                                        trailing: InkWell(
+                                                                                          onTap: () {
+                                                                                            postReply(c['id'], _replyController.text, episodeObject.episodeObject);
+                                                                                            _commentsController.clear();
+                                                                                            //  postComment;
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.send,
+                                                                                          ),
+                                                                                        ),
+                                                                                      );
+                                                                                    });
+                                                                              },
+                                                                              child: Text(
+                                                                                "Reply",
+                                                                                textScaleFactor: 1.0,
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    IconButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        showDialog(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (context) {
+                                                                              return Dialog(
+                                                                                  backgroundColor: Colors.transparent,
+                                                                                  child: UpvoteComment(
+                                                                                    comment_id: v['id'].toString(),
+                                                                                  ));
+                                                                            }).then((value) async {
+                                                                          print(
+                                                                              value);
+                                                                        });
+                                                                      },
+                                                                      icon:
+                                                                          Icon(
+                                                                        FontAwesomeIcons
+                                                                            .chevronCircleUp,
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                ],
+                                              )
+                                      ],
+                                    )
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    height: SizeConfig.screenHeight / 5,
+                                    width: double.infinity,
+                                    //color: Colors.white,
+                                    child: Container(
+                                      // color: kSecondaryColor,
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: episodeObject.audioPlayer
+                                                  .builderRealtimePlayingInfos(
+                                                builder: (context, infos) {
+                                                  if (infos == null) {
+                                                    return SizedBox(
+                                                      height: 0,
+                                                    );
+                                                  } else {
+                                                    return Seekbar(
+                                                      currentPosition:
+                                                          infos.currentPosition,
+                                                      duration: infos.duration,
+                                                      episodeName: episodeObject
+                                                          .episodeName,
+                                                      seekTo: (to) {
+                                                        episodeObject
+                                                            .audioPlayer
+                                                            .seek(to);
+                                                      },
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 5),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: <Widget>[
+                                                  CircleAvatar(
+                                                    radius: 20,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        kSecondaryColor,
+                                                    //      backgroundColor: Colors.white,
+                                                    child: IconButton(
+                                                      icon: Icon(
+                                                        FontAwesomeIcons.bolt,
+                                                        size: 16,
+                                                        //  color: Colors.black,
+                                                      ),
+                                                      onPressed: () {
                                                         showDialog(
                                                             context: context,
                                                             builder: (context) {
                                                               return Dialog(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  child: UpvoteEpisode(
-                                                                      episode_id:
-                                                                          episodeObject
-                                                                              .id,
-                                                                      permlink:
-                                                                          episodeObject
-                                                                              .permlink));
-                                                            }).then((value) async {
-                                                          print(value);
-                                                        });
-
-                                                        // upvoteEpisode(
-                                                        //     episode_id:
-                                                        //         episodeObject
-                                                        //             .id,
-                                                        //     permlink:
-                                                        //         episodeObject
-                                                        //             .permlink);
-                                                      }
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              30),
+                                                                ),
+                                                                child:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color:
+                                                                        kSecondaryColor,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                  ),
+                                                                  height: 260,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                        horizontal:
+                                                                            15,
+                                                                        vertical:
+                                                                            10),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            // episodeObject
+                                                                            //     .audioPlayer
+                                                                            //     .setPlaySpeed(0.25);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "0.25X",
+                                                                                textScaleFactor: 0.75,
+                                                                                style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            // episodeObject
+                                                                            //     .audioPlayer
+                                                                            //     .setPlaySpeed(0.5);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "0.5X",
+                                                                                textScaleFactor: 0.75,
+                                                                                style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            // episodeObject
+                                                                            //     .audioPlayer
+                                                                            //     .setPlaySpeed(1.0);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "1X",
+                                                                                textScaleFactor: 0.75,
+                                                                                style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            // episodeObject
+                                                                            //     .audioPlayer
+                                                                            //     .setPlaySpeed(1.5);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "1.5X",
+                                                                                textScaleFactor: 0.75,
+                                                                                style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        FlatButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            // episodeObject
+                                                                            //     .audioPlayer
+                                                                            //     .setPlaySpeed(2.0);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              Row(
+                                                                            children: [
+                                                                              Text(
+                                                                                "2X",
+                                                                                textScaleFactor: 0.75,
+                                                                                style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            });
+                                                      },
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.replay_10,
+                                                      //  color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    onPressed: () {
+                                                      episodeObject.audioPlayer
+                                                          .seekBy(Duration(
+                                                              seconds: -10));
                                                     },
                                                   ),
-                                                ),
-                                              ],
+                                                  CircleAvatar(
+                                                    radius: 20,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        kSecondaryColor,
+                                                    //   backgroundColor: Colors.white,
+                                                    child: episodeObject
+                                                        .audioPlayer
+                                                        .builderRealtimePlayingInfos(
+                                                            builder: (context,
+                                                                infos) {
+                                                      if (infos == null) {
+                                                        return SpinKitPulse(
+                                                          color: Colors.white,
+                                                        );
+                                                      } else {
+                                                        if (infos.isBuffering ==
+                                                            true) {
+                                                          return SpinKitCircle(
+                                                            size: 16,
+                                                            color: Colors.white,
+                                                          );
+                                                        } else {
+                                                          if (infos.isPlaying ==
+                                                              true) {
+                                                            return IconButton(
+                                                              icon: Icon(
+                                                                Icons.pause,
+                                                                // color:
+                                                                //     Colors.black,
+                                                              ),
+                                                              onPressed: () {
+                                                                episodeObject
+                                                                    .pause();
+                                                                setState(() {
+                                                                  playerState =
+                                                                      PlayerState
+                                                                          .paused;
+                                                                });
+                                                              },
+                                                            );
+                                                          } else {
+                                                            return IconButton(
+                                                              icon: Icon(
+                                                                Icons
+                                                                    .play_arrow,
+                                                                // color:
+                                                                //     Colors.black,
+                                                              ),
+                                                              onPressed: () {
+//                                    play(url);
+                                                                episodeObject
+                                                                    .resume();
+                                                                setState(() {
+                                                                  playerState =
+                                                                      PlayerState
+                                                                          .playing;
+                                                                });
+                                                              },
+                                                            );
+                                                          }
+                                                        }
+                                                      }
+                                                    }),
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.forward_10,
+                                                      //  color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                    onPressed: () {
+                                                      episodeObject.audioPlayer
+                                                          .seekBy(
+                                                        Duration(seconds: 10),
+                                                      );
+                                                    },
+                                                  ),
+                                                  // hiveToken == null
+                                                  //     ? SizedBox(
+                                                  //         width: 50,
+                                                  //       )
+                                                  //     :
+                                                  CircleAvatar(
+                                                    radius: 20,
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor:
+                                                        kSecondaryColor,
+                                                    // backgroundColor:
+                                                    //     Color(0xff37a1f7),
+                                                    child: IconButton(
+                                                      icon: Center(
+                                                        child: Icon(
+                                                          FontAwesomeIcons
+                                                              .chevronCircleUp,
+                                                          size: 16,
+                                                          //     color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Fluttertoast.showToast(
+                                                            msg: 'Upvote done');
+                                                        if (episodeObject
+                                                                .permlink ==
+                                                            null) {
+                                                        } else {
+                                                          showDialog(
+                                                                  context: context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return Dialog(
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .transparent,
+                                                                        child: UpvoteEpisode(
+                                                                            episode_id:
+                                                                                episodeObject.id,
+                                                                            permlink: episodeObject.permlink));
+                                                                  })
+                                                              .then(
+                                                                  (value) async {
+                                                            print(value);
+                                                          });
+
+                                                          // upvoteEpisode(
+                                                          //     episode_id:
+                                                          //         episodeObject
+                                                          //             .id,
+                                                          //     permlink:
+                                                          //         episodeObject
+                                                          //             .permlink);
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ]),
+                                          ]),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }),
-          )
-        ],
+                    );
+                  }),
+            )
+          ],
+        ),
       ),
     );
   }

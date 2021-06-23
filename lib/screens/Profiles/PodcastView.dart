@@ -17,9 +17,11 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -226,6 +228,7 @@ class _PodcastViewState extends State<PodcastView> {
           hiveToken = prefs.getString('access_token');
           creator = jsonDecode(response.body)['podcast']['user_id'];
           print(hiveToken);
+          getColor(jsonDecode(response.body)['podcast']['image']);
         });
       } else {
         print(response.statusCode);
@@ -251,6 +254,35 @@ class _PodcastViewState extends State<PodcastView> {
     final SendPort send =
         IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
+  }
+
+  var dominantColor;
+
+  int hexOfRGBA(int r, int g, int b, {double opacity = 1}) {
+    r = (r < 0) ? -r : r;
+    g = (g < 0) ? -g : g;
+    b = (b < 0) ? -b : b;
+    opacity = (opacity < 0) ? -opacity : opacity;
+    opacity = (opacity > 1) ? 255 : opacity * 255;
+    r = (r > 255) ? 255 : r;
+    g = (g > 255) ? 255 : g;
+    b = (b > 255) ? 255 : b;
+    int a = opacity.toInt();
+    return int.parse(
+        '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
+  }
+
+  void getColor(String url) async {
+    getColorFromUrl(url).then((value) {
+      setState(() {
+        dominantColor = hexOfRGBA(value[0], value[1], value[2]);
+        print(dominantColor.toString());
+
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Color(dominantColor),
+        ));
+      });
+    });
   }
 
   @override
@@ -284,6 +316,9 @@ class _PodcastViewState extends State<PodcastView> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
@@ -306,39 +341,144 @@ class _PodcastViewState extends State<PodcastView> {
               //   backgroundColor: kPrimaryColor,
               expandedHeight: MediaQuery.of(context).size.height / 3.5,
               flexibleSpace: FlexibleSpaceBar(
-                background: podcastData == null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Shimmer.fromColors(
-                          baseColor: kPrimaryColor,
-                          highlightColor: Color(0xff3a3a3a),
+                background: Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
+                    Colors.transparent
+                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                  child: podcastData == null
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Shimmer.fromColors(
+                            baseColor: kPrimaryColor,
+                            highlightColor: Color(0xff3a3a3a),
+                            child: Container(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    color: kSecondaryColor,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.5,
+                                    height:
+                                        MediaQuery.of(context).size.width / 2.5,
+                                    // child: Padding(
+                                    //   padding: const EdgeInsets.all(8.0),
+                                    //   child: CachedNetworkImage(
+                                    //     memCacheHeight:
+                                    //     (MediaQuery.of(context).size.height)
+                                    //         .floor(),
+                                    //     placeholder: (context, url) => Container(
+                                    //       child: Image.asset(
+                                    //           'assets/images/Thumbnail.png'),
+                                    //     ),
+                                    //     imageUrl: podcastData == null
+                                    //         ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                    //         : podcastData['image'],
+                                    //     fit: BoxFit.cover,
+                                    //   ),
+                                    // ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    // width: MediaQuery.of(context).size.width / 2,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 20,
+                                                color: kSecondaryColor,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 20,
+                                                color: kSecondaryColor,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0,
+                                                  right: 8.0,
+                                                  top: 8.0),
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 20,
+                                                color: kSecondaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Container(
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 Container(
-                                  color: kSecondaryColor,
                                   width:
                                       MediaQuery.of(context).size.width / 2.5,
                                   height:
                                       MediaQuery.of(context).size.width / 2.5,
-                                  // child: Padding(
-                                  //   padding: const EdgeInsets.all(8.0),
-                                  //   child: CachedNetworkImage(
-                                  //     memCacheHeight:
-                                  //     (MediaQuery.of(context).size.height)
-                                  //         .floor(),
-                                  //     placeholder: (context, url) => Container(
-                                  //       child: Image.asset(
-                                  //           'assets/images/Thumbnail.png'),
-                                  //     ),
-                                  //     imageUrl: podcastData == null
-                                  //         ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                  //         : podcastData['image'],
-                                  //     fit: BoxFit.cover,
-                                  //   ),
-                                  // ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CachedNetworkImage(
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        );
+                                      },
+                                      memCacheHeight:
+                                          (MediaQuery.of(context).size.height)
+                                              .floor(),
+                                      placeholder: (context, url) => Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                2.5,
+                                        child: Image.asset(
+                                            'assets/images/Thumbnail.png'),
+                                      ),
+                                      imageUrl: podcastData == null
+                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          : podcastData['image'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -351,36 +491,156 @@ class _PodcastViewState extends State<PodcastView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 20,
-                                              color: kSecondaryColor,
-                                            ),
+                                          Text(
+                                            podcastData['name'],
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //    color: Color(0xffe8e8e8),
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    5),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 20,
-                                              color: kSecondaryColor,
-                                            ),
+                                          Text(
+                                            podcastData['author'],
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //   color: Color(0xffe8e8e8),
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    4),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0,
-                                                right: 8.0,
-                                                top: 8.0),
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 20,
-                                              color: kSecondaryColor,
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          followState == FollowState.following
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    follow();
+                                                    setState(() {
+                                                      if (followState ==
+                                                          FollowState.follow) {
+                                                        followState =
+                                                            FollowState
+                                                                .following;
+                                                      } else {
+                                                        followState =
+                                                            FollowState.follow;
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        border: Border.all(
+                                                            color:
+                                                                kSecondaryColor
+                                                            //    color: Color(0xffe8e8e8),
+                                                            ,
+                                                            width: 0.5)),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 5),
+                                                      child: Text(
+                                                        'Unsubscribe',
+                                                        textScaleFactor:
+                                                            mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                        style: TextStyle(
+                                                            //      color: Color(0xffe8e8e8)
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ))
+                                              : InkWell(
+                                                  onTap: () async {
+                                                    follow();
+                                                    setState(() {
+                                                      if (followState ==
+                                                          FollowState.follow) {
+                                                        followState =
+                                                            FollowState
+                                                                .following;
+                                                      } else {
+                                                        followState =
+                                                            FollowState.follow;
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        border: Border.all(
+                                                            color:
+                                                                kSecondaryColor,
+                                                            //    color: Color(0xffe8e8e8),
+                                                            width: 0.5)
+                                                        //color: Color(0xffe8e8e8)
+                                                        ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 5),
+                                                      child: Text(
+                                                        'Subscribe',
+                                                        textScaleFactor:
+                                                            mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                        style: TextStyle(
+                                                            // color: Color(0xff3a3a3a)
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                          SizedBox(height: 15),
+                                          GestureDetector(
+                                            onTap: podcastShare,
+                                            child: Column(
+                                              children: <Widget>[
+                                                IconButton(
+                                                  onPressed: () {
+                                                    podcastShare();
+                                                  },
+                                                  icon: Icon(
+                                                    FontAwesomeIcons.shareAlt,
+                                                    //    color: Colors.grey,
+                                                    size: 18,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
+                                          )
                                         ],
                                       ),
                                     ],
@@ -390,200 +650,7 @@ class _PodcastViewState extends State<PodcastView> {
                             ),
                           ),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Container(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                height: MediaQuery.of(context).size.width / 2.5,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CachedNetworkImage(
-                                    memCacheHeight:
-                                        (MediaQuery.of(context).size.height)
-                                            .floor(),
-                                    placeholder: (context, url) => Container(
-                                      child: Image.asset(
-                                          'assets/images/Thumbnail.png'),
-                                    ),
-                                    imageUrl: podcastData == null
-                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                        : podcastData['image'],
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                // width: MediaQuery.of(context).size.width / 2,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          podcastData['name'],
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //    color: Color(0xffe8e8e8),
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  5),
-                                        ),
-                                        Text(
-                                          podcastData['author'],
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //   color: Color(0xffe8e8e8),
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  4),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        followState == FollowState.following
-                                            ? InkWell(
-                                                onTap: () {
-                                                  follow();
-                                                  setState(() {
-                                                    if (followState ==
-                                                        FollowState.follow) {
-                                                      followState =
-                                                          FollowState.following;
-                                                    } else {
-                                                      followState =
-                                                          FollowState.follow;
-                                                    }
-                                                  });
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                      border: Border.all(
-                                                          color: kSecondaryColor
-                                                          //    color: Color(0xffe8e8e8),
-                                                          ,
-                                                          width: 0.5)),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 5),
-                                                    child: Text(
-                                                      'Unsubscribe',
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5, 1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          //      color: Color(0xffe8e8e8)
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ))
-                                            : InkWell(
-                                                onTap: () async {
-                                                  follow();
-                                                  setState(() {
-                                                    if (followState ==
-                                                        FollowState.follow) {
-                                                      followState =
-                                                          FollowState.following;
-                                                    } else {
-                                                      followState =
-                                                          FollowState.follow;
-                                                    }
-                                                  });
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                      border: Border.all(
-                                                          color:
-                                                              kSecondaryColor,
-                                                          //    color: Color(0xffe8e8e8),
-                                                          width: 0.5)
-                                                      //color: Color(0xffe8e8e8)
-                                                      ),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 20,
-                                                        vertical: 5),
-                                                    child: Text(
-                                                      'Subscribe',
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5, 1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          // color: Color(0xff3a3a3a)
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                        SizedBox(height: 15),
-                                        GestureDetector(
-                                          onTap: podcastShare,
-                                          child: Column(
-                                            children: <Widget>[
-                                              IconButton(
-                                                onPressed: () {
-                                                  podcastShare();
-                                                },
-                                                icon: Icon(
-                                                  FontAwesomeIcons.shareAlt,
-                                                  //    color: Colors.grey,
-                                                  size: 18,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                ),
               ),
             ),
             SliverList(
@@ -1165,7 +1232,6 @@ class _PodcastViewState extends State<PodcastView> {
                                                   Icon(
                                                     Icons.play_circle_outline,
                                                     size: 15,
-                                                   
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets

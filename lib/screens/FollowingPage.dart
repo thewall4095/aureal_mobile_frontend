@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/CommunityService.dart';
@@ -24,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
 import '../PlayerState.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
@@ -243,17 +245,16 @@ class _FollowingPageState extends State<FollowingPage>
 
       // await getFollowedPodcasts();
     }
+
     Future<bool> _onBackPressed() async {
       Navigator.pushNamedAndRemoveUntil(
-          context,
-          Home.id,
-          ModalRoute.withName("/")
-      );
+          context, Home.id, ModalRoute.withName("/"));
       return false; // return true if the route to be popped
     }
+
     final mediaQueryData = MediaQuery.of(context);
     return WillPopScope(
-      onWillPop:_onBackPressed ,
+      onWillPop: _onBackPressed,
       child: Scaffold(
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
@@ -288,8 +289,8 @@ class _FollowingPageState extends State<FollowingPage>
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: kSecondaryColor),
+                                          border: Border.all(
+                                              color: kSecondaryColor),
                                           // color: Color(0xff3a3a3a),
                                           borderRadius:
                                               BorderRadius.circular(20)),
@@ -368,7 +369,8 @@ class _FollowingPageState extends State<FollowingPage>
                                         children: [
                                           for (var v in favPodcast)
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: InkWell(
                                                 onTap: () {
                                                   Navigator.push(context,
@@ -383,53 +385,77 @@ class _FollowingPageState extends State<FollowingPage>
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
+                                                    CachedNetworkImage(
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            image: DecorationImage(
+                                                                image:
+                                                                    imageProvider,
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                          ),
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width /
                                                               4,
-                                                      height:
-                                                          MediaQuery.of(context)
+                                                          height: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width /
                                                               4,
-                                                      //   color: Colors.white,
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: v['image'],
-                                                        memCacheWidth:
-                                                            (MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width)
-                                                                .floor(),
-                                                        memCacheHeight:
-                                                            (MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width)
-                                                                .floor(),
-                                                        placeholder:
-                                                            (context, url) =>
-                                                                Container(
-                                                          child: Image.asset(
-                                                              'assets/images/Thumbnail.png'),
-                                                        ),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Icon(Icons.error),
+                                                        );
+                                                      },
+                                                      imageUrl: v['image'],
+                                                      memCacheWidth:
+                                                          (MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width)
+                                                              .floor(),
+                                                      memCacheHeight:
+                                                          (MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width)
+                                                              .floor(),
+                                                      placeholder:
+                                                          (context, url) =>
+                                                              Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            4,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            4,
+                                                        child: Image.asset(
+                                                            'assets/images/Thumbnail.png'),
                                                       ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(Icons.error),
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets
                                                               .symmetric(
                                                           vertical: 10),
                                                       child: Container(
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                4,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            4,
                                                         child: Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -441,7 +467,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   mediaQueryData
                                                                       .textScaleFactor
                                                                       .clamp(
-                                                                          0.5, 1)
+                                                                          0.5,
+                                                                          1)
                                                                       .toDouble(),
                                                               overflow:
                                                                   TextOverflow
@@ -458,15 +485,17 @@ class _FollowingPageState extends State<FollowingPage>
                                                               textScaleFactor:
                                                                   mediaQueryData
                                                                       .textScaleFactor
-                                                                      .clamp(0.5,
+                                                                      .clamp(
+                                                                          0.5,
                                                                           0.9)
                                                                       .toDouble(),
                                                               style: TextStyle(
                                                                   // color:
                                                                   //     Colors.white,
-                                                                  fontSize: SizeConfig
-                                                                          .safeBlockHorizontal *
-                                                                      3),
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3),
                                                             )
                                                           ],
                                                         ),
@@ -512,16 +541,16 @@ class _FollowingPageState extends State<FollowingPage>
                                                           const EdgeInsets.all(
                                                               15),
                                                       child: Container(
-                                                        height:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                7,
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                7,
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            7,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            7,
                                                         color: kSecondaryColor,
                                                       ),
                                                     ),
@@ -535,7 +564,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                               .start,
                                                       children: [
                                                         Container(
-                                                          color: kSecondaryColor,
+                                                          color:
+                                                              kSecondaryColor,
                                                           height: 10,
                                                           width: MediaQuery.of(
                                                                       context)
@@ -547,7 +577,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                           height: 10,
                                                         ),
                                                         Container(
-                                                          color: kSecondaryColor,
+                                                          color:
+                                                              kSecondaryColor,
                                                           height: 10,
                                                           width: MediaQuery.of(
                                                                       context)
@@ -564,9 +595,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                       const EdgeInsets.all(15),
                                                   child: Container(
                                                     height: 10,
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                     color: kSecondaryColor,
                                                   ),
                                                 ),
@@ -581,10 +613,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                           vertical: 5),
                                                       child: Container(
                                                         height: 5,
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                .size
-                                                                .width,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
                                                         color: kSecondaryColor,
                                                       ),
                                                     ),
@@ -595,10 +627,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                           vertical: 5),
                                                       child: Container(
                                                         height: 5,
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                .size
-                                                                .width,
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
                                                         color: kSecondaryColor,
                                                       ),
                                                     ),
@@ -638,50 +670,75 @@ class _FollowingPageState extends State<FollowingPage>
                                                         width: 1))),
                                             width: double.infinity,
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 20),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 20),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      Container(
-                                                        // color: Colors.white,
-                                                        width:
-                                                            MediaQuery.of(context)
+                                                      CachedNetworkImage(
+                                                        imageBuilder: (context,
+                                                            imageProvider) {
+                                                          return Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover),
+                                                            ),
+                                                            width: MediaQuery.of(
+                                                                        context)
                                                                     .size
                                                                     .width /
                                                                 7,
-                                                        height:
-                                                            MediaQuery.of(context)
+                                                            height: MediaQuery.of(
+                                                                        context)
                                                                     .size
                                                                     .width /
                                                                 7,
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: v['image'],
-                                                          memCacheWidth:
-                                                              MediaQuery.of(
+                                                          );
+                                                        },
+                                                        imageUrl: v['image'],
+                                                        memCacheWidth:
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width
+                                                                .floor(),
+                                                        memCacheHeight:
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width
+                                                                .floor(),
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Container(
+                                                          width: MediaQuery.of(
                                                                       context)
                                                                   .size
-                                                                  .width
-                                                                  .floor(),
-                                                          memCacheHeight:
-                                                              MediaQuery.of(
+                                                                  .width /
+                                                              7,
+                                                          height: MediaQuery.of(
                                                                       context)
                                                                   .size
-                                                                  .width
-                                                                  .floor(),
-                                                          placeholder:
-                                                              (context, url) =>
-                                                                  Container(
-                                                            child: Image.asset(
-                                                                'assets/images/Thumbnail.png'),
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Icon(Icons.error),
+                                                                  .width /
+                                                              7,
+                                                          child: Image.asset(
+                                                              'assets/images/Thumbnail.png'),
                                                         ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(Icons.error),
                                                       ),
                                                       SizedBox(
                                                           width: SizeConfig
@@ -716,13 +773,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                 style: TextStyle(
                                                                     // color: Color(
                                                                     //     0xffe8e8e8),
-                                                                    fontSize:
-                                                                        SizeConfig
-                                                                                .safeBlockHorizontal *
-                                                                            5,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .normal),
+                                                                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                                                    fontWeight: FontWeight.normal),
                                                               ),
                                                             ),
                                                             Text(
@@ -730,15 +782,17 @@ class _FollowingPageState extends State<FollowingPage>
                                                               textScaleFactor:
                                                                   mediaQueryData
                                                                       .textScaleFactor
-                                                                      .clamp(0.5,
+                                                                      .clamp(
+                                                                          0.5,
                                                                           0.9)
                                                                       .toDouble(),
                                                               style: TextStyle(
                                                                   // color: Color(
                                                                   //     0xffe8e8e8),
-                                                                  fontSize: SizeConfig
-                                                                          .safeBlockHorizontal *
-                                                                      3.5),
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3.5),
                                                             ),
                                                           ],
                                                         ),
@@ -747,7 +801,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets
-                                                        .symmetric(vertical: 10),
+                                                            .symmetric(
+                                                        vertical: 10),
                                                     child: Container(
                                                       width: double.infinity,
                                                       child: Column(
@@ -760,7 +815,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                             textScaleFactor:
                                                                 mediaQueryData
                                                                     .textScaleFactor
-                                                                    .clamp(0.5, 1)
+                                                                    .clamp(
+                                                                        0.5, 1)
                                                                     .toDouble(),
                                                             style: TextStyle(
                                                                 // color: Color(
@@ -776,7 +832,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                             padding:
                                                                 const EdgeInsets
                                                                         .symmetric(
-                                                                    vertical: 10),
+                                                                    vertical:
+                                                                        10),
                                                             child: v['summary'] ==
                                                                     null
                                                                 ? SizedBox(
@@ -791,8 +848,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             .text,
                                                                         textScaleFactor: mediaQueryData
                                                                             .textScaleFactor
-                                                                            .clamp(
-                                                                                0.5,
+                                                                            .clamp(0.5,
                                                                                 1)
                                                                             .toDouble(),
                                                                         maxLines:
@@ -805,8 +861,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         '${v['summary']}',
                                                                         textScaleFactor: mediaQueryData
                                                                             .textScaleFactor
-                                                                            .clamp(
-                                                                                0.5,
+                                                                            .clamp(0.5,
                                                                                 1)
                                                                             .toDouble(),
                                                                         style: TextStyle(
@@ -819,9 +874,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                     ),
                                                   ),
                                                   Container(
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                     child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -841,7 +897,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                     v['isLoading'] =
                                                                         true;
                                                                   });
-                                                                  double _value =
+                                                                  double
+                                                                      _value =
                                                                       50.0;
                                                                   showDialog(
                                                                       context:
@@ -849,13 +906,12 @@ class _FollowingPageState extends State<FollowingPage>
                                                                       builder:
                                                                           (context) {
                                                                         return Dialog(
-                                                                            backgroundColor: Colors
-                                                                                .transparent,
-                                                                            child: UpvoteEpisode(
-                                                                                permlink: v['permlink'],
-                                                                                episode_id: v['id']));
+                                                                            backgroundColor:
+                                                                                Colors.transparent,
+                                                                            child: UpvoteEpisode(permlink: v['permlink'], episode_id: v['id']));
                                                                       }).then((value) async {
-                                                                    print(value);
+                                                                    print(
+                                                                        value);
                                                                   });
                                                                   setState(() {
                                                                     v['ifVoted'] =
@@ -894,12 +950,12 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             color:
                                                                                 kSecondaryColor),
                                                                         borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                30)),
+                                                                            BorderRadius.circular(30)),
                                                                 child: Padding(
                                                                   padding: const EdgeInsets
                                                                           .symmetric(
-                                                                      vertical: 5,
+                                                                      vertical:
+                                                                          5,
                                                                       horizontal:
                                                                           5),
                                                                   child: Row(
@@ -907,27 +963,21 @@ class _FollowingPageState extends State<FollowingPage>
                                                                       v['isLoading'] ==
                                                                               true
                                                                           ? Container(
-                                                                              height:
-                                                                                  17,
-                                                                              width:
-                                                                                  18,
-                                                                              child:
-                                                                                  SpinKitPulse(
+                                                                              height: 17,
+                                                                              width: 18,
+                                                                              child: SpinKitPulse(
                                                                                 color: Colors.blue,
                                                                               ),
                                                                             )
                                                                           : Icon(
                                                                               FontAwesomeIcons.chevronCircleUp,
-                                                                              size:
-                                                                                  15,
+                                                                              size: 15,
                                                                               // color:
                                                                               //     Color(0xffe8e8e8),
                                                                             ),
                                                                       Padding(
-                                                                        padding: const EdgeInsets
-                                                                                .symmetric(
-                                                                            horizontal:
-                                                                                8),
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(horizontal: 8),
                                                                         child:
                                                                             Text(
                                                                           v['votes']
@@ -935,18 +985,15 @@ class _FollowingPageState extends State<FollowingPage>
                                                                           textScaleFactor:
                                                                               1.0,
                                                                           style: TextStyle(
-                                                                              fontSize:
-                                                                                  12
+                                                                              fontSize: 12
                                                                               // color:
                                                                               //     Color(0xffe8e8e8)
                                                                               ),
                                                                         ),
                                                                       ),
                                                                       Padding(
-                                                                        padding: const EdgeInsets
-                                                                                .only(
-                                                                            right:
-                                                                                4),
+                                                                        padding:
+                                                                            const EdgeInsets.only(right: 4),
                                                                         child:
                                                                             Text(
                                                                           '\$${v['payout_value'].toString().split(' ')[0]}',
@@ -994,8 +1041,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                               child: Padding(
                                                                 padding:
                                                                     const EdgeInsets
-                                                                        .all(8.0),
-                                                                child: Container(
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    Container(
                                                                   decoration: BoxDecoration(
                                                                       border: Border.all(
                                                                           color:
@@ -1003,10 +1052,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                               30)),
-                                                                  child: Padding(
+                                                                  child:
+                                                                      Padding(
                                                                     padding:
-                                                                        const EdgeInsets
-                                                                                .all(
+                                                                        const EdgeInsets.all(
                                                                             4.0),
                                                                     child: Row(
                                                                       children: [
@@ -1021,12 +1070,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                                               const EdgeInsets.symmetric(horizontal: 7),
                                                                           child:
                                                                               Text(
-                                                                            v['comments_count']
-                                                                                .toString(),
+                                                                            v['comments_count'].toString(),
                                                                             textScaleFactor:
                                                                                 1.0,
-                                                                            style: TextStyle(
-                                                                                fontSize: 10
+                                                                            style: TextStyle(fontSize: 10
                                                                                 // color:
                                                                                 //     Color(0xffe8e8e8)
                                                                                 ),
@@ -1078,15 +1125,13 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             v);
                                                                   }));
                                                                 } else {
-                                                                  if (v
-                                                                          .toString()
-                                                                          .contains(
-                                                                              '.pdf') ==
+                                                                  if (v.toString().contains(
+                                                                          '.pdf') ==
                                                                       true) {
                                                                     // Navigator.push(
                                                                     //     context,
                                                                     //     MaterialPageRoute(
-                                                                    //         builder:
+                                                                    // der:
                                                                     //             (context) {
                                                                     //   return PDFviewer(
                                                                     //       episodeObject:
@@ -1118,7 +1163,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             .only(
                                                                         right:
                                                                             80),
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   decoration: BoxDecoration(
                                                                       border: Border.all(
                                                                           color:
@@ -1126,7 +1172,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                       borderRadius:
                                                                           BorderRadius.circular(
                                                                               30)),
-                                                                  child: Padding(
+                                                                  child:
+                                                                      Padding(
                                                                     padding:
                                                                         const EdgeInsets
                                                                             .all(5),
@@ -1143,8 +1190,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                               const EdgeInsets.symmetric(horizontal: 8),
                                                                           child:
                                                                               Text(
-                                                                            DurationCalculator(
-                                                                                v['duration']),
+                                                                            DurationCalculator(v['duration']),
                                                                             textScaleFactor:
                                                                                 0.75,
                                                                             // style: TextStyle(
@@ -1186,7 +1232,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                         InkWell(
                                                           onTap: () {
                                                             share(
-                                                                episodeObject: v);
+                                                                episodeObject:
+                                                                    v);
                                                           },
                                                           child: Icon(
                                                             FontAwesomeIcons
@@ -1226,7 +1273,8 @@ class _FollowingPageState extends State<FollowingPage>
                                       child: Container(
                                         color: kSecondaryColor,
                                         height: 200,
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                       ),
                                     ),
                                   ],

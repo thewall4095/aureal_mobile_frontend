@@ -222,6 +222,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -291,7 +294,7 @@ class _MyAppState extends State<MyApp> {
                                         CreatePodcast(),
 
                                     Wrapper.id: (context) => Wrapper(),
-                                     Bio.id: (context) => Bio(),
+                                    Bio.id: (context) => Bio(),
                                     Presence.id: (context) => Presence(),
                                     SelectLanguage.id: (context) =>
                                         SelectLanguage(),
@@ -482,7 +485,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       print(registrationToken);
       FormData formData = FormData.fromMap(map);
       try {
-
         var response = await dio.post(url, data: formData);
 
         if (response.statusCode == 200) {

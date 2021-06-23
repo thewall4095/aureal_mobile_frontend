@@ -550,67 +550,104 @@ class _BottomPlayerState extends State<BottomPlayer> {
                   });
               // Navigator.pushNamed(context, Player.id);
             },
-            child: Container(
-              height: SizeConfig.safeBlockVertical * 6,
-              width: double.infinity,
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 1,
-                )
-              ]),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      episodeObject.audioPlayer.builderRealtimePlayingInfos(
-                          builder: (context, infos) {
-                        if (infos == null) {
-                          return SizedBox(
-                            height: 0,
-                            width: 0,
-                          );
-                        } else {
-                          if (infos.isBuffering == true) {
-                            return SpinKitCircle(
-                              size: 15,
-                              color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                height: SizeConfig.safeBlockVertical * 6,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                            builder: (context, infos) {
+                          if (infos == null) {
+                            return SizedBox(
+                              height: 0,
+                              width: 0,
                             );
                           } else {
-                            if (infos.isPlaying == true) {
-                              return IconButton(
-                                splashColor: Colors.blue,
-                                icon: Icon(
-                                  Icons.pause,
-                                  //color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  episodeObject.pause();
-                                },
+                            if (infos.isBuffering == true) {
+                              return SpinKitCircle(
+                                size: 15,
+                                color: Colors.white,
                               );
                             } else {
-                              return IconButton(
-                                splashColor: Colors.blue,
-                                icon: Icon(
-                                  Icons.play_arrow,
-                                  //    color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  episodeObject.resume();
-                                },
-                              );
+                              if (infos.isPlaying == true) {
+                                return IconButton(
+                                  splashColor: Colors.blue,
+                                  icon: Icon(
+                                    Icons.pause,
+                                    //color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.pause();
+                                  },
+                                );
+                              } else {
+                                return IconButton(
+                                  splashColor: Colors.blue,
+                                  icon: Icon(
+                                    Icons.play_arrow,
+                                    //    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.resume();
+                                  },
+                                );
+                              }
                             }
                           }
-                        }
-                      }),
-                      InkWell(
-                        onTap: () {
-                          {
-                            if (episodeObject.permlink == null) {
-                            } else {
-                              if (prefs.getString('HiveUserName') != null) {
+                        }),
+                        InkWell(
+                          onTap: () {
+                            {
+                              if (episodeObject.permlink == null) {
+                              } else {
+                                if (prefs.getString('HiveUserName') != null) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                            backgroundColor: Colors.transparent,
+                                            child: UpvoteEpisode(
+                                                episode_id: episodeObject.id,
+                                                permlink:
+                                                    episodeObject.permlink));
+                                      }).then((value) async {
+                                    print(value);
+                                  });
+
+                                  // upvoteEpisode(
+                                  //     episode_id: episodeObject.id,
+                                  //     permlink: episodeObject.permlink);
+                                  Fluttertoast.showToast(msg: 'Upvote done');
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: 'Please connect your Hive Account');
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return HiveDetails();
+                                      });
+                                }
+                              }
+                            }
+                          },
+                          child: IconButton(
+                            icon: Icon(
+                              FontAwesomeIcons.chevronCircleUp,
+                              size: 20,
+                              //     color: Colors.black,
+                            ),
+                            onPressed: () {
+                              Fluttertoast.showToast(msg: 'Upvote done');
+                              if (episodeObject.permlink == null) {
+                              } else {
                                 showDialog(
                                     context: context,
                                     builder: (context) {
@@ -625,86 +662,49 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 });
 
                                 // upvoteEpisode(
-                                //     episode_id: episodeObject.id,
-                                //     permlink: episodeObject.permlink);
-                                Fluttertoast.showToast(msg: 'Upvote done');
-                              } else {
-                                Fluttertoast.showToast(
-                                    msg: 'Please connect your Hive Account');
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return HiveDetails();
-                                    });
+                                //     episode_id:
+                                //         episodeObject
+                                //             .id,
+                                //     permlink:
+                                //         episodeObject
+                                //             .permlink);
                               }
-                            }
-                          }
-                        },
-                        child: IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.chevronCircleUp,
-                            size: 20,
-                            //     color: Colors.black,
+                            },
                           ),
-                          onPressed: () {
-                            Fluttertoast.showToast(msg: 'Upvote done');
-                            if (episodeObject.permlink == null) {
-                            } else {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return Dialog(
-                                        backgroundColor: Colors.transparent,
-                                        child: UpvoteEpisode(
-                                            episode_id: episodeObject.id,
-                                            permlink: episodeObject.permlink));
-                                  }).then((value) async {
-                                print(value);
-                              });
-
-                              // upvoteEpisode(
-                              //     episode_id:
-                              //         episodeObject
-                              //             .id,
-                              //     permlink:
-                              //         episodeObject
-                              //             .permlink);
-                            }
-                          },
+                          // child: Padding(
+                          //   padding: const EdgeInsets.all(3.0),
+                          //   child: IconButton(
+                          //     onPressed: () {},
+                          //     splashColor: Colors.blue,
+                          //     icon: Icon(
+                          //       FontAwesomeIcons.chevronCircleUp,
+                          //       // color: _hasBeenPressed ? Colors.blue : Colors.black,
+                          //       //color: Colors.white,
+                          //     ),
+                          //
+                          //   ),
+                          //
+                          // ),
                         ),
-                        // child: Padding(
-                        //   padding: const EdgeInsets.all(3.0),
-                        //   child: IconButton(
-                        //     onPressed: () {},
-                        //     splashColor: Colors.blue,
-                        //     icon: Icon(
-                        //       FontAwesomeIcons.chevronCircleUp,
-                        //       // color: _hasBeenPressed ? Colors.blue : Colors.black,
-                        //       //color: Colors.white,
-                        //     ),
-                        //
-                        //   ),
-                        //
-                        // ),
-                      ),
-                      Container(
-                        height: 40,
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Marquee(
-                          pauseAfterRound: Duration(seconds: 2),
-                          text: ' ${episodeObject.episodeName} ',
-                          style: TextStyle(
-                              //   color: Colors.white,
-                              fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                          blankSpace: 100,
+                        Container(
+                          height: 40,
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          child: Marquee(
+                            pauseAfterRound: Duration(seconds: 2),
+                            text: ' ${episodeObject.episodeName} ',
+                            style: TextStyle(
+                                //   color: Colors.white,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                            blankSpace: 100,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                    ],
-                  ),
-                ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           )

@@ -104,6 +104,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "color_thief_flutter",
+      "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/color_thief_flutter-1.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "crypto",
       "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/crypto-3.0.1",
       "packageUri": "lib/",
@@ -692,6 +698,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "quantize_dart",
+      "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/quantize_dart-1.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
       "name": "quiver",
       "rootUri": "file:///Users/shubhamupadhyay/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.1.5",
       "packageUri": "lib/",
@@ -974,7 +986,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-06-21T11:59:54.603916Z",
+  "generated": "2021-06-22T13:03:21.796745Z",
   "generator": "pub",
   "generatorVersion": "2.12.2"
 }
