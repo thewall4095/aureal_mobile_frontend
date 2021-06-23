@@ -77,7 +77,6 @@ dependencies:
   otp_text_field: ^1.1.0
   pin_code_fields: ^7.0.0
   flutter_background: ^1.0.0
-  flutter_webrtc: ^0.6.3
   async: ^2.4.2
 #  flutter_typeahead: ^2.0.0
   fluttertoast: ^8.0.3

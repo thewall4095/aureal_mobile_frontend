@@ -10,13 +10,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../CategoriesProvider.dart';
+import 'package:jitsi_meet/jitsi_meet.dart';
 
 class CommunityPage extends StatefulWidget {
   @override
@@ -26,24 +26,15 @@ class CommunityPage extends StatefulWidget {
 class _CommunityPageState extends State<CommunityPage> {
   var prefs;
 
-  SimpleWebSocket socket = SimpleWebSocket(
-      'https://ipfs.aureal.one', '71525c0c-02e4-4aec-a2f7-b859fb19e4fa');
-
-  void socketConnection() async {
-    socket.connectToServer();
-  }
-
   @override
   void initState() {
     // TODO: implement initState
-    socketConnection();
     super.initState();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
-    socket.socket.dispose();
     super.dispose();
   }
 
@@ -77,16 +68,21 @@ class _CommunityPageState extends State<CommunityPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                height: MediaQuery.of(context).size.height / 9,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        width: 1, color: Color(0xff3a3a3a))),
-                                child: AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Container(
-                                    child: Icon(Icons.library_add),
+                              InkWell(
+                                onTap: () {
+                                  _joinMeeting();
+                                },
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height / 9,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          width: 1, color: Color(0xff3a3a3a))),
+                                  child: AspectRatio(
+                                    aspectRatio: 16 / 9,
+                                    child: Container(
+                                      child: Icon(Icons.library_add),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -175,6 +171,86 @@ class _CommunityPageState extends State<CommunityPage> {
   }
 }
 
+_joinMeeting() async {
+  try {
+    print('came here');
+    FeatureFlag featureFlag = FeatureFlag();
+    featureFlag.welcomePageEnabled = false;
+    // featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION; // Limit video resolution to 360p
+
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      // FeatureFlagEnum.RESOLUTION: FeatureFlagVideoResolution.MD_RESOLUTION,
+    };
+
+    var options = JitsiMeetingOptions(room: 'roomTexttext') // ll be trimmed
+      ..serverURL = "https://meet.aureal.one"
+      ..subject = "Meeting with Gunschu"
+      ..userDisplayName = "My Name"
+      ..userEmail = "myemail@email.com"
+      ..userAvatarURL = "https://someimageurl.com/image.jpg" // or .png
+      ..audioOnly = true
+      ..audioMuted = true
+      ..videoMuted = true
+      ..featureFlags.addAll(featureFlags);
+      // ..webOptions = {
+      //   "roomName": 'THEROOMNAME',
+      //   "width": "100%",
+      //   "height": "100%",
+      //   "enableWelcomePage": false,
+      //   "chromeExtensionBanner": null,
+      //   "userInfo": {"displayName": 'THEWALL'}
+      // };
+
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'readyToClose',
+                callback: (dynamic message) {
+                  print("readyToClose lodacallback");
+                }),
+            JitsiGenericListener(
+                eventName: 'chatUpdated',
+                callback: (dynamic message) {
+                  print("chatUpdated lodacallback");
+                }),
+            JitsiGenericListener(
+                eventName: 'endpointTextMessageReceived',
+                callback: (dynamic message) {
+                  print("endpointTextMessageReceived lodacallback");
+                }),
+            JitsiGenericListener(
+                eventName: 'incomingMessage',
+                callback: (dynamic message) {
+                  print("incomingMessage lodacallback");
+                }),
+            JitsiGenericListener(
+                eventName: 'outgoingMessage',
+                callback: (dynamic message) {
+                  print("outgoingMessage lodacallback");
+                }),
+            JitsiGenericListener(
+                eventName: 'raiseHandUpdated',
+                callback: (dynamic message) {
+                  print("raiseHandUpdated lodacallback");
+                }),
+          ]),
+    );
+  } catch (error) {
+    debugPrint("error: $error");
+  }
+}
 enum RoomType { public, social, private }
 
 typedef void OnMessageCallback(String tag, dynamic msg);
@@ -185,85 +261,6 @@ const CLIENT_ID_EVENT = 'client-id-event';
 const OFFER_EVENT = 'offer-event';
 const ANSWER_EVENT = 'answer-event';
 const ICE_CANDIDATE_EVENT = 'ice-candidate-event';
-
-class SimpleWebSocket {
-  String url;
-  String roomId;
-  IO.Socket socket;
-  OnOpenCallback onOpen;
-  OnMessageCallback onMessage;
-  OnCloseCallback onClose;
-
-  SimpleWebSocket(this.url, this.roomId);
-
-  connectToServer() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    try {
-      socket = IO.io(url);
-      // await socket.connect();
-      // print(socket.toString());
-      // print(socket.id);
-      // print(socket.io);
-      await socket.emit('join_room', {
-        'roomID': "51403b1f-0a18-4d86-bc8d-974028f95efe",
-        'userData': {'userId': prefs.getString('userId'), 'name': 'asdasdasd'},
-        'roomDetails': {
-          'title': 'asdsadsa',
-          'description': 'asdsada',
-          'imageurl': 'asdsadasd'
-        }
-      });
-      print(socket.id);
-      // socket.onConnect((data) => print(data.toString()));
-      // socket.onevent  = (SignalingState state) {}
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  // connect() async {
-  //   try {
-  //     socket = IO.io(url, roomId);
-  //     // Dart client
-  //     socket.on('connect', (_) {
-  //       print('connected');
-  //       onOpen();
-  //     });
-  //     socket.on(CLIENT_ID_EVENT, (data) {
-  //       onMessage(CLIENT_ID_EVENT, data);
-  //     });
-  //     socket.on(OFFER_EVENT, (data) {
-  //       onMessage(OFFER_EVENT, data);
-  //     });
-  //     socket.on(ANSWER_EVENT, (data) {
-  //       onMessage(ANSWER_EVENT, data);
-  //     });
-  //     socket.on(ICE_CANDIDATE_EVENT, (data) {
-  //       onMessage(ICE_CANDIDATE_EVENT, data);
-  //     });
-  //     socket.on('exception', (e) => print('Exception: $e'));
-  //     socket.on('connect_error', (e) => print('Connect error: $e'));
-  //     socket.on('disconnect', (e) {
-  //       print('disconnect');
-  //       onClose(0, e);
-  //     });
-  //     socket.on('fromServer', (_) => print(_));
-  //   } catch (e) {
-  //     this.onClose(500, e.toString());
-  //   }
-  // }
-
-  send(event, data) {
-    if (socket != null) {
-      socket.emit(event, data);
-      print('send: $event - $data');
-    }
-  }
-
-  close() {
-    if (socket != null) socket.close();
-  }
-}
 
 class ScheduleLive extends StatefulWidget {
   @override
