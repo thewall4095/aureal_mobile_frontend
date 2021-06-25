@@ -30,6 +30,61 @@ class _CommunityPageState extends State<CommunityPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    JitsiMeet.addListener(JitsiMeetingListener(
+        onConferenceWillJoin: _onConferenceWillJoin,
+        onConferenceJoined: _onConferenceJoined,
+        onConferenceTerminated: _onConferenceTerminated,
+        onError: _onError,
+        genericListeners: [
+          JitsiGenericListener(
+              eventName: 'readyToClose',
+              callback: (dynamic message) {
+                print("readyToClose callback");
+              }),
+          JitsiGenericListener(
+              eventName: 'chatUpdated',
+              callback: (dynamic message) {
+                print("chatUpdated callback");
+              }),
+          JitsiGenericListener(
+              eventName: 'endpointTextMessageReceived',
+              callback: (dynamic message) {
+                print("endpointTextMessageReceived madarchodmessage");
+              }),
+          JitsiGenericListener(
+              eventName: 'incomingMessage',
+              callback: (dynamic message) {
+                print("incomingMessage madarchodmessage");
+              }),
+          JitsiGenericListener(
+              eventName: 'outgoingMessage',
+              callback: (dynamic message) {
+                print("outgoingMessage madarchodmessage");
+              }),
+          JitsiGenericListener(
+              eventName: 'raiseHandUpdated',
+              callback: (dynamic message) {
+                print("raiseHandUpdated madarchodmessage");
+              }),
+        ])
+    );
+  }
+
+  void _onConferenceWillJoin(message) {
+    debugPrint("_onConferenceWillJoin broadcasted with madarchodmessage: $message");
+  }
+
+  void _onConferenceJoined(message) {
+    debugPrint("_onConferenceJoined broadcasted with madarchodmessage: $message");
+  }
+
+  void _onConferenceTerminated(message) {
+    debugPrint("_onConferenceTerminated broadcasted with madarchodmessage: $message");
+  }
+
+  _onError(error) {
+    debugPrint("_onError broadcasted madarchodmessage: $error");
   }
 
   @override
@@ -218,32 +273,32 @@ _joinMeeting() async {
             JitsiGenericListener(
                 eventName: 'readyToClose',
                 callback: (dynamic message) {
-                  print("readyToClose lodacallback");
+                  print("readyToClose callback");
                 }),
             JitsiGenericListener(
                 eventName: 'chatUpdated',
                 callback: (dynamic message) {
-                  print("chatUpdated lodacallback");
+                  print("chatUpdated callback");
                 }),
             JitsiGenericListener(
                 eventName: 'endpointTextMessageReceived',
                 callback: (dynamic message) {
-                  print("endpointTextMessageReceived lodacallback");
+                  print("endpointTextMessageReceived callback");
                 }),
             JitsiGenericListener(
                 eventName: 'incomingMessage',
                 callback: (dynamic message) {
-                  print("incomingMessage lodacallback");
+                  print("incomingMessage callback");
                 }),
             JitsiGenericListener(
                 eventName: 'outgoingMessage',
                 callback: (dynamic message) {
-                  print("outgoingMessage lodacallback");
+                  print("outgoingMessage callback");
                 }),
             JitsiGenericListener(
                 eventName: 'raiseHandUpdated',
                 callback: (dynamic message) {
-                  print("raiseHandUpdated lodacallback");
+                  print("raiseHandUpdated callback");
                 }),
           ]),
     );
