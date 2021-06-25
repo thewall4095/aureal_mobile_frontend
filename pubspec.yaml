@@ -78,6 +78,7 @@ dependencies:
   async: ^2.4.2
 #  flutter_typeahead: ^2.0.0
   fluttertoast: ^8.0.3
+  color_thief_flutter: ^1.0.2
   sqflite: ^2.0.0+3
   flutter_local_notifications: ^5.0.0+1
   dotted_border: ^2.0.0-nullsafety.0
@@ -91,6 +92,7 @@ dependencies:
  # flutter_signin_button: ^1.1.0
 
 
+  just_audio: ^0.8.0
   firebase_auth: ^1.2.0
   firebase_core: ^1.2.0
   flutter_signin_button: ^2.0.0

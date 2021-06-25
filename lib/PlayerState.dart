@@ -175,8 +175,9 @@ class PlayerChange extends ChangeNotifier {
     if (audioPlayer.isPlaying == true) {
       var a = dursaver.getAllEpisodes();
       print(a.toString());
+
       dursaver.addToDatabase(
-          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value, audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
     }
   }
 
@@ -189,7 +190,7 @@ class PlayerChange extends ChangeNotifier {
     audioPlayer.pause();
     _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
     dursaver.addToDatabase(
-        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value,audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
   }
 
   void resume() {

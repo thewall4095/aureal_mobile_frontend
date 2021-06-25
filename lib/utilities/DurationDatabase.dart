@@ -62,7 +62,8 @@ class RecentlyPlayedProvider {
       CREATE TABLE $_tblRecentlyPlayed (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           episodeId INTEGER,
-          currentDuration TEXT
+          currentDuration TEXT,
+          totalDuration TEXT
         );
       ''');
 
@@ -101,6 +102,61 @@ class RecentlyPlayedProvider {
     });
 
     return r != 0;
+  }
+
+  Future<double> percentageDone(var episodeId) async{
+    Duration totalDuration = await getEpisodeTotalDuration(episodeId);
+    Duration currentPosition = await getEpisodeDuration(episodeId);
+
+    if(totalDuration != null){
+      return (currentPosition.inSeconds / totalDuration.inSeconds);
+    }else{
+      return 0.0;
+    }
+
+  }
+
+  Future<Duration> getEpisodeTotalDuration(var episodeId) async {
+    print(episodeId);
+    Database db = await _init();
+    _database ??= db;
+
+    var rows = await _database.rawQuery(
+        'SELECT * FROM $_tblRecentlyPlayed WHERE episodeId = $episodeId;');
+
+    if (rows.length != 0) {
+      print(
+          '${rows[0]['totalDuration']} ////////////////////////////////////////////////');
+      print(Duration(
+          minutes:
+          int.parse(rows[0]['totalDuration'].toString().split(':')[1]),
+          seconds: int.parse(rows[0]['totalDuration']
+              .toString()
+              .split(':')[2]
+              .split('.')[0]),
+          hours:
+          int.parse(rows[0]['totalDuration'].toString().split(':')[0])));
+      return Duration(
+          minutes:
+          int.parse(rows[0]['totalDuration'].toString().split(':')[1]),
+          seconds: int.parse(rows[0]['totalDuration']
+              .toString()
+              .split(':')[2]
+              .split('.')[0]),
+          hours:
+          int.parse(rows[0]['totalDuration'].toString().split(':')[0]));
+    } else {
+      return null;
+    }
+
+    // print(rows.first);
+
+    // if (rows.length != 0) {
+    //   print(rows);
+    //   // return rows[0];
+    // } else {
+    //   // return null;
+    // }
   }
 
   Future<Duration> getEpisodeDuration(var episodeId) async {
@@ -147,22 +203,22 @@ class RecentlyPlayedProvider {
     // }
   }
 
-  void addToDatabase(var episodeId, var currentPosition) async {
+  void addToDatabase(var episodeId, var currentPosition, var totalDuration) async {
     var durr = await getEpisode(episodeId);
     print(episodeId);
     print(currentPosition);
     if (durr == true) {
       print(
           'update episode called /////////////////////////////////////////////');
-      updateEpisode(episodeId, currentPosition);
+      updateEpisode(episodeId, currentPosition, totalDuration);
     } else {
       print(
           'add episode called//////////////////////////////////////////////////');
-      addEpisode(episodeId, currentPosition);
+      addEpisode(episodeId, currentPosition, totalDuration);
     }
   }
 
-  Future<bool> addEpisode(var episodeId, var currentPosition) async {
+  Future<bool> addEpisode(var episodeId, var currentPosition, var totalDuration) async {
     Database db = await _init();
     _database ??= db;
 
@@ -170,27 +226,30 @@ class RecentlyPlayedProvider {
 
     final int i = await _database.rawInsert(
         'INSERT INTO $_tblRecentlyPlayed '
-        'VALUES (NULL, ?, ?)',
+        'VALUES (NULL, ?, ?, ?)',
         [
           episodeId,
           currentPosition.toString(),
+          totalDuration.toString()
         ]);
 
     return i >= 1;
   }
 
   /// Updates the given episode using [Episode.id]
-  Future<bool> updateEpisode(var episodeId, var currentPosition) async {
+  Future<bool> updateEpisode(var episodeId, var currentPosition, var totalDuration) async {
     Database db = await _init();
     _database ??= db;
 
     final int i = await _database.rawUpdate(
         'UPDATE $_tblRecentlyPlayed '
         'SET '
-        'currentDuration = ? '
+        'currentDuration = ?, '
+        'totalDuration = ? '
         'WHERE episodeId = ?',
         [
           currentPosition.toString(),
+          totalDuration.toString(),
           episodeId,
         ]);
 
@@ -212,6 +271,8 @@ class RecentlyPlayedProvider {
       return true;
     }
   }
+
+
 
   /// Gets the episodes.
   Future<List> getEpisodes() async {

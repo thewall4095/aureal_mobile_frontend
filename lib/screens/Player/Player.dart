@@ -158,7 +158,7 @@ class _PlayerState extends State<Player> {
     print('Dispose Called//////////////////////////////////////////////');
     var episodeObject = Provider.of<PlayerChange>(context);
     episodeObject.dursaver.addToDatabase(episodeObject.episodeObject['id'],
-        episodeObject.audioPlayer.currentPosition.valueWrapper.value);
+        episodeObject.audioPlayer.currentPosition.valueWrapper.value, episodeObject.audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
     super.dispose();
   }
 
