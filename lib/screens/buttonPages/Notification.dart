@@ -154,7 +154,7 @@ class _NotificationPageState extends State<NotificationPage>
 //                  onPressed: () => debugPrint('Action Notification'),
 //                ),
               ],
-              expandedHeight: 170,
+              // expandedHeight: 170,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(

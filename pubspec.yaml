@@ -106,6 +106,7 @@ dependencies:
   page_transition: ^1.1.7+6
   path_provider: ^2.0.1
   uni_links: ^0.5.0
+  badges: ^1.1.6
 
 
 dev_dependencies:

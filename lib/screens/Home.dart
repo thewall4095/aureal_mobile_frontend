@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import "package:badges/badges.dart";
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -365,7 +365,7 @@ class _HomeState extends State<Home> {
   }
 
   bool open = false;
-
+  int countNotification = 10;
   Launcher launcher = Launcher();
 
   @override
@@ -428,14 +428,22 @@ class _HomeState extends State<Home> {
                   },
                 )
               : SizedBox(height: 0, width: 0),
-          IconButton(
-            icon: Icon(
-              Icons.notifications_none,
-              //    color: Colors.white,
+          Center(
+            child: IconButton(
+              icon: Badge(
+                badgeColor: Colors.blue,
+                badgeContent: Text(
+               " ",
+                ),
+                child: Icon(
+                  Icons.notifications_none,
+                  //    color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, NotificationPage.id);
+              },
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, NotificationPage.id);
-            },
           ),
           IconButton(
             icon: Icon(
