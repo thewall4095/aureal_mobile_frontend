@@ -27,7 +27,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   cached_network_image: ^3.0.0
   font_awesome_flutter:
-  wave: ^0.2.0
+#  wave: ^0.2.0
   loading_animations: "^2.1.0"
   loading_indicator: ^2.0.1
   audioplayer: ^0.8.1
@@ -92,7 +92,7 @@ dependencies:
  # flutter_signin_button: ^1.1.0
 
 
-  just_audio: ^0.8.0
+#  just_audio: ^0.8.0
   firebase_auth: ^1.2.0
   firebase_core: ^1.2.0
   flutter_signin_button: ^2.0.0

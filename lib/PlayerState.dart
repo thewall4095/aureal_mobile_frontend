@@ -111,9 +111,9 @@ class PlayerChange extends ChangeNotifier {
     print(dur.runtimeType);
     state = PlayerState.playing;
 
-    currentIndex = _playList.indexOf(_episodeObject);
-    print(
-        '$currentIndex ////////////////////////////////////////////////////////////////////');
+    // currentIndex = _playList.indexOf(_episodeObject);
+    // print(
+    //     '$currentIndex ////////////////////////////////////////////////////////////////////');
 
     audioPlayer.open(
       Audio.network(_episodeObject['url'],
@@ -177,7 +177,9 @@ class PlayerChange extends ChangeNotifier {
       print(a.toString());
 
       dursaver.addToDatabase(
-          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value, audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+          episodeObject['id'],
+          audioPlayer.currentPosition.valueWrapper.value,
+          audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
     }
   }
 
@@ -190,7 +192,9 @@ class PlayerChange extends ChangeNotifier {
     audioPlayer.pause();
     _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
     dursaver.addToDatabase(
-        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value,audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+        _episodeObject['id'],
+        audioPlayer.currentPosition.valueWrapper.value,
+        audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
   }
 
   void resume() {

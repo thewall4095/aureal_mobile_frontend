@@ -1,5 +1,7 @@
+import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReferralProgram extends StatefulWidget {
   @override
@@ -21,6 +23,8 @@ class _ReferralProgramState extends State<ReferralProgram>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -36,62 +40,182 @@ class _ReferralProgramState extends State<ReferralProgram>
               padding: const EdgeInsets.all(20),
               child: Container(
                 decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    color: themeProvider.isLightTheme == true
+                        ? Colors.white
+                        : Color(0xff222222),
                     borderRadius: BorderRadius.circular(10)),
                 child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: ListTile(
-                    title: Text(
-                      "Refer & Earn",
-                      textScaleFactor: 1.0,
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 4,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    subtitle: Text(
-                        "Refer your favourite podcasters and earn extra rewards when they join Aureal"),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Your Invite Link",
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              child: Text(
+                                "https://aureal.one/referral",
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xff777777)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Icon(Icons.access_alarm_outlined),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xff777777)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Icon(Icons.access_alarm_outlined),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.width / 7,
+                            width: 2,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                  Color(0xff5d5da8),
+                                  Color(0xff5bc3ef)
+                                ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "234",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4.5,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text("Links Shared")
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.width / 7,
+                            width: 2,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                  Color(0xff5d5da8),
+                                  Color(0xff5bc3ef)
+                                ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "234",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4.5,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text("Creators Signed Up")
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.width / 7,
+                            width: 2,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                  Color(0xff5d5da8),
+                                  Color(0xff5bc3ef)
+                                ],
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "234",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4.5,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text("Estimated Rewards")
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              ),
-            ),
-            TabBar(
-              tabs: [
-                Tab(
-                  text: 'Join',
-                ),
-                Tab(
-                  text: 'Share',
-                ),
-                Tab(
-                  text: 'Earn',
-                )
-              ],
-              controller: _controller,
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: TabBarView(
-                children: [
-                  Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text("Join")],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text("Share")],
-                    ),
-                  ),
-                  Container(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [Text("Earn")],
-                    ),
-                  ),
-                ],
-                controller: _controller,
               ),
             ),
           ],

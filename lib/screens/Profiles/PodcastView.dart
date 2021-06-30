@@ -13,6 +13,7 @@ import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
@@ -327,6 +328,8 @@ class _PodcastViewState extends State<PodcastView> {
     SizeConfig().init(context);
     final currentlyPlaying = Provider.of<PlayerChange>(context);
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     // var bookmarkBloc = Provider.of<BookmarkBloc>(context);
     //
     final mediaQueryData = MediaQuery.of(context);
@@ -351,8 +354,12 @@ class _PodcastViewState extends State<PodcastView> {
                       ? Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Shimmer.fromColors(
-                            baseColor: kPrimaryColor,
-                            highlightColor: Color(0xff3a3a3a),
+                            baseColor: themeProvider.isLightTheme == false
+                                ? kPrimaryColor
+                                : Colors.white,
+                            highlightColor: themeProvider.isLightTheme == false
+                                ? Color(0xff3a3a3a)
+                                : Colors.white,
                             child: Container(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -750,7 +757,9 @@ class _PodcastViewState extends State<PodcastView> {
                           ? SizedBox()
                           : Shimmer.fromColors(
                               direction: ShimmerDirection.ttb,
-                              baseColor: kPrimaryColor,
+                              baseColor: themeProvider.isLightTheme == true
+                                  ? Colors.white
+                                  : kPrimaryColor,
                               highlightColor: Color(0xff3a3a3a),
                               child: Container(
                                 color: kSecondaryColor,
@@ -760,7 +769,9 @@ class _PodcastViewState extends State<PodcastView> {
                             ))
                       : Shimmer.fromColors(
                           direction: ShimmerDirection.ttb,
-                          baseColor: kPrimaryColor,
+                          baseColor: themeProvider.isLightTheme == true
+                              ? Colors.white
+                              : kPrimaryColor,
                           highlightColor: Color(0xff3a3a3a),
                           child: Container(
                             color: kSecondaryColor,
@@ -775,7 +786,15 @@ class _PodcastViewState extends State<PodcastView> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Color(0xff222222),
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black54.withOpacity(0.2),
+                            blurRadius: 10.0,
+                          ),
+                        ],
+                        color: themeProvider.isLightTheme == true
+                            ? Colors.white
+                            : Color(0xff222222),
                       ),
                       width: double.infinity,
                       child: Padding(

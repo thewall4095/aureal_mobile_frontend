@@ -32,6 +32,7 @@ import 'Player/Player.dart';
 import 'Player/VideoPlayer.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
+import 'buttonPages/settings/Theme-.dart';
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -251,6 +252,8 @@ class _FollowingPageState extends State<FollowingPage>
           context, Home.id, ModalRoute.withName("/"));
       return false; // return true if the route to be popped
     }
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     final mediaQueryData = MediaQuery.of(context);
     return WillPopScope(
@@ -662,7 +665,18 @@ class _FollowingPageState extends State<FollowingPage>
                                               horizontal: 10, vertical: 10),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                                color: Color(0xff222222),
+                                                boxShadow: [
+                                                  new BoxShadow(
+                                                    color: Colors.black54
+                                                        .withOpacity(0.2),
+                                                    blurRadius: 10.0,
+                                                  ),
+                                                ],
+                                                color: themeProvider
+                                                            .isLightTheme ==
+                                                        true
+                                                    ? Colors.white
+                                                    : Color(0xff222222),
                                                 borderRadius:
                                                     BorderRadius.circular(8)),
                                             width: double.infinity,

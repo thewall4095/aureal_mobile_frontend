@@ -65,8 +65,7 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>It requires app to function properly</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>It requires app to function properly</string>
+
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>It requires app to function properly</string>
 	<key>NSBonjourServices</key>
