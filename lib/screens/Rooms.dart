@@ -228,14 +228,12 @@ class _CommunityPageState extends State<CommunityPage> {
 
 _joinMeeting() async {
   try {
-    print('came here');
-    FeatureFlag featureFlag = FeatureFlag();
-    featureFlag.welcomePageEnabled = false;
-    // featureFlag.resolution = FeatureFlagVideoResolution.MD_RESOLUTION; // Limit video resolution to 360p
 
     Map<FeatureFlagEnum, bool> featureFlags = {
       FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-      // FeatureFlagEnum.RESOLUTION: FeatureFlagVideoResolution.MD_RESOLUTION,
+      FeatureFlagEnum.INVITE_ENABLED: false,
+      FeatureFlagEnum.IOS_RECORDING_ENABLED: true,
+      FeatureFlagEnum.RECORDING_ENABLED: true
     };
 
     var options = JitsiMeetingOptions(room: 'roomTexttext') // ll be trimmed
@@ -916,6 +914,7 @@ class _ScheduleLiveState extends State<ScheduleLive> {
   }
 
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _topicController = TextEditingController();
 
   Widget _roomTextFields() {
     return ListView(
@@ -1094,10 +1093,11 @@ class _RoomOptionsState extends State<RoomOptions>
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return Room();
-                    }));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //   return Room();
+                    // }));
+
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -1308,6 +1308,7 @@ class _RoomOptionsState extends State<RoomOptions>
                       child: TextField(
                         decoration: InputDecoration(border: InputBorder.none),
                         focusNode: _focusNode,
+                        controller: _topicController,
                       ),
                     ),
                   ),
