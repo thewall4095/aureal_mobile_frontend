@@ -390,7 +390,9 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
-          onPressed: () {},
+          onPressed: () {
+
+          },
           icon: CircleAvatar(
             radius: SizeConfig.safeBlockHorizontal * 6,
             backgroundImage: CachedNetworkImageProvider(
@@ -487,6 +489,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             label: "",
+
             icon: Icon(
               Icons.perm_identity,
               size: 28,
