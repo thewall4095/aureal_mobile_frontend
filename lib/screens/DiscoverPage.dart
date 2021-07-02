@@ -259,7 +259,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width *
-                                                              1.03,
+                                                              1.04,
                                                       width: double.infinity,
                                                       child: CarouselSlider(
                                                         options:
@@ -268,12 +268,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             context)
                                                                         .size
                                                                         .height *
-                                                                    0.8,
+                                                                    0.9,
                                                                 autoPlay: true,
                                                                 enableInfiniteScroll:
                                                                     true,
                                                                 viewportFraction:
-                                                                    0.85,
+                                                                    0.9,
 //
                                                                 aspectRatio:
                                                                     4 / 3,
@@ -287,7 +287,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             Padding(
                                                               padding:
                                                                   const EdgeInsets
-                                                                      .all(10),
+                                                                      .all(5),
                                                               child: Container(
                                                                 decoration: BoxDecoration(
                                                                     color: Color(
@@ -317,9 +317,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       child:
                                                                           Container(
                                                                         height: MediaQuery.of(context).size.width *
-                                                                            0.8,
+                                                                            0.85,
                                                                         width: MediaQuery.of(context).size.width *
-                                                                            0.8,
+                                                                            0.85,
 
 //
                                                                         child:
