@@ -17,7 +17,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -345,6 +345,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     final mediaQueryData = MediaQuery.of(context);
     final authBloc = Provider.of<AuthBloc>(context);
     final user = FirebaseAuth.instance.currentUser;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return WillPopScope(
@@ -353,109 +354,59 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 resizeToAvoidBottomInset: true,
                 body: Container(
                   height: MediaQuery.of(context).size.height,
-                  child: Stack(children: [
-                    SingleChildScrollView(
-                      child: Stack(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 100,
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: MediaQuery.of(context).size.width * 0.8,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/playstore.png'),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            height: MediaQuery.of(context).size.width * 0.8,
-                            decoration: BoxDecoration(
-                                color: kPrimaryColor.withOpacity(0.55)),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child:
                     ListView(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return Bio();
-                                }));
-                              },
-                              child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.width / 4,
-                                  width:
-                                      MediaQuery.of(context).size.width / 4,
-                                  child: CachedNetworkImage(
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          //   borderRadius: BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.width,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                      );
-                                    },
-                                    imageUrl: displayPicture == null
-                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                        : displayPicture,
-                                    fit: BoxFit.cover,
-                                    memCacheHeight: MediaQuery.of(context)
-                                        .size
-                                        .height
-                                        .floor(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                  )),
-                            ),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return Bio();
+                                  }));
+                                },
+                                child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.width / 4,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    child: CachedNetworkImage(
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            //   borderRadius: BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                          height:
+                                              MediaQuery.of(context).size.width,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                        );
+                                      },
+                                      imageUrl: displayPicture == null
+                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          : displayPicture,
+                                      fit: BoxFit.cover,
+                                      memCacheHeight: MediaQuery.of(context)
+                                          .size
+                                          .height
+                                          .floor(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    )),
+                              ),
 
-                            SizedBox(
-                              height: 20,
-                            ),
-                            // Expanded(
-                            //   child: Column(
-                            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     children: [
-                            //       Text(
-                            //         "$userName",
-                            //         textScaleFactor: mediaQueryData.textScaleFactor
-                            //             .clamp(0.2, 1.3)
-                            //             .toDouble(),
-                            //         style: TextStyle(
-                            //             //         color: Color(0xffe8e8e8),
-                            //             fontSize:
-                            //                 SizeConfig.safeBlockHorizontal * 5.5,
-                            //             fontWeight: FontWeight.bold),
-                            //       ),
-                            //       SizedBox(
-                            //         height: 10,
-                            //       ),
-                            //
-                            //     ],
-                            //   ),
-                            //
-                            // ),
-                            //
-                          ],
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
@@ -468,7 +419,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   child: GestureDetector(
                                     onTap: () {},
                                     child: Text(
-                                      "Profle Name",
+                                      "$userName",
+                                      //'$fullName',
                                       textScaleFactor: mediaQueryData
                                           .textScaleFactor
                                           .clamp(0.2, 1.3)
@@ -488,7 +440,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 20),
+                                            const EdgeInsets.only(bottom: 10),
                                         child: GestureDetector(
                                           onTap: () {},
                                           child: Text(
@@ -511,35 +463,35 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          // Padding(
+                                          //   padding: const EdgeInsets.only(
+                                          //       bottom: 20),
+                                          //   child: GestureDetector(
+                                          //     onTap: () {
+                                          //       print('$bio');
+                                          //     },
+                                          //     child: Text(
+                                          //       'Bio',
+                                          //       textScaleFactor:
+                                          //           mediaQueryData
+                                          //               .textScaleFactor
+                                          //               .clamp(0.2, 1)
+                                          //               .toDouble(),
+                                          //       style: TextStyle(
+                                          //         //   color: Color(0xffe8e8e8),
+                                          //         fontSize: SizeConfig
+                                          //                 .safeBlockHorizontal *
+                                          //             5,
+                                          //         fontWeight: FontWeight.w700,
+                                          //       ),
+                                          //     ),
+                                          //   ),
+                                          // ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 bottom: 20),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                print('$bio');
-                                              },
-                                              child: Text(
-                                                'Bio',
-                                                textScaleFactor:
-                                                    mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.2, 1)
-                                                        .toDouble(),
-                                                style: TextStyle(
-                                                  //   color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      5,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
                                             child: Text(
-                                              '$bio',
+                                              'A product designer in search of all things blissful',
                                               textScaleFactor: mediaQueryData
                                                   .textScaleFactor
                                                   .clamp(0.2, 1)
@@ -599,66 +551,78 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                             "22 Following",
                                                           ),
                                                         ]))),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                kSecondaryColor),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                30)),
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        child: Row(children: [
-                                                          Text(" i ")
-                                                        ]))),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                kSecondaryColor),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                30)),
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        child: Row(children: [
-                                                          Text(" f ")
-                                                        ]))),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                kSecondaryColor),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                30)),
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        child: Row(children: [
-                                                          Text(" t ")
-                                                        ]))),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                kSecondaryColor),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                30)),
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(10),
-                                                        child: Row(children: [
-                                                          Text("w ")
-                                                        ]))),
+                                                InkWell(
+                                                        onTap: () => launch('https://instagram.com/'),
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  kSecondaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  30)),
+                                                      child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          child: Row(children: [
+                                                            Text("  i ")
+                                                          ]))),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => launch('https://www.facebook.com/'),
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  kSecondaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  30)),
+                                                      child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          child: Row(children: [
+                                                            Text("  f ")
+                                                          ]))),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => launch('https://twitter.com/home'),
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  kSecondaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  30)),
+                                                      child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          child: Row(children: [
+                                                            Text("  t ")
+                                                          ]))),
+                                                ),
+                                                InkWell(
+                                                  onTap: () => launch('https://docs.flutter.io/flutter/services/UrlLauncher-class.html'),
+                                                  child: Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  kSecondaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  30)),
+                                                      child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10),
+                                                          child: Row(children: [
+                                                            Text(" w ")
+                                                          ]))),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -1811,7 +1775,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                 prefs.clear();
                                                               },
                                                               child: Text(
-                                                                "Log Out",
+                                                                "Sign Out",
                                                                 textScaleFactor: mediaQueryData
                                                                     .textScaleFactor
                                                                     .clamp(
@@ -1843,7 +1807,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     ])
                               ]))
                     ]),
-                  ]),
                 )));
       },
     );

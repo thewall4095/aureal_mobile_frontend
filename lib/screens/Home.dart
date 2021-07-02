@@ -391,7 +391,7 @@ class _HomeState extends State<Home> {
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-
+            Profile();
           },
           icon: CircleAvatar(
             radius: SizeConfig.safeBlockHorizontal * 6,
