@@ -354,49 +354,58 @@ class _BioState extends State<Bio> {
                         height: 10,
                       ),
                       Container(
-                        height: 40,
-                        width: double.infinity,
                         decoration: BoxDecoration(
+                          border: Border.all(color: kSecondaryColor),
                           borderRadius: BorderRadius.circular(8),
-                          //  color: kSecondaryColor
+                          //    color: kSecondaryColor,
                         ),
-                        child: Center(
-                            // child: TextField(
-                            //   controller: fullNameTextEditingControler,
-                            //   style: TextStyle(color: Colors.white54),
-                            //   onChanged: (value) {
-                            //     setState(() {
-                            //       fullname = value;
-                            //     });
-                            //     activeButtonState();
-                            //   },
-                            //   decoration: InputDecoration(
-                            //       //  hintText: widget.fullname,
-                            //       hintStyle: TextStyle(
-                            //         color: Colors.white54,
-                            //       ),
-                            //       contentPadding:
-                            //           EdgeInsets.fromLTRB(10, 0, 10, 10)),
-                            // ),
-                            //  child: TextFormField(
-                            //    initialValue: widget.fullname,
-                            //    controller: fullNameTextEditingControler,
-                            //    onChanged: (value) {
-                            //      setState(() {
-                            //        fullname = value;
-                            //      });
-                            //      activeButtonState();
-                            //    },
-                            // //   style: TextStyle(color: Color(0xffe8e8e8)),
-                            //    decoration: InputDecoration(
-                            //      disabledBorder: OutlineInputBorder(),
-                            //      labelText: 'Full Name',
-                            //  //    labelStyle: TextStyle(color: Color(0xffe8e8e8)),
-                            //      border: OutlineInputBorder(),
-                            //    ),
-                            //  ),
-                            ),
-                      ),
+                        width: double.infinity,
+                        height: 80,
+                        child: TextFormField(
+                          maxLines: 6,
+                          initialValue:widget.fullname,
+                          controller: fullNameTextEditingControler,
+                          onChanged: (value) {
+                            setState(() {
+                              fullname = value;
+                            });
+                            activeButtonState();
+                          },
+                          // style: TextStyle(color: Color(0xffe8e8e8)),
+                          decoration: InputDecoration(
+                            disabledBorder: OutlineInputBorder(),
+                            labelText: 'Profile Name',
+                             hintText: widget.fullname,
+                            //   labelStyle: TextStyle(color: Color(0xffe8e8e8)),
+                            border: OutlineInputBorder(),
+                          ),
+
+                      // Container(
+                      //   width: double.infinity,
+                      //   height: 80,
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(8),
+                      //     //  color: kSecondaryColor
+                      //   ),
+                      //   child: TextField(
+                      //     controller: fullNameTextEditingControler,
+                      //     style: TextStyle(color: Colors.white54),
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         fullname = value;
+                      //       });
+                      //       activeButtonState();
+                      //     },
+                      //     decoration: InputDecoration(
+                      //          hintText: widget.fullname,
+                      //         hintStyle: TextStyle(
+                      //           color: Colors.white,
+                      //         ),
+                      //         contentPadding:
+                      //             EdgeInsets.fromLTRB(10, 0, 10, 10)),
+                       ),
+                       ),
+                      SizedBox(height: 20,),
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: kSecondaryColor),
