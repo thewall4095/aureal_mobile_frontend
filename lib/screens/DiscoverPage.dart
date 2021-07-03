@@ -485,15 +485,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         .contains(
                                                                             '.pdf') ==
                                                                     true) {
-                                                                  // Navigator.push(
-                                                                  //     context,
-                                                                  //     MaterialPageRoute(
-                                                                  // der:
-                                                                  //             (context) {
-                                                                  //   return PDFviewer(
-                                                                  //       episodeObject:
-                                                                  //           v);
-                                                                  // }));
+
                                                                 } else {
                                                                   currentlyPlaying
                                                                       .stop();

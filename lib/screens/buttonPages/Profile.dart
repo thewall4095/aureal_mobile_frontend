@@ -44,6 +44,7 @@ class Profile extends StatefulWidget {
   static const String id = 'Profile';
 
   @override
+
   _ProfileState createState() => _ProfileState();
 }
 
@@ -417,10 +418,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: GestureDetector(
-                                    onTap: () {},
+                                    onTap: () {
+                                      print('$fullName');
+                                    },
                                     child: Text(
-                                      "$userName",
-                                      //'$fullName',
+                                      // "$userName",
+                                      '$fullName',
+
                                       textScaleFactor: mediaQueryData
                                           .textScaleFactor
                                           .clamp(0.2, 1.3)
@@ -463,35 +467,35 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Padding(
-                                          //   padding: const EdgeInsets.only(
-                                          //       bottom: 20),
-                                          //   child: GestureDetector(
-                                          //     onTap: () {
-                                          //       print('$bio');
-                                          //     },
-                                          //     child: Text(
-                                          //       'Bio',
-                                          //       textScaleFactor:
-                                          //           mediaQueryData
-                                          //               .textScaleFactor
-                                          //               .clamp(0.2, 1)
-                                          //               .toDouble(),
-                                          //       style: TextStyle(
-                                          //         //   color: Color(0xffe8e8e8),
-                                          //         fontSize: SizeConfig
-                                          //                 .safeBlockHorizontal *
-                                          //             5,
-                                          //         fontWeight: FontWeight.w700,
-                                          //       ),
-                                          //     ),
-                                          //   ),
-                                          // ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 20),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                print('$bio');
+                                              },
+                                              child: Text(
+                                                'Bio',
+                                                textScaleFactor:
+                                                    mediaQueryData
+                                                        .textScaleFactor
+                                                        .clamp(0.2, 1)
+                                                        .toDouble(),
+                                                style: TextStyle(
+                                                  //   color: Color(0xffe8e8e8),
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      5,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 bottom: 20),
                                             child: Text(
-                                              'A product designer in search of all things blissful',
+                                              '$bio',
                                               textScaleFactor: mediaQueryData
                                                   .textScaleFactor
                                                   .clamp(0.2, 1)

@@ -1167,6 +1167,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                     ),
                                                   ),
                                                 ),
+
                                           InkWell(
                                             onTap: () {
                                               print(episodeList[index - 1]

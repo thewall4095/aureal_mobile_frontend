@@ -490,10 +490,17 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             label: "",
 
-            icon: Icon(
-              Icons.perm_identity,
-              size: 28,
-            ),
+            icon:  IconButton(
+                        icon: Icon(
+                          Icons.person,
+
+                        //     color: Colors.white,
+                        ),
+                        onPressed: () async {
+                          Navigator.pushNamed(context,   Profile.id
+                          );
+                        }
+                        ),
             activeIcon: Icon(
               Icons.person,
               size: 28,
