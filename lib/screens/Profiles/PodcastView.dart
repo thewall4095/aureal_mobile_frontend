@@ -749,9 +749,8 @@ class _PodcastViewState extends State<PodcastView> {
                           ])
                         ]));
               } else {
-                if (episodeListLoading == true) {}
                 if (index == episodeList.length + 1) {
-                  return episodeListLoading == false
+                  return isLoading == false
                       ? (_controller.position.pixels !=
                               _controller.position.maxScrollExtent
                           ? SizedBox()
@@ -781,113 +780,115 @@ class _PodcastViewState extends State<PodcastView> {
                         );
                 }
                 return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          new BoxShadow(
-                            color: Colors.black54.withOpacity(0.2),
-                            blurRadius: 10.0,
-                          ),
-                        ],
-                        color: themeProvider.isLightTheme == true
-                            ? Colors.white
-                            : Color(0xff222222),
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            new BoxShadow(
+                              color: Colors.black54.withOpacity(0.2),
+                              blurRadius: 10.0,
+                            ),
+                          ],
+                          color: themeProvider.isLightTheme == true
+                              ? Colors.white
+                              : Color(0xff222222),
+                        ),
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
 
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return EpisodeView(
-                                  episodeId: episodeList[index - 1]['id']);
-                            }));
-                          },
-                          //
-                          title: Text(
-                            episodeList[index - 1]['name'],
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textScaleFactor: mediaQueryData.textScaleFactor
-                                .clamp(0.5, 1.5)
-                                .toDouble(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                //       color: Colors.white,
-                                fontSize: SizeConfig.safeBlockHorizontal * 4),
-                          ),
-                          subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                episodeList[index - 1]['summary'] == null
-                                    ? SizedBox(
-                                        height: 0,
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10.0),
-                                        child: htmlMatch.hasMatch(
-                                                    episodeList[index - 1]
-                                                        ['summary']) ==
-                                                true
-                                            ? Text(
-                                                '${(parse(episodeList[index - 1]['summary']).body.text)}',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                textScaleFactor: mediaQueryData
-                                                    .textScaleFactor
-                                                    .clamp(0.5, 1)
-                                                    .toDouble(),
-                                                style: TextStyle(
-                                                    //       color: Colors.grey,
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        3.5),
-                                              )
-                                            : Text(
-                                                episodeList[index - 1]
-                                                    ['summary'],
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                textScaleFactor: mediaQueryData
-                                                    .textScaleFactor
-                                                    .clamp(0.5, 1)
-                                                    .toDouble(),
-                                                style: TextStyle(
-                                                    //         color: Colors.grey,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        3.5),
-                                              ),
-                                      ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Row(children: [
-                                          episodeList[index - 1]['permlink'] ==
-                                                      null ||
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return EpisodeView(
+                                    episodeId: episodeList[index - 1]['id']);
+                              }));
+                            },
+                            //
+                            title: Text(
+                              episodeList[index - 1]['name'],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textScaleFactor: mediaQueryData.textScaleFactor
+                                  .clamp(0.5, 1.5)
+                                  .toDouble(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  //       color: Colors.white,
+                                  fontSize: SizeConfig.safeBlockHorizontal * 4),
+                            ),
+                            subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  episodeList[index - 1]['summary'] == null
+                                      ? SizedBox(
+                                          height: 0,
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10.0),
+                                          child: htmlMatch.hasMatch(
+                                                      episodeList[index - 1]
+                                                          ['summary']) ==
+                                                  true
+                                              ? Text(
+                                                  '${(parse(episodeList[index - 1]['summary']).body.text)}',
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textScaleFactor:
+                                                      mediaQueryData
+                                                          .textScaleFactor
+                                                          .clamp(0.5, 1)
+                                                          .toDouble(),
+                                                  style: TextStyle(
+                                                      //       color: Colors.grey,
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          3.5),
+                                                )
+                                              : Text(
                                                   episodeList[index - 1]
-                                                          ['votes'] ==
-                                                      null
-                                              ? (creator ==
-                                                      prefs.getString('userId')
-                                                  ? InkWell(
-                                                      onTap: () async {
-                                                        // await publishManually(
-                                                        //     episodeList[index - 1]
-                                                        //         ['id']);
-                                                      },
-                                                      child: GestureDetector(
+                                                      ['summary'],
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textScaleFactor:
+                                                      mediaQueryData
+                                                          .textScaleFactor
+                                                          .clamp(0.5, 1)
+                                                          .toDouble(),
+                                                  style: TextStyle(
+                                                      //         color: Colors.grey,
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3.5),
+                                                ),
+                                        ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Row(children: [
+                                            episodeList[index - 1]
+                                                            ['permlink'] ==
+                                                        null ||
+                                                    episodeList[index - 1]
+                                                            ['votes'] ==
+                                                        null
+                                                ? (creator ==
+                                                        prefs
+                                                            .getString('userId')
+                                                    ? GestureDetector(
                                                         onTap: () async {
                                                           await publishManually(
                                                               episodeList[
@@ -932,158 +933,376 @@ class _PodcastViewState extends State<PodcastView> {
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  : SizedBox(
-                                                      width: 0,
-                                                    ))
-                                              : InkWell(
-                                                  onTap: () async {
-                                                    if (prefs.getString(
-                                                            'HiveUserName') !=
-                                                        null) {
-                                                      setState(() {
-                                                        episodeList[index - 1]
-                                                                ['isLoading'] =
-                                                            true;
-                                                      });
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Dialog(
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                child: UpvoteEpisode(
-                                                                    permlink: episodeList[
-                                                                            index -
-                                                                                1]
-                                                                        [
-                                                                        'permlink'],
-                                                                    episode_id:
-                                                                        episodeList[index -
-                                                                                1]
-                                                                            [
-                                                                            'id']));
-                                                          }).then((value) async {
-                                                        print(value);
-                                                      });
-                                                      // await upvoteEpisode(
-                                                      //     permlink: episodeList[
-                                                      //             index - 1]
-                                                      //         ['permlink'],
-                                                      //     episode_id: episodeList[
-                                                      //         index - 1]['id']);
-                                                      setState(() {
-                                                        episodeList[index - 1]
-                                                                ['ifVoted'] =
-                                                            !episodeList[index -
-                                                                1]['ifVoted'];
-                                                        episodeList[index - 1]
-                                                                ['isLoading'] =
-                                                            false;
-                                                      });
-                                                    } else {
-                                                      showBarModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return HiveDetails();
-                                                          });
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 5),
-                                                    child: Container(
-                                                      decoration: episodeList[index - 1]
-                                                                  ['ifVoted'] ==
-                                                              true
-                                                          ? BoxDecoration(
-                                                              gradient:
-                                                                  LinearGradient(
-                                                                      colors: [
-                                                                    Color(
-                                                                        0xff5bc3ef),
-                                                                    Color(
-                                                                        0xff5d5da8)
-                                                                  ]),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      30))
-                                                          : BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                      kSecondaryColor),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      30)),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: Row(
-                                                          children: [
-                                                            episodeList[index -
-                                                                            1][
-                                                                        'isLoading'] ==
-                                                                    true
-                                                                ? Container(
-                                                                    height: 18,
-                                                                    width: 18,
-                                                                    child:
-                                                                        SpinKitPulse(
-                                                                      color: Colors
-                                                                          .blue,
+                                                      )
+                                                    : SizedBox(
+                                                        width: 0,
+                                                      ))
+                                                : InkWell(
+                                                    onTap: () async {
+                                                      if (prefs.getString(
+                                                              'HiveUserName') !=
+                                                          null) {
+                                                        setState(() {
+                                                          episodeList[index - 1]
+                                                                  [
+                                                                  'isLoading'] =
+                                                              true;
+                                                        });
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return Dialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  child: UpvoteEpisode(
+                                                                      permlink: episodeList[index -
+                                                                              1]
+                                                                          [
+                                                                          'permlink'],
+                                                                      episode_id:
+                                                                          episodeList[index - 1]
+                                                                              [
+                                                                              'id']));
+                                                            }).then((value) async {
+                                                          print(value);
+                                                        });
+                                                        // await upvoteEpisode(
+                                                        //     permlink: episodeList[
+                                                        //             index - 1]
+                                                        //         ['permlink'],
+                                                        //     episode_id: episodeList[
+                                                        //         index - 1]['id']);
+                                                        setState(() {
+                                                          episodeList[index - 1]
+                                                                  ['ifVoted'] =
+                                                              !episodeList[
+                                                                      index - 1]
+                                                                  ['ifVoted'];
+                                                          episodeList[index - 1]
+                                                                  [
+                                                                  'isLoading'] =
+                                                              false;
+                                                        });
+                                                      } else {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return HiveDetails();
+                                                            });
+                                                      }
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 5),
+                                                      child: Container(
+                                                        decoration: episodeList[index - 1]
+                                                                    [
+                                                                    'ifVoted'] ==
+                                                                true
+                                                            ? BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                        colors: [
+                                                                      Color(
+                                                                          0xff5bc3ef),
+                                                                      Color(
+                                                                          0xff5d5da8)
+                                                                    ]),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                        30))
+                                                            : BoxDecoration(
+                                                                border: Border.all(
+                                                                    color:
+                                                                        kSecondaryColor),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(30)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: Row(
+                                                            children: [
+                                                              episodeList[index -
+                                                                              1]
+                                                                          [
+                                                                          'isLoading'] ==
+                                                                      true
+                                                                  ? Container(
+                                                                      height:
+                                                                          18,
+                                                                      width: 18,
+                                                                      child:
+                                                                          SpinKitPulse(
+                                                                        color: Colors
+                                                                            .blue,
+                                                                      ),
+                                                                    )
+                                                                  : Icon(
+                                                                      FontAwesomeIcons
+                                                                          .chevronCircleUp,
+                                                                      size: 15,
                                                                     ),
-                                                                  )
-                                                                : Icon(
-                                                                    FontAwesomeIcons
-                                                                        .chevronCircleUp,
-                                                                    size: 15,
-                                                                  ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                              child: Text(
-                                                                '${episodeList[index - 1]['votes']}',
-                                                                textScaleFactor:
-                                                                    mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.5,
-                                                                            1)
-                                                                        .toDouble(),
-                                                                style: TextStyle(
-                                                                    //        color: Color(
-                                                                    // 0xffe8e8e8)
-                                                                    ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        8),
+                                                                child: Text(
+                                                                  '${episodeList[index - 1]['votes']}',
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
+                                                                  style: TextStyle(
+                                                                      //        color: Color(
+                                                                      // 0xffe8e8e8)
+                                                                      ),
+                                                                ),
                                                               ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 4),
-                                                              child: Text(
-                                                                '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
-                                                                textScaleFactor:
-                                                                    mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.5,
-                                                                            1)
-                                                                        .toDouble(),
-                                                              ),
-                                                            )
-                                                          ],
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            4),
+                                                                child: Text(
+                                                                  '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
+                                            episodeList[index - 1]
+                                                            ['permlink'] ==
+                                                        null ||
+                                                    episodeList[index - 1]
+                                                            ['votes'] ==
+                                                        null
+                                                ? SizedBox(
+                                                    width: 0,
+                                                  )
+                                                : InkWell(
+                                                    onTap: () {
+                                                      if (prefs.getString(
+                                                              'HiveUserName') !=
+                                                          null) {
+                                                        Navigator.push(context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) {
+                                                          return Comments(
+                                                            episodeObject:
+                                                                episodeList[
+                                                                    index - 1],
+                                                          );
+                                                        }));
+                                                      } else {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return HiveDetails();
+                                                            });
+                                                      }
+                                                    },
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 5),
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                                color:
+                                                                    kSecondaryColor),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        30)),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .mode_comment_outlined,
+                                                                size: 15,
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        8),
+                                                                child: Text(
+                                                                  episodeList[index -
+                                                                              1]
+                                                                          [
+                                                                          'comments_count']
+                                                                      .toString(),
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
+                                                                  // style: TextStyle(
+                                                                  //      color: Color(0xffe8e8e8)
+                                                                  //     ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                            InkWell(
+                                              onTap: () {
+                                                print(episodeList[index - 1]
+                                                        ['url']
+                                                    .toString()
+                                                    .contains('.mp4'));
+                                                if (episodeList[index - 1]['url']
+                                                            .toString()
+                                                            .contains('.mp4') ==
+                                                        true ||
+                                                    episodeList[index - 1]['url']
+                                                            .toString()
+                                                            .contains('.m4v') ==
+                                                        true ||
+                                                    episodeList[index - 1]['url']
+                                                            .toString()
+                                                            .contains('.flv') ==
+                                                        true ||
+                                                    episodeList[index - 1]
+                                                                ['url']
+                                                            .toString()
+                                                            .contains('.f4v') ==
+                                                        true ||
+                                                    episodeList[index - 1]
+                                                                ['url']
+                                                            .toString()
+                                                            .contains('.ogv') ==
+                                                        true ||
+                                                    episodeList[index - 1]
+                                                                ['url']
+                                                            .toString()
+                                                            .contains('.ogx') ==
+                                                        true ||
+                                                    episodeList[index - 1]
+                                                                ['url']
+                                                            .toString()
+                                                            .contains('.wmv') ==
+                                                        true ||
+                                                    episodeList[index - 1]
+                                                                ['url']
+                                                            .toString()
+                                                            .contains('.webm') ==
+                                                        true) {
+                                                  currentlyPlaying.stop();
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return PodcastVideoPlayer(
+                                                      episodeObject:
+                                                          episodeList[
+                                                              index - 1],
+                                                    );
+                                                  }));
+                                                } else {
+                                                  if (episodeList[index - 1]
+                                                              ['url']
+                                                          .toString()
+                                                          .contains('.pdf') ==
+                                                      true) {
+                                                    // Navigator.push(context,
+                                                    //     MaterialPageRoute(
+                                                    //         builder: (context) {
+                                                    //   return PDFviewer(
+                                                    //     episodeObject:
+                                                    //         episodeList[index - 1],
+                                                    //   );
+                                                    // }));
+                                                  } else {
+                                                    currentlyPlaying.stop();
+
+                                                    currentlyPlaying
+                                                            .episodeObject =
+                                                        episodeList[index - 1];
+                                                    currentlyPlaying.playList =
+                                                        episodeList;
+                                                    print(currentlyPlaying
+                                                        .playList);
+                                                    print(currentlyPlaying
+                                                        .episodeObject
+                                                        .toString());
+                                                    currentlyPlaying.play();
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Player();
+                                                        });
+                                                  }
+                                                }
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: kSecondaryColor),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30)),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .play_circle_outline,
+                                                        size: 15,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal: 8),
+                                                        child: Text(
+                                                          '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
+                                                          textScaleFactor:
+                                                              mediaQueryData
+                                                                  .textScaleFactor
+                                                                  .clamp(0.5, 1)
+                                                                  .toDouble(),
+                                                          // style: TextStyle(
+                                                          //      color: Color(0xffe8e8e8)
+                                                          //     ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
+                                              ),
+                                            ),
+                                          ]),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
                                           episodeList[index - 1]['permlink'] ==
                                                       null ||
                                                   episodeList[index - 1]
@@ -1091,294 +1310,121 @@ class _PodcastViewState extends State<PodcastView> {
                                                       null
                                               ? SizedBox(
                                                   width: 0,
+                                                  height: 0,
                                                 )
-                                              : InkWell(
-                                                  onTap: () {
-                                                    if (prefs.getString(
-                                                            'HiveUserName') !=
-                                                        null) {
-                                                      Navigator.push(context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) {
-                                                        return Comments(
-                                                          episodeObject:
-                                                              episodeList[
-                                                                  index - 1],
-                                                        );
-                                                      }));
-                                                    } else {
-                                                      showBarModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return HiveDetails();
-                                                          });
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 5),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  kSecondaryColor),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      30)),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .mode_comment_outlined,
-                                                              size: 15,
-                                                            ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                              child: Text(
-                                                                episodeList[index -
-                                                                            1][
-                                                                        'comments_count']
-                                                                    .toString(),
-                                                                textScaleFactor:
-                                                                    mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.5,
-                                                                            1)
-                                                                        .toDouble(),
-                                                                // style: TextStyle(
-                                                                //      color: Color(0xffe8e8e8)
-                                                                //     ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                              : (creator ==
+                                                      prefs.getString('userId')
+                                                  ? IconButton(
+                                                      icon:
+                                                          Icon(Icons.more_vert),
+                                                      onPressed: () {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return Container(
+                                                                child:
+                                                                    AddToCommunity(
+                                                                  episodeObject:
+                                                                      episodeList[
+                                                                          index -
+                                                                              1],
+                                                                ),
+                                                                // color:
+                                                                //     kSecondaryColor,
+                                                              );
+                                                            });
+                                                      },
+                                                    )
+                                                  : SizedBox(
+                                                      width: 0,
+                                                      height: 0,
+                                                    )),
 
-                                          InkWell(
-                                            onTap: () {
-                                              print(episodeList[index - 1]
-                                                      ['url']
-                                                  .toString()
-                                                  .contains('.mp4'));
-                                              if (episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.mp4') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.m4v') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.flv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.f4v') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.ogv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.ogx') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.wmv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.webm') ==
-                                                      true) {
-                                                currentlyPlaying.stop();
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                  return PodcastVideoPlayer(
-                                                    episodeObject:
-                                                        episodeList[index - 1],
-                                                  );
-                                                }));
-                                              } else {
-                                                if (episodeList[index - 1]
-                                                            ['url']
-                                                        .toString()
-                                                        .contains('.pdf') ==
-                                                    true) {
-                                                  // Navigator.push(context,
-                                                  //     MaterialPageRoute(
-                                                  //         builder: (context) {
-                                                  //   return PDFviewer(
-                                                  //     episodeObject:
-                                                  //         episodeList[index - 1],
-                                                  //   );
-                                                  // }));
-                                                } else {
-                                                  currentlyPlaying.stop();
-
-                                                  currentlyPlaying
-                                                          .episodeObject =
-                                                      episodeList[index - 1];
-                                                  currentlyPlaying.playList =
-                                                      episodeList;
-                                                  print(currentlyPlaying
-                                                      .playList);
-                                                  print(currentlyPlaying
-                                                      .episodeObject
-                                                      .toString());
-                                                  currentlyPlaying.play();
-                                                  showBarModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return Player();
-                                                      });
-                                                }
-                                              }
+                                          // IconButton(
+                                          //   onPressed: () async {
+                                          //     final status = await Permission.storage.request();
+                                          //
+                                          //     if (status.isGranted) {
+                                          //       final externalDir = await getExternalStorageDirectory();
+                                          //
+                                          //       final id = await FlutterDownloader.enqueue(
+                                          //         url:
+                                          //         "https://firebasestorage.googleapis.com/v0/b/storage-3cff8.appspot.com/o/2020-05-29%2007-18-34.mp4?alt=media&token=841fffde-2b83-430c-87c3-2d2fd658fd41",
+                                          //
+                                          //
+                                          //         savedDir: externalDir.path,
+                                          //         fileName: "download",
+                                          //         showNotification: true,
+                                          //         openFileFromNotification: true,
+                                          //       );
+                                          //
+                                          //
+                                          //     } else {
+                                          //       print("Permission deined");
+                                          //     }
+                                          //   },
+                                          //   icon: Icon(
+                                          //       Icons.arrow_circle_down_outlined),
+                                          // ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              share(
+                                                  episodeId:
+                                                      episodeList[index - 1]
+                                                          ['id'],
+                                                  episodeName:
+                                                      episodeList[index - 1]
+                                                          ['name']);
                                             },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: kSecondaryColor),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          30)),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(5),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.play_circle_outline,
-                                                      size: 15,
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 8),
-                                                      child: Text(
-                                                        '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        // style: TextStyle(
-                                                        //      color: Color(0xffe8e8e8)
-                                                        //     ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
+                                            icon: Icon(
+                                                FontAwesomeIcons.shareAlt,
+                                                //  color: Color(0xffe8e8e8),
+                                                size: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    4.5),
                                           ),
-                                        ]),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        episodeList[index - 1]['permlink'] ==
-                                                    null ||
-                                                episodeList[index - 1]
-                                                        ['votes'] ==
-                                                    null
-                                            ? SizedBox(
-                                                width: 0,
-                                                height: 0,
-                                              )
-                                            : (creator ==
-                                                    prefs.getString('userId')
-                                                ? IconButton(
-                                                    icon: Icon(Icons.more_vert),
-                                                    onPressed: () {
-                                                      showBarModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Container(
-                                                              child:
-                                                                  AddToCommunity(
-                                                                episodeObject:
-                                                                    episodeList[
-                                                                        index -
-                                                                            1],
-                                                              ),
-                                                              // color:
-                                                              //     kSecondaryColor,
-                                                            );
-                                                          });
-                                                    },
-                                                  )
-                                                : SizedBox(
-                                                    width: 0,
-                                                    height: 0,
-                                                  )),
-
-                                        // IconButton(
-                                        //   onPressed: () async {
-                                        //     final status = await Permission.storage.request();
-                                        //
-                                        //     if (status.isGranted) {
-                                        //       final externalDir = await getExternalStorageDirectory();
-                                        //
-                                        //       final id = await FlutterDownloader.enqueue(
-                                        //         url:
-                                        //         "https://firebasestorage.googleapis.com/v0/b/storage-3cff8.appspot.com/o/2020-05-29%2007-18-34.mp4?alt=media&token=841fffde-2b83-430c-87c3-2d2fd658fd41",
-                                        //
-                                        //
-                                        //         savedDir: externalDir.path,
-                                        //         fileName: "download",
-                                        //         showNotification: true,
-                                        //         openFileFromNotification: true,
-                                        //       );
-                                        //
-                                        //
-                                        //     } else {
-                                        //       print("Permission deined");
-                                        //     }
-                                        //   },
-                                        //   icon: Icon(
-                                        //       Icons.arrow_circle_down_outlined),
-                                        // ),
-                                        IconButton(
-                                          onPressed: () async {
-                                            share(
-                                                episodeId:
-                                                    episodeList[index - 1]
-                                                        ['id'],
-                                                episodeName:
-                                                    episodeList[index - 1]
-                                                        ['name']);
-                                          },
-                                          icon: Icon(FontAwesomeIcons.shareAlt,
-                                              //  color: Color(0xffe8e8e8),
-                                              size: SizeConfig
-                                                      .blockSizeHorizontal *
-                                                  4.5),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ]),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                          ),
                         ),
                       ),
-                    ));
+                      Builder(builder: (context) {
+                        if (currentlyPlaying.episodeObject != null) {
+                          return episodeList[index - 1]['id'] ==
+                                      currentlyPlaying.episodeObject['id'] &&
+                                  currentlyPlaying.episodeObject['id'] != null
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 7),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        gradient: LinearGradient(colors: [
+                                          Color(0xff5d5da8),
+                                          Color(0xff5bc3ef)
+                                        ])),
+                                    width: double.maxFinite *
+                                        (currentlyPlaying
+                                                .audioPlayer
+                                                .realtimePlayingInfos
+                                                .valueWrapper
+                                                .value
+                                                .playingPercent /
+                                            100),
+                                    height: 4,
+                                  ),
+                                )
+                              : SizedBox();
+                        } else {
+                          return SizedBox();
+                        }
+                      }),
+                    ],
+                  ),
+                );
               }
             }, childCount: episodeList.length + 2))
           ],

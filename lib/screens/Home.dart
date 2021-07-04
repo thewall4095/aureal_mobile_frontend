@@ -389,17 +389,22 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Profile();
-          },
-          icon: CircleAvatar(
-            radius: SizeConfig.safeBlockHorizontal * 6,
-            backgroundImage: CachedNetworkImageProvider(
-              displayPicture == null
-                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                  : displayPicture,
-              scale: 0.5,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return Profile();
+              }));
+            },
+            icon: CircleAvatar(
+              radius: SizeConfig.safeBlockHorizontal * 6,
+              backgroundImage: CachedNetworkImageProvider(
+                displayPicture == null
+                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                    : displayPicture,
+                scale: 0.5,
+              ),
             ),
           ),
         ),
@@ -487,25 +492,17 @@ class _HomeState extends State<Home> {
             icon: Icon(FontAwesomeIcons.compass),
             activeIcon: Icon(FontAwesomeIcons.solidCompass),
           ),
-          BottomNavigationBarItem(
-            label: "",
-
-            icon:  IconButton(
-                        icon: Icon(
-                          Icons.person,
-
-                        //     color: Colors.white,
-                        ),
-                        onPressed: () async {
-                          Navigator.pushNamed(context,   Profile.id
-                          );
-                        }
-                        ),
-            activeIcon: Icon(
-              Icons.person,
-              size: 28,
-            ),
-          ),
+          // BottomNavigationBarItem(
+          //   label: "",
+          //   icon: Icon(
+          //     Icons.perm_identity,
+          //     size: 28,
+          //   ),
+          //   activeIcon: Icon(
+          //     Icons.person,
+          //     size: 28,
+          //   ),
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
