@@ -6,6 +6,7 @@ import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
+import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -342,7 +343,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             body: CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  expandedHeight: MediaQuery.of(context).size.height / 2.4,
+                  pinned: true,
+                  expandedHeight: MediaQuery.of(context).size.height / 2.3,
                   flexibleSpace: FlexibleSpaceBar(
                       background: Stack(
                     children: [
@@ -448,6 +450,382 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       )
                     ],
                   )),
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.26,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
+                            child: Text(
+                              "Your Podcasts",
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                  fontSize: SizeConfig.safeBlockHorizontal * 5),
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.26,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 10),
+                            child: Text(
+                              "Your Podcasts",
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                  fontSize: SizeConfig.safeBlockHorizontal * 5),
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4.5,
+                                        child: Icon(Icons.add),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Add a podcast"),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ReferralDashboard(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {},
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xffe8e8e8)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Text(
+                                  "Your Rewards",
+                                  textScaleFactor: 1.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]),
                 ),
               ],
               // child: Container(
