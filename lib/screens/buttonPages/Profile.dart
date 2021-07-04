@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
@@ -24,11 +25,16 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Home.dart';
+import '../RewardsScreen.dart';
 import 'Bio.dart';
+import 'Downloads.dart';
+import 'Settings.dart';
 
 class Profile extends StatefulWidget {
   static const String id = 'Profile';
@@ -770,112 +776,271 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
-                                ),
-                              ),
-                            ),
+                          Divider(
+                            color: kSecondaryColor,
                           ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Container(
+                                //   width: double.infinity,
+                                //   decoration: BoxDecoration(
+                                //       border: Border(
+                                //           bottom:
+                                //               BorderSide(color: kSecondaryColor))),
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(vertical: 15),
+                                //     child: InkWell(
+                                //       onTap: () {
+                                //         Navigator.push(context,
+                                //             MaterialPageRoute(builder: (context) {
+                                //           return CreateCommunity();
+                                //         })).then((value) async {
+                                //           await _pullRefreshEpisodes();
+                                //         });
+                                //       },
+                                //       child: Text(
+                                //         "Add your community",
+                                //         textScaleFactor: mediaQueryData.textScaleFactor
+                                //             .clamp(0.2, 1)
+                                //             .toDouble(),
+                                //         style: TextStyle(
+                                //           fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                //           //      color: Color(0xffe8e8e8),
+                                //         ),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return Rewards();
+                                        }));
+                                      },
+                                      child: Text(
+                                        "Your rewards",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //    color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        showBarModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return DownloadPage();
+                                            });
+                                      },
+                                      child: Text(
+                                        "Library",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //        color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        showBarModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height,
+                                                // child: InAppWebView(
+                                                //     gestureRecognizers:
+                                                //         gestureRecognizers,
+                                                //     initialFile:
+                                                //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
+                                                child: WebView(
+                                                  gestureRecognizers: Set()
+                                                    ..add(
+                                                      Factory<
+                                                          VerticalDragGestureRecognizer>(
+                                                        () =>
+                                                            VerticalDragGestureRecognizer(),
+                                                      ), // or null
+                                                    ),
+                                                  gestureNavigationEnabled:
+                                                      true,
+                                                  javascriptMode: JavascriptMode
+                                                      .unrestricted,
+                                                  initialUrl:
+                                                      'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: Text(
+                                        "Your wallet",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //        color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        hiveUserName == null
+                                            ? Navigator.pushNamedAndRemoveUntil(
+                                                context,
+                                                HiveAccount.id,
+                                                (route) => false)
+                                            : print('nothing');
+                                      },
+                                      child: Text(
+                                        hiveUserName != null
+                                            ? "Connected with your Hive Account ( @${hiveUserName} )"
+                                            : "Connect your Hive Account",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //     color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border: Border(
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
                                       bottom: BorderSide(
-                                          color: Color(0xffe8e8e8)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Text(
-                                  "Your Rewards",
-                                  textScaleFactor: 1.0,
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        showBarModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return Settings();
+                                            });
+                                      },
+                                      child: Text(
+                                        "Setting",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //  color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        logout();
+                                        prefs.clear();
+                                      },
+                                      child: Text(
+                                        "Sign Out",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          //    color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                // SignInButton(Buttons.Google,
+                                //     text: 'Sign Out of Google',
+                                //     onPressed: () => authBloc.logout())
+                              ],
                             ),
                           ),
                         ],
