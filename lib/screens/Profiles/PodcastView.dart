@@ -749,9 +749,8 @@ class _PodcastViewState extends State<PodcastView> {
                           ])
                         ]));
               } else {
-                if (episodeListLoading == true) {}
                 if (index == episodeList.length + 1) {
-                  return episodeListLoading == false
+                  return isLoading == false
                       ? (_controller.position.pixels !=
                               _controller.position.maxScrollExtent
                           ? SizedBox()
@@ -889,55 +888,47 @@ class _PodcastViewState extends State<PodcastView> {
                                                 ? (creator ==
                                                         prefs
                                                             .getString('userId')
-                                                    ? InkWell(
+                                                    ? GestureDetector(
                                                         onTap: () async {
-                                                          // await publishManually(
-                                                          //     episodeList[index - 1]
-                                                          //         ['id']);
+                                                          await publishManually(
+                                                              episodeList[
+                                                                      index - 1]
+                                                                  ['id']);
                                                         },
-                                                        child: GestureDetector(
-                                                          onTap: () async {
-                                                            await publishManually(
-                                                                episodeList[
-                                                                        index -
-                                                                            1]
-                                                                    ['id']);
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 5),
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              20),
-                                                                      border:
-                                                                          Border
-                                                                              .all(
-                                                                        color: Color(
-                                                                            0xff171b27),
-                                                                      )),
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        20,
-                                                                    vertical:
-                                                                        5),
-                                                                child: Text(
-                                                                  "Publish",
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.5,
-                                                                          1)
-                                                                      .toDouble(),
-                                                                  style:
-                                                                      TextStyle(),
-                                                                ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 5),
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            20),
+                                                                    border:
+                                                                        Border
+                                                                            .all(
+                                                                      color: Color(
+                                                                          0xff171b27),
+                                                                    )),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20,
+                                                                  vertical: 5),
+                                                              child: Text(
+                                                                "Publish",
+                                                                textScaleFactor:
+                                                                    mediaQueryData
+                                                                        .textScaleFactor
+                                                                        .clamp(
+                                                                            0.5,
+                                                                            1)
+                                                                        .toDouble(),
+                                                                style:
+                                                                    TextStyle(),
                                                               ),
                                                             ),
                                                           ),

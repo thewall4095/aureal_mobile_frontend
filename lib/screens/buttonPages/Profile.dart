@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
+import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,6 +28,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Home.dart';
+import 'Bio.dart';
 
 class Profile extends StatefulWidget {
   static const String id = 'Profile';
@@ -134,6 +136,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     try {
       http.Response response = await http.get(Uri.parse(url), headers: header);
       if (response.statusCode == 200) {
+        print(response.body);
         setState(() {
           fullName = jsonDecode(response.body)['users']['fullname'];
           prefs.setString(
@@ -220,6 +223,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
       var data = response['podcasts'];
       print('came here too');
+      print(data.toString());
 
       setState(() {
         podcastList = data;
@@ -266,42 +270,42 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var communities = Provider.of<CommunityProvider>(context);
-    if (communities.isFetchedallCommunities == false) {
-      communities.getAllCommunity();
-    }
-    if (communities.isFetcheduserCreatedCommunities == false) {
-      communities.getUserCreatedCommunities();
-    }
-    if (communities.isFetcheduserCommunities == false) {
-      communities.getAllCommunitiesForUser();
-    }
-    Future<void> _pullRefreshEpisodes() async {
-      await communities.getAllCommunitiesForUser();
-      await communities.getUserCreatedCommunities();
-      await communities.getAllCommunity();
-    }
+    // var communities = Provider.of<CommunityProvider>(context);
+    // if (communities.isFetchedallCommunities == false) {
+    //   communities.getAllCommunity();
+    // }
+    // if (communities.isFetcheduserCreatedCommunities == false) {
+    //   communities.getUserCreatedCommunities();
+    // }
+    // if (communities.isFetcheduserCommunities == false) {
+    //   communities.getAllCommunitiesForUser();
+    // }
+    // Future<void> _pullRefreshEpisodes() async {
+    //   await communities.getAllCommunitiesForUser();
+    //   await communities.getUserCreatedCommunities();
+    //   await communities.getAllCommunity();
+    // }
 
-    @override
-    void initState() {
-      // var authBloc = Provider.of<AuthBloc>(context, listen: false);
-      // loginStateSubscription = authBloc.currentUser.listen((fbUser) {
-      //   if (fbUser == null) {
-      //     Navigator.of(context).pushReplacement(
-      //       MaterialPageRoute(
-      //         builder: (context) => Home(),
-      //       ),
-      //     );
-      //   }
-      // });
-      super.initState();
-    }
-
-    @override
-    void dispose() {
-      loginStateSubscription.cancel();
-      super.dispose();
-    }
+    // @override
+    // void initState() {
+    //   // var authBloc = Provider.of<AuthBloc>(context, listen: false);
+    //   // loginStateSubscription = authBloc.currentUser.listen((fbUser) {
+    //   //   if (fbUser == null) {
+    //   //     Navigator.of(context).pushReplacement(
+    //   //       MaterialPageRoute(
+    //   //         builder: (context) => Home(),
+    //   //       ),
+    //   //     );
+    //   //   }
+    //   // });
+    //   super.initState();
+    // }
+    //
+    // @override
+    // void dispose() {
+    //   loginStateSubscription.cancel();
+    //   super.dispose();
+    // }
 
     Future<void> _pullRefresh() async {
       print('proceedd');
@@ -317,9 +321,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
 
-    final mediaQueryData = MediaQuery.of(context);
-    final authBloc = Provider.of<AuthBloc>(context);
-    final user = FirebaseAuth.instance.currentUser;
+    // final mediaQueryData = MediaQuery.of(context);
+    // final authBloc = Provider.of<AuthBloc>(context);
+    // final user = FirebaseAuth.instance.currentUser;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -366,15 +370,72 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 9,
                               ),
-                              CircleAvatar(
-                                backgroundColor: Colors.blue,
-                                radius: 55,
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     Navigator.push(context,
+                              //         MaterialPageRoute(builder: (context) {
+                              //       return Bio();
+                              //     }));
+                              //   },
+                              //   child: Container(
+                              //       height:
+                              //           MediaQuery.of(context).size.width / 4,
+                              //       width:
+                              //           MediaQuery.of(context).size.width / 4,
+                              //       child: CachedNetworkImage(
+                              //         maxHeightDiskCache: MediaQuery.of(context)
+                              //             .size
+                              //             .height
+                              //             .toInt(),
+                              //         imageBuilder: (context, imageProvider) {
+                              //           return Container(
+                              //             decoration: BoxDecoration(
+                              //               shape: BoxShape.circle,
+                              //               //   borderRadius: BorderRadius.circular(10),
+                              //               image: DecorationImage(
+                              //                   image: imageProvider,
+                              //                   fit: BoxFit.cover),
+                              //             ),
+                              //             height:
+                              //                 MediaQuery.of(context).size.width,
+                              //             width:
+                              //                 MediaQuery.of(context).size.width,
+                              //           );
+                              //         },
+                              //         imageUrl: displayPicture == null
+                              //             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                              //             : displayPicture,
+                              //         fit: BoxFit.cover,
+                              //         memCacheHeight: MediaQuery.of(context)
+                              //             .size
+                              //             .height
+                              //             .floor(),
+                              //         errorWidget: (context, url, error) =>
+                              //             Icon(Icons.error),
+                              //       )),
+                              // ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return Bio();
+                                  }));
+                                },
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    displayPicture == null
+                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                        : displayPicture,
+                                  ),
+                                  radius: 55,
+                                ),
                               ),
                               SizedBox(
                                 height: 30,
                               ),
                               Text(
-                                "Vrushal Shravane",
+                                "$userName",
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                     fontSize:
@@ -384,7 +445,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                  '@PigSlashPuff',
+                                  '@${prefs.getString('HiveUserName')}',
                                   textScaleFactor: 1.0,
                                   style: TextStyle(color: Color(0xff777777)),
                                 ),
@@ -474,81 +535,76 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
+                                for (var v in podcastList)
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return PodcastView(v['id']);
+                                        }));
+                                      },
+                                      child: Container(
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  color: Color(0xff222222),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4.5,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4.5,
+                                              child: CachedNetworkImage(
+                                                imageUrl: v['image'],
+                                                imageBuilder:
+                                                    (context, imageProvider) {
+                                                  return Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4.5,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4.5,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        image: DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.cover)),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8),
+                                              child: Text("${v['name']}"),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(15, 8, 0, 8),
@@ -590,7 +646,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 15, vertical: 10),
                             child: Text(
-                              "Your Podcasts",
+                              "Your Live Rooms",
                               textScaleFactor: 1.0,
                               style: TextStyle(
                                   fontSize: SizeConfig.safeBlockHorizontal * 5),
