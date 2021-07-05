@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,15 +66,33 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
   void getReferralLink() async {
     prefs = await SharedPreferences.getInstance();
     String url =
-        'https://aureal.one/public/getPersonalReferralLink?user_id=${prefs.getString('userId')}';
-
+        'https://api.aureal.one/public/getPersonalReferralLink?user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       print(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          prefs.setString(
+              'ReferralCode', jsonDecode(response.body)['data']['code']);
+          prefs.setString(
+              'LinksShared', jsonDecode(response.body)['data']['refer_count']);
+        });
+      } else {
+        print(response.statusCode);
+      }
     } catch (e) {
       print(e);
     }
   }
+
+  void share({var episodeId, String episodeName}) async {
+    await FlutterShare.share(
+        title: '',
+        text:
+            "Hey There, I'm listening to  from  on Aureal, here's the link for you https://aureal.one/episode/${episodeId.toString()}");
+  }
+
+  int count = 10;
 
   @override
   void initState() {
@@ -105,7 +128,7 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 10),
                       child: Text(
-                        "https://aureal.one/referral?referral_id=87293",
+                        "https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}",
                         textScaleFactor: 1.0,
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 2.5),
@@ -114,8 +137,22 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                   ),
                   Row(
                     children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.copy)),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.share))
+                      IconButton(
+                          onPressed: () {
+                            FlutterClipboard.copy(
+                                    'https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}')
+                                .then((value) => Fluttertoast.showToast(
+                                    msg: 'Referral Code Copied'));
+                          },
+                          icon: Icon(Icons.copy)),
+                      IconButton(
+                          onPressed: () async {
+                            await FlutterShare.share(
+                                title: 'Monetise your podcast on Aureal',
+                                text:
+                                    "Hey There, I'm Inviting you this Decentralised Podcast App called Aureal. You can start monetising your podcast using my link: https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}");
+                          },
+                          icon: Icon(Icons.share))
                     ],
                   ),
                 ],
@@ -130,31 +167,130 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text('1231'), Text('Links Shared')],
+                    children: [
+                      Text(
+                        '${prefs.getString('LinksShared')}',
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text('Links Shared')
+                    ],
                   ),
                 ),
               ),
               SizedBox(
                 height: 20,
               ),
-              Text("Your estimated rewards"),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                            colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])
-                        .createShader(bounds);
-                  },
-                  child: Text(
-                    "\$45678",
-                    style: TextStyle(
-                        fontSize: SizeConfig.safeBlockHorizontal * 8,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("Calculate your rewards"),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                              onTap: () {}, child: Icon(Icons.info_outline))
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(colors: [
+                              Color(0xff5d5da8),
+                              Color(0xff5bc3ef)
+                            ]).createShader(bounds);
+                          },
+                          child: Text(
+                            "\$${(4.2 * count * 2).ceilToDouble()}",
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 8,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ),
-              )
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("Your estimated invites"),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(colors: [
+                              Color(0xff5d5da8),
+                              Color(0xff5bc3ef)
+                            ]).createShader(bounds);
+                          },
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    count = count + 1;
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff222222),
+                                      shape: BoxShape.circle),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(Icons.add),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "$count",
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 8,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (count > 0) {
+                                      count = count - 1;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Color(0xff222222),
+                                      shape: BoxShape.circle),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(Icons.remove),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),

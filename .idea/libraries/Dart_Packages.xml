@@ -107,6 +107,13 @@
             </list>
           </value>
         </entry>
+        <entry key="clipboard">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/clipboard-0.1.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="clock">
           <value>
             <list>
@@ -1154,6 +1161,7 @@
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.2.0/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/chewie-0.12.2/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/chewie_audio-1.1.2/lib" />
+      <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/clipboard-0.1.3/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/clock-1.1.0/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.15.0/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/color_thief_flutter-1.0.2/lib" />
