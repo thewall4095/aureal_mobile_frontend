@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:auditory/Accounts/HiveAccount.dart';
+import 'package:auditory/Services/EmailVerificationDialog.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
+import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
@@ -327,9 +329,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
 
-    // final mediaQueryData = MediaQuery.of(context);
-    // final authBloc = Provider.of<AuthBloc>(context);
-    // final user = FirebaseAuth.instance.currentUser;
+    final mediaQueryData = MediaQuery.of(context);
+    final authBloc = Provider.of<AuthBloc>(context);
+    final user = FirebaseAuth.instance.currentUser;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -460,7 +462,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
                                 child: Text(
-                                  "A Product Designer in search of all things blissful",
+                                  "$bio",
                                   textScaleFactor: 1.0,
                                 ),
                               ),
@@ -611,31 +613,116 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                   ),
+
                                 Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  const EdgeInsets.fromLTRB(15, 8, 0, 8),
                                   child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                          onTap: () async {
+                                            if (prefs.getString(
+                                                'HiveUserName') ==
+                                                null) {
+                                              showBarModalBottomSheet(
+                                                  context:
+                                                  context,
+                                                  builder:
+                                                      (context) {
+                                                    return HiveDetails();
+                                                  });
+                                            } else {
+                                              showBarModalBottomSheet(
+                                                  context:
+                                                  context,
+                                                  builder:
+                                                      (context) {
+                                                    return EmailVerificationDialog(
+                                                      username: prefs
+                                                          .getString(
+                                                          'userName'),
+                                                    );
+                                                  });
+                                            }
+                                          },
+                                          child: Container(
+                                            decoration:  BoxDecoration(
+                                                      color: Color(0xff222222),
+
+                                                      borderRadius:
+                                                          BorderRadius.circular(10)),
+
+                                            width: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.add,
+                                                    color: Color(
+                                                        0xffe8e8e8),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),),
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
+                                        padding:
+                                        const EdgeInsets.only(
+                                            left: 9),
+                                        child: Text(
+                                          "add a podcast",
+                                          textScaleFactor: 0.8,
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                                  4),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
+                                // Padding(
+                                //   padding:
+                                //       const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                //   child: Column(
+                                //     children: [
+                                //
+                                //       Container(
+                                //         decoration: BoxDecoration(
+                                //             color: Color(0xff222222),
+                                //             borderRadius:
+                                //                 BorderRadius.circular(10)),
+                                //         width:
+                                //             MediaQuery.of(context).size.width /
+                                //                 4.5,
+                                //         height:
+                                //             MediaQuery.of(context).size.width /
+                                //                 4.5,
+                                //         child: Icon(Icons.add),
+                                //       ),
+                                //       Padding(
+                                //         padding: const EdgeInsets.all(8.0),
+                                //         child: Text("Add a podcast"),
+                                //       )
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ),
@@ -1708,7 +1795,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               //                               ),
               //                             ],
               //                           ),
-              //                         ),
+                                //      ),
               //                       ],
               //                     ),
               //                     Column(
