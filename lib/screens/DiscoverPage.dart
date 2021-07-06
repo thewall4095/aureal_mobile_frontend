@@ -993,6 +993,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             (context,
                                                                                 String url) {
                                                                           return Container(
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover),
+                                                                            ),
                                                                             width:
                                                                                 MediaQuery.of(context).size.width / 4,
                                                                             height:

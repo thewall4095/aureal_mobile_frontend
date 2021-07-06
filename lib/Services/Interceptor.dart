@@ -72,9 +72,7 @@ class Interceptor {
         url,
         data: formData,
       );
-
       print(response.statusCode);
-
       // if (response.statusCode == 401) {
       //   Fluttertoast.showToast(
       //       msg: "Operation unauthorised.",
