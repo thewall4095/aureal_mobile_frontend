@@ -910,7 +910,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                                         Border
                                                                             .all(
                                                                       color: Color(
-                                                                          0xff171b27),
+                                                                          0xffe8e8e8),
                                                                     )),
                                                             child: Padding(
                                                               padding: const EdgeInsets
