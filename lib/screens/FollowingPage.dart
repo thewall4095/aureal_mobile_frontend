@@ -9,6 +9,7 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -254,6 +255,7 @@ class _FollowingPageState extends State<FollowingPage>
     }
 
     final themeProvider = Provider.of<ThemeProvider>(context);
+    RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
 
     final mediaQueryData = MediaQuery.of(context);
     return WillPopScope(
@@ -1218,6 +1220,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                             ),
                                                           ],
                                                         ),
+
                                                         // Row(
                                                         //   children: [
                                                         //     IconButton(
@@ -1259,15 +1262,50 @@ class _FollowingPageState extends State<FollowingPage>
                                                             ),
                                                           ),
                                                         ),
+
                                                       ],
                                                     ),
                                                   ),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                    children: [
+                                                      FutureBuilder(
+                                                          future: dursaver.percentageDone(v['id']),
+                                                          builder: (context, snapshot) {
+                                                            if (snapshot.data.toString() == 'null') {
+                                                              return Container();
+                                                            } else {
+                                                              // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
+                                                              return Stack(
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+                                                                    width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
+                                                                    height: 5,
+                                                                  ),
+                                                                  Container(
+                                                                    width: MediaQuery.of(context).size.width / 4.5,
+                                                                    height: 2,
+                                                                  )
+                                                                ],
+                                                              );
+                                                            }
+                                                          }),
+                                                    ],
+                                                  ),
                                                 ],
+
                                               ),
+
                                             ),
+
                                           ),
+
                                         ),
+
                                       ),
+
                                     // isPaginationLoading == true
                                     //     ? Container(
                                     //         height: 10,

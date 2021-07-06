@@ -20,7 +20,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-// import 'package:just_audio/just_audio.dart' as ja;
 import '../CommunityProvider.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
@@ -438,7 +437,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             mainAxisSpacing: 10,
                                                             crossAxisSpacing: 1,
                                                             childAspectRatio:
-                                                                1 / 2.5),
+                                                                1 / 2.6),
                                                     children: [
                                                       for (var a
                                                           in recentlyPlayed)
@@ -521,7 +520,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         context)
                                                                     .size
                                                                     .width *
-                                                                0.8,
+                                                                0.85,
                                                             decoration:
                                                                 BoxDecoration(
                                                                     // color: Color(
@@ -846,6 +845,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 null
                                                                             ? a['image']
                                                                             : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                                        placeholder:
+                                                                            (context,
+                                                                                imageProvider) {
+                                                                          return Container(
+                                                                            decoration:
+                                                                                BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
+                                                                            height:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                          );
+                                                                        },
                                                                       ),
                                                                       Padding(
                                                                         padding: const EdgeInsets.fromLTRB(

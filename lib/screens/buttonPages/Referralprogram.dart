@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ReferralProgram extends StatefulWidget {
   @override
@@ -61,10 +63,11 @@ class ReferralDashboard extends StatefulWidget {
 }
 
 class _ReferralDashboardState extends State<ReferralDashboard> {
-  SharedPreferences prefs;
+  String linksShared = 0.toString();
+  String referralCode = '';
 
   void getReferralLink() async {
-    prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getPersonalReferralLink?user_id=${prefs.getString('userId')}';
     try {
@@ -76,6 +79,8 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
               'ReferralCode', jsonDecode(response.body)['data']['code']);
           prefs.setString(
               'LinksShared', jsonDecode(response.body)['data']['refer_count']);
+          linksShared = jsonDecode(response.body)['data']['refer_count'];
+          referralCode = jsonDecode(response.body)['data']['code'];
         });
       } else {
         print(response.statusCode);
@@ -103,199 +108,223 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Color(0xff222222), borderRadius: BorderRadius.circular(10)),
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Your Referral Dashboard"),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xff777777),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: Text(
-                        "https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}",
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 2.5),
+    setState(() {});
+    try {
+      return Padding(
+        padding: const EdgeInsets.all(15),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xff222222),
+              borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Your Referral Dashboard"),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xff777777),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        child: Text(
+                          "https://aureal.one/referral?refCode=${referralCode == 'null' ? "" : referralCode}",
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 2.5),
+                        ),
                       ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            FlutterClipboard.copy(
-                                    'https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}')
-                                .then((value) => Fluttertoast.showToast(
-                                    msg: 'Referral Code Copied'));
-                          },
-                          icon: Icon(Icons.copy)),
-                      IconButton(
-                          onPressed: () async {
-                            await FlutterShare.share(
-                                title: 'Monetise your podcast on Aureal',
-                                text:
-                                    "Hey There, I'm Inviting you this Decentralised Podcast App called Aureal. You can start monetising your podcast using my link: https://aureal.one/referral?refCode=${prefs.getString('ReferralCode').toString() == 'null' ? "" : prefs.getString('ReferralCode').toString()}");
-                          },
-                          icon: Icon(Icons.share))
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(left: BorderSide(color: Colors.blue))),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${prefs.getString('LinksShared')}',
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 5,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text('Links Shared')
-                    ],
+                    Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              FlutterClipboard.copy(
+                                      'https://aureal.one/referral?refCode=${referralCode == 'null' ? "" : referralCode}')
+                                  .then((value) => Fluttertoast.showToast(
+                                      msg: 'Referral Code Copied'));
+                            },
+                            icon: Icon(Icons.copy)),
+                        IconButton(
+                            onPressed: () async {
+                              await FlutterShare.share(
+                                  title: 'Monetise your podcast on Aureal',
+                                  text:
+                                      "Hey There, I'm Inviting you this Decentralised Podcast App called Aureal. You can start monetising your podcast using my link: https://aureal.one/referral?refCode=${referralCode == 'null' ? "" : referralCode}");
+                            },
+                            icon: Icon(Icons.share))
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(left: BorderSide(color: Colors.blue))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${linksShared.toString()}',
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Links Shared')
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("Calculate your rewards"),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                              onTap: () {}, child: Icon(Icons.info_outline))
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return LinearGradient(colors: [
-                              Color(0xff5d5da8),
-                              Color(0xff5bc3ef)
-                            ]).createShader(bounds);
-                          },
-                          child: Text(
-                            "\$${(4.2 * count * 2).ceilToDouble()}",
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 8,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text("Your estimated invites"),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: ShaderMask(
-                          shaderCallback: (Rect bounds) {
-                            return LinearGradient(colors: [
-                              Color(0xff5d5da8),
-                              Color(0xff5bc3ef)
-                            ]).createShader(bounds);
-                          },
-                          child: Row(
-                            children: [
-                              InkWell(
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Calculate your rewards"),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            GestureDetector(
                                 onTap: () {
-                                  setState(() {
-                                    count = count + 1;
-                                  });
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          'These are estimated rewards based on the average payout per episode');
                                 },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff222222),
-                                      shape: BoxShape.circle),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(Icons.add),
+                                child: Icon(Icons.info_outline))
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(colors: [
+                                Color(0xff5d5da8),
+                                Color(0xff5bc3ef)
+                              ]).createShader(bounds);
+                            },
+                            child: Text(
+                              "\$${(4.2 * count * 2).ceilToDouble()}",
+                              style: TextStyle(
+                                  fontSize: SizeConfig.safeBlockHorizontal * 8,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text("Your estimated invites"),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(colors: [
+                                Color(0xff5d5da8),
+                                Color(0xff5bc3ef)
+                              ]).createShader(bounds);
+                            },
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      count = count + 1;
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        shape: BoxShape.circle),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(Icons.add),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  "$count",
-                                  style: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 8,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (count > 0) {
-                                      count = count - 1;
-                                    }
-                                  });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff222222),
-                                      shape: BoxShape.circle),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(Icons.remove),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "$count",
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 8,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              ),
-                            ],
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (count > 0) {
+                                        count = count - 1;
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        shape: BoxShape.circle),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(Icons.remove),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      print(e);
+      return Padding(
+        padding: const EdgeInsets.all(15),
+        child: Shimmer.fromColors(
+          direction: ShimmerDirection.ttb,
+          baseColor: kPrimaryColor,
+          highlightColor: Color(0xff3a3a3a),
+          child: Container(
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+            height: MediaQuery.of(context).size.height / 3,
+            width: double.infinity,
+          ),
+        ),
+      );
+    }
   }
 }
 

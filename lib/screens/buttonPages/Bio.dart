@@ -217,8 +217,10 @@ class _BioState extends State<Bio> {
 
     try {
       var response = await intercept.postRequest(formData, url);
-      var data = jsonDecode(response)['user'];
+
+      var data = jsonDecode(response.toString())['user'];
       prefs.setString('displayPicture', data['img']);
+      // print(response.toStrin());
       print(response.runtimeType);
     } catch (e) {
       print(e);
