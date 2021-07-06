@@ -330,20 +330,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               width: MediaQuery.of(context).size.width,
                                                                             );
                                                                           },
+                                                                          placeholder:
+                                                                              (context, String url) {
+                                                                            return Container(
+                                                                              width: MediaQuery.of(context).size.width / 4,
+                                                                              height: MediaQuery.of(context).size.width / 4,
+                                                                            );
+                                                                          },
+                                                                          memCacheHeight:
+                                                                              (MediaQuery.of(context).size.height).floor(),
                                                                           imageUrl: v['image'] == null
                                                                               ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
                                                                               : v['image'],
-                                                                          // memCacheHeight:
-                                                                          //     MediaQuery.of(
-                                                                          //             context)
-                                                                          //         .size
-                                                                          //         .width
-                                                                          //         .ceil(),
-                                                                          memCacheHeight: MediaQuery.of(context)
-                                                                              .size
-                                                                              .height
-                                                                              .floor(),
-
                                                                           errorWidget: (context, url, error) =>
                                                                               Icon(Icons.error),
                                                                         ),
@@ -550,14 +548,28 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         Stack(
                                                                       children: [
                                                                         CachedNetworkImage(
-                                                                          imageUrl:
-                                                                              a['image'],
                                                                           imageBuilder:
                                                                               (context, imageProvider) {
                                                                             return Container(
                                                                               height: MediaQuery.of(context).size.width / 4.5,
                                                                               width: MediaQuery.of(context).size.width / 4.5,
-                                                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+                                                                              decoration: BoxDecoration(
+                                                                                borderRadius: BorderRadius.circular(8),
+                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                          memCacheHeight:
+                                                                              (MediaQuery.of(context).size.height).floor(),
+                                                                          imageUrl: a['image'] != null
+                                                                              ? a['image']
+                                                                              : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                                          placeholder:
+                                                                              (context, imageProvider) {
+                                                                            return Container(
+                                                                              decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
+                                                                              height: MediaQuery.of(context).size.width * 0.38,
+                                                                              width: MediaQuery.of(context).size.width * 0.38,
                                                                             );
                                                                           },
                                                                         ),
