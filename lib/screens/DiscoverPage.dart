@@ -279,12 +279,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     .all(5),
                                                             child: Container(
                                                               decoration: BoxDecoration(
-                                                                  color: Color(
-                                                                      0xff222222),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              15)),
+                                                                boxShadow: [
+                                                                  new BoxShadow(
+                                                                    color: Colors.black54.withOpacity(0.2),
+                                                                    blurRadius: 10.0,
+                                                                  ),
+                                                                ],
+                                                                color: themeProvider.isLightTheme == true
+                                                                    ? Colors.white
+                                                                    : Color(0xff222222),
+                                                                borderRadius:
+                                                                BorderRadius.circular(15),
+                                                              ),
                                                               child: Column(
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment
@@ -378,7 +384,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           style: TextStyle(
-                                                                              color: Color(0xffe8e8e8),
+
                                                                               fontSize: SizeConfig.blockSizeHorizontal * 4.7,
                                                                               fontWeight: FontWeight.normal),
                                                                         ),
@@ -422,6 +428,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                 )
                                           : v['topic'] == 'Recently Played'
                                               ? Container(
+                                        // color: themeProvider
+                                        //     .isLightTheme ==
+                                        //     true
+                                        //     ? Color(0xffE8E8E8)
+                                        //     : Color(0xff222222),
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
@@ -514,6 +525,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             }
                                                           },
                                                           child: Container(
+
                                                             width: MediaQuery.of(
                                                                         context)
                                                                     .size
@@ -521,6 +533,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 0.85,
                                                             decoration:
                                                                 BoxDecoration(
+
                                                                     // color: Color(
                                                                     //     0xff222222),
                                                                     borderRadius:
@@ -536,6 +549,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         .start,
                                                                 children: [
                                                                   Container(
+
                                                                     width: MediaQuery.of(context)
                                                                             .size
                                                                             .width /
@@ -696,6 +710,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                   }
                                                                                 },
                                                                                 child: Container(
+
                                                                                   decoration: a['ifVoted'] == true ? BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: LinearGradient(colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])) : BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
                                                                                   child: Padding(
                                                                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -820,11 +835,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 child:
                                                                     Container(
                                                                   decoration: BoxDecoration(
-                                                                      color: Color(
-                                                                          0xff222222),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8)),
+                                                                    boxShadow: [
+                                                                      new BoxShadow(
+                                                                        color: Colors.black54.withOpacity(0.2),
+                                                                        blurRadius: 10.0,
+                                                                      ),
+                                                                    ],
+                                                                    color: themeProvider.isLightTheme == true
+                                                                        ? Colors.white
+                                                                        : Color(0xff222222),
+                                                                    borderRadius:
+                                                                    BorderRadius.circular(15),
+                                                                  ),
                                                                   width: MediaQuery.of(
                                                                               context)
                                                                           .size
@@ -883,8 +905,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               2,
                                                                           textScaleFactor:
                                                                               1.0,
-                                                                          style:
-                                                                              TextStyle(color: Color(0xffe8e8e8)),
+                                                                          // style:
+                                                                          //     TextStyle(color: Color(0xffe8e8e8)),
                                                                         ),
                                                                       ),
                                                                       Padding(
@@ -914,6 +936,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       ),
                                                     )
                                                   : Container(
+                                        // color: themeProvider
+                                        //     .isLightTheme ==
+                                        //     true
+                                        //     ? Color(0xffE8E8E8)
+                                        //     : Color(0xff222222),
                                                       width: double.infinity,
                                                       height: SizeConfig
                                                               .blockSizeVertical *
@@ -940,6 +967,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       0,
                                                                       8),
                                                               child: Container(
+
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   borderRadius:

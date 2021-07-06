@@ -667,20 +667,19 @@ class _FollowingPageState extends State<FollowingPage>
                                               horizontal: 10, vertical: 10),
                                           child: Container(
                                             decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                    color: Colors.black54
-                                                        .withOpacity(0.2),
-                                                    blurRadius: 10.0,
-                                                  ),
-                                                ],
-                                                color: themeProvider
-                                                            .isLightTheme ==
-                                                        true
-                                                    ? Colors.white
-                                                    : Color(0xff222222),
+                                              boxShadow: [
+                                                new BoxShadow(
+                                                  color: Colors.black54.withOpacity(0.2),
+                                                  blurRadius: 10.0,
+                                                ),
+                                              ],
+                                              color: themeProvider.isLightTheme == true
+                                                  ? Colors.white
+                                                  : Color(0xff222222),
                                                 borderRadius:
-                                                    BorderRadius.circular(8)),
+                                                BorderRadius.circular(8),
+                                            ),
+
                                             width: double.infinity,
                                             child: Padding(
                                               padding:

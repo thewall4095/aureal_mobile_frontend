@@ -428,10 +428,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
                                     return Bio();
-                                  })).then((value) async {
-                                    await _pullRefresh();
-                                  });
-                                  ;
+                                  }));
                                 },
                                 child: CircleAvatar(
                                   backgroundColor: Colors.blue,
@@ -508,23 +505,20 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   IconButton(
                                     icon: Icon(FontAwesomeIcons.instagram),
                                     onPressed: () {
-                                      launcher.launchInBrowser(
-                                          "https://instagram.com/");
-                                    },
+                                      launcher.launchInBrowser("https://instagram.com/");},
                                   ),
+
                                   IconButton(
                                     icon: Icon(FontAwesomeIcons.twitter),
                                     onPressed: () {
-                                      launcher.launchInBrowser(
-                                          "https://twitter.com/");
-                                    },
+                                      launcher.launchInBrowser("https://twitter.com/");},
                                   ),
                                   IconButton(
                                     icon: Icon(
                                         FontAwesomeIcons.externalLinkSquareAlt),
-                                    //   onPressed: () {
-                                    //     launcher.launchInBrowser("https://instagram.com/");},
-                                  )
+                                  //   onPressed: () {
+                                  //     launcher.launchInBrowser("https://instagram.com/");},
+                                   )
                                 ],
                               )
                             ],
@@ -577,10 +571,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           children: [
                                             Container(
                                               decoration: BoxDecoration(
-                                                  color: Color(0xff222222),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
+                                                boxShadow: [
+                                                  new BoxShadow(
+                                                    color: Colors.black54.withOpacity(0.2),
+                                                    blurRadius: 10.0,
+                                                  ),
+                                                ],
+                                                color: themeProvider.isLightTheme == true
+                                                    ? Colors.white
+                                                    : Color(0xff222222),
+                                                borderRadius:
+                                                BorderRadius.circular(15),
+                                              ),
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width /
@@ -630,62 +632,83 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
                                 Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                  const EdgeInsets.fromLTRB(15, 8, 0, 8),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: <Widget>[
                                       GestureDetector(
-                                        onTap: () async {
-                                          if (prefs.getString('HiveUserName') ==
-                                              null) {
-                                            showBarModalBottomSheet(
-                                                context: context,
-                                                builder: (context) {
-                                                  return HiveDetails();
-                                                });
-                                          } else {
-                                            showBarModalBottomSheet(
-                                                context: context,
-                                                builder: (context) {
-                                                  return EmailVerificationDialog(
-                                                    username: prefs
-                                                        .getString('userName'),
-                                                  );
-                                                });
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Color(0xff222222),
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4.5,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              4.5,
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.add,
-                                                  color: Color(0xffe8e8e8),
+                                          onTap: () async {
+                                            if (prefs.getString(
+                                                'HiveUserName') ==
+                                                null) {
+                                              showBarModalBottomSheet(
+                                                  context:
+                                                  context,
+                                                  builder:
+                                                      (context) {
+                                                    return HiveDetails();
+                                                  });
+                                            } else {
+                                              showBarModalBottomSheet(
+                                                  context:
+                                                  context,
+                                                  builder:
+                                                      (context) {
+                                                    return EmailVerificationDialog(
+                                                      username: prefs
+                                                          .getString(
+                                                          'userName'),
+                                                    );
+                                                  });
+                                            }
+                                          },
+                                          child: Container(
+                                            decoration:  BoxDecoration(
+                                              boxShadow: [
+                                                new BoxShadow(
+                                                  color: Colors.black54.withOpacity(0.2),
+                                                  blurRadius: 10.0,
                                                 ),
                                               ],
+                                              color: themeProvider.isLightTheme == true
+                                                  ? Colors.white
+                                                  : Color(0xff222222),
+                                              borderRadius:
+                                              BorderRadius.circular(15),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 5),
-                                        child: Text("Add a podcast"),
+
+                                            width: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4.5,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4.5,
+
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.add,
+
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 5),
+                                  child: Text("Add a podcast"),
+
                                       ),
                                     ],
                                   ),
@@ -722,133 +745,141 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.26,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 10),
-                            child: Text(
-                              "Your Live Rooms",
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 5),
-                            ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                4.5,
-                                        child: Icon(Icons.add),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Add a podcast"),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   height: MediaQuery.of(context).size.height * 0.26,
+                    //   child: Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       Padding(
+                    //         padding: const EdgeInsets.symmetric(
+                    //             horizontal: 15, vertical: 10),
+                    //         child: Text(
+                    //           "Your Live Rooms",
+                    //           textScaleFactor: 1.0,
+                    //           style: TextStyle(
+                    //               fontSize: SizeConfig.safeBlockHorizontal * 5),
+                    //         ),
+                    //       ),
+                    //       Container(
+                    //         height: MediaQuery.of(context).size.height * 0.2,
+                    //         child: ListView(
+                    //           scrollDirection: Axis.horizontal,
+                    //           children: [
+                    //             Padding(
+                    //               padding:
+                    //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                    //               child: Column(
+                    //                 children: [
+                    //                   Container(
+                    //                     decoration: BoxDecoration(
+                    //                         color: themeProvider
+                    //                             .isLightTheme ==
+                    //                             true
+                    //                             ? Color(0xffE8E8E8)
+                    //                             : Color(0xff222222),
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10)),
+                    //                     width:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     height:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     child: Icon(Icons.add),
+                    //                   ),
+                    //                   Padding(
+                    //                     padding: const EdgeInsets.all(8.0),
+                    //                     child: Text("Add a podcast"),
+                    //                   )
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //             Padding(
+                    //               padding:
+                    //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                    //               child: Column(
+                    //                 children: [
+                    //                   Container(
+                    //                     decoration: BoxDecoration(
+                    //                         color: Color(0xff222222),
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10)),
+                    //                     width:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     height:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     child: Icon(Icons.add),
+                    //                   ),
+                    //                   Padding(
+                    //                     padding: const EdgeInsets.all(8.0),
+                    //                     child: Text("Add a podcast"),
+                    //                   )
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //             Padding(
+                    //               padding:
+                    //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                    //               child: Column(
+                    //                 children: [
+                    //                   Container(
+                    //                     decoration: BoxDecoration(
+                    //                         color: Color(0xff222222),
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10)),
+                    //                     width:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     height:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     child: Icon(Icons.add),
+                    //                   ),
+                    //                   Padding(
+                    //                     padding: const EdgeInsets.all(8.0),
+                    //                     child: Text("Add a podcast"),
+                    //                   )
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //             Padding(
+                    //               padding:
+                    //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                    //               child: Column(
+                    //                 children: [
+                    //                   Container(
+                    //                     decoration: BoxDecoration(
+                    //                         color: themeProvider
+                    //                             .isLightTheme ==
+                    //                             true
+                    //                             ? Color(0xffE8E8E8)
+                    //                             : Color(0xff222222),
+                    //                         borderRadius:
+                    //                             BorderRadius.circular(10)),
+                    //                     width:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     height:
+                    //                         MediaQuery.of(context).size.width /
+                    //                             4.5,
+                    //                     child: Icon(Icons.add),
+                    //                   ),
+                    //                   Padding(
+                    //                     padding: const EdgeInsets.all(8.0),
+                    //                     child: Text("Add a podcast"),
+                    //                   )
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     ReferralDashboard(),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -1788,7 +1819,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               //                               ),
               //                             ],
               //                           ),
-              //      ),
+                                //      ),
               //                       ],
               //                     ),
               //                     Column(

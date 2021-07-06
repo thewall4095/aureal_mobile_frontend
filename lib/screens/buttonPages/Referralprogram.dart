@@ -107,15 +107,27 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
   }
 
   @override
+
   Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     setState(() {});
     try {
       return Padding(
         padding: const EdgeInsets.all(15),
         child: Container(
           decoration: BoxDecoration(
-              color: Color(0xff222222),
-              borderRadius: BorderRadius.circular(10)),
+            boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+            color: themeProvider.isLightTheme == true
+                ? Colors.white
+                : Color(0xff222222),
+            borderRadius:
+            BorderRadius.circular(15),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
@@ -130,11 +142,16 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color: Color(0xff777777),
-                          borderRadius: BorderRadius.circular(20)),
+                          color: themeProvider
+                              .isLightTheme ==
+                              true
+                              ? Color(0xffE8E8E8)
+                              : Color(0xff222222),
+                          borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color:Color(0xff222222))),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
+                            horizontal: 5, vertical: 10),
                         child: Text(
                           "https://aureal.one/referral?refCode=${referralCode == 'null' ? "" : referralCode}",
                           textScaleFactor: 1.0,
@@ -259,7 +276,11 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: Color(0xff222222),
+                                        color: themeProvider
+                                            .isLightTheme ==
+                                            true
+                                            ? Color(0xffE8E8E8)
+                                            : Color(0xff222222),
                                         shape: BoxShape.circle),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -288,7 +309,11 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: Color(0xff222222),
+                                        color: themeProvider
+                                            .isLightTheme ==
+                                            true
+                                            ? Color(0xffE8E8E8)
+                                            : Color(0xff222222),
                                         shape: BoxShape.circle),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -333,6 +358,7 @@ class FAQ extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -349,7 +375,18 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(color: Color(0xff222222)),
+            decoration: BoxDecoration(       boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+              color: themeProvider.isLightTheme == true
+                  ? Colors.white
+                  : Color(0xff222222),
+              borderRadius:
+              BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ExpandablePanel(
@@ -367,7 +404,18 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(color: Color(0xff222222)),
+            decoration: BoxDecoration(      boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+              color: themeProvider.isLightTheme == true
+                  ? Colors.white
+                  : Color(0xff222222),
+              borderRadius:
+              BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ExpandablePanel(
@@ -385,7 +433,18 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(color: Color(0xff222222)),
+            decoration: BoxDecoration(      boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+              color: themeProvider.isLightTheme == true
+                  ? Colors.white
+                  : Color(0xff222222),
+              borderRadius:
+              BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ExpandablePanel(
@@ -403,7 +462,18 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(color: Color(0xff222222)),
+            decoration: BoxDecoration(     boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+              color: themeProvider.isLightTheme == true
+                  ? Colors.white
+                  : Color(0xff222222),
+              borderRadius:
+              BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ExpandablePanel(
@@ -421,7 +491,18 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(color: Color(0xff222222)),
+            decoration: BoxDecoration(      boxShadow: [
+              new BoxShadow(
+                color: Colors.black54.withOpacity(0.2),
+                blurRadius: 10.0,
+              ),
+            ],
+              color: themeProvider.isLightTheme == true
+                  ? Colors.white
+                  : Color(0xff222222),
+              borderRadius:
+              BorderRadius.circular(15),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ExpandablePanel(
