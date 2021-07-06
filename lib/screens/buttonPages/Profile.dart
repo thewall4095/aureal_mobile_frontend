@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/Services/EmailVerificationDialog.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
@@ -328,7 +329,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     }
 
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
-
+    Launcher launcher = Launcher();
     final mediaQueryData = MediaQuery.of(context);
     final authBloc = Provider.of<AuthBloc>(context);
     final user = FirebaseAuth.instance.currentUser;
@@ -472,21 +473,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               Row(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(right: 20),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color(0xff777777)),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 8),
-                                        child: Text("232 Following"),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
                                     padding: const EdgeInsets.only(right: 10),
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -496,21 +482,43 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                               BorderRadius.circular(20)),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 8),
+                                            horizontal: 10, vertical: 8),
+                                        child: Text("232 Following"),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 6),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Color(0xff777777)),
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 8),
                                         child: Text("232 Followers"),
                                       ),
                                     ),
                                   ),
                                   IconButton(
                                     icon: Icon(FontAwesomeIcons.instagram),
+                                    onPressed: () {
+                                      launcher.launchInBrowser("https://instagram.com/");},
                                   ),
+
                                   IconButton(
                                     icon: Icon(FontAwesomeIcons.twitter),
+                                    onPressed: () {
+                                      launcher.launchInBrowser("https://twitter.com/");},
                                   ),
                                   IconButton(
                                     icon: Icon(
                                         FontAwesomeIcons.externalLinkSquareAlt),
-                                  )
+                                  //   onPressed: () {
+                                  //     launcher.launchInBrowser("https://instagram.com/");},
+                                   )
                                 ],
                               )
                             ],
@@ -658,12 +666,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                 context)
                                                 .size
                                                 .width /
-                                                4,
+                                                4.5,
                                             height: MediaQuery.of(
                                                 context)
                                                 .size
                                                 .width /
-                                                4,
+                                                4.5,
 
                                             child: Center(
                                               child: Column(
@@ -680,19 +688,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                               ),
                                             ),
                                           ),),
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets.only(
-                                            left: 9),
-                                        child: Text(
-                                          "add a podcast",
-                                          textScaleFactor: 0.8,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: SizeConfig
-                                                  .safeBlockHorizontal *
-                                                  4),
-                                        ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 5),
+                                  child: Text("Add a podcast"),
+
                                       ),
                                     ],
                                   ),

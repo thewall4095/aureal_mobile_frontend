@@ -1176,7 +1176,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                     const EdgeInsets
                                                                             .only(
                                                                         right:
-                                                                            80),
+                                                                            60),
                                                                 child:
                                                                     Container(
                                                                   decoration: BoxDecoration(

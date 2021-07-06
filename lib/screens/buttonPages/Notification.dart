@@ -1,19 +1,11 @@
 import 'dart:convert';
 
-import 'package:auditory/NotificationProvider.dart';
-import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:auditory/utilities/constants.dart';
-import 'package:auditory/screens/buttonPages/Profile.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationPage extends StatefulWidget {
   static const String id = "NotificationsPage";
@@ -46,7 +38,8 @@ class _NotificationPageState extends State<NotificationPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}';
-    print( 'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}');
+    print(
+        'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}');
     try {
       http.Response response = await http.get(Uri.parse(url));
 
@@ -60,7 +53,6 @@ class _NotificationPageState extends State<NotificationPage>
       print(e);
     }
   }
-
 
   void sendNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -95,7 +87,7 @@ class _NotificationPageState extends State<NotificationPage>
 
     var response = await dio.post(url, data: formData);
     print(response.toString());
-   print('notification_id');
+    print('notification_id');
   }
 
   @override
@@ -124,7 +116,7 @@ class _NotificationPageState extends State<NotificationPage>
           return <Widget>[
             SliverAppBar(
               elevation: 0,
-            //  backgroundColor: Colors.transparent,
+              //  backgroundColor: Colors.transparent,
               // leading: IconButton(
               //   icon: displayPicture != null
               //       ? CircleAvatar(
@@ -187,7 +179,7 @@ class _NotificationPageState extends State<NotificationPage>
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: GestureDetector(
                               onTap: () {
-                               // viewedNotification(v['id']);
+                                // viewedNotification(v['id']);
                               },
                               child: Container(
                                 width: double.infinity,
@@ -204,7 +196,7 @@ class _NotificationPageState extends State<NotificationPage>
                                         image: v['data']['image'] == null
                                             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
                                             : v['data']['image'],
-                                       // fit: BoxFit.cover,
+                                        // fit: BoxFit.cover,
                                       ),
                                     ),
                                     SizedBox(
@@ -212,7 +204,8 @@ class _NotificationPageState extends State<NotificationPage>
                                     ),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: <Widget>[
                                           GestureDetector(
                                             child: Text(
