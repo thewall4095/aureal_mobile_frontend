@@ -127,6 +127,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         text: "Download this from $sharableLink");
   }
 
+  var data;
+
   void getUserDetails() async {
     setState(() {
       isLoading = true;
@@ -147,6 +149,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       if (response.statusCode == 200) {
         print(response.body);
         setState(() {
+          data = jsonDecode(response.body)['users'];
           fullName = jsonDecode(response.body)['users']['fullname'];
           prefs.setString(
               'FullName', jsonDecode(response.body)['users']['fullname']);
@@ -357,7 +360,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               slivers: [
                 SliverAppBar(
                   pinned: true,
-                  expandedHeight: MediaQuery.of(context).size.height / 2.3,
+                  expandedHeight: MediaQuery.of(context).size.height / 2,
                   flexibleSpace: FlexibleSpaceBar(
                       background: Stack(
                     children: [
@@ -467,59 +470,90 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   textScaleFactor: 1.0,
                                 ),
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color(0xff777777)),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 8),
-                                        child: Text("232 Following"),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 6),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Color(0xff777777)),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 8),
-                                        child: Text("232 Followers"),
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(FontAwesomeIcons.instagram),
-                                    onPressed: () {
-                                      launcher.launchInBrowser("https://instagram.com/");},
-                                  ),
-
-                                  IconButton(
-                                    icon: Icon(FontAwesomeIcons.twitter),
-                                    onPressed: () {
-                                      launcher.launchInBrowser("https://twitter.com/");},
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                        FontAwesomeIcons.externalLinkSquareAlt),
-                                  //   onPressed: () {
-                                  //     launcher.launchInBrowser("https://instagram.com/");},
-                                   )
+                                  data['instagram'] == null ||
+                                          data['instagram'] == 'null'
+                                      ? SizedBox()
+                                      : IconButton(
+                                          icon:
+                                              Icon(FontAwesomeIcons.instagram),
+                                          onPressed: () {
+                                            launcher.launchInBrowser(
+                                                data['instagram']);
+                                          },
+                                        ),
+                                  data['twitter'] == null ||
+                                          data['twitter'] == 'null'
+                                      ? SizedBox()
+                                      : IconButton(
+                                          icon: Icon(FontAwesomeIcons.twitter),
+                                          onPressed: () {
+                                            launcher.launchInBrowser(
+                                                data['twitter']);
+                                          },
+                                        ),
+                                  data['linkedin'] == null ||
+                                          data['linkedin'] == 'null'
+                                      ? SizedBox()
+                                      : IconButton(
+                                          icon: Icon(FontAwesomeIcons.linkedin),
+                                          onPressed: () {
+                                            launcher.launchInBrowser(
+                                                data['linkedin']);
+                                          },
+                                        ),
+                                  data['website'] == null ||
+                                          data['website'] == 'null'
+                                      ? SizedBox()
+                                      : IconButton(
+                                          icon: Icon(FontAwesomeIcons
+                                              .externalLinkSquareAlt),
+                                          onPressed: () {
+                                            launcher.launchInBrowser(
+                                                data['website']);
+                                          },
+                                        )
                                 ],
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color(0xff777777)),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 8),
+                                          child: Text("232 Following"),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color(0xff777777)),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 8),
+                                          child: Text("232 Followers"),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -573,15 +607,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                               decoration: BoxDecoration(
                                                 boxShadow: [
                                                   new BoxShadow(
-                                                    color: Colors.black54.withOpacity(0.2),
+                                                    color: Colors.black54
+                                                        .withOpacity(0.2),
                                                     blurRadius: 10.0,
                                                   ),
                                                 ],
-                                                color: themeProvider.isLightTheme == true
+                                                color: themeProvider
+                                                            .isLightTheme ==
+                                                        true
                                                     ? Colors.white
                                                     : Color(0xff222222),
                                                 borderRadius:
-                                                BorderRadius.circular(15),
+                                                    BorderRadius.circular(15),
                                               ),
                                               width: MediaQuery.of(context)
                                                       .size
@@ -632,83 +669,72 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
                                 Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                      const EdgeInsets.fromLTRB(15, 8, 0, 8),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       GestureDetector(
-                                          onTap: () async {
-                                            if (prefs.getString(
-                                                'HiveUserName') ==
-                                                null) {
-                                              showBarModalBottomSheet(
-                                                  context:
-                                                  context,
-                                                  builder:
-                                                      (context) {
-                                                    return HiveDetails();
-                                                  });
-                                            } else {
-                                              showBarModalBottomSheet(
-                                                  context:
-                                                  context,
-                                                  builder:
-                                                      (context) {
-                                                    return EmailVerificationDialog(
-                                                      username: prefs
-                                                          .getString(
-                                                          'userName'),
-                                                    );
-                                                  });
-                                            }
-                                          },
-                                          child: Container(
-                                            decoration:  BoxDecoration(
-                                              boxShadow: [
-                                                new BoxShadow(
-                                                  color: Colors.black54.withOpacity(0.2),
-                                                  blurRadius: 10.0,
+                                        onTap: () async {
+                                          if (prefs.getString('HiveUserName') ==
+                                              null) {
+                                            showBarModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return HiveDetails();
+                                                });
+                                          } else {
+                                            showBarModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return EmailVerificationDialog(
+                                                    username: prefs
+                                                        .getString('userName'),
+                                                  );
+                                                });
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                color: Colors.black54
+                                                    .withOpacity(0.2),
+                                                blurRadius: 10.0,
+                                              ),
+                                            ],
+                                            color: themeProvider.isLightTheme ==
+                                                    true
+                                                ? Colors.white
+                                                : Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4.5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4.5,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.add,
                                                 ),
                                               ],
-                                              color: themeProvider.isLightTheme == true
-                                                  ? Colors.white
-                                                  : Color(0xff222222),
-                                              borderRadius:
-                                              BorderRadius.circular(15),
                                             ),
-
-                                            width: MediaQuery.of(
-                                                context)
-                                                .size
-                                                .width /
-                                                4.5,
-                                            height: MediaQuery.of(
-                                                context)
-                                                .size
-                                                .width /
-                                                4.5,
-
-                                            child: Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.add,
-
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 5),
-                                  child: Text("Add a podcast"),
-
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 5),
+                                        child: Text("Add a podcast"),
                                       ),
                                     ],
                                   ),
@@ -1819,7 +1845,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               //                               ),
               //                             ],
               //                           ),
-                                //      ),
+              //      ),
               //                       ],
               //                     ),
               //                     Column(
