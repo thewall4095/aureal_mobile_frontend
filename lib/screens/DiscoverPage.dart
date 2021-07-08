@@ -278,18 +278,29 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 const EdgeInsets
                                                                     .all(5),
                                                             child: Container(
-                                                              decoration: BoxDecoration(
+                                                              decoration:
+                                                                  BoxDecoration(
                                                                 boxShadow: [
                                                                   new BoxShadow(
-                                                                    color: Colors.black54.withOpacity(0.2),
-                                                                    blurRadius: 10.0,
+                                                                    color: Colors
+                                                                        .black54
+                                                                        .withOpacity(
+                                                                            0.2),
+                                                                    blurRadius:
+                                                                        10.0,
                                                                   ),
                                                                 ],
-                                                                color: themeProvider.isLightTheme == true
-                                                                    ? Colors.white
-                                                                    : Color(0xff222222),
+                                                                color: themeProvider
+                                                                            .isLightTheme ==
+                                                                        true
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Color(
+                                                                        0xff222222),
                                                                 borderRadius:
-                                                                BorderRadius.circular(15),
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15),
                                                               ),
                                                               child: Column(
                                                                 crossAxisAlignment:
@@ -384,7 +395,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                           style: TextStyle(
-
                                                                               fontSize: SizeConfig.blockSizeHorizontal * 4.7,
                                                                               fontWeight: FontWeight.normal),
                                                                         ),
@@ -428,11 +438,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                 )
                                           : v['topic'] == 'Recently Played'
                                               ? Container(
-                                        // color: themeProvider
-                                        //     .isLightTheme ==
-                                        //     true
-                                        //     ? Color(0xffE8E8E8)
-                                        //     : Color(0xff222222),
+                                                  // color: themeProvider
+                                                  //     .isLightTheme ==
+                                                  //     true
+                                                  //     ? Color(0xffE8E8E8)
+                                                  //     : Color(0xff222222),
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
@@ -525,7 +535,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             }
                                                           },
                                                           child: Container(
-
                                                             width: MediaQuery.of(
                                                                         context)
                                                                     .size
@@ -549,7 +558,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         .start,
                                                                 children: [
                                                                   Container(
-
                                                                     width: MediaQuery.of(context)
                                                                             .size
                                                                             .width /
@@ -679,108 +687,109 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               ),
                                                                             ],
                                                                           ),
-                                                                          Row(
-                                                                            children: [
-                                                                              InkWell(
-                                                                                onTap: () async {
-                                                                                  if (pref.getString('HiveUserName') != null) {
-                                                                                    setState(() {
-                                                                                      v['isLoading'] = true;
-                                                                                    });
-                                                                                    double _value = 50.0;
-                                                                                    showDialog(
-                                                                                        context: context,
-                                                                                        builder: (context) {
-                                                                                          return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: a['permlink'], episode_id: a['id']));
-                                                                                        }).then((value) async {
-                                                                                      print(value);
-                                                                                    });
-                                                                                    setState(() {
-                                                                                      a['ifVoted'] = !a['ifVoted'];
-                                                                                    });
-                                                                                    setState(() {
-                                                                                      a['isLoading'] = false;
-                                                                                    });
-                                                                                  } else {
-                                                                                    showBarModalBottomSheet(
-                                                                                        context: context,
-                                                                                        builder: (context) {
-                                                                                          return HiveDetails();
-                                                                                        });
-                                                                                  }
-                                                                                },
-                                                                                child: Container(
-
-                                                                                  decoration: a['ifVoted'] == true ? BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: LinearGradient(colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])) : BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                                                    child: Row(
-                                                                                      children: [
-                                                                                        a['isLoading'] == true
-                                                                                            ? SpinKitCircle(
-                                                                                                color: Colors.white,
-                                                                                                size: 10,
-                                                                                              )
-                                                                                            : Icon(
-                                                                                                FontAwesomeIcons.chevronCircleUp,
+                                                                          a['permlink'] == null
+                                                                              ? SizedBox()
+                                                                              : Row(
+                                                                                  children: [
+                                                                                    InkWell(
+                                                                                      onTap: () async {
+                                                                                        if (pref.getString('HiveUserName') != null) {
+                                                                                          setState(() {
+                                                                                            v['isLoading'] = true;
+                                                                                          });
+                                                                                          double _value = 50.0;
+                                                                                          showDialog(
+                                                                                              context: context,
+                                                                                              builder: (context) {
+                                                                                                return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: a['permlink'], episode_id: a['id']));
+                                                                                              }).then((value) async {
+                                                                                            print(value);
+                                                                                          });
+                                                                                          setState(() {
+                                                                                            a['ifVoted'] = !a['ifVoted'];
+                                                                                          });
+                                                                                          setState(() {
+                                                                                            a['isLoading'] = false;
+                                                                                          });
+                                                                                        } else {
+                                                                                          showBarModalBottomSheet(
+                                                                                              context: context,
+                                                                                              builder: (context) {
+                                                                                                return HiveDetails();
+                                                                                              });
+                                                                                        }
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: a['ifVoted'] == true ? BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: LinearGradient(colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])) : BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                                                          child: Row(
+                                                                                            children: [
+                                                                                              a['isLoading'] == true
+                                                                                                  ? SpinKitCircle(
+                                                                                                      color: Colors.white,
+                                                                                                      size: 10,
+                                                                                                    )
+                                                                                                  : Icon(
+                                                                                                      FontAwesomeIcons.chevronCircleUp,
+                                                                                                      size: 15,
+                                                                                                    ),
+                                                                                              SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              Text(
+                                                                                                "${a['payout_value'].toString().split(' ')[0]}",
+                                                                                                textScaleFactor: 1.0,
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    SizedBox(
+                                                                                      width: 10,
+                                                                                    ),
+                                                                                    InkWell(
+                                                                                      onTap: () {
+                                                                                        if (pref.getString('HiveUserName') != null) {
+                                                                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                                                            return Comments(
+                                                                                              episodeObject: a,
+                                                                                            );
+                                                                                          }));
+                                                                                        } else {
+                                                                                          showBarModalBottomSheet(
+                                                                                              context: context,
+                                                                                              builder: (context) {
+                                                                                                return HiveDetails();
+                                                                                              });
+                                                                                        }
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                                                          child: Row(
+                                                                                            mainAxisSize: MainAxisSize.min,
+                                                                                            children: [
+                                                                                              Icon(
+                                                                                                Icons.mode_comment_outlined,
                                                                                                 size: 15,
                                                                                               ),
-                                                                                        SizedBox(
-                                                                                          width: 5,
+                                                                                              SizedBox(
+                                                                                                width: 5,
+                                                                                              ),
+                                                                                              Text(
+                                                                                                '${a['comments_count'].toString()}',
+                                                                                                textScaleFactor: 1.0,
+                                                                                              )
+                                                                                            ],
+                                                                                          ),
                                                                                         ),
-                                                                                        Text(
-                                                                                          "${a['payout_value'].toString().split(' ')[0]}",
-                                                                                          textScaleFactor: 1.0,
-                                                                                        ),
-                                                                                      ],
+                                                                                      ),
                                                                                     ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 10,
-                                                                              ),
-                                                                              InkWell(
-                                                                                onTap: () {
-                                                                                  if (pref.getString('HiveUserName') != null) {
-                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                                                      return Comments(
-                                                                                        episodeObject: a,
-                                                                                      );
-                                                                                    }));
-                                                                                  } else {
-                                                                                    showBarModalBottomSheet(
-                                                                                        context: context,
-                                                                                        builder: (context) {
-                                                                                          return HiveDetails();
-                                                                                        });
-                                                                                  }
-                                                                                },
-                                                                                child: Container(
-                                                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                                                    child: Row(
-                                                                                      mainAxisSize: MainAxisSize.min,
-                                                                                      children: [
-                                                                                        Icon(
-                                                                                          Icons.mode_comment_outlined,
-                                                                                          size: 15,
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          width: 5,
-                                                                                        ),
-                                                                                        Text(
-                                                                                          '${a['comments_count'].toString()}',
-                                                                                          textScaleFactor: 1.0,
-                                                                                        )
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          )
+                                                                                  ],
+                                                                                )
                                                                         ],
                                                                       ),
                                                                     ),
@@ -834,18 +843,26 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 },
                                                                 child:
                                                                     Container(
-                                                                  decoration: BoxDecoration(
+                                                                  decoration:
+                                                                      BoxDecoration(
                                                                     boxShadow: [
                                                                       new BoxShadow(
-                                                                        color: Colors.black54.withOpacity(0.2),
-                                                                        blurRadius: 10.0,
+                                                                        color: Colors
+                                                                            .black54
+                                                                            .withOpacity(0.2),
+                                                                        blurRadius:
+                                                                            10.0,
                                                                       ),
                                                                     ],
-                                                                    color: themeProvider.isLightTheme == true
-                                                                        ? Colors.white
-                                                                        : Color(0xff222222),
+                                                                    color: themeProvider.isLightTheme ==
+                                                                            true
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Color(
+                                                                            0xff222222),
                                                                     borderRadius:
-                                                                    BorderRadius.circular(15),
+                                                                        BorderRadius.circular(
+                                                                            15),
                                                                   ),
                                                                   width: MediaQuery.of(
                                                                               context)
@@ -936,11 +953,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       ),
                                                     )
                                                   : Container(
-                                        // color: themeProvider
-                                        //     .isLightTheme ==
-                                        //     true
-                                        //     ? Color(0xffE8E8E8)
-                                        //     : Color(0xff222222),
+                                                      // color: themeProvider
+                                                      //     .isLightTheme ==
+                                                      //     true
+                                                      //     ? Color(0xffE8E8E8)
+                                                      //     : Color(0xff222222),
                                                       width: double.infinity,
                                                       height: SizeConfig
                                                               .blockSizeVertical *
@@ -967,7 +984,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       0,
                                                                       8),
                                                               child: Container(
-
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   borderRadius:

@@ -473,12 +473,37 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 10),
-                                        child: Text(
-                                          '@${prefs.getString('HiveUserName')}',
-                                          textScaleFactor: 1.0,
-                                          style: TextStyle(
-                                              color: Color(0xff777777)),
-                                        ),
+                                        child: prefs.getString(
+                                                    'HiveUserName') ==
+                                                null
+                                            ? ShaderMask(
+                                                shaderCallback: (Rect bounds) {
+                                                  return LinearGradient(
+                                                      colors: [
+                                                        Color(0xff52BFF9),
+                                                        Color(0xff6048F6)
+                                                      ]).createShader(bounds);
+                                                },
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return HiveDetails();
+                                                        });
+                                                  },
+                                                  child: Text(
+                                                    "Connect Your Hive Account",
+                                                    textScaleFactor: 1.0,
+                                                  ),
+                                                ),
+                                              )
+                                            : Text(
+                                                '@${prefs.getString('HiveUserName')}',
+                                                textScaleFactor: 1.0,
+                                                style: TextStyle(
+                                                    color: Color(0xff777777)),
+                                              ),
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
