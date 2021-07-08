@@ -101,6 +101,78 @@ class _HiveAccountState extends State<HiveAccount> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Colors.transparent,
+//         elevation: 0,
+//         title: Text(
+//           "Hive Signer",
+//           textScaleFactor: 0.75,
+//           style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+//         ),
+//       ),
+//       body: ListView(
+//         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+//         children: [
+//           Container(
+//             height: MediaQuery.of(context).size.height,
+//             width: MediaQuery.of(context).size.width,
+//             child: Builder(
+//               builder: (BuildContext context) {
+//                 return WebView(
+//                   gestureRecognizers: Set()
+//                     ..add(
+//                       Factory<VerticalDragGestureRecognizer>(
+//                         () => VerticalDragGestureRecognizer(),
+//                       ), // or null
+//                     ),
+//                   javascriptMode: JavascriptMode.unrestricted,
+//                   initialUrl:
+//                       'https://hivesigner.com/oauth2/authorize?client_id=aureal&redirect_uri=%3Dhttp%253A%252F%252Flocalhost%253A3000%26&response_type=code&scope=offline,comment,vote,comment_option,custom_json',
+//                   onPageStarted: (url) async {
+//                     SharedPreferences prefs =
+//                         await SharedPreferences.getInstance();
+//
+//                     var uri = Uri.parse(url.toString());
+//                     uri.queryParameters.forEach((key, value) {
+//                       if (key == 'access_token' ||
+//                           key == 'username' ||
+//                           key == 'code') {
+//                         if (key == 'username' &&
+//                             prefs.getString('access_token') != null &&
+//                             prefs.getString('code') != null) {
+//                           prefs.setString('HiveUserName', value);
+//                           print(
+//                               "*************************************************************************************");
+//                           print(prefs.getString('code'));
+//                           print(
+//                               '*************************************************************************************');
+// // registerHiveUser();
+//
+//                         } else {
+//                           prefs.setString('$key', value);
+//                         }
+//
+//                         print(prefs.getString(key));
+//                         if (prefs.getString('code') != null) {
+//                           print(
+//                               'this is the code : ${prefs.getString('code')}');
+//                         }
+//                         if (prefs.getString('userId') != null) {
+//                           registerHiveUser();
+//                         } else {
+//                           hiveAuth();
+//                         }
+//                       }
+//                     });
+//                   },
+//                 );
+//               },
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -111,67 +183,55 @@ class _HiveAccountState extends State<HiveAccount> {
           style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
         ),
       ),
-      body: ListView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Builder(
-              builder: (BuildContext context) {
-                return WebView(
-                  gestureRecognizers: Set()
-                    ..add(
-                      Factory<VerticalDragGestureRecognizer>(
-                        () => VerticalDragGestureRecognizer(),
-                      ), // or null
-                    ),
-                  javascriptMode: JavascriptMode.unrestricted,
-                  initialUrl:
-                      'https://hivesigner.com/oauth2/authorize?client_id=aureal&redirect_uri=%3Dhttp%253A%252F%252Flocalhost%253A3000%26&response_type=code&scope=offline,comment,vote,comment_option,custom_json',
-                  onPageStarted: (url) async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+      body: Stack(children: <Widget>[
+        SizedBox.expand(
+          child: Center(
+            child: WebView(
+              gestureRecognizers: Set()
+                ..add(
+                  Factory<VerticalDragGestureRecognizer>(
+                    () => VerticalDragGestureRecognizer(),
+                  ), // or null
+                ),
+              javascriptMode: JavascriptMode.unrestricted,
+              initialUrl:
+                  'https://hivesigner.com/oauth2/authorize?client_id=aureal&redirect_uri=%3Dhttp%253A%252F%252Flocalhost%253A3000%26&response_type=code&scope=offline,comment,vote,comment_option,custom_json',
+              onPageStarted: (url) async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
 
-                    var uri = Uri.parse(url.toString());
-                    uri.queryParameters.forEach((key, value) {
-                      if (key == 'access_token' ||
-                          key == 'username' ||
-                          key == 'code') {
-                        if (key == 'username' &&
-                            prefs.getString('access_token') != null &&
-                            prefs.getString('code') != null) {
-                          prefs.setString('HiveUserName', value);
-                          print(
-                              "*************************************************************************************");
-                          print(prefs.getString('code'));
-                          print(
-                              '*************************************************************************************');
+                var uri = Uri.parse(url.toString());
+                uri.queryParameters.forEach((key, value) {
+                  if (key == 'access_token' ||
+                      key == 'username' ||
+                      key == 'code') {
+                    if (key == 'username' &&
+                        prefs.getString('access_token') != null &&
+                        prefs.getString('code') != null) {
+                      prefs.setString('HiveUserName', value);
+                      print(
+                          "*************************************************************************************");
+                      print(prefs.getString('code'));
+                      print(
+                          '*************************************************************************************');
 // registerHiveUser();
 
-                        } else {
-                          prefs.setString('$key', value);
-                        }
+                    } else {
+                      prefs.setString('$key', value);
+                    }
 
-                        print(prefs.getString(key));
-                        if (prefs.getString('code') != null) {
-                          print(
-                              'this is the code : ${prefs.getString('code')}');
-                        }
-                        if (prefs.getString('userId') != null) {
-                          registerHiveUser();
-                        } else {
-                          hiveAuth();
-                        }
-                      }
-                    });
-                  },
-                );
+                    print(prefs.getString(key));
+                    if (prefs.getString('code') != null) {
+                      print(
+                          'this is the code motherfucker: ${prefs.getString('code')}');
+                    }
+                    hiveAuth();
+                  }
+                });
               },
             ),
           ),
-        ],
-      ),
+        )
+      ]),
     );
   }
 }
