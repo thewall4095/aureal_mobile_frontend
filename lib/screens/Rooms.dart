@@ -237,7 +237,7 @@ _joinMeeting() async {
     };
 
     var options = JitsiMeetingOptions(room: 'roomTexttext') // ll be trimmed
-      ..serverURL = "https://meet.aureal.one"
+      ..serverURL = "https://meet.jit.si"
       ..subject = "Meeting with Gunschu"
       ..userDisplayName = "My Name"
       ..userEmail = "myemail@email.com"
@@ -259,13 +259,13 @@ _joinMeeting() async {
       options,
       listener: JitsiMeetingListener(
           onConferenceWillJoin: (message) {
-            debugPrint("${options.room} will join with message: $message");
+            debugPrint("${options.serverURL} ${options.room} will join with message: $message");
           },
           onConferenceJoined: (message) {
-            debugPrint("${options.room} joined with message: $message");
+            debugPrint("${options.serverURL} ${options.room} joined with message: $message");
           },
           onConferenceTerminated: (message) {
-            debugPrint("${options.room} terminated with message: $message");
+            debugPrint("${options.serverURL} ${options.room} terminated with message: $message");
           },
           genericListeners: [
             JitsiGenericListener(
@@ -1308,7 +1308,7 @@ class _RoomOptionsState extends State<RoomOptions>
                       child: TextField(
                         decoration: InputDecoration(border: InputBorder.none),
                         focusNode: _focusNode,
-                        controller: _topicController,
+                        // controller: _topicController,
                       ),
                     ),
                   ),
