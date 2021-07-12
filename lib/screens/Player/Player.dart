@@ -242,6 +242,13 @@ class _PlayerState extends State<Player> {
     SizeConfig().init(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(1.0),
+        child: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+        ),
+      ),
       body: Stack(
      children: [
        Container(
@@ -269,7 +276,7 @@ class _PlayerState extends State<Player> {
                child: Column(
                  mainAxisAlignment: MainAxisAlignment.start,
                  children: [
-                   SizedBox(height: 40),
+                   SizedBox(height: 15),
                    GestureDetector(
                      onTap: () {
                        print(episodeObject.id);
@@ -450,13 +457,12 @@ class _PlayerState extends State<Player> {
                        ],
                      ),
                    ),
-                   SizedBox(height: 35),
+                   SizedBox(height: 30),
 
                    Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-
                        Container(
                          width: 35,
                          height: 35,
@@ -598,8 +604,6 @@ class _PlayerState extends State<Player> {
                          ),
 
                        ),
-                      // hiveToken == null
-
                        episodeObject.episodeObject['permlink'] == null
                            ? SizedBox(
                          width: 50,
@@ -910,6 +914,7 @@ class _PlayerState extends State<Player> {
                                                  ],
                                                ),
                                              ),
+
                                            ],
                                          ),
                                        ),
@@ -926,65 +931,71 @@ class _PlayerState extends State<Player> {
                ),
              ),
              // for (var v in comments)
-             Padding(
-               padding: const EdgeInsets.all(5.0),
-               child: Container(
-                 height: 50, //color: Colors.white,
-                 child: Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     Row(
-                       mainAxisSize: MainAxisSize.min,
-                       children: [
-                         Padding(
-                           padding: const EdgeInsets.only(left: 50),
-                           child: Icon(
-                             Icons.mode_comment_outlined,
-                             size: 15,
-                           ),
-                         ),
-                         SizedBox(
-                           width: 5,
-                         ),
-                         Text(
-                           '${episodeObject.episodeObject['comments_count'].toString()}',
-                           textScaleFactor: 1.0,
-                         ),
-                       ],
-                     ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 50),
-                            child: IconButton(
-                            icon: Icon(
-                            Icons.keyboard_arrow_up_outlined,
-                            size: 30,
-                            //     color: Colors.white,
-                            ),
-                            onPressed: () async {
-                              print(episodeObject.episodeObject['comments']);
-                              // if (pref.getString('HiveUserName') = null) {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return Comments(
-                                  episodeObject: episodeObject.episodeObject,
-                                );
-                              }));
-                            },),
-                          )
-                   ],
-
-                 ),
-
-               ),
-             ),
 
            ],
          ),
        ),
-     ],
-
-
+     ]
       ),
 
+bottomSheet:    GestureDetector(
+  onTap: ()async {
+    print(episodeObject.episodeObject['comments']);
+    // if (pref.getString('HiveUserName') = null) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return Comments(
+    episodeObject: episodeObject.episodeObject,
+    );
+    }));
+    },
+  child:   Container(
+    decoration: BoxDecoration(
+        color:  Color(dominantColor == null ? 0xff3a3a3a :  dominantColor ),
+
+    ), //color: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 50),
+                child: Icon(
+                  Icons.mode_comment_outlined,
+                  size: 30,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                '${episodeObject.episodeObject['comments_count'].toString()}',
+                textScaleFactor: 1.0,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 50,bottom: 20),
+            child: IconButton(
+              icon: Icon(
+                Icons.keyboard_arrow_up_outlined,
+                size: 50,
+                //     color: Colors.white,
+              ),
+              onPressed: (){},
+            )
+          )
+        ],
+
+      ),
+    ),
+  ),
+),
     );
   }
 }
