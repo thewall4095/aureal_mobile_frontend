@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../CommunityProvider.dart';
+import '../NotificationProvider.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
 import 'Player/VideoPlayer.dart';
@@ -77,9 +78,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
     SizeConfig().init(context);
 
     var communities = Provider.of<CommunityProvider>(context);
-
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
+
 
     DiscoverProvider discoverData = Provider.of<DiscoverProvider>(context);
     if (discoverData.isFetcheddiscoverList == false) {
@@ -114,6 +115,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       print('proceedd');
       await discoverData.getDiscoverProvider();
     }
+
 
     Future<bool> _onBackPressed() async {
       Navigator.pushNamedAndRemoveUntil(
@@ -525,12 +527,20 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 currentlyPlaying
                                                                     .play();
                                                                 showBarModalBottomSheet(
+
                                                                     context:
                                                                         context,
+
                                                                     builder:
                                                                         (context) {
-                                                                      return Player();
+                                                                      return Container(
+                                                                        height: 720,
+                                                                        child: Player(),
+
+                                                                      );
+
                                                                     });
+
                                                               }
                                                             }
                                                           },

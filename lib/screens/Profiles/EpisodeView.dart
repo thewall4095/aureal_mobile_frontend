@@ -515,15 +515,20 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                                 border: Border.all(
-                                                    color: kSecondaryColor,
-                                                    width: 2.5)),
+                                                    color: Color(
+                                                        0xff171b27),
+                                                    width: 2)),
                                             child: Center(
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 35,
-                                                        vertical: 10),
+                                                const EdgeInsets
+                                                    .symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 5),
+
+                                                child: Text("Play"),
                                               ),
+
                                             ),
                                           ),
                                         ),

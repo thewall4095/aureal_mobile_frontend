@@ -97,7 +97,7 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
             "Hey There, I'm listening to  from  on Aureal, here's the link for you https://aureal.one/episode/${episodeId.toString()}");
   }
 
-  int count = 10;
+  int count = 0;
 
   @override
   void initState() {

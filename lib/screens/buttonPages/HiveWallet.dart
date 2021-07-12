@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -90,11 +91,12 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
   }
 
   void getAurealRewardsTransactions() async {
-    print('/////////////////////rewards api being called');
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$page&pageSize=$pageSize';
+    print('api called');
+
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -147,7 +149,16 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
       });
     }
   }
+void countPoints(){
+  Random seed = Random();
+  const int MAX_VALUE = 0;
 
+  int Points = seed.nextInt(rewardsTransactions[0]['points']);
+  int newPoints = seed.nextInt(rewardsTransactions[0]['points']);
+  int sum = Points + newPoints;
+
+  print('$Points + $newPoints= $sum');
+}
   double x = 1892.98479;
 
   @override
@@ -157,6 +168,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     getAurealRewardsTransactions();
     getHiveRewardData();
     getHiveTransactions();
+  //  countPoints();
 
     _scrollRewardsController = ScrollController();
     _scrollRewardsController.addListener(() {
@@ -167,6 +179,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     });
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +391,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, int index) {
+                              print( '${double.parse(rewardsTransactions[index]['points'].toString())} points');
                               // return Text('${rewardsTransactions[index]}');
                               return Container(
                                 child: ListTile(
@@ -391,6 +405,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                       '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
                                   trailing: Text(
                                       '${double.parse(rewardsTransactions[index]['points'].toString())} points'),
+
                                 ),
                               );
                             },
@@ -548,8 +563,8 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
 //
 // }
 
-Widget iconGenerator(var action_type) {
-  switch (action_type) {
+Widget iconGenerator(var actionType) {
+  switch (actionType) {
     case 'vote':
       return Icon(FontAwesomeIcons.chevronCircleUp);
       break;

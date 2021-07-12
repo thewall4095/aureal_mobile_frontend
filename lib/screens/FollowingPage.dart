@@ -173,6 +173,7 @@ class _FollowingPageState extends State<FollowingPage>
         }
       } else {
         print(response.statusCode);
+
       }
     } catch (e) {
       print(e);
@@ -1016,6 +1017,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                               TextStyle(
                                                                             fontSize:
                                                                                 12,
+
                                                                             // color:
                                                                             //     Color(0xffe8e8e8)
                                                                           ),

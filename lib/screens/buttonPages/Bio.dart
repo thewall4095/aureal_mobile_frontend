@@ -311,6 +311,7 @@ class _BioState extends State<Bio> {
     super.initState();
     fullNameTextEditingControler.text = widget.fullname;
     bioTextEditingControler.text = widget.bio;
+
   }
 
   Future<void> _pullRefreshEpisodes() async {
@@ -326,6 +327,7 @@ class _BioState extends State<Bio> {
       elevation: 0,
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -453,18 +455,23 @@ class _BioState extends State<Bio> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
               child: TextFormField(
-                decoration: InputDecoration(hintText: bio, labelText: 'Bio'),
+                decoration: InputDecoration(  hintText: data['bio'] != null
+        ? data['bio']
+        : 'Bio', labelText: 'Bio'),
                 controller: bioTextEditingControler,
                 autofocus: true,
                 maxLines: null,
                 initialValue: widget.bio,
                 onChanged: (value) {
                   setState(() {
+
                     bio = value;
                   });
                   activeButtonState();
                 },
+
               ),
+
             ),
             Padding(
               padding:
@@ -502,7 +509,7 @@ class _BioState extends State<Bio> {
                     },
                     decoration: InputDecoration(
                         icon: Icon(FontAwesomeIcons.instagram),
-                        hintText: data['instagram'] != 'null'
+                        hintText: data['instagram'] != null
                             ? data['instagram']
                             : 'https://instagram.com/john_snow'),
                   ),
@@ -515,7 +522,7 @@ class _BioState extends State<Bio> {
                     decoration: InputDecoration(
                         icon: Icon(FontAwesomeIcons.twitter),
                         hintText:
-                            '${data['twitter'] == 'null' ? 'https://twitter.com/@john_snow' : data['twitter']} '),
+                            '${data['twitter'] == null ? 'https://twitter.com/@john_snow' : data['twitter']} '),
                   ),
                   TextField(
                     onChanged: (value) {
@@ -526,7 +533,7 @@ class _BioState extends State<Bio> {
                     decoration: InputDecoration(
                         icon: Icon(FontAwesomeIcons.linkedinIn),
                         hintText:
-                            '${data['linkedin'] != 'null' ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
+                            '${data['linkedin'] != null ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
                   ),
                   TextField(
                     onChanged: (value) {
@@ -536,7 +543,7 @@ class _BioState extends State<Bio> {
                     },
                     decoration: InputDecoration(
                         icon: Icon(FontAwesomeIcons.link),
-                        hintText: data['website'] == 'null'
+                        hintText: data['website'] == null
                             ? 'https://aureal.one'
                             : data['website']),
                   ),

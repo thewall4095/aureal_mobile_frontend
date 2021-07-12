@@ -908,10 +908,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                                             20),
                                                                     border:
                                                                         Border
-                                                                            .all(
-                                                                      color: Color(
-                                                                          0xffe8e8e8),
-                                                                    )),
+                                                                            .all(),
+                                                                    ),
                                                             child: Padding(
                                                               padding: const EdgeInsets
                                                                       .symmetric(
@@ -1254,7 +1252,10 @@ class _PodcastViewState extends State<PodcastView> {
                                                     showBarModalBottomSheet(
                                                         context: context,
                                                         builder: (context) {
-                                                          return Player();
+                                                          return Container(
+                                                            height: 720,
+                                                            child: Player(),
+                                                          );
                                                         });
                                                   }
                                                 }

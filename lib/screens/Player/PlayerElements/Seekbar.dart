@@ -1,5 +1,8 @@
+import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Seekbar extends StatefulWidget {
   Duration currentPosition;
@@ -59,6 +62,7 @@ class _SeekbarState extends State<Seekbar> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Column(
       children: [
         SliderTheme(
@@ -66,14 +70,22 @@ class _SeekbarState extends State<Seekbar> {
               trackHeight: 3,
              // activeTrackColor: Color(0xff212121),
               //    inactiveTrackColor: Colors.black,
-                thumbColor: Colors.blue,
-              thumbShape: SliderComponentShape.noThumb
+                thumbColor: themeProvider.isLightTheme == false
+                    ? Colors.white
+                    : kPrimaryColor
+            //  thumbShape: SliderComponentShape
               // thumbShape: RoundSliderThumbShape(
               //     pressedElevation: 1.0,
               //     enabledThumbRadius: 8,
               //     disabledThumbRadius: 5),
               ),
           child: Slider(
+            activeColor:themeProvider.isLightTheme == false
+                ? Colors.white
+                : kPrimaryColor,
+            inactiveColor: themeProvider.isLightTheme == false
+                ? Colors.black26
+                : Colors.black26,
             min: 0,
             max: widget.duration.inMilliseconds.toDouble(),
             value: percent * widget.duration.inMilliseconds.toDouble(),
@@ -97,33 +109,33 @@ class _SeekbarState extends State<Seekbar> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 widget.currentPosition.toString().split('.')[0],
                 textScaleFactor: 1.0,
-                style: TextStyle(fontSize: 8),
+                style: TextStyle(fontSize: 10),
               ),
               SizedBox(
                 width: 230,
-                child: Text(
-                  widget.episodeName,
-                  textScaleFactor: 1.0,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  // textWidthBasis: TextWidthBasis.longestLine,
-                  style: TextStyle(
-                      //   color: Colors.white,
-                      fontSize: SizeConfig.safeBlockHorizontal * 3),
-                ),
+                // child: Text(
+                //   widget.episodeName,
+                //   textScaleFactor: 1.0,
+                //   maxLines: 1,
+                //   textAlign: TextAlign.center,
+                //   overflow: TextOverflow.ellipsis,
+                //   // textWidthBasis: TextWidthBasis.longestLine,
+                //   style: TextStyle(
+                //       //   color: Colors.white,
+                //       fontSize: SizeConfig.safeBlockHorizontal * 3),
+                // ),
               ),
               Text(
                 widget.duration.toString().split('.')[0],
                 textScaleFactor: 1.0,
-                style: TextStyle(fontSize: 8),
+                style: TextStyle(fontSize: 10),
               )
             ],
           ),

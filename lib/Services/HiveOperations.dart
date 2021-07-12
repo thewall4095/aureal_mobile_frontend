@@ -215,10 +215,14 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
                     Text(
                       "Your vote value:",
                       style: TextStyle(
+                        color: Colors.white,
                           fontSize: SizeConfig.safeBlockHorizontal * 3),
                     ),
                     Text(
-                        '\$ ${((factor * _value) / 100).toStringAsPrecision(3)}'),
+                        '\$ ${((factor * _value) / 100).toStringAsPrecision(3)}',
+                    style: TextStyle(
+                      color: Colors.white,),),
+
                   ],
                 ),
               ),
