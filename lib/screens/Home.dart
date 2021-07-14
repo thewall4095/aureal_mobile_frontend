@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import "package:badges/badges.dart";
+import 'dart:ui';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import "package:badges/badges.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -23,6 +25,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+
 import '../NotificationProvider.dart';
 import '../PlayerState.dart';
 import '../models/message.dart';
@@ -375,7 +378,6 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -438,13 +440,9 @@ class _HomeState extends State<Home> {
               : SizedBox(height: 0, width: 0),
           Center(
             child: IconButton(
-
               icon: Badge(
                 badgeColor: Colors.blue,
-                badgeContent: Text(
-              "$count"
-
-                ),
+                badgeContent: Text("$count"),
                 child: Icon(
                   Icons.notifications_none,
                   //    color: Colors.white,
@@ -564,12 +562,25 @@ class _BottomPlayerState extends State<BottomPlayer> {
             child: GestureDetector(
               onTap: () {
                 showBarModalBottomSheet(
-                    //    backgroundColor: Colors.transparent,
+                    bounce: true,
                     context: context,
                     builder: (context) {
-                      return Container(
-                        height: 720,
-                        child: Player(),
+                      return Stack(
+                        children: [
+                          Center(
+                            child: ClipRect(
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 40, sigmaY: -50),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(child: Player()),
+                        ],
                       );
                     });
                 // Navigator.pushNamed(context, Player.id);
