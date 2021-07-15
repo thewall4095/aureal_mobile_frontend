@@ -16,6 +16,7 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:auditory/utilities/epiview.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
@@ -1367,23 +1368,7 @@ class _PodcastViewState extends State<PodcastView> {
                                           //   icon: Icon(
                                           //       Icons.arrow_circle_down_outlined),
                                           // ),
-                                          IconButton(
-                                            onPressed: () async {
-                                              share(
-                                                  episodeId:
-                                                      episodeList[index - 1]
-                                                          ['id'],
-                                                  episodeName:
-                                                      episodeList[index - 1]
-                                                          ['name']);
-                                            },
-                                            icon: Icon(
-                                                FontAwesomeIcons.shareAlt,
-                                                //  color: Color(0xffe8e8e8),
-                                                size: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    4.5),
-                                          ),
+
                                         ],
                                       ),
                                     ],

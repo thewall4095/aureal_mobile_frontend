@@ -17,6 +17,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -73,7 +74,8 @@ class _EpisodeViewState extends State<EpisodeView>
   void getEpisode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/episode?episode_id=${widget.episodeId}&user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/episode?episode_id=${widget
+        .episodeId}&user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -118,7 +120,8 @@ class _EpisodeViewState extends State<EpisodeView>
 
   void getComments() async {
     String url =
-        'https://api.aureal.one/public/getComments?episode_id=${widget.episodeId}';
+        'https://api.aureal.one/public/getComments?episode_id=${widget
+        .episodeId}';
     // print('loada');
     // print(widget.episodeObject.toString());
 
@@ -136,14 +139,15 @@ class _EpisodeViewState extends State<EpisodeView>
     }
   }
 
-  Episode _getFinalEpisode(taskId) => Episode(
-      id: widget.episodeId,
-      episodeId: widget.episodeId,
-      taskId: taskId,
-      name: episodeContent['name'],
-      podcastName: episodeContent['podcast_name'],
-      summary: episodeContent['summary'],
-      image: episodeContent['image']);
+  Episode _getFinalEpisode(taskId) =>
+      Episode(
+          id: widget.episodeId,
+          episodeId: widget.episodeId,
+          taskId: taskId,
+          name: episodeContent['name'],
+          podcastName: episodeContent['podcast_name'],
+          summary: episodeContent['summary'],
+          image: episodeContent['image']);
 
   String getFileExtension(url) {
     if (episodeContent['url'].toString().contains('.mp4'))
@@ -287,623 +291,1173 @@ class _EpisodeViewState extends State<EpisodeView>
   Widget build(BuildContext context) {
     final currentlyPlaying = Provider.of<PlayerChange>(context);
     final mediaQueryData = MediaQuery.of(context);
+    Size size = MediaQuery
+        .of(context)
+        .size;
     SizeConfig().init(context);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              pinned: true,
-              //    backgroundColor: kPrimaryColor,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back,
+                pinned: true,
+                //    backgroundColor: kPrimaryColor,
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                  ),
                 ),
-              ),
-              // actions: <Widget>[
-              //   IconButton(
-              //     onPressed: () {},
-              //     icon: Icon(
-              //       Icons.more_vert,
-              //     ),
-              //   )
-              // ],
-              expandedHeight: 450,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          episodeContent == null
-                              ? Shimmer.fromColors(
-                                  baseColor: Color(0xff3a3a3a),
-                                  highlightColor: kPrimaryColor,
-                                  child: Container(
-                                    height: 80,
-                                    width: 80,
-                                    color: kSecondaryColor,
-                                  ))
-                              : Container(
-                                  height: 90,
-                                  width: 80,
-                                  child: CachedNetworkImage(
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover),
-                                        ),
-                                        height:
-                                            MediaQuery.of(context).size.width,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                      );
-                                    },
-                                    imageUrl: episodeContent['image'] != null
-                                        ? episodeContent['image']
-                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                actions: <Widget>[
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.share,
+                    ),
+                  )
+                ],
+                expandedHeight: 580,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          height: size.height * 0.4,
+                          child: Stack(children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                  bottom: 36,
+                                ),
+                                height: size.height * 0.4 - 27,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: ExactAssetImage(
+                                        'assets/images/AlbumArt.jpg'),
                                     fit: BoxFit.cover,
-                                    // memCacheHeight:
-                                    //     MediaQuery.of(
-                                    //             context)
-                                    //         .size
-                                    //         .width
-                                    //         .ceil(),
-                                    memCacheHeight: MediaQuery.of(context)
-                                        .size
-                                        .height
-                                        .floor(),
-
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
                                   ),
-                                  //   child: FadeInImage.assetNetwork(
-                                  //       placeholder:
-                                  //           'assets/images/Thumbnail.png',
-                                  //       image: episodeContent['image'] != null
-                                  //           ? episodeContent['image']
-                                  //           : 'assets/images/Thumbnail.png'),
-                                  //   decoration: BoxDecoration(
-                                  //       //   color: Colors.white,
-                                  //       borderRadius: BorderRadius.circular(5)),
+                                  color: Colors.white,
+                              border: Border.all(
+                              color: Color(
+                              0xff171b27)),
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(36),
+                                      bottomRight: Radius.circular(36)),
                                 ),
-                          SizedBox(
-                            height: 25,
-                          ),
-                          episodeContent == null
-                              ? Shimmer.fromColors(
-                                  baseColor: Color(0xff3a3a3a),
-                                  highlightColor: kPrimaryColor,
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                      sigmaX: 10.0, sigmaY: 10.0),
                                   child: Container(
-                                    width: double.infinity,
-                                    height: 20,
-                                    color: kSecondaryColor,
-                                  ),
-                                )
-                              : Text(
-                                  episodeContent['name'],
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 5,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                          SizedBox(
-                            height: 25,
-                          ),
-                          episodeContent == null
-                              ? Shimmer.fromColors(
-                                  baseColor: Color(0xff3a3a3a),
-                                  highlightColor: kPrimaryColor,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: 15,
-                                    color: kSecondaryColor,
-                                  ))
-                              : Text(
-                                  episodeContent['podcast_name'],
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(1, 1.2)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3.8),
-                                ),
-                          SizedBox(
-                            height: 2,
-                          ),
+                                    decoration: BoxDecoration(
 
-                          SizedBox(
-                            height: 20,
-                          ),
-                          episodeContent == null
-                              ? Container()
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                        color: Colors.white.withOpacity(0.0)),
+                                  ),
+                                )),
+                            Positioned(
+                              bottom: 0,
+                              left: 120,
+                              right: 0,
+                              child: Container(
+                                child: Row(
                                   children: <Widget>[
-                                    Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            print(episodeContent['url']
-                                                .toString()
-                                                .contains('.mp4'));
-                                            if (episodeContent['url']
-                                                        .toString()
-                                                        .contains('.mp4') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.m4v') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.flv') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.f4v') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.ogv') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.ogx') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.wmv') ==
-                                                    true ||
-                                                episodeContent['url']
-                                                        .toString()
-                                                        .contains('.webm') ==
-                                                    true) {
-                                              currentlyPlaying.stop();
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return PodcastVideoPlayer(
-                                                  episodeObject: episodeContent,
-                                                );
-                                              }));
-                                            } else {
-                                              if (episodeContent['url']
-                                                      .toString()
-                                                      .contains('.pdf') ==
-                                                  true) {
-                                                // Navigator.push(context,
-                                                //     MaterialPageRoute(
-                                                //         builder: (context) {
-                                                //   return PDFviewer(
-                                                //     episodeObject:
-                                                //         widget.episodeObject,
-                                                //   );
-                                                // }));
-                                              } else {
-                                                currentlyPlaying.stop();
-                                                currentlyPlaying.episodeObject =
-                                                    episodeContent;
-                                                print(currentlyPlaying
-                                                    .episodeObject
-                                                    .toString());
-                                                currentlyPlaying.play();
-                                                showBarModalBottomSheet(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Player();
-                                                    });
-                                              }
-                                            }
-                                          },
-                                          child: Container(
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            offset: Offset(0, 10),
+                                            blurRadius: 50,
+                                            color: kPrimaryColor.withOpacity(
+                                                0.23),
+                                          ),
+                                        ],
+                                        borderRadius: BorderRadius.circular(
+                                            30),),
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width / 2.5,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width / 2.5,
+                                      child: CachedNetworkImage(
+                                        imageBuilder: (context, imageProvider) {
+                                          return Container(
                                             decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(30),
-                                                border: Border.all(
-                                                    color: Color(
-                                                        0xff171b27),
-                                                    width: 2)),
-                                            child: Center(
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets
-                                                    .symmetric(
-                                                    horizontal: 20,
-                                                    vertical: 5),
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
 
-                                                child: Text("Play"),
-                                              ),
+                                          );
+                                        },
+                                        imageUrl: episodeContent['image'] !=
+                                            null
+                                            ? episodeContent['image']
+                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                      ),
+                                    ),
 
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                          ])),
+                      SizedBox(height: 10,),
+
+                      Center(
+                        child: Text(
+                          episodeContent['author'],
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(height: 15,),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Center(
+                          child: Text(
+                            episodeContent['name'],
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+
+                            textScaleFactor: 1.0,
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 15,),
+                      episodeContent == null
+                          ? Container()
+                          : Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              episodeContent['permlink'] == null ||
+                                  episodeContent['votes'] == null
+                                  ? (episodeContent['user_id'] ==
+                                  prefs.getString('userId')
+                                  ? InkWell(
+                                onTap: () async {
+                                  await publishManually(
+                                      episodeContent['id']);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Color(
+                                            0xff171b27),
+                                      ),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(20),
+                                      gradient:
+                                      LinearGradient(
+                                          colors: [
+                                            Color(
+                                                0xff5bc3ef),
+                                            Color(
+                                                0xff5d5da8)
+                                          ])),
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets
+                                        .symmetric(
+                                        horizontal: 20,
+                                        vertical: 5),
+                                    child: Text(
+                                      'Publish',
+                                      textScaleFactor:
+                                      mediaQueryData
+                                          .textScaleFactor
+                                          .clamp(0.5, 1)
+                                          .toDouble(),
+                                      style: TextStyle(
+                                        // color:
+                                        //     Color(0xffe8e8e8),
+                                          fontSize: SizeConfig
+                                              .safeBlockHorizontal *
+                                              3.5),
+                                    ),
+                                  ),
+                                ),
+                              )
+                                  : SizedBox(
+                                width: 0,
+                              ))
+                                  : InkWell(
+                                onTap: () async {
+                                  if (prefs.getString(
+                                      'HiveUserName') !=
+                                      null) {
+                                    setState(() {
+                                      isUpvoteButtonLoading =
+                                      true;
+                                    });
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Dialog(
+                                              backgroundColor:
+                                              Colors
+                                                  .transparent,
+                                              child: UpvoteEpisode(
+                                                  permlink:
+                                                  episodeContent[
+                                                  'permlink'],
+                                                  episode_id:
+                                                  episodeContent[
+                                                  'id']));
+                                        }).then((value) async {
+                                      print(value);
+                                    });
+                                    // await upvoteEpisode(
+                                    //     permlink:
+                                    //         episodeContent[
+                                    //             'permlink'],
+                                    //     episode_id:
+                                    //         episodeContent[
+                                    //             'id']);
+                                    setState(() {
+                                      episodeContent[
+                                      'ifVoted'] =
+                                      !episodeContent[
+                                      'ifVoted'];
+                                    });
+                                    setState(() {
+                                      isUpvoteButtonLoading =
+                                      false;
+                                    });
+                                  } else {
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return HiveDetails();
+                                        });
+                                  }
+                                },
+                                child: Container(
+                                  decoration: episodeContent[
+                                  'ifVoted'] ==
+                                      true
+                                      ? BoxDecoration(
+                                      gradient:
+                                      LinearGradient(
+                                          colors: [
+                                            Color(
+                                                0xff5bc3ef),
+                                            Color(
+                                                0xff5d5da8)
+                                          ]),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(30))
+                                      : BoxDecoration(
+                                    border: Border.all(
+                                        color: Color(
+                                            0xff171b27)),
+                                    // color: kSecondaryColor,
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(30),
+                                  ),
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.all(
+                                        5.0),
+                                    child: Row(
+                                      children: [
+                                        isUpvoteButtonLoading ==
+                                            true
+                                            ? Container(
+                                          height: 18,
+                                          width: 18,
+                                          child:
+                                          SpinKitPulse(
+                                            color: Colors
+                                                .blue,
+                                          ),
+                                        )
+                                            : Icon(
+                                          FontAwesomeIcons
+                                              .chevronCircleUp,
+                                          size: 18,
+
+                                          // color: Color(
+                                          //     0xffe8e8e8),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets
+                                              .symmetric(
+                                              horizontal:
+                                              8),
+                                          child: Text(
+                                            '${episodeContent['votes']}',
+                                            textScaleFactor:
+                                            mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(
+                                                0.5, 1)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              // color: Color(
+                                              //     0xffe8e8e8)
                                             ),
                                           ),
                                         ),
-                                        Platform.isAndroid == true
-                                            ? GestureDetector(
-                                                onTap: () {
-                                                  startDownload();
-                                                  setState(() {
-                                                    _loading = !_loading;
-                                                    _updateProgress();
-                                                  });
-                                                },
-                                                child: Container(
-                                                    padding:
-                                                        EdgeInsets.all(15.0),
-                                                    child: _loading
-                                                        ? Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: <Widget>[
-                                                              CircularProgressIndicator(
-                                                                value:
-                                                                    _progressValue,
-                                                              ),
-                                                              Text(
-                                                                  '${(_progressValue * 100).round()}%'),
-                                                            ],
-                                                          )
-                                                        : Icon(
-                                                            Icons
-                                                                .arrow_circle_down,
-                                                            color: isDownloading ==
-                                                                    true
-                                                                ? Color(
-                                                                    0xff5d5da8)
-                                                                : Color(
-                                                                    0xff5bc3ef))),
-                                              )
-                                            : SizedBox(
-                                                height: 0,
-                                                width: 0,
-                                              ),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets
+                                              .only(
+                                              right: 4),
+                                          child: Text(
+                                            '\$${episodeContent['payout_value']
+                                                .toString()
+                                                .split(' ')[0]}',
+                                            textScaleFactor:
+                                            mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(
+                                                0.5, 1)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              // color: Color(
+                                              //     0xffe8e8e8)
+                                            ),
+                                          ),
+                                        )
                                       ],
                                     ),
-                                    Row(
-                                      children: <Widget>[
-                                        episodeContent['permlink'] == null ||
-                                                episodeContent['votes'] == null
-                                            ? (episodeContent['user_id'] ==
-                                                    prefs.getString('userId')
-                                                ? InkWell(
-                                                    onTap: () async {
-                                                      await publishManually(
-                                                          episodeContent['id']);
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                            color: Color(
-                                                                0xff171b27),
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(20),
-                                                          gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                Color(
-                                                                    0xff5bc3ef),
-                                                                Color(
-                                                                    0xff5d5da8)
-                                                              ])),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 20,
-                                                                vertical: 5),
-                                                        child: Text(
-                                                          'Publish',
-                                                          textScaleFactor:
-                                                              mediaQueryData
-                                                                  .textScaleFactor
-                                                                  .clamp(0.5, 1)
-                                                                  .toDouble(),
-                                                          style: TextStyle(
-                                                              // color:
-                                                              //     Color(0xffe8e8e8),
-                                                              fontSize: SizeConfig
-                                                                      .safeBlockHorizontal *
-                                                                  3.5),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : SizedBox(
-                                                    width: 0,
-                                                  ))
-                                            : InkWell(
-                                                onTap: () async {
-                                                  if (prefs.getString(
-                                                          'HiveUserName') !=
-                                                      null) {
-                                                    setState(() {
-                                                      isUpvoteButtonLoading =
-                                                          true;
-                                                    });
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: UpvoteEpisode(
-                                                                  permlink:
-                                                                      episodeContent[
-                                                                          'permlink'],
-                                                                  episode_id:
-                                                                      episodeContent[
-                                                                          'id']));
-                                                        }).then((value) async {
-                                                      print(value);
-                                                    });
-                                                    // await upvoteEpisode(
-                                                    //     permlink:
-                                                    //         episodeContent[
-                                                    //             'permlink'],
-                                                    //     episode_id:
-                                                    //         episodeContent[
-                                                    //             'id']);
-                                                    setState(() {
-                                                      episodeContent[
-                                                              'ifVoted'] =
-                                                          !episodeContent[
-                                                              'ifVoted'];
-                                                    });
-                                                    setState(() {
-                                                      isUpvoteButtonLoading =
-                                                          false;
-                                                    });
-                                                  } else {
-                                                    showBarModalBottomSheet(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return HiveDetails();
-                                                        });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  decoration: episodeContent[
-                                                              'ifVoted'] ==
-                                                          true
-                                                      ? BoxDecoration(
-                                                          gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                Color(
-                                                                    0xff5bc3ef),
-                                                                Color(
-                                                                    0xff5d5da8)
-                                                              ]),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30))
-                                                      : BoxDecoration(
-                                                          border: Border.all(
-                                                              color: Color(
-                                                                  0xff171b27)),
-                                                          // color: kSecondaryColor,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                        ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: Row(
-                                                      children: [
-                                                        isUpvoteButtonLoading ==
-                                                                true
-                                                            ? Container(
-                                                                height: 18,
-                                                                width: 18,
-                                                                child:
-                                                                    SpinKitPulse(
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                              )
-                                                            : Icon(
-                                                                FontAwesomeIcons
-                                                                    .chevronCircleUp,
-                                                                size: 18,
-
-                                                                // color: Color(
-                                                                //     0xffe8e8e8),
-                                                              ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                          child: Text(
-                                                            '${episodeContent['votes']}',
-                                                            textScaleFactor:
-                                                                mediaQueryData
-                                                                    .textScaleFactor
-                                                                    .clamp(
-                                                                        0.5, 1)
-                                                                    .toDouble(),
-                                                            style: TextStyle(
-                                                                // color: Color(
-                                                                //     0xffe8e8e8)
-                                                                ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 4),
-                                                          child: Text(
-                                                            '\$${episodeContent['payout_value'].toString().split(' ')[0]}',
-                                                            textScaleFactor:
-                                                                mediaQueryData
-                                                                    .textScaleFactor
-                                                                    .clamp(
-                                                                        0.5, 1)
-                                                                    .toDouble(),
-                                                            style: TextStyle(
-                                                                // color: Color(
-                                                                //     0xffe8e8e8)
-                                                                ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                          SizedBox(
-                            height: 10,
+                              ),
+                            ],
                           ),
+                          GestureDetector(
+                            onTap: () {
+                              print(episodeContent['url']
+                                  .toString()
+                                  .contains('.mp4'));
+                              if (episodeContent['url']
+                                  .toString()
+                                  .contains('.mp4') ==
+                                  true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.m4v') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.flv') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.f4v') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.ogv') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.ogx') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.wmv') ==
+                                      true ||
+                                  episodeContent['url']
+                                      .toString()
+                                      .contains('.webm') ==
+                                      true) {
+                                currentlyPlaying.stop();
+                                Navigator.push(context,
+                                    MaterialPageRoute(
+                                        builder: (context) {
+                                          return PodcastVideoPlayer(
+                                            episodeObject: episodeContent,
+                                          );
+                                        }));
+                              } else {
+                                if (episodeContent['url']
+                                    .toString()
+                                    .contains('.pdf') ==
+                                    true) {
+                                  // Navigator.push(context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) {
+                                  //   return PDFviewer(
+                                  //     episodeObject:
+                                  //         widget.episodeObject,
+                                  //   );
+                                  // }));
+                                } else {
+                                  currentlyPlaying.stop();
+                                  currentlyPlaying.episodeObject =
+                                      episodeContent;
+                                  print(currentlyPlaying
+                                      .episodeObject
+                                      .toString());
+                                  currentlyPlaying.play();
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Player();
+                                      });
+                                }
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                  const EdgeInsets
+                                      .symmetric(
+                                      horizontal: 20,
+                                      vertical: 5),
 
-                          SizedBox(
-                            height: 20,
+                                  child: Icon(Icons.play_circle_outline),
+                                ),
+
+                              ),
+                            ),
                           ),
-//
+                          Platform.isAndroid == true
+                              ? GestureDetector(
+                            onTap: () {
+                              startDownload();
+                              setState(() {
+                                _loading = !_loading;
+                                _updateProgress();
+                              });
+                            },
+                            child: Container(
+                                padding:
+                                EdgeInsets.all(15.0),
+                                child: _loading
+                                    ? Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .center,
+                                  children: <Widget>[
+                                    CircularProgressIndicator(
+                                      value:
+                                      _progressValue,
+                                    ),
+                                    Text(
+                                        '${(_progressValue * 100)
+                                            .round()}%'),
+                                  ],
+                                )
+                                    : Icon(
+                                    Icons
+                                        .arrow_circle_down,
+                                    color: isDownloading ==
+                                        true
+                                        ? Color(
+                                        0xff5d5da8)
+                                        : Color(
+                                        0xff5bc3ef))),
+                          )
+                              : SizedBox(
+                            height: 10,
+                            width: 0,
+                          ),
                         ],
                       ),
-                    ),
+                      SizedBox(
+                        height: 15,
+
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(10.0),
+                      //   child: Container(
+                      //     decoration: BoxDecoration(
+                      //     border: Border.all(),
+                      //       borderRadius: BorderRadius.circular(15)
+                      //     ),
+                      //     height: 80,
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.all(8.0),
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children:[  Text("Similar :",
+                      //         textScaleFactor: 1,
+                      //         style: TextStyle(
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 18
+                      //         ),),
+                      //       Container(
+                      //           width: 80,
+                      //           height: 40,
+                      //         child:  Stack(
+                      //             children: <Widget>[
+                      //               Align(
+                      //                 alignment: Alignment.centerRight,
+                      //                 child: CircleAvatar(
+                      //                   backgroundColor: Colors.white,
+                      //                   child: CircleAvatar(
+                      //                     radius: 18,
+                      //                     backgroundColor: Colors.red,
+                      //                 //    child: Image.asset("assets/images/AlbumArt.jpg"), // Provide your custom image
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //               Align(
+                      //                 alignment: Alignment.center,
+                      //                 child: CircleAvatar(
+                      //                   backgroundColor: Colors.white,
+                      //                   child: CircleAvatar(
+                      //                     radius: 18,
+                      //                     backgroundColor: Colors.red,
+                      //                 //    child: Image.asset('assets/images/AlbumArt.jpg'), // Provide your custom image
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //               Align(
+                      //                 alignment: Alignment.centerLeft,
+                      //                 child: CircleAvatar(
+                      //                   backgroundColor: Colors.white,
+                      //                   child: CircleAvatar(
+                      //                     radius: 18,
+                      //                     backgroundColor: Colors.red,
+                      //             //        child: Image.asset('assets/images/AlbumArt.jpg'), // Provide your custom image
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),)
+                      //         ]
+                      //
+                      //       ),
+                      //     ),
+                      //
+                      //   ),
+                      //
+                      // ),
+
+                    ],
                   ),
-                ),
-              ),
+          ),
+
+
+//                 Container(
+//                   child: Container(
+//                     child: Padding(
+//                       padding: const EdgeInsets.symmetric(horizontal: 15),
+//                       child: Column(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: <Widget>[
+//                           episodeContent == null
+//                               ? Shimmer.fromColors(
+//                                   baseColor: Color(0xff3a3a3a),
+//                                   highlightColor: kPrimaryColor,
+//                                   child: Container(
+//                                     height: 80,
+//                                     width: 80,
+//                                     color: kSecondaryColor,
+//                                   ))
+//                               : Container(
+//                                   height: 90,
+//                                   width: 80,
+//                                   child: CachedNetworkImage(
+//                                     imageBuilder: (context, imageProvider) {
+//                                       return Container(
+//                                         decoration: BoxDecoration(
+//                                           borderRadius:
+//                                               BorderRadius.circular(10),
+//                                           image: DecorationImage(
+//                                               image: imageProvider,
+//                                               fit: BoxFit.cover),
+//                                         ),
+//                                         height:
+//                                             MediaQuery.of(context).size.width,
+//                                         width:
+//                                             MediaQuery.of(context).size.width,
+//                                       );
+//                                     },
+//                                     imageUrl: episodeContent['image'] != null
+//                                         ? episodeContent['image']
+//                                         : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+//                                     fit: BoxFit.cover,
+//                                     // memCacheHeight:
+//                                     //     MediaQuery.of(
+//                                     //             context)
+//                                     //         .size
+//                                     //         .width
+//                                     //         .ceil(),
+//                                     memCacheHeight: MediaQuery.of(context)
+//                                         .size
+//                                         .height
+//                                         .floor(),
+//
+//                                     errorWidget: (context, url, error) =>
+//                                         Icon(Icons.error),
+//                                   ),
+//                                   //   child: FadeInImage.assetNetwork(
+//                                   //       placeholder:
+//                                   //           'assets/images/Thumbnail.png',
+//                                   //       image: episodeContent['image'] != null
+//                                   //           ? episodeContent['image']
+//                                   //           : 'assets/images/Thumbnail.png'),
+//                                   //   decoration: BoxDecoration(
+//                                   //       //   color: Colors.white,
+//                                   //       borderRadius: BorderRadius.circular(5)),
+//                                 ),
+//                           SizedBox(
+//                             height: 25,
+//                           ),
+//                           episodeContent == null
+//                               ? Shimmer.fromColors(
+//                                   baseColor: Color(0xff3a3a3a),
+//                                   highlightColor: kPrimaryColor,
+//                                   child: Container(
+//                                     width: double.infinity,
+//                                     height: 20,
+//                                     color: kSecondaryColor,
+//                                   ),
+//                                 )
+//                               : Text(
+//                                   episodeContent['name'],
+//                                   textScaleFactor: 1.0,
+//                                   style: TextStyle(
+//                                       fontSize:
+//                                           SizeConfig.safeBlockHorizontal * 5,
+//                                       fontWeight: FontWeight.bold),
+//                                 ),
+//                           SizedBox(
+//                             height: 25,
+//                           ),
+//                           episodeContent == null
+//                               ? Shimmer.fromColors(
+//                                   baseColor: Color(0xff3a3a3a),
+//                                   highlightColor: kPrimaryColor,
+//                                   child: Container(
+//                                     width: double.infinity,
+//                                     height: 15,
+//                                     color: kSecondaryColor,
+//                                   ))
+//                               : Text(
+//                                   episodeContent['podcast_name'],
+//                                   textScaleFactor: mediaQueryData
+//                                       .textScaleFactor
+//                                       .clamp(1, 1.2)
+//                                       .toDouble(),
+//                                   style: TextStyle(
+//                                       fontWeight: FontWeight.bold,
+//                                       fontSize:
+//                                           SizeConfig.safeBlockHorizontal * 3.8),
+//                                 ),
+//                           SizedBox(
+//                             height: 2,
+//                           ),
+//
+//                           SizedBox(
+//                             height: 20,
+//                           ),
+//                           episodeContent == null
+//                               ? Container()
+//                               : Row(
+//                                   mainAxisAlignment:
+//                                       MainAxisAlignment.spaceBetween,
+//                                   children: <Widget>[
+//                                     Row(
+//                                       children: [
+//                                         GestureDetector(
+//                                           onTap: () {
+//                                             print(episodeContent['url']
+//                                                 .toString()
+//                                                 .contains('.mp4'));
+//                                             if (episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.mp4') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.m4v') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.flv') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.f4v') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.ogv') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.ogx') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.wmv') ==
+//                                                     true ||
+//                                                 episodeContent['url']
+//                                                         .toString()
+//                                                         .contains('.webm') ==
+//                                                     true) {
+//                                               currentlyPlaying.stop();
+//                                               Navigator.push(context,
+//                                                   MaterialPageRoute(
+//                                                       builder: (context) {
+//                                                 return PodcastVideoPlayer(
+//                                                   episodeObject: episodeContent,
+//                                                 );
+//                                               }));
+//                                             } else {
+//                                               if (episodeContent['url']
+//                                                       .toString()
+//                                                       .contains('.pdf') ==
+//                                                   true) {
+//                                                 // Navigator.push(context,
+//                                                 //     MaterialPageRoute(
+//                                                 //         builder: (context) {
+//                                                 //   return PDFviewer(
+//                                                 //     episodeObject:
+//                                                 //         widget.episodeObject,
+//                                                 //   );
+//                                                 // }));
+//                                               } else {
+//                                                 currentlyPlaying.stop();
+//                                                 currentlyPlaying.episodeObject =
+//                                                     episodeContent;
+//                                                 print(currentlyPlaying
+//                                                     .episodeObject
+//                                                     .toString());
+//                                                 currentlyPlaying.play();
+//                                                 showBarModalBottomSheet(
+//                                                     context: context,
+//                                                     builder: (context) {
+//                                                       return Player();
+//                                                     });
+//                                               }
+//                                             }
+//                                           },
+//                                           child: Container(
+//                                             decoration: BoxDecoration(
+//                                                 borderRadius:
+//                                                     BorderRadius.circular(30),
+//                                                 border: Border.all(
+//                                                     color: Color(
+//                                                         0xff171b27),
+//                                                     width: 2)),
+//                                             child: Center(
+//                                               child: Padding(
+//                                                 padding:
+//                                                 const EdgeInsets
+//                                                     .symmetric(
+//                                                     horizontal: 20,
+//                                                     vertical: 5),
+//
+//                                                 child: Text("Play"),
+//                                               ),
+//
+//                                             ),
+//                                           ),
+//                                         ),
+//                                         Platform.isAndroid == true
+//                                             ? GestureDetector(
+//                                                 onTap: () {
+//                                                   startDownload();
+//                                                   setState(() {
+//                                                     _loading = !_loading;
+//                                                     _updateProgress();
+//                                                   });
+//                                                 },
+//                                                 child: Container(
+//                                                     padding:
+//                                                         EdgeInsets.all(15.0),
+//                                                     child: _loading
+//                                                         ? Column(
+//                                                             mainAxisAlignment:
+//                                                                 MainAxisAlignment
+//                                                                     .center,
+//                                                             children: <Widget>[
+//                                                               CircularProgressIndicator(
+//                                                                 value:
+//                                                                     _progressValue,
+//                                                               ),
+//                                                               Text(
+//                                                                   '${(_progressValue * 100).round()}%'),
+//                                                             ],
+//                                                           )
+//                                                         : Icon(
+//                                                             Icons
+//                                                                 .arrow_circle_down,
+//                                                             color: isDownloading ==
+//                                                                     true
+//                                                                 ? Color(
+//                                                                     0xff5d5da8)
+//                                                                 : Color(
+//                                                                     0xff5bc3ef))),
+//                                               )
+//                                             : SizedBox(
+//                                                 height: 0,
+//                                                 width: 0,
+//                                               ),
+//                                       ],
+//                                     ),
+//                                     Row(
+//                                       children: <Widget>[
+//                                         episodeContent['permlink'] == null ||
+//                                                 episodeContent['votes'] == null
+//                                             ? (episodeContent['user_id'] ==
+//                                                     prefs.getString('userId')
+//                                                 ? InkWell(
+//                                                     onTap: () async {
+//                                                       await publishManually(
+//                                                           episodeContent['id']);
+//                                                     },
+//                                                     child: Container(
+//                                                       decoration: BoxDecoration(
+//                                                           border: Border.all(
+//                                                             color: Color(
+//                                                                 0xff171b27),
+//                                                           ),
+//                                                           borderRadius:
+//                                                               BorderRadius
+//                                                                   .circular(20),
+//                                                           gradient:
+//                                                               LinearGradient(
+//                                                                   colors: [
+//                                                                 Color(
+//                                                                     0xff5bc3ef),
+//                                                                 Color(
+//                                                                     0xff5d5da8)
+//                                                               ])),
+//                                                       child: Padding(
+//                                                         padding:
+//                                                             const EdgeInsets
+//                                                                     .symmetric(
+//                                                                 horizontal: 20,
+//                                                                 vertical: 5),
+//                                                         child: Text(
+//                                                           'Publish',
+//                                                           textScaleFactor:
+//                                                               mediaQueryData
+//                                                                   .textScaleFactor
+//                                                                   .clamp(0.5, 1)
+//                                                                   .toDouble(),
+//                                                           style: TextStyle(
+//                                                               // color:
+//                                                               //     Color(0xffe8e8e8),
+//                                                               fontSize: SizeConfig
+//                                                                       .safeBlockHorizontal *
+//                                                                   3.5),
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                   )
+//                                                 : SizedBox(
+//                                                     width: 0,
+//                                                   ))
+//                                             : InkWell(
+//                                                 onTap: () async {
+//                                                   if (prefs.getString(
+//                                                           'HiveUserName') !=
+//                                                       null) {
+//                                                     setState(() {
+//                                                       isUpvoteButtonLoading =
+//                                                           true;
+//                                                     });
+//                                                     showDialog(
+//                                                         context: context,
+//                                                         builder: (context) {
+//                                                           return Dialog(
+//                                                               backgroundColor:
+//                                                                   Colors
+//                                                                       .transparent,
+//                                                               child: UpvoteEpisode(
+//                                                                   permlink:
+//                                                                       episodeContent[
+//                                                                           'permlink'],
+//                                                                   episode_id:
+//                                                                       episodeContent[
+//                                                                           'id']));
+//                                                         }).then((value) async {
+//                                                       print(value);
+//                                                     });
+//                                                     // await upvoteEpisode(
+//                                                     //     permlink:
+//                                                     //         episodeContent[
+//                                                     //             'permlink'],
+//                                                     //     episode_id:
+//                                                     //         episodeContent[
+//                                                     //             'id']);
+//                                                     setState(() {
+//                                                       episodeContent[
+//                                                               'ifVoted'] =
+//                                                           !episodeContent[
+//                                                               'ifVoted'];
+//                                                     });
+//                                                     setState(() {
+//                                                       isUpvoteButtonLoading =
+//                                                           false;
+//                                                     });
+//                                                   } else {
+//                                                     showBarModalBottomSheet(
+//                                                         context: context,
+//                                                         builder: (context) {
+//                                                           return HiveDetails();
+//                                                         });
+//                                                   }
+//                                                 },
+//                                                 child: Container(
+//                                                   decoration: episodeContent[
+//                                                               'ifVoted'] ==
+//                                                           true
+//                                                       ? BoxDecoration(
+//                                                           gradient:
+//                                                               LinearGradient(
+//                                                                   colors: [
+//                                                                 Color(
+//                                                                     0xff5bc3ef),
+//                                                                 Color(
+//                                                                     0xff5d5da8)
+//                                                               ]),
+//                                                           borderRadius:
+//                                                               BorderRadius
+//                                                                   .circular(30))
+//                                                       : BoxDecoration(
+//                                                           border: Border.all(
+//                                                               color: Color(
+//                                                                   0xff171b27)),
+//                                                           // color: kSecondaryColor,
+//                                                           borderRadius:
+//                                                               BorderRadius
+//                                                                   .circular(30),
+//                                                         ),
+//                                                   child: Padding(
+//                                                     padding:
+//                                                         const EdgeInsets.all(
+//                                                             5.0),
+//                                                     child: Row(
+//                                                       children: [
+//                                                         isUpvoteButtonLoading ==
+//                                                                 true
+//                                                             ? Container(
+//                                                                 height: 18,
+//                                                                 width: 18,
+//                                                                 child:
+//                                                                     SpinKitPulse(
+//                                                                   color: Colors
+//                                                                       .blue,
+//                                                                 ),
+//                                                               )
+//                                                             : Icon(
+//                                                                 FontAwesomeIcons
+//                                                                     .chevronCircleUp,
+//                                                                 size: 18,
+//
+//                                                                 // color: Color(
+//                                                                 //     0xffe8e8e8),
+//                                                               ),
+//                                                         Padding(
+//                                                           padding:
+//                                                               const EdgeInsets
+//                                                                       .symmetric(
+//                                                                   horizontal:
+//                                                                       8),
+//                                                           child: Text(
+//                                                             '${episodeContent['votes']}',
+//                                                             textScaleFactor:
+//                                                                 mediaQueryData
+//                                                                     .textScaleFactor
+//                                                                     .clamp(
+//                                                                         0.5, 1)
+//                                                                     .toDouble(),
+//                                                             style: TextStyle(
+//                                                                 // color: Color(
+//                                                                 //     0xffe8e8e8)
+//                                                                 ),
+//                                                           ),
+//                                                         ),
+//                                                         Padding(
+//                                                           padding:
+//                                                               const EdgeInsets
+//                                                                       .only(
+//                                                                   right: 4),
+//                                                           child: Text(
+//                                                             '\$${episodeContent['payout_value'].toString().split(' ')[0]}',
+//                                                             textScaleFactor:
+//                                                                 mediaQueryData
+//                                                                     .textScaleFactor
+//                                                                     .clamp(
+//                                                                         0.5, 1)
+//                                                                     .toDouble(),
+//                                                             style: TextStyle(
+//                                                                 // color: Color(
+//                                                                 //     0xffe8e8e8)
+//                                                                 ),
+//                                                           ),
+//                                                         )
+//                                                       ],
+//                                                     ),
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                       ],
+//                                     ),
+//                                   ],
+//                                 ),
+//                           SizedBox(
+//                             height: 10,
+//                           ),
+//
+//                           SizedBox(
+//                             height: 20,
+//                           ),
+// //
+//                         ],
+//                       ),
+//
+//                     ),
+//                    ]),
+//                  ]),
+//               ),
               bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(80.0),
                 child: Container(
                   width: double.infinity,
                   //     color: kPrimaryColor,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      //  labelColor: kActiveColor,
-                      // unselectedLabelColor: Colors.white,
-                      labelStyle: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 3.4),
-                      tabs: <Widget>[
-                        Tab(
-                            child: Text(
-                          "About",
-                          textScaleFactor: mediaQueryData.textScaleFactor
-                              .clamp(0.5, 1)
-                              .toDouble(),
-                        )),
-                        Tab(
-                            child: Text(
-                          "Comments",
-                          textScaleFactor: mediaQueryData.textScaleFactor
-                              .clamp(0.5, 1)
-                              .toDouble(),
-                        )),
-                      ],
+                    child: Center(
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        //  labelColor: kActiveColor,
+                        // unselectedLabelColor: Colors.white,
+                        labelStyle: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3.4),
+                        tabs: <Widget>[
+
+                          Tab(
+                              child: Text(
+                            "About",
+                            textScaleFactor: mediaQueryData.textScaleFactor
+                                .clamp(0.5, 1)
+                                .toDouble(),
+                          )),
+                          Tab(
+                              child: Text(
+                            "Comments",
+                            textScaleFactor: mediaQueryData.textScaleFactor
+                                .clamp(0.5, 1)
+                                .toDouble(),
+                          )),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                preferredSize: Size.fromHeight(0),
+             //   preferredSize: Size.fromHeight(0),
               ),
             ),
           ];
         },
         body: episodeContent == null
             ? Shimmer.fromColors(
-                baseColor: Color(0xff3a3a3a),
-                highlightColor: kPrimaryColor,
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: kSecondaryColor,
-                ))
-            : TabBarView(
-                controller: _tabController,
-                children: <Widget>[
-                  ListView(
-                    children: [
-                      episodeContent['summary'] == null
-                          ? Container()
-                          : Container(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                child: htmlMatch.hasMatch(
-                                            episodeContent['summary']) ==
-                                        true
-                                    ? Text(
-                                        parse(episodeContent['summary'])
-                                            .body
-                                            .text,
-                                        textScaleFactor: mediaQueryData
-                                            .textScaleFactor
-                                            .clamp(0.5, 1)
-                                            .toDouble(),
-                                        style: TextStyle(
-                                            // color: Colors.white,
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    3.8),
-                                      )
-                                    : Text(
-                                        '${episodeContent['summary']}',
-                                        textScaleFactor: mediaQueryData
-                                            .textScaleFactor
-                                            .clamp(0.5, 1)
-                                            .toDouble(),
-                                        style: TextStyle(
-                                            //      color: Colors.white,
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    3.8),
-                                      ),
-                              ),
-                            ),
-                      SizedBox(
-                        height: 100,
+            baseColor: Color(0xff3a3a3a),
+            highlightColor: kPrimaryColor,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: kSecondaryColor,
+            ))
+            : Container(
+          decoration: BoxDecoration(
+
+            borderRadius: BorderRadius.circular(30)
+          ),
+              child: TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+              ListView(
+                children: [
+                  episodeContent['summary'] == null
+                      ? Container(
+                    
+                  )
+                      : Container(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
+                      child: htmlMatch.hasMatch(
+                          episodeContent['summary']) ==
+                          true
+                          ? Text(
+                        parse(episodeContent['summary'])
+                            .body
+                            .text,
+                        textScaleFactor: mediaQueryData
+                            .textScaleFactor
+                            .clamp(0.5, 1)
+                            .toDouble(),
+                        style: TextStyle(
+                          // color: Colors.white,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal *
+                                3.8),
+                      )
+                          : Text(
+                        '${episodeContent['summary']}',
+                        textScaleFactor: mediaQueryData
+                            .textScaleFactor
+                            .clamp(0.5, 1)
+                            .toDouble(),
+                        style: TextStyle(
+                          //      color: Colors.white,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal *
+                                3.8),
                       ),
-                    ],
+                    ),
                   ),
-                  Container(
-                    child: Stack(
-                      children: <Widget>[
-                        ListView.builder(
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 15),
-                              child: Container(
-                                  child: Column(
+                  SizedBox(
+                    height: 0,
+                  ),
+                ],
+              ),
+              Container(
+                child: Stack(
+                  children: <Widget>[
+                    ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
+                          child: Container(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   ListTile(
                                     leading: CircleAvatar(
                                       backgroundImage:
-                                          CachedNetworkImageProvider(comments[
-                                                      index]['user_image'] ==
-                                                  null
-                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                              : comments[index]['user_image']),
+                                      CachedNetworkImageProvider(comments[
+                                      index]['user_image'] ==
+                                          null
+                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          : comments[index]['user_image']),
                                     ),
                                     title: Text(
                                       '${comments[index]['author']}',
@@ -915,11 +1469,11 @@ class _EpisodeViewState extends State<EpisodeView>
                                     ),
                                     subtitle: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(bottom: 5),
+                                          const EdgeInsets.only(bottom: 5),
                                           child: Text(
                                             "${comments[index]['text']}",
                                             textScaleFactor: mediaQueryData
@@ -954,10 +1508,10 @@ class _EpisodeViewState extends State<EpisodeView>
                                             builder: (context) {
                                               return Dialog(
                                                   backgroundColor:
-                                                      Colors.transparent,
+                                                  Colors.transparent,
                                                   child: UpvoteComment(
                                                     comment_id: comments[index]
-                                                            ['id']
+                                                    ['id']
                                                         .toString(),
                                                   ));
                                             }).then((value) async {
@@ -972,185 +1526,186 @@ class _EpisodeViewState extends State<EpisodeView>
                                     isThreeLine: true,
                                   ),
                                   comments[index]['comments'] == null
-                                      // comments[index].contains('comments') == false
+                                  // comments[index].contains('comments') == false
                                       ? SizedBox(
-                                          height: 0,
-                                        )
+                                    height: 0,
+                                  )
                                       : ExpansionTile(
-                                          //  backgroundColor: Colors.transparent,
-                                          trailing: SizedBox(
-                                            width: 0,
+                                    //  backgroundColor: Colors.transparent,
+                                    trailing: SizedBox(
+                                      width: 0,
+                                    ),
+                                    title: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "View replies",
+                                        textScaleFactor: mediaQueryData
+                                            .textScaleFactor
+                                            .clamp(0.5, 1)
+                                            .toDouble(),
+                                        style: TextStyle(
+                                          fontSize: SizeConfig
+                                              .safeBlockHorizontal *
+                                              3,
+                                          //  color: Colors.grey,
+                                        ),
+                                      ),
+                                    ),
+                                    children: <Widget>[
+                                      for (var v in comments[index]
+                                      ['comments'])
+                                        ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                v['user_image']),
                                           ),
-                                          title: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              "View replies",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                //  color: Colors.grey,
-                                              ),
-                                            ),
+                                          title: Text(
+                                            '${v['author']}',
+                                            textScaleFactor:
+                                            mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1)
+                                                .toDouble(),
                                           ),
-                                          children: <Widget>[
-                                            for (var v in comments[index]
-                                                ['comments'])
-                                              ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                          v['user_image']),
-                                                ),
-                                                title: Text(
-                                                  '${v['author']}',
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    bottom: 5),
+                                                child: Text(
+                                                  "${v['text']}",
                                                   textScaleFactor:
+                                                  mediaQueryData
+                                                      .textScaleFactor
+                                                      .clamp(0.5, 1)
+                                                      .toDouble(),
+                                                  style: TextStyle(),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () {},
+                                                    child: Text(
+                                                      "Reply",
+                                                      textScaleFactor:
                                                       mediaQueryData
                                                           .textScaleFactor
-                                                          .clamp(0.5, 1)
+                                                          .clamp(
+                                                          0.5, 1)
                                                           .toDouble(),
-                                                ),
-                                                subtitle: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 5),
-                                                      child: Text(
-                                                        "${v['text']}",
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        style: TextStyle(),
-                                                      ),
+                                                      style: TextStyle(),
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {},
-                                                          child: Text(
-                                                            "Reply",
-                                                            textScaleFactor:
-                                                                mediaQueryData
-                                                                    .textScaleFactor
-                                                                    .clamp(
-                                                                        0.5, 1)
-                                                                    .toDouble(),
-                                                            style: TextStyle(),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                                trailing: IconButton(
-                                                  onPressed: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child:
-                                                                  UpvoteComment(
-                                                                comment_id: v[
-                                                                        'id']
-                                                                    .toString(),
-                                                              ));
-                                                        }).then((value) async {
-                                                      print(value);
-                                                    });
-                                                  },
-                                                  icon: Icon(
-                                                    FontAwesomeIcons
-                                                        .chevronCircleUp,
-                                                  ),
-                                                ),
-                                                isThreeLine: true,
-                                              ),
-                                          ],
-                                        )
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                          trailing: IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                        backgroundColor:
+                                                        Colors
+                                                            .transparent,
+                                                        child:
+                                                        UpvoteComment(
+                                                          comment_id: v[
+                                                          'id']
+                                                              .toString(),
+                                                        ));
+                                                  }).then((value) async {
+                                                print(value);
+                                              });
+                                            },
+                                            icon: Icon(
+                                              FontAwesomeIcons
+                                                  .chevronCircleUp,
+                                            ),
+                                          ),
+                                          isThreeLine: true,
+                                        ),
+                                    ],
+                                  )
                                 ],
                               )),
-                            );
-                          },
-                          itemCount: comments.length,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            FlatButton(
-                              //    color: Colors.blueAccent,
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                    builder: (BuildContext context) {
+                        );
+                      },
+                      itemCount: comments.length,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton(
+                          //    color: Colors.blueAccent,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (BuildContext context) {
                                   return Comments(
                                     episodeObject: episodeContent,
                                   );
                                 })).then((value) {
-                                  getTags();
-                                  getComments();
-                                  if (episodeContent['likes'] == true) {
-                                    setState(() {
-                                      likeStatus = Like.liked;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      likeStatus = Like.unliked;
-                                    });
-                                  }
+                              getTags();
+                              getComments();
+                              if (episodeContent['likes'] == true) {
+                                setState(() {
+                                  likeStatus = Like.liked;
                                 });
-                              },
-                              child: Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Row(
-                                        children: <Widget>[
-                                          CircleAvatar(
-                                            backgroundImage: prefs.getString(
-                                                        'displayPicture') ==
-                                                    null
-                                                ? AssetImage(
-                                                    'assets/images/Thumbnail.png')
-                                                : NetworkImage(prefs.getString(
-                                                    'displayPicture')),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Add a comment...',
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 1)
-                                                .toDouble(),
-                                          )
-                                        ],
+                              } else {
+                                setState(() {
+                                  likeStatus = Like.unliked;
+                                });
+                              }
+                            });
+                          },
+                          child: Container(
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10),
+                                  child: Row(
+                                    children: <Widget>[
+                                      CircleAvatar(
+                                        backgroundImage: prefs.getString(
+                                            'displayPicture') ==
+                                            null
+                                            ? AssetImage(
+                                            'assets/images/Thumbnail.png')
+                                            : NetworkImage(prefs.getString(
+                                            'displayPicture')),
                                       ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(
+                                        'Add a comment...',
+                                        textScaleFactor: mediaQueryData
+                                            .textScaleFactor
+                                            .clamp(0.5, 1)
+                                            .toDouble(),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                  )
-                ],
-              ),
+                  ],
+                ),
+              )
+          ],
+        ),
+            ),
       ),
     );
   }
