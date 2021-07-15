@@ -1,5 +1,4 @@
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
-import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,10 +7,12 @@ class Seekbar extends StatefulWidget {
   Duration currentPosition;
   Duration duration;
   String episodeName;
+  int dominantColor;
   final Function(Duration) seekTo;
 
   Seekbar(
-      {@required this.currentPosition,
+      {@required this.dominantColor,
+      @required this.currentPosition,
       @required this.duration,
       @required this.episodeName,
       @required this.seekTo});
@@ -65,49 +66,6 @@ class _SeekbarState extends State<Seekbar> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Column(
       children: [
-        SliderTheme(
-          data: SliderThemeData(
-              trackHeight: 3,
-             // activeTrackColor: Color(0xff212121),
-              //    inactiveTrackColor: Colors.black,
-                thumbColor: themeProvider.isLightTheme == false
-                    ? Colors.white
-                    : kPrimaryColor
-            //  thumbShape: SliderComponentShape
-              // thumbShape: RoundSliderThumbShape(
-              //     pressedElevation: 1.0,
-              //     enabledThumbRadius: 8,
-              //     disabledThumbRadius: 5),
-              ),
-          child: Slider(
-            activeColor:themeProvider.isLightTheme == false
-                ? Colors.white
-                : kPrimaryColor,
-            inactiveColor: themeProvider.isLightTheme == false
-                ? Colors.black26
-                : Colors.black26,
-            min: 0,
-            max: widget.duration.inMilliseconds.toDouble(),
-            value: percent * widget.duration.inMilliseconds.toDouble(),
-            onChangeEnd: (newValue) {
-              setState(() {
-                listenOnlyUserInteraction = false;
-                widget.seekTo(_visibleValue);
-              });
-            },
-            onChangeStart: (_) {
-              setState(() {
-                listenOnlyUserInteraction = true;
-              });
-            },
-            onChanged: (newValue) {
-              setState(() {
-                final to = Duration(milliseconds: newValue.floor());
-                _visibleValue = to;
-              });
-            },
-          ),
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
@@ -139,7 +97,48 @@ class _SeekbarState extends State<Seekbar> {
               )
             ],
           ),
-        )
+        ),
+        SliderTheme(
+          data: SliderThemeData(
+              trackHeight: 3,
+              // activeTrackColor: Color(0xff212121),
+              //    inactiveTrackColor: Colors.black,
+              thumbColor: themeProvider.isLightTheme == false
+                  ? Colors.white
+                  : kPrimaryColor
+              //  thumbShape: SliderComponentShape
+              // thumbShape: RoundSliderThumbShape(
+              //     pressedElevation: 1.0,
+              //     enabledThumbRadius: 8,
+              //     disabledThumbRadius: 5),
+              ),
+          child: Slider(
+            activeColor: themeProvider.isLightTheme == false
+                ? Colors.white
+                : kPrimaryColor,
+            inactiveColor: Color(widget.dominantColor).withOpacity(0.5),
+            min: 0,
+            max: widget.duration.inMilliseconds.toDouble(),
+            value: percent * widget.duration.inMilliseconds.toDouble(),
+            onChangeEnd: (newValue) {
+              setState(() {
+                listenOnlyUserInteraction = false;
+                widget.seekTo(_visibleValue);
+              });
+            },
+            onChangeStart: (_) {
+              setState(() {
+                listenOnlyUserInteraction = true;
+              });
+            },
+            onChanged: (newValue) {
+              setState(() {
+                final to = Duration(milliseconds: newValue.floor());
+                _visibleValue = to;
+              });
+            },
+          ),
+        ),
       ],
     );
   }

@@ -173,7 +173,6 @@ class _FollowingPageState extends State<FollowingPage>
         }
       } else {
         print(response.statusCode);
-
       }
     } catch (e) {
       print(e);
@@ -670,17 +669,19 @@ class _FollowingPageState extends State<FollowingPage>
                                             decoration: BoxDecoration(
                                               boxShadow: [
                                                 new BoxShadow(
-                                                  color: Colors.black54.withOpacity(0.2),
+                                                  color: Colors.black54
+                                                      .withOpacity(0.2),
                                                   blurRadius: 10.0,
                                                 ),
                                               ],
-                                              color: themeProvider.isLightTheme == true
-                                                  ? Colors.white
-                                                  : Color(0xff222222),
-                                                borderRadius:
-                                                BorderRadius.circular(8),
+                                              color:
+                                                  themeProvider.isLightTheme ==
+                                                          true
+                                                      ? Colors.white
+                                                      : Color(0xff222222),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
-
                                             width: double.infinity,
                                             child: Padding(
                                               padding:
@@ -1263,30 +1264,46 @@ class _FollowingPageState extends State<FollowingPage>
                                                             ),
                                                           ),
                                                         ),
-
                                                       ],
                                                     ),
                                                   ),
                                                   Column(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                                        MainAxisAlignment.end,
                                                     children: [
                                                       FutureBuilder(
-                                                          future: dursaver.percentageDone(v['id']),
-                                                          builder: (context, snapshot) {
-                                                            if (snapshot.data.toString() == 'null') {
+                                                          future: dursaver
+                                                              .percentageDone(
+                                                                  v['id']),
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            if (snapshot.data
+                                                                    .toString() ==
+                                                                'null') {
                                                               return Container();
                                                             } else {
                                                               // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
                                                               return Stack(
                                                                 children: [
                                                                   Container(
-                                                                    decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-                                                                    width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
+                                                                    decoration: BoxDecoration(
+                                                                        color: Colors
+                                                                            .blue,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10)),
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        4.5 *
+                                                                        double.parse(
+                                                                            double.parse(snapshot.data.toString()).toStringAsFixed(2)),
                                                                     height: 5,
                                                                   ),
                                                                   Container(
-                                                                    width: MediaQuery.of(context).size.width / 4.5,
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        4.5,
                                                                     height: 2,
                                                                   )
                                                                 ],
@@ -1296,15 +1313,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                     ],
                                                   ),
                                                 ],
-
                                               ),
-
                                             ),
-
                                           ),
-
                                         ),
-
                                       ),
 
                                     // isPaginationLoading == true

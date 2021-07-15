@@ -172,6 +172,8 @@ class _PodcastViewState extends State<PodcastView> {
     String url =
         'https://api.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
 
+
+
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -904,13 +906,13 @@ class _PodcastViewState extends State<PodcastView> {
                                                           child: Container(
                                                             decoration:
                                                                 BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            20),
-                                                                    border:
-                                                                        Border
-                                                                            .all(),
-                                                                    ),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                              border:
+                                                                  Border.all(),
+                                                            ),
                                                             child: Padding(
                                                               padding: const EdgeInsets
                                                                       .symmetric(
@@ -1254,7 +1256,6 @@ class _PodcastViewState extends State<PodcastView> {
                                                         context: context,
                                                         builder: (context) {
                                                           return Container(
-                                                            height: 720,
                                                             child: Player(),
                                                           );
                                                         });
