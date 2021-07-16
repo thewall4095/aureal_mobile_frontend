@@ -24,6 +24,8 @@ class PlayerChange extends ChangeNotifier {
 
   var _playList;
 
+  bool _ifVoted;
+
   String episodeName;
   String podcastName;
   String author;
@@ -38,6 +40,13 @@ class PlayerChange extends ChangeNotifier {
   Dio dio = Dio();
 
   Map<String, dynamic> get episodeObject => _episodeObject;
+
+  bool get ifVoted => _ifVoted;
+
+  set ifVoted(bool newValue) {
+    _ifVoted = newValue;
+    notifyListeners();
+  }
 
 //  set musicPlaylist(var newValue) {
 //    _musicPlaylist = newValue;
@@ -63,6 +72,8 @@ class PlayerChange extends ChangeNotifier {
 //    duration = Duration(seconds: _episodeObject['duration'].toInt());
     id = _episodeObject['id'];
     permlink = _episodeObject['permlink'];
+    _ifVoted = _episodeObject['ifVoted'];
+    print("ifVoted is $ifVoted");
 
     notifyListeners();
   }

@@ -64,6 +64,9 @@ class _PlayerState extends State<Player> {
   var storedepisodes = [];
   var episodeContent;
   var episodeObject;
+
+  bool isUpvoteLoading = false;
+
   void getInitialComments(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
     getComments(episodeObject.episodeObject);
@@ -153,6 +156,8 @@ class _PlayerState extends State<Player> {
 
   int counter = 0;
 
+  String hiveUsername;
+
   final List<StreamSubscription> _subscriptions = [];
   int progress = 0;
 
@@ -172,6 +177,9 @@ class _PlayerState extends State<Player> {
   }
 
   void getColor(String url) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    hiveUsername = prefs.getString('HiveUserName');
+
     getColorFromUrl(url).then((value) {
       setState(() {
         dominantColor = hexOfRGBA(value[0], value[1], value[2]);
@@ -446,11 +454,9 @@ class _PlayerState extends State<Player> {
                                     children: [
                                       InkWell(
                                         onTap: () async {
-                                          if (prefs.getString('HiveUserName') !=
-                                              null) {
+                                          if (hiveUsername != null) {
                                             setState(() {
-                                              episodeObject.episodeObject[
-                                                  'isLoading'] = true;
+                                              isUpvoteLoading = true;
                                             });
                                             double _value = 50.0;
                                             showDialog(
@@ -470,14 +476,11 @@ class _PlayerState extends State<Player> {
                                               print(value);
                                             });
                                             setState(() {
-                                              episodeObject.episodeObject[
-                                                      'ifVoted'] =
-                                                  !episodeObject
-                                                      .episodeObject['ifVoted'];
+                                              episodeObject.ifVoted =
+                                                  !episodeObject.ifVoted;
                                             });
                                             setState(() {
-                                              episodeObject.episodeObject[
-                                                  'isLoading'] = false;
+                                              isUpvoteLoading = false;
                                             });
                                           } else {
                                             showBarModalBottomSheet(
@@ -488,9 +491,7 @@ class _PlayerState extends State<Player> {
                                           }
                                         },
                                         child: Container(
-                                          decoration: episodeObject
-                                                          .episodeObject[
-                                                      'ifVoted'] ==
+                                          decoration: episodeObject.ifVoted ==
                                                   true
                                               ? BoxDecoration(
                                                   gradient: LinearGradient(
@@ -511,9 +512,7 @@ class _PlayerState extends State<Player> {
                                                 vertical: 5, horizontal: 10),
                                             child: Row(
                                               children: [
-                                                episodeObject.episodeObject[
-                                                            'isLoading'] ==
-                                                        true
+                                                isUpvoteLoading == true
                                                     ? Container(
                                                         height: 17,
                                                         width: 18,
