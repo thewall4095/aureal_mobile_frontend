@@ -234,8 +234,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                           ),
                                           SizedBox(
                                             height: 0,
-                              )])
-              ))): Padding(
+                                      )])
+                                  ))): Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Container(
                                   child: Column(
