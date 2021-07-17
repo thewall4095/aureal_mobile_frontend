@@ -455,7 +455,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             mainAxisSpacing: 10,
                                                             crossAxisSpacing: 1,
                                                             childAspectRatio:
-                                                                1 / 2.6),
+                                                                1 / 2.55),
                                                     children: [
                                                       for (var a
                                                           in recentlyPlayed)
