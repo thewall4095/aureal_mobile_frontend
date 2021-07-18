@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 enum CommentState {
   reply,
@@ -175,6 +177,7 @@ class _CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final mediaQueryData = MediaQuery.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -188,617 +191,1324 @@ class _CommentsState extends State<Comments> {
             Icons.navigate_before,
           ),
         ),
-        title: Text(
-          "Comments",
-          textScaleFactor:
-              mediaQueryData.textScaleFactor.clamp(0, 1).toDouble(),
-          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
-        ),
       ),
-      body: Stack(
-        children: <Widget>[
-          ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              if (index == comments.length) {
-                return SizedBox(
-                  height: 400,
-                );
-              } else {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  child: Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: comments[index]['user_image'] == null
-                                    ? AssetImage('assets/images/person.png')
-                                    : NetworkImage(
-                                        comments[index]['user_image']),
-                                fit: BoxFit.cover),
-                            shape: BoxShape.circle,
-                            // color: Colors.white,
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: <Widget>[
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    // Wrap(
-                                    //   direction: Axis.horizontal,
-                                    //   children: <Widget>[
-                                    Text(
-                                      '${comments[index]['author']}',
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 1)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          // color: Color(0xffe8e8e8),
-                                          fontWeight: FontWeight.w600),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CachedNetworkImage(
+                  imageUrl: displayPicture == null
+                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                      : displayPicture,
+                  imageBuilder: (context, imageProvider) {
+                    return Container(
+                      height: MediaQuery.of(context).size.width / 5,
+                      width: MediaQuery.of(context).size.width / 5,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover)),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 40,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 30),
+                  child: Text(
+                    "${comments[0]['author']}",
+                    textScaleFactor: 1.0,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: SizeConfig.safeBlockHorizontal * 4,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xffe8e8e8)),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height / 1.3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Color(0xff222222),
+              ),
+              child: Stack(
+                children: <Widget>[
+                  ListView.builder(
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == comments.length) {
+                        return SizedBox(
+                          height: 400,
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                new BoxShadow(
+                                  color: Colors.black54.withOpacity(0.2),
+                                  blurRadius: 10.0,
+                                ),
+                              ],
+                              color: themeProvider.isLightTheme == true
+                                  ? Colors.white
+                                  : Color(0xff222222),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: comments[index]
+                                                      ['user_image'] ==
+                                                  null
+                                              ? AssetImage(
+                                                  'assets/images/person.png')
+                                              : NetworkImage(comments[index]
+                                                  ['user_image']),
+                                          fit: BoxFit.cover),
+                                      shape: BoxShape.circle,
+                                      // color: Colors.white,
                                     ),
-                                    Text(
-                                      '${comments[index]['text']}',
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 1)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          // color: Colors.white,
-                                          fontWeight: FontWeight.normal),
-                                    ),
-                                    //   ],
-                                    // ),
-                                    SizedBox(
-                                      height: 4,
-                                    ),
-                                    Row(
+                                  ),
+                                  Expanded(
+                                    child: Row(
                                       children: <Widget>[
-                                        Text(
-                                          timeago.format(DateTime.parse(
-                                              comments[index]['createdAt'])),
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              // color: Colors.grey,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  3.2),
-                                        ),
                                         SizedBox(
-                                          width: 20,
+                                          width: 10,
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              texting = CommentState.reply;
-                                              replyingTo =
-                                                  comments[index]['author'];
-                                              commentId = comments[index]['id'];
-                                            });
-                                          },
-                                          child: Text(
-                                            "Reply",
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 1)
-                                                .toDouble(),
-                                            style: TextStyle(
-                                                // color: Colors.grey,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              // Wrap(
+                                              //   direction: Axis.horizontal,
+                                              //   children: <Widget>[
+                                              Text(
+                                                '${comments[index]['author']}',
+                                                textScaleFactor: mediaQueryData
+                                                    .textScaleFactor
+                                                    .clamp(0.5, 1)
+                                                    .toDouble(),
+                                                style: TextStyle(
+                                                    // color: Color(0xffe8e8e8),
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                              Text(
+                                                '${comments[index]['text']}',
+                                                textScaleFactor: mediaQueryData
+                                                    .textScaleFactor
+                                                    .clamp(0.5, 1)
+                                                    .toDouble(),
+                                                style: TextStyle(
+                                                    // color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                              //   ],
+                                              // ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              Row(
+                                                children: <Widget>[
+                                                  // Text(
+                                                  //   timeago.format(DateTime.parse(
+                                                  //       comments[index]
+                                                  //           ['createdAt'])),
+                                                  //   textScaleFactor:
+                                                  //       mediaQueryData
+                                                  //           .textScaleFactor
+                                                  //           .clamp(0.5, 1)
+                                                  //           .toDouble(),
+                                                  //   style: TextStyle(
+                                                  //       // color: Colors.grey,
+                                                  //       fontSize: SizeConfig
+                                                  //               .safeBlockHorizontal *
+                                                  //           3.2),
+                                                  // ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        texting =
+                                                            CommentState.reply;
+                                                        replyingTo =
+                                                            comments[index]
+                                                                ['author'];
+                                                        commentId =
+                                                            comments[index]
+                                                                ['id'];
+                                                      });
+                                                    },
+                                                    child: Text(
+                                                      "Reply",
+                                                      textScaleFactor:
+                                                          mediaQueryData
+                                                              .textScaleFactor
+                                                              .clamp(0.5, 1)
+                                                              .toDouble(),
+                                                      style: TextStyle(
+                                                          // color: Colors.grey,
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              3),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              comments[index]['comments'] ==
+                                                      null
+                                                  ? SizedBox(
+                                                      height: 0,
+                                                    )
+                                                  : ExpansionTile(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      trailing: SizedBox(
+                                                        width: 0,
+                                                      ),
+                                                      title: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                          "View replies",
+                                                          textScaleFactor:
+                                                              mediaQueryData
+                                                                  .textScaleFactor
+                                                                  .clamp(0.5, 1)
+                                                                  .toDouble(),
+                                                          style: TextStyle(
+                                                            fontSize: SizeConfig
+                                                                    .safeBlockHorizontal *
+                                                                3,
+                                                            // color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      children: <Widget>[
+                                                        for (var v
+                                                            in comments[index]
+                                                                ['comments'])
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .centerLeft,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      bottom:
+                                                                          10),
+                                                              child: Container(
+                                                                child: Row(
+                                                                  children: <
+                                                                      Widget>[
+                                                                    CircleAvatar(
+                                                                      radius:
+                                                                          20,
+                                                                      backgroundImage: v['user_image'] ==
+                                                                              null
+                                                                          ? NetworkImage(
+                                                                              'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
+                                                                          : NetworkImage(
+                                                                              v['user_image']),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            10),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            children: <Widget>[
+                                                                              Text(
+                                                                                '${v['author']}',
+                                                                                textScaleFactor: 1.0,
+                                                                                style: TextStyle(fontWeight: FontWeight.w600),
+                                                                              ),
+
+                                                                              Text(
+                                                                                '${v['text']}',
+                                                                                textScaleFactor: 1.0,
+                                                                                style: TextStyle(
+                                                                                    // color: Colors
+                                                                                    //     .white,
+                                                                                    fontWeight: FontWeight.normal),
+                                                                              ),
+                                                                              //   ],
+                                                                              // ),
+                                                                              // Text(
+                                                                              //   '${v['author']}  ${v['text']}',
+                                                                              //   style: TextStyle(
+                                                                              //       color: Colors
+                                                                              //           .white,
+                                                                              //       fontSize:
+                                                                              //           SizeConfig.safeBlockHorizontal *
+                                                                              //               3.2),
+                                                                              // ),
+                                                                              Row(
+                                                                                children: <Widget>[
+                                                                                  // Text(
+                                                                                  //   timeago.format(DateTime.parse(v['createdAt'])),
+                                                                                  //   textScaleFactor: 1.0,
+                                                                                  //   style: TextStyle(
+                                                                                  //       // color: Colors.grey,
+                                                                                  //       fontSize: SizeConfig.safeBlockHorizontal * 3),
+                                                                                  // ),
+                                                                                  SizedBox(
+                                                                                    width: 10,
+                                                                                  ),
+                                                                                  GestureDetector(
+                                                                                    onTap: () {
+                                                                                      setState(() {
+                                                                                        texting = CommentState.reply;
+                                                                                        replyingTo = v['author'];
+                                                                                        commentId = comments[index]['id'];
+                                                                                        commentPermlink = comments[index]['permlink'];
+                                                                                      });
+                                                                                      showModalBottomSheet(
+                                                                                          context: context,
+                                                                                          builder: (context) {
+                                                                                            return SingleChildScrollView(
+                                                                                              child: Container(
+                                                                                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                                                                                child: Column(
+                                                                                                  children: <Widget>[
+                                                                                                    Container(
+                                                                                                      color: kSecondaryColor,
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                                        child: Row(
+                                                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                                          children: <Widget>[
+                                                                                                            Text(
+                                                                                                              "Replying to $replyingTo",
+                                                                                                              textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                                                              style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                                                                            ),
+                                                                                                            IconButton(
+                                                                                                              onPressed: () {
+                                                                                                                setState(() {
+                                                                                                                  texting = CommentState.comment;
+                                                                                                                });
+                                                                                                              },
+                                                                                                              icon: Icon(
+                                                                                                                Icons.clear,
+                                                                                                                // color: Colors.grey,
+                                                                                                                size: 15,
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                    Container(
+                                                                                                      color: kSecondaryColor,
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                                                        child: Row(
+                                                                                                          children: <Widget>[
+                                                                                                            CircleAvatar(
+                                                                                                              radius: 15,
+                                                                                                              backgroundImage: displayPicture == null ? AssetImage('assets/images/Thumbnail.png') : NetworkImage(displayPicture),
+                                                                                                            ),
+                                                                                                            SizedBox(
+                                                                                                              width: 10,
+                                                                                                            ),
+                                                                                                            Expanded(
+                                                                                                                child: TextField(
+                                                                                                              controller: _commentsController,
+                                                                                                              enabled: true,
+                                                                                                              minLines: 1,
+                                                                                                              maxLines: 10,
+                                                                                                              decoration: InputDecoration(border: InputBorder.none, hintText: 'Reply as @$user', hintStyle: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2)),
+                                                                                                              onChanged: (value) {
+                                                                                                                setState(() {
+                                                                                                                  reply = value;
+                                                                                                                });
+                                                                                                              },
+                                                                                                            )),
+                                                                                                            FlatButton(
+                                                                                                              onPressed: () async {
+                                                                                                                if (reply != null) {
+                                                                                                                  print(commentId);
+                                                                                                                  await postReply();
+                                                                                                                }
+                                                                                                              },
+                                                                                                              child: Text(
+                                                                                                                "Reply",
+                                                                                                                textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                                                                style: TextStyle(color: kActiveColor, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            );
+                                                                                          });
+                                                                                    },
+                                                                                    child: Text(
+                                                                                      'Reply',
+                                                                                      textScaleFactor: 1.0,
+                                                                                      style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              )
+                                                                            ],
+                                                                          ),
+                                                                          IconButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              upVoteComment(v['id'].toString());
+                                                                            },
+                                                                            icon:
+                                                                                Icon(
+                                                                              FontAwesomeIcons.chevronCircleUp,
+                                                                              // color: Colors
+                                                                              //     .white,
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                      ],
+                                                    )
+                                            ],
                                           ),
                                         )
                                       ],
                                     ),
-                                    comments[index]['comments'] == null
-                                        ? SizedBox(
-                                            height: 0,
-                                          )
-                                        : ExpansionTile(
-                                            backgroundColor: Colors.transparent,
-                                            trailing: SizedBox(
-                                              width: 0,
-                                            ),
-                                            title: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                "View replies",
-                                                textScaleFactor: mediaQueryData
-                                                    .textScaleFactor
-                                                    .clamp(0.5, 1)
-                                                    .toDouble(),
-                                                style: TextStyle(
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3,
-                                                  // color: Colors.grey,
-                                                ),
-                                              ),
-                                            ),
-                                            children: <Widget>[
-                                              for (var v in comments[index]
-                                                  ['comments'])
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            bottom: 10),
-                                                    child: Container(
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          CircleAvatar(
-                                                            radius: 20,
-                                                            backgroundImage: v[
-                                                                        'user_image'] ==
-                                                                    null
-                                                                ? NetworkImage(
-                                                                    'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
-                                                                : NetworkImage(v[
-                                                                    'user_image']),
-                                                          ),
-                                                          SizedBox(width: 10),
-                                                          Expanded(
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Text(
-                                                                      '${v['author']}',
-                                                                      textScaleFactor:
-                                                                          1.0,
-                                                                      style: TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.w600),
-                                                                    ),
-
-                                                                    Text(
-                                                                      '${v['text']}',
-                                                                      textScaleFactor:
-                                                                          1.0,
-                                                                      style: TextStyle(
-                                                                          // color: Colors
-                                                                          //     .white,
-                                                                          fontWeight: FontWeight.normal),
-                                                                    ),
-                                                                    //   ],
-                                                                    // ),
-                                                                    // Text(
-                                                                    //   '${v['author']}  ${v['text']}',
-                                                                    //   style: TextStyle(
-                                                                    //       color: Colors
-                                                                    //           .white,
-                                                                    //       fontSize:
-                                                                    //           SizeConfig.safeBlockHorizontal *
-                                                                    //               3.2),
-                                                                    // ),
-                                                                    Row(
-                                                                      children: <
-                                                                          Widget>[
-                                                                        Text(
-                                                                          timeago
-                                                                              .format(DateTime.parse(v['createdAt'])),
-                                                                          textScaleFactor:
-                                                                              1.0,
-                                                                          style: TextStyle(
-                                                                              // color: Colors.grey,
-                                                                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                                                                        ),
-                                                                        SizedBox(
-                                                                          width:
-                                                                              10,
-                                                                        ),
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              texting = CommentState.reply;
-                                                                              replyingTo = v['author'];
-                                                                              commentId = comments[index]['id'];
-                                                                              commentPermlink = comments[index]['permlink'];
-                                                                            });
-                                                                            showModalBottomSheet(
-                                                                                context: context,
-                                                                                builder: (context) {
-                                                                                  return SingleChildScrollView(
-                                                                                    child: Container(
-                                                                                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                                                                      child: Column(
-                                                                                        children: <Widget>[
-                                                                                          Container(
-                                                                                            color: kSecondaryColor,
-                                                                                            child: Padding(
-                                                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                              child: Row(
-                                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                                children: <Widget>[
-                                                                                                  Text(
-                                                                                                    "Replying to $replyingTo",
-                                                                                                    textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                                    style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                                                                                                  ),
-                                                                                                  IconButton(
-                                                                                                    onPressed: () {
-                                                                                                      setState(() {
-                                                                                                        texting = CommentState.comment;
-                                                                                                      });
-                                                                                                    },
-                                                                                                    icon: Icon(
-                                                                                                      Icons.clear,
-                                                                                                      // color: Colors.grey,
-                                                                                                      size: 15,
-                                                                                                    ),
-                                                                                                  )
-                                                                                                ],
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                          Container(
-                                                                                            color: kSecondaryColor,
-                                                                                            child: Padding(
-                                                                                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                              child: Row(
-                                                                                                children: <Widget>[
-                                                                                                  CircleAvatar(
-                                                                                                    radius: 15,
-                                                                                                    backgroundImage: displayPicture == null ? AssetImage('assets/images/Thumbnail.png') : NetworkImage(displayPicture),
-                                                                                                  ),
-                                                                                                  SizedBox(
-                                                                                                    width: 10,
-                                                                                                  ),
-                                                                                                  Expanded(
-                                                                                                      child: TextField(
-                                                                                                    controller: _commentsController,
-                                                                                                    enabled: true,
-                                                                                                    minLines: 1,
-                                                                                                    maxLines: 10,
-                                                                                                    decoration: InputDecoration(border: InputBorder.none, hintText: 'Reply as @$user', hintStyle: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2)),
-                                                                                                    onChanged: (value) {
-                                                                                                      setState(() {
-                                                                                                        reply = value;
-                                                                                                      });
-                                                                                                    },
-                                                                                                  )),
-                                                                                                  FlatButton(
-                                                                                                    onPressed: () async {
-                                                                                                      if (reply != null) {
-                                                                                                        print(commentId);
-                                                                                                        await postReply();
-                                                                                                      }
-                                                                                                    },
-                                                                                                    child: Text(
-                                                                                                      "Reply",
-                                                                                                      textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                                      style: TextStyle(color: kActiveColor, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                                                                                                    ),
-                                                                                                  )
-                                                                                                ],
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                  );
-                                                                                });
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            'Reply',
-                                                                            textScaleFactor:
-                                                                                1.0,
-                                                                            style:
-                                                                                TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),
-                                                                          ),
-                                                                        )
-                                                                      ],
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                IconButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    upVoteComment(v[
-                                                                            'id']
-                                                                        .toString());
-                                                                  },
-                                                                  icon: Icon(
-                                                                    FontAwesomeIcons
-                                                                        .chevronCircleUp,
-                                                                    // color: Colors
-                                                                    //     .white,
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                            ],
-                                          )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            upVoteComment(comments[index]['id'].toString());
-                          },
-                          icon: Icon(
-                            FontAwesomeIcons.chevronCircleUp,
-                            // color: Colors.white,
-                          ),
-                        ),
-                        // Icon(
-                        //   FontAwesomeIcons.heart,
-                        //   color: Colors.white,
-                        //   size: 13,
-                        // )
-                      ],
-                    ),
-                  ),
-                );
-              }
-            },
-            itemCount: comments.length + 1,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              Stack(
-                children: [
-                  Container(
-                    child: isSending == false
-                        ? SizedBox(
-                            width: 0,
-                          )
-                        : LinearProgressIndicator(
-                            minHeight: 50,
-                            backgroundColor: Colors.blue,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xff6249EF)),
-                          ),
-                  ),
-                  texting == CommentState.reply
-                      ? Builder(
-                          builder: (context) {
-                            return SingleChildScrollView(
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      color: isSending == false
-                                          ? kSecondaryColor
-                                          : Colors.transparent,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text(
-                                              "Replying to $replyingTo",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3.2),
-                                            ),
-                                            IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  texting =
-                                                      CommentState.comment;
-                                                });
-                                              },
-                                              icon: Icon(
-                                                Icons.clear,
-                                                color: Colors.grey,
-                                                size: 15,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      upVoteComment(
+                                          comments[index]['id'].toString());
+                                    },
+                                    icon: Icon(
+                                      FontAwesomeIcons.chevronCircleUp,
+                                      // color: Colors.white,
                                     ),
-                                    Container(
-                                      color: kSecondaryColor,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: Row(
-                                          children: <Widget>[
-                                            CircleAvatar(
-                                              radius: 15,
-                                              backgroundImage: displayPicture ==
-                                                      null
-                                                  ? AssetImage(
-                                                      'assets/images/Thumbnail.png')
-                                                  : NetworkImage(
-                                                      displayPicture),
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                                child: TextField(
-                                              scrollPadding: EdgeInsets.only(
-                                                  bottom: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom),
-                                              controller: _commentsController,
-                                              enabled: true,
-                                              minLines: 1,
-                                              maxLines: 10,
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                              decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  hintText: 'Reply as @$user',
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          3.2)),
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  reply = value;
-                                                });
-                                              },
-                                            )),
-                                            FlatButton(
-                                              onPressed: () async {
-                                                if (reply != null) {
-                                                  print(commentId);
-                                                  await postReply();
-                                                }
-                                              },
-                                              child: Text(
-                                                "Reply",
-                                                textScaleFactor: mediaQueryData
-                                                    .textScaleFactor
-                                                    .clamp(0.5, 1)
-                                                    .toDouble(),
-                                                style: TextStyle(
-                                                    color: kActiveColor,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        3.2),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  // Icon(
+                                  //   FontAwesomeIcons.heart,
+                                  //   color: Colors.white,
+                                  //   size: 13,
+                                  // )
+                                ],
                               ),
-                            );
-                          },
-                        )
-                      : Builder(
-                          builder: (context) {
-                            return SingleChildScrollView(
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                        .viewInsets
-                                        .bottom),
-                                color: isSending == false
-                                    ? kSecondaryColor
-                                    : Colors.transparent,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  child: Row(
-                                    children: <Widget>[
-                                      CircleAvatar(
-                                        radius: 15,
-                                        backgroundImage: displayPicture == null
-                                            ? AssetImage(
-                                                'assets/images/Thumbnail.png')
-                                            : NetworkImage(displayPicture),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                          child: TextField(
-                                        scrollPadding: EdgeInsets.only(
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    itemCount: comments.length + 1,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Stack(
+                        children: [
+                          Container(
+                            child: isSending == false
+                                ? SizedBox(
+                                    width: 0,
+                                  )
+                                : LinearProgressIndicator(
+                                    minHeight: 50,
+                                    backgroundColor: Colors.blue,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xff6249EF)),
+                                  ),
+                          ),
+                          texting == CommentState.reply
+                              ? Builder(
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
                                             bottom: MediaQuery.of(context)
                                                 .viewInsets
                                                 .bottom),
-                                        controller: _commentsController,
-                                        enabled: true,
-                                        minLines: 1,
-                                        maxLines: 10,
-                                        style: TextStyle(color: Colors.white),
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: 'Comment as @$user',
-                                            hintStyle: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3.4)),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            comment = value;
-                                          });
-                                        },
-                                      )),
-                                      FlatButton(
-                                        onPressed: () async {
-                                          if (comment != null) {
-                                            await postComment();
-                                          }
-                                        },
-                                        child: Text(
-                                          "Post",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              color: kActiveColor,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  3.4),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              color: isSending == false
+                                                  ? kSecondaryColor
+                                                  : Colors.transparent,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Replying to $replyingTo",
+                                                      textScaleFactor:
+                                                          mediaQueryData
+                                                              .textScaleFactor
+                                                              .clamp(0.5, 1)
+                                                              .toDouble(),
+                                                      style: TextStyle(
+                                                          color: Colors.grey,
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              3.2),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          texting = CommentState
+                                                              .comment;
+                                                        });
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.clear,
+                                                        color: Colors.grey,
+                                                        size: 15,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              color: kSecondaryColor,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    CircleAvatar(
+                                                      radius: 15,
+                                                      backgroundImage:
+                                                          displayPicture == null
+                                                              ? AssetImage(
+                                                                  'assets/images/Thumbnail.png')
+                                                              : NetworkImage(
+                                                                  displayPicture),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Expanded(
+                                                        child: TextField(
+                                                      scrollPadding:
+                                                          EdgeInsets.only(
+                                                              bottom: MediaQuery
+                                                                      .of(context)
+                                                                  .viewInsets
+                                                                  .bottom),
+                                                      controller:
+                                                          _commentsController,
+                                                      enabled: true,
+                                                      minLines: 1,
+                                                      maxLines: 10,
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                      decoration: InputDecoration(
+                                                          border:
+                                                              InputBorder.none,
+                                                          hintText:
+                                                              'Reply as @$user',
+                                                          hintStyle: TextStyle(
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontSize: SizeConfig
+                                                                      .safeBlockHorizontal *
+                                                                  3.2)),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          reply = value;
+                                                        });
+                                                      },
+                                                    )),
+                                                    FlatButton(
+                                                      onPressed: () async {
+                                                        if (reply != null) {
+                                                          print(commentId);
+                                                          await postReply();
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        "Reply",
+                                                        textScaleFactor:
+                                                            mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                        style: TextStyle(
+                                                            color: kActiveColor,
+                                                            fontSize: SizeConfig
+                                                                    .safeBlockHorizontal *
+                                                                3.2),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Builder(
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        color: isSending == false
+                                            ? kSecondaryColor
+                                            : Colors.transparent,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          child: Row(
+                                            children: <Widget>[
+                                              CircleAvatar(
+                                                radius: 15,
+                                                backgroundImage: displayPicture ==
+                                                        null
+                                                    ? AssetImage(
+                                                        'assets/images/Thumbnail.png')
+                                                    : NetworkImage(
+                                                        displayPicture),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                  child: TextField(
+                                                scrollPadding: EdgeInsets.only(
+                                                    bottom:
+                                                        MediaQuery.of(context)
+                                                            .viewInsets
+                                                            .bottom),
+                                                controller: _commentsController,
+                                                enabled: true,
+                                                minLines: 1,
+                                                maxLines: 10,
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                                decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    hintText:
+                                                        'Comment as @$user',
+                                                    hintStyle: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            3.4)),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    comment = value;
+                                                  });
+                                                },
+                                              )),
+                                              FlatButton(
+                                                onPressed: () async {
+                                                  if (comment != null) {
+                                                    await postComment();
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Post",
+                                                  textScaleFactor:
+                                                      mediaQueryData
+                                                          .textScaleFactor
+                                                          .clamp(0.5, 1)
+                                                          .toDouble(),
+                                                  style: TextStyle(
+                                                      color: kActiveColor,
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3.4),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ),
-                            );
-                          },
-                        ),
+                        ],
+                      ),
+                    ],
+                  )
                 ],
               ),
-            ],
-          )
-        ],
+            ),
+          ],
+        ),
       ),
+
+      // body: Stack(
+      //   children: <Widget>[
+      //     ListView.builder(
+      //       itemBuilder: (BuildContext context, int index) {
+      //         if (index == comments.length) {
+      //           return SizedBox(
+      //             height: 400,
+      //           );
+      //         } else {
+      //           return Padding(
+      //             padding: const EdgeInsets.all(8.0),
+      //             child: Container(
+      //               decoration: BoxDecoration(
+      //                 boxShadow: [
+      //                   new BoxShadow(
+      //                     color: Colors.black54.withOpacity(0.2),
+      //                     blurRadius: 10.0,
+      //                   ),
+      //                 ],
+      //                 color: themeProvider.isLightTheme == true
+      //                     ? Colors.white
+      //                     : Color(0xff222222),
+      //                 borderRadius: BorderRadius.circular(8),
+      //               ),
+      //               child: Padding(
+      //                 padding: const EdgeInsets.all(8.0),
+      //                 child: Row(
+      //                   crossAxisAlignment: CrossAxisAlignment.start,
+      //                   children: <Widget>[
+      //                     Container(
+      //                       height: 40,
+      //                       width: 40,
+      //                       decoration: BoxDecoration(
+      //                         image: DecorationImage(
+      //                             image: comments[index]['user_image'] == null
+      //                                 ? AssetImage('assets/images/person.png')
+      //                                 : NetworkImage(
+      //                                     comments[index]['user_image']),
+      //                             fit: BoxFit.cover),
+      //                         shape: BoxShape.circle,
+      //                         // color: Colors.white,
+      //                       ),
+      //                     ),
+      //                     Expanded(
+      //                       child: Row(
+      //                         children: <Widget>[
+      //                           SizedBox(
+      //                             width: 10,
+      //                           ),
+      //                           Expanded(
+      //                             child: Column(
+      //                               crossAxisAlignment:
+      //                                   CrossAxisAlignment.start,
+      //                               children: <Widget>[
+      //                                 // Wrap(
+      //                                 //   direction: Axis.horizontal,
+      //                                 //   children: <Widget>[
+      //                                 Text(
+      //                                   '${comments[index]['author']}',
+      //                                   textScaleFactor: mediaQueryData
+      //                                       .textScaleFactor
+      //                                       .clamp(0.5, 1)
+      //                                       .toDouble(),
+      //                                   style: TextStyle(
+      //                                       // color: Color(0xffe8e8e8),
+      //                                       fontWeight: FontWeight.w600),
+      //                                 ),
+      //                                 Text(
+      //                                   '${comments[index]['text']}',
+      //                                   textScaleFactor: mediaQueryData
+      //                                       .textScaleFactor
+      //                                       .clamp(0.5, 1)
+      //                                       .toDouble(),
+      //                                   style: TextStyle(
+      //                                       // color: Colors.white,
+      //                                       fontWeight: FontWeight.normal),
+      //                                 ),
+      //                                 //   ],
+      //                                 // ),
+      //                                 SizedBox(
+      //                                   height: 4,
+      //                                 ),
+      //                                 Row(
+      //                                   children: <Widget>[
+      //                                     Text(
+      //                                       timeago.format(DateTime.parse(
+      //                                           comments[index]['createdAt'])),
+      //                                       textScaleFactor: mediaQueryData
+      //                                           .textScaleFactor
+      //                                           .clamp(0.5, 1)
+      //                                           .toDouble(),
+      //                                       style: TextStyle(
+      //                                           // color: Colors.grey,
+      //                                           fontSize: SizeConfig
+      //                                                   .safeBlockHorizontal *
+      //                                               3.2),
+      //                                     ),
+      //                                     SizedBox(
+      //                                       width: 20,
+      //                                     ),
+      //                                     GestureDetector(
+      //                                       onTap: () {
+      //                                         setState(() {
+      //                                           texting = CommentState.reply;
+      //                                           replyingTo =
+      //                                               comments[index]['author'];
+      //                                           commentId =
+      //                                               comments[index]['id'];
+      //                                         });
+      //                                       },
+      //                                       child: Text(
+      //                                         "Reply",
+      //                                         textScaleFactor: mediaQueryData
+      //                                             .textScaleFactor
+      //                                             .clamp(0.5, 1)
+      //                                             .toDouble(),
+      //                                         style: TextStyle(
+      //                                             // color: Colors.grey,
+      //                                             fontSize: SizeConfig
+      //                                                     .safeBlockHorizontal *
+      //                                                 3),
+      //                                       ),
+      //                                     )
+      //                                   ],
+      //                                 ),
+      //                                 comments[index]['comments'] == null
+      //                                     ? SizedBox(
+      //                                         height: 0,
+      //                                       )
+      //                                     : ExpansionTile(
+      //                                         backgroundColor:
+      //                                             Colors.transparent,
+      //                                         trailing: SizedBox(
+      //                                           width: 0,
+      //                                         ),
+      //                                         title: Align(
+      //                                           alignment: Alignment.centerLeft,
+      //                                           child: Text(
+      //                                             "View replies",
+      //                                             textScaleFactor:
+      //                                                 mediaQueryData
+      //                                                     .textScaleFactor
+      //                                                     .clamp(0.5, 1)
+      //                                                     .toDouble(),
+      //                                             style: TextStyle(
+      //                                               fontSize: SizeConfig
+      //                                                       .safeBlockHorizontal *
+      //                                                   3,
+      //                                               // color: Colors.grey,
+      //                                             ),
+      //                                           ),
+      //                                         ),
+      //                                         children: <Widget>[
+      //                                           for (var v in comments[index]
+      //                                               ['comments'])
+      //                                             Align(
+      //                                               alignment:
+      //                                                   Alignment.centerLeft,
+      //                                               child: Padding(
+      //                                                 padding:
+      //                                                     const EdgeInsets.only(
+      //                                                         bottom: 10),
+      //                                                 child: Container(
+      //                                                   child: Row(
+      //                                                     children: <Widget>[
+      //                                                       CircleAvatar(
+      //                                                         radius: 20,
+      //                                                         backgroundImage: v[
+      //                                                                     'user_image'] ==
+      //                                                                 null
+      //                                                             ? NetworkImage(
+      //                                                                 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
+      //                                                             : NetworkImage(
+      //                                                                 v['user_image']),
+      //                                                       ),
+      //                                                       SizedBox(width: 10),
+      //                                                       Expanded(
+      //                                                         child: Row(
+      //                                                           mainAxisAlignment:
+      //                                                               MainAxisAlignment
+      //                                                                   .spaceBetween,
+      //                                                           children: [
+      //                                                             Column(
+      //                                                               crossAxisAlignment:
+      //                                                                   CrossAxisAlignment
+      //                                                                       .start,
+      //                                                               children: <
+      //                                                                   Widget>[
+      //                                                                 Text(
+      //                                                                   '${v['author']}',
+      //                                                                   textScaleFactor:
+      //                                                                       1.0,
+      //                                                                   style: TextStyle(
+      //                                                                       fontWeight:
+      //                                                                           FontWeight.w600),
+      //                                                                 ),
+      //
+      //                                                                 Text(
+      //                                                                   '${v['text']}',
+      //                                                                   textScaleFactor:
+      //                                                                       1.0,
+      //                                                                   style: TextStyle(
+      //                                                                       // color: Colors
+      //                                                                       //     .white,
+      //                                                                       fontWeight: FontWeight.normal),
+      //                                                                 ),
+      //                                                                 //   ],
+      //                                                                 // ),
+      //                                                                 // Text(
+      //                                                                 //   '${v['author']}  ${v['text']}',
+      //                                                                 //   style: TextStyle(
+      //                                                                 //       color: Colors
+      //                                                                 //           .white,
+      //                                                                 //       fontSize:
+      //                                                                 //           SizeConfig.safeBlockHorizontal *
+      //                                                                 //               3.2),
+      //                                                                 // ),
+      //                                                                 Row(
+      //                                                                   children: <
+      //                                                                       Widget>[
+      //                                                                     Text(
+      //                                                                       timeago.format(DateTime.parse(v['createdAt'])),
+      //                                                                       textScaleFactor:
+      //                                                                           1.0,
+      //                                                                       style: TextStyle(
+      //                                                                           // color: Colors.grey,
+      //                                                                           fontSize: SizeConfig.safeBlockHorizontal * 3),
+      //                                                                     ),
+      //                                                                     SizedBox(
+      //                                                                       width:
+      //                                                                           10,
+      //                                                                     ),
+      //                                                                     GestureDetector(
+      //                                                                       onTap:
+      //                                                                           () {
+      //                                                                         setState(() {
+      //                                                                           texting = CommentState.reply;
+      //                                                                           replyingTo = v['author'];
+      //                                                                           commentId = comments[index]['id'];
+      //                                                                           commentPermlink = comments[index]['permlink'];
+      //                                                                         });
+      //                                                                         showModalBottomSheet(
+      //                                                                             context: context,
+      //                                                                             builder: (context) {
+      //                                                                               return SingleChildScrollView(
+      //                                                                                 child: Container(
+      //                                                                                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      //                                                                                   child: Column(
+      //                                                                                     children: <Widget>[
+      //                                                                                       Container(
+      //                                                                                         color: kSecondaryColor,
+      //                                                                                         child: Padding(
+      //                                                                                           padding: const EdgeInsets.symmetric(horizontal: 10),
+      //                                                                                           child: Row(
+      //                                                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //                                                                                             children: <Widget>[
+      //                                                                                               Text(
+      //                                                                                                 "Replying to $replyingTo",
+      //                                                                                                 textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+      //                                                                                                 style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+      //                                                                                               ),
+      //                                                                                               IconButton(
+      //                                                                                                 onPressed: () {
+      //                                                                                                   setState(() {
+      //                                                                                                     texting = CommentState.comment;
+      //                                                                                                   });
+      //                                                                                                 },
+      //                                                                                                 icon: Icon(
+      //                                                                                                   Icons.clear,
+      //                                                                                                   // color: Colors.grey,
+      //                                                                                                   size: 15,
+      //                                                                                                 ),
+      //                                                                                               )
+      //                                                                                             ],
+      //                                                                                           ),
+      //                                                                                         ),
+      //                                                                                       ),
+      //                                                                                       Container(
+      //                                                                                         color: kSecondaryColor,
+      //                                                                                         child: Padding(
+      //                                                                                           padding: const EdgeInsets.symmetric(horizontal: 10),
+      //                                                                                           child: Row(
+      //                                                                                             children: <Widget>[
+      //                                                                                               CircleAvatar(
+      //                                                                                                 radius: 15,
+      //                                                                                                 backgroundImage: displayPicture == null ? AssetImage('assets/images/Thumbnail.png') : NetworkImage(displayPicture),
+      //                                                                                               ),
+      //                                                                                               SizedBox(
+      //                                                                                                 width: 10,
+      //                                                                                               ),
+      //                                                                                               Expanded(
+      //                                                                                                   child: TextField(
+      //                                                                                                 controller: _commentsController,
+      //                                                                                                 enabled: true,
+      //                                                                                                 minLines: 1,
+      //                                                                                                 maxLines: 10,
+      //                                                                                                 decoration: InputDecoration(border: InputBorder.none, hintText: 'Reply as @$user', hintStyle: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.2)),
+      //                                                                                                 onChanged: (value) {
+      //                                                                                                   setState(() {
+      //                                                                                                     reply = value;
+      //                                                                                                   });
+      //                                                                                                 },
+      //                                                                                               )),
+      //                                                                                               FlatButton(
+      //                                                                                                 onPressed: () async {
+      //                                                                                                   if (reply != null) {
+      //                                                                                                     print(commentId);
+      //                                                                                                     await postReply();
+      //                                                                                                   }
+      //                                                                                                 },
+      //                                                                                                 child: Text(
+      //                                                                                                   "Reply",
+      //                                                                                                   textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+      //                                                                                                   style: TextStyle(color: kActiveColor, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+      //                                                                                                 ),
+      //                                                                                               )
+      //                                                                                             ],
+      //                                                                                           ),
+      //                                                                                         ),
+      //                                                                                       ),
+      //                                                                                     ],
+      //                                                                                   ),
+      //                                                                                 ),
+      //                                                                               );
+      //                                                                             });
+      //                                                                       },
+      //                                                                       child:
+      //                                                                           Text(
+      //                                                                         'Reply',
+      //                                                                         textScaleFactor: 1.0,
+      //                                                                         style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),
+      //                                                                       ),
+      //                                                                     )
+      //                                                                   ],
+      //                                                                 )
+      //                                                               ],
+      //                                                             ),
+      //                                                             IconButton(
+      //                                                               onPressed:
+      //                                                                   () {
+      //                                                                 upVoteComment(
+      //                                                                     v['id']
+      //                                                                         .toString());
+      //                                                               },
+      //                                                               icon: Icon(
+      //                                                                 FontAwesomeIcons
+      //                                                                     .chevronCircleUp,
+      //                                                                 // color: Colors
+      //                                                                 //     .white,
+      //                                                               ),
+      //                                                             )
+      //                                                           ],
+      //                                                         ),
+      //                                                       ),
+      //                                                     ],
+      //                                                   ),
+      //                                                 ),
+      //                                               ),
+      //                                             )
+      //                                         ],
+      //                                       )
+      //                               ],
+      //                             ),
+      //                           )
+      //                         ],
+      //                       ),
+      //                     ),
+      //                     SizedBox(
+      //                       width: 10,
+      //                     ),
+      //                     IconButton(
+      //                       onPressed: () {
+      //                         upVoteComment(comments[index]['id'].toString());
+      //                       },
+      //                       icon: Icon(
+      //                         FontAwesomeIcons.chevronCircleUp,
+      //                         // color: Colors.white,
+      //                       ),
+      //                     ),
+      //                     // Icon(
+      //                     //   FontAwesomeIcons.heart,
+      //                     //   color: Colors.white,
+      //                     //   size: 13,
+      //                     // )
+      //                   ],
+      //                 ),
+      //               ),
+      //             ),
+      //           );
+      //         }
+      //       },
+      //       itemCount: comments.length + 1,
+      //     ),
+      //     Column(
+      //       mainAxisAlignment: MainAxisAlignment.end,
+      //       children: <Widget>[
+      //         Stack(
+      //           children: [
+      //             Container(
+      //               child: isSending == false
+      //                   ? SizedBox(
+      //                       width: 0,
+      //                     )
+      //                   : LinearProgressIndicator(
+      //                       minHeight: 50,
+      //                       backgroundColor: Colors.blue,
+      //                       valueColor: AlwaysStoppedAnimation<Color>(
+      //                           Color(0xff6249EF)),
+      //                     ),
+      //             ),
+      //             texting == CommentState.reply
+      //                 ? Builder(
+      //                     builder: (context) {
+      //                       return SingleChildScrollView(
+      //                         child: Container(
+      //                           padding: EdgeInsets.only(
+      //                               bottom: MediaQuery.of(context)
+      //                                   .viewInsets
+      //                                   .bottom),
+      //                           child: Column(
+      //                             children: <Widget>[
+      //                               Container(
+      //                                 color: isSending == false
+      //                                     ? kSecondaryColor
+      //                                     : Colors.transparent,
+      //                                 child: Padding(
+      //                                   padding: const EdgeInsets.symmetric(
+      //                                       horizontal: 10),
+      //                                   child: Row(
+      //                                     mainAxisAlignment:
+      //                                         MainAxisAlignment.spaceBetween,
+      //                                     children: <Widget>[
+      //                                       Text(
+      //                                         "Replying to $replyingTo",
+      //                                         textScaleFactor: mediaQueryData
+      //                                             .textScaleFactor
+      //                                             .clamp(0.5, 1)
+      //                                             .toDouble(),
+      //                                         style: TextStyle(
+      //                                             color: Colors.grey,
+      //                                             fontSize: SizeConfig
+      //                                                     .safeBlockHorizontal *
+      //                                                 3.2),
+      //                                       ),
+      //                                       IconButton(
+      //                                         onPressed: () {
+      //                                           setState(() {
+      //                                             texting =
+      //                                                 CommentState.comment;
+      //                                           });
+      //                                         },
+      //                                         icon: Icon(
+      //                                           Icons.clear,
+      //                                           color: Colors.grey,
+      //                                           size: 15,
+      //                                         ),
+      //                                       )
+      //                                     ],
+      //                                   ),
+      //                                 ),
+      //                               ),
+      //                               Container(
+      //                                 color: kSecondaryColor,
+      //                                 child: Padding(
+      //                                   padding: const EdgeInsets.symmetric(
+      //                                       horizontal: 10),
+      //                                   child: Row(
+      //                                     children: <Widget>[
+      //                                       CircleAvatar(
+      //                                         radius: 15,
+      //                                         backgroundImage: displayPicture ==
+      //                                                 null
+      //                                             ? AssetImage(
+      //                                                 'assets/images/Thumbnail.png')
+      //                                             : NetworkImage(
+      //                                                 displayPicture),
+      //                                       ),
+      //                                       SizedBox(
+      //                                         width: 10,
+      //                                       ),
+      //                                       Expanded(
+      //                                           child: TextField(
+      //                                         scrollPadding: EdgeInsets.only(
+      //                                             bottom: MediaQuery.of(context)
+      //                                                 .viewInsets
+      //                                                 .bottom),
+      //                                         controller: _commentsController,
+      //                                         enabled: true,
+      //                                         minLines: 1,
+      //                                         maxLines: 10,
+      //                                         style: TextStyle(
+      //                                             color: Colors.white),
+      //                                         decoration: InputDecoration(
+      //                                             border: InputBorder.none,
+      //                                             hintText: 'Reply as @$user',
+      //                                             hintStyle: TextStyle(
+      //                                                 color: Colors.grey,
+      //                                                 fontSize: SizeConfig
+      //                                                         .safeBlockHorizontal *
+      //                                                     3.2)),
+      //                                         onChanged: (value) {
+      //                                           setState(() {
+      //                                             reply = value;
+      //                                           });
+      //                                         },
+      //                                       )),
+      //                                       FlatButton(
+      //                                         onPressed: () async {
+      //                                           if (reply != null) {
+      //                                             print(commentId);
+      //                                             await postReply();
+      //                                           }
+      //                                         },
+      //                                         child: Text(
+      //                                           "Reply",
+      //                                           textScaleFactor: mediaQueryData
+      //                                               .textScaleFactor
+      //                                               .clamp(0.5, 1)
+      //                                               .toDouble(),
+      //                                           style: TextStyle(
+      //                                               color: kActiveColor,
+      //                                               fontSize: SizeConfig
+      //                                                       .safeBlockHorizontal *
+      //                                                   3.2),
+      //                                         ),
+      //                                       )
+      //                                     ],
+      //                                   ),
+      //                                 ),
+      //                               ),
+      //                             ],
+      //                           ),
+      //                         ),
+      //                       );
+      //                     },
+      //                   )
+      //                 : Builder(
+      //                     builder: (context) {
+      //                       return SingleChildScrollView(
+      //                         child: Container(
+      //                           padding: EdgeInsets.only(
+      //                               bottom: MediaQuery.of(context)
+      //                                   .viewInsets
+      //                                   .bottom),
+      //                           color: isSending == false
+      //                               ? kSecondaryColor
+      //                               : Colors.transparent,
+      //                           child: Padding(
+      //                             padding: const EdgeInsets.symmetric(
+      //                                 horizontal: 10),
+      //                             child: Row(
+      //                               children: <Widget>[
+      //                                 CircleAvatar(
+      //                                   radius: 15,
+      //                                   backgroundImage: displayPicture == null
+      //                                       ? AssetImage(
+      //                                           'assets/images/Thumbnail.png')
+      //                                       : NetworkImage(displayPicture),
+      //                                 ),
+      //                                 SizedBox(
+      //                                   width: 10,
+      //                                 ),
+      //                                 Expanded(
+      //                                     child: TextField(
+      //                                   scrollPadding: EdgeInsets.only(
+      //                                       bottom: MediaQuery.of(context)
+      //                                           .viewInsets
+      //                                           .bottom),
+      //                                   controller: _commentsController,
+      //                                   enabled: true,
+      //                                   minLines: 1,
+      //                                   maxLines: 10,
+      //                                   style: TextStyle(color: Colors.white),
+      //                                   decoration: InputDecoration(
+      //                                       border: InputBorder.none,
+      //                                       hintText: 'Comment as @$user',
+      //                                       hintStyle: TextStyle(
+      //                                           color: Colors.grey,
+      //                                           fontSize: SizeConfig
+      //                                                   .safeBlockHorizontal *
+      //                                               3.4)),
+      //                                   onChanged: (value) {
+      //                                     setState(() {
+      //                                       comment = value;
+      //                                     });
+      //                                   },
+      //                                 )),
+      //                                 FlatButton(
+      //                                   onPressed: () async {
+      //                                     if (comment != null) {
+      //                                       await postComment();
+      //                                     }
+      //                                   },
+      //                                   child: Text(
+      //                                     "Post",
+      //                                     textScaleFactor: mediaQueryData
+      //                                         .textScaleFactor
+      //                                         .clamp(0.5, 1)
+      //                                         .toDouble(),
+      //                                     style: TextStyle(
+      //                                         color: kActiveColor,
+      //                                         fontSize: SizeConfig
+      //                                                 .safeBlockHorizontal *
+      //                                             3.4),
+      //                                   ),
+      //                                 )
+      //                               ],
+      //                             ),
+      //                           ),
+      //                         ),
+      //                       );
+      //                     },
+      //                   ),
+      //           ],
+      //         ),
+      //       ],
+      //     )
+      //   ],
+      // ),
     );
   }
 }

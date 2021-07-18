@@ -1596,36 +1596,36 @@ class _PlayerState extends State<Player> {
 //       //       );
 //       //     }));
 //       //   },
-//       //   child: Container(
-//       //     decoration: BoxDecoration(
-//       //         // color: Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
-//       //         ), //color: Colors.white,
-//       //     child: Padding(
-//       //       padding: const EdgeInsets.all(5.0),
-//       //       child: Row(
-//       //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       //         // mainAxisAlignment: MainAxisAlignment.start,
-//       //         crossAxisAlignment: CrossAxisAlignment.center,
-//       //         children: [
-//       //           Row(
-//       //             mainAxisSize: MainAxisSize.min,
-//       //             children: [
-//       //               Padding(
-//       //                 padding: const EdgeInsets.only(left: 50),
-//       //                 child: Icon(
-//       //                   Icons.mode_comment_outlined,
-//       //                   size: 30,
-//       //                 ),
-//       //               ),
-//       //               SizedBox(
-//       //                 width: 5,
-//       //               ),
-//       //               Text(
-//       //                 '${episodeObject.episodeObject['comments_count'].toString()}',
-//       //                 textScaleFactor: 1.0,
-//       //               ),
-//       //             ],
-//       //           ),
+//         child: Container(
+//           decoration: BoxDecoration(
+//               // color: Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
+//               ), //color: Colors.white,
+//           child: Padding(
+//             padding: const EdgeInsets.all(5.0),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               // mainAxisAlignment: MainAxisAlignment.start,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 Row(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: [
+//                     Padding(
+//                       padding: const EdgeInsets.only(left: 50),
+//                       child: Icon(
+//                         Icons.mode_comment_outlined,
+//                         size: 30,
+//                       ),
+//                     ),
+//                     SizedBox(
+//                       width: 5,
+//                     ),
+//                     Text(
+//                       '${episodeObject.episodeObject['comments_count'].toString()}',
+//                       textScaleFactor: 1.0,
+//                     ),
+//                   ],
+//                 ),
 //       //           Padding(
 //       //               padding: const EdgeInsets.only(right: 50, bottom: 20),
 //       //               child: IconButton(

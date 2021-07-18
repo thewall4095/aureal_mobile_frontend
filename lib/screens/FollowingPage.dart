@@ -29,7 +29,6 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
 import 'Onboarding/HiveDetails.dart';
-import 'Player/Player.dart';
 import 'Player/VideoPlayer.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
@@ -1163,13 +1162,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         .toString());
                                                                     currentlyPlaying
                                                                         .play();
-                                                                    showBarModalBottomSheet(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return Player();
-                                                                        });
+                                                                    return BottomPlayer();
                                                                   }
                                                                 }
                                                               },
@@ -1341,7 +1334,7 @@ class _FollowingPageState extends State<FollowingPage>
                                       highlightColor: kPrimaryColor,
                                       child: Container(
                                         color: kSecondaryColor,
-                                        height: 200,
+                                        height: 50,
                                         width:
                                             MediaQuery.of(context).size.width,
                                       ),
@@ -1357,6 +1350,7 @@ class _FollowingPageState extends State<FollowingPage>
             ),
           ),
         ),
+
       ),
     );
   }

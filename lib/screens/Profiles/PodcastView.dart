@@ -16,6 +16,7 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
@@ -329,11 +330,7 @@ class _PodcastViewState extends State<PodcastView> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final currentlyPlaying = Provider.of<PlayerChange>(context);
-
     final themeProvider = Provider.of<ThemeProvider>(context);
-
-    // var bookmarkBloc = Provider.of<BookmarkBloc>(context);
-    //
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
       body: SafeArea(
@@ -756,30 +753,31 @@ class _PodcastViewState extends State<PodcastView> {
                       ? (_controller.position.pixels !=
                               _controller.position.maxScrollExtent
                           ? SizedBox()
-                          : Shimmer.fromColors(
-                              direction: ShimmerDirection.ttb,
-                              baseColor: themeProvider.isLightTheme == true
-                                  ? Colors.white
-                                  : kPrimaryColor,
-                              highlightColor: Color(0xff3a3a3a),
-                              child: Container(
-                                color: kSecondaryColor,
-                                height: 200,
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ))
-                      : Shimmer.fromColors(
-                          direction: ShimmerDirection.ttb,
-                          baseColor: themeProvider.isLightTheme == true
-                              ? Colors.white
-                              : kPrimaryColor,
-                          highlightColor: Color(0xff3a3a3a),
-                          child: Container(
-                            color: kSecondaryColor,
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                        );
+                      : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                        baseColor: themeProvider.isLightTheme == false
+                            ? kPrimaryColor
+                            : Colors.white,
+                        highlightColor: themeProvider.isLightTheme == false
+                            ? Color(0xff3a3a3a)
+                            : Colors.white,
+                    )
+                  )
+                  )
+
+                :Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Shimmer.fromColors(
+                        baseColor: themeProvider.isLightTheme == false
+                            ? kPrimaryColor
+                            : Colors.white,
+                        highlightColor: themeProvider.isLightTheme == false
+                            ? Color(0xff3a3a3a)
+                            : Colors.white,
+                      )
+                  )
+                      ;
                 }
                 return Padding(
                   padding:
@@ -1368,23 +1366,7 @@ class _PodcastViewState extends State<PodcastView> {
                                           //   icon: Icon(
                                           //       Icons.arrow_circle_down_outlined),
                                           // ),
-                                          IconButton(
-                                            onPressed: () async {
-                                              share(
-                                                  episodeId:
-                                                      episodeList[index - 1]
-                                                          ['id'],
-                                                  episodeName:
-                                                      episodeList[index - 1]
-                                                          ['name']);
-                                            },
-                                            icon: Icon(
-                                                FontAwesomeIcons.shareAlt,
-                                                //  color: Color(0xffe8e8e8),
-                                                size: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    4.5),
-                                          ),
+
                                         ],
                                       ),
                                     ],
@@ -1432,6 +1414,7 @@ class _PodcastViewState extends State<PodcastView> {
           ],
         ),
       ),
+
       bottomSheet: BottomPlayer(),
     );
   }

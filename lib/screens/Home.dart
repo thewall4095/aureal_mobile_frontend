@@ -588,6 +588,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
               child: Container(
                 height: SizeConfig.safeBlockVertical * 6,
                 width: double.infinity,
+
                 decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(10)),

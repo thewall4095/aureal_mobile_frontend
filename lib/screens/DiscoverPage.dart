@@ -186,10 +186,56 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       ),
                       for (var v in homeData)
                         v['data'].length == 0
-                            ? SizedBox(
-                                height: 0,
-                              )
-                            : Padding(
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Shimmer.fromColors(
+                                    baseColor:
+                                        themeProvider.isLightTheme == false
+                                            ? kPrimaryColor
+                                            : Colors.white,
+                                    highlightColor:
+                                        themeProvider.isLightTheme == false
+                                            ? Color(0xff3a3a3a)
+                                            : Colors.white,
+                                    child: Container(
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                          Container(
+                                            color: kSecondaryColor,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2.5,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2.5,
+                                            // child: Padding(
+                                            //   padding: const EdgeInsets.all(8.0),
+                                            //   child: CachedNetworkImage(
+                                            //     memCacheHeight:
+                                            //     (MediaQuery.of(context).size.height)
+                                            //         .floor(),
+                                            //     placeholder: (context, url) => Container(
+                                            //       child: Image.asset(
+                                            //           'assets/images/Thumbnail.png'),
+                                            //     ),
+                                            //     imageUrl: podcastData == null
+                                            //         ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                            //         : podcastData['image'],
+                                            //     fit: BoxFit.cover,
+                                            //   ),
+                                            // ),
+                                          ),
+                                          SizedBox(
+                                            height: 0,
+                                      )])
+                                  ))): Padding(
                                 padding: const EdgeInsets.only(bottom: 5),
                                 child: Container(
                                   child: Column(
