@@ -790,7 +790,7 @@ class _EpisodeViewState extends State<EpisodeView>
               ),
                   SliverList(
                 delegate: SliverChildListDelegate(
-           <Widget>       [
+                          <Widget>       [
 
                       Container(
                          width: double.infinity,
@@ -887,48 +887,51 @@ class _EpisodeViewState extends State<EpisodeView>
                                      ),
                                    ),
                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        new BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.2),
-                                          blurRadius: 10.0,
-                                        ),
-                                      ],
-                                      color:
-                                      themeProvider.isLightTheme ==
-                                          true
-                                          ? Colors.white
-                                          : Color(0xff222222),
-                                      borderRadius:
-                                      BorderRadius.circular(8),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black54
+                                                .withOpacity(0.2),
+                                            blurRadius: 10.0,
+                                          ),
+                                        ],
+                                        color:
+                                        themeProvider.isLightTheme ==
+                                            true
+                                            ? Colors.white
+                                            : Color(0xff222222),
+                                        borderRadius:
+                                        BorderRadius.circular(8),
 
-                                    ),
-                                   child:  Padding(
-                                     padding: const EdgeInsets.all(15.0),
-                                     child: Container(
-                                       child:
-                                         htmlMatch.hasMatch(
-                                             episodeContent['summary']) ==
-                                             true
-                                             ? Text(
-                                           parse(episodeContent['summary'])
-                                               .body
-                                               .text,
-                                           textScaleFactor: mediaQueryData
-                                               .textScaleFactor
-                                               .clamp(0.5, 1)
-                                               .toDouble(),
-                                           style: TextStyle(
-                                             // color: Colors.white,
-                                               fontSize: SizeConfig
-                                                   .safeBlockHorizontal *
-                                                   3.8),
-                                         )
-                                             :SizedBox()),
-                                   )
-                                   ),
+                                      ),
+                                     child:  Padding(
+                                       padding: const EdgeInsets.all(15.0),
+                                       child: Container(
+                                         child:
+                                           htmlMatch.hasMatch(
+                                               episodeContent['summary']) ==
+                                               true
+                                               ? Text(
+                                             parse(episodeContent['summary'])
+                                                 .body
+                                                 .text,
+                                             textScaleFactor: mediaQueryData
+                                                 .textScaleFactor
+                                                 .clamp(0.5, 1)
+                                                 .toDouble(),
+                                             style: TextStyle(
+                                               // color: Colors.white,
+                                                 fontSize: SizeConfig
+                                                     .safeBlockHorizontal *
+                                                     3.8),
+                                           )
+                                               :SizedBox()),
+                                     )
+                                     ),
+                                  ),
                                 ],
 
                               ),
@@ -941,268 +944,287 @@ class _EpisodeViewState extends State<EpisodeView>
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 15),
-                                      child: Container(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundImage:
-                                                  CachedNetworkImageProvider(comments[
-                                                  index]['user_image'] ==
-                                                      null
-                                                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                      : comments[index]
-                                                  ['user_image']),
-                                                ),
-                                                title: Text(
-                                                  '${comments[index]['author']}',
-                                                  textScaleFactor: mediaQueryData
-                                                      .textScaleFactor
-                                                      .clamp(0.5, 1)
-                                                      .toDouble(),
-//     style: TextStyle(color: Color(0xffe8e8e8)),
-                                                ),
-                                                subtitle: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(
-                                                          bottom: 5),
-                                                      child: Text(
-                                                        "${comments[index]['text']}",
-                                                        textScaleFactor: mediaQueryData
-                                                            .textScaleFactor
-                                                            .clamp(0.5, 1)
-                                                            .toDouble(),
-// style:
-//     TextStyle(color: Color(0xffe8e8e8)),
-                                                      ),
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {},
-                                                          child: Text(
-                                                            "Reply",
-                                                            textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-// style: TextStyle(color: Colors.white),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                                trailing: IconButton(
-                                                  onPressed: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                              backgroundColor:
-                                                              Colors.transparent,
-                                                              child: UpvoteComment(
-                                                                comment_id:
-                                                                comments[index]['id']
-                                                                    .toString(),
-                                                              ));
-                                                        }).then((value) async {
-                                                      print(value);
-                                                    });
-                                                  },
-                                                  icon: Icon(
-                                                    FontAwesomeIcons.chevronCircleUp,
-//  color: Colors.white,
-                                                  ),
-                                                ),
-                                                isThreeLine: true,
-                                              ),
-                                              comments[index]['comments'] == null
-// comments[index].contains('comments') == false
-                                                  ? SizedBox(
-                                                height: 0,
-                                              )
-                                                  : ExpansionTile(
-//  backgroundColor: Colors.transparent,
-                                                trailing: SizedBox(
-                                                  width: 0,
-                                                ),
-                                                title: Align(
-                                                  alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundImage:
+                                              CachedNetworkImageProvider(comments[
+                                              index]['user_image'] ==
+                                                  null
+                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                  : comments[index]
+                                              ['user_image']),
+                                            ),
+                                            title: Text(
+                                              '${comments[index]['author']}',
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1)
+                                                  .toDouble(),
+
+                                            ),
+                                            subtitle: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      bottom: 5),
                                                   child: Text(
-                                                    "View replies",
+                                                    "${comments[index]['text']}",
                                                     textScaleFactor: mediaQueryData
                                                         .textScaleFactor
                                                         .clamp(0.5, 1)
                                                         .toDouble(),
-                                                    style: TextStyle(
-                                                      fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                          3,
-//  color: Colors.grey,
-                                                    ),
                                                   ),
                                                 ),
-                                                children: <Widget>[
-                                                  for (var v in comments[index]
-                                                  ['comments'])
-                                                    ListTile(
-                                                      leading: CircleAvatar(
-                                                        backgroundImage:
-                                                        CachedNetworkImageProvider(
-                                                            v['user_image']),
-                                                      ),
-                                                      title: Text(
-                                                        '${v['author']}',
+                                                Row(
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {},
+                                                      child: Text(
+                                                        "Reply",
                                                         textScaleFactor:
                                                         mediaQueryData
                                                             .textScaleFactor
                                                             .clamp(0.5, 1)
                                                             .toDouble(),
                                                       ),
-                                                      subtitle: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            trailing: IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Dialog(
+                                                          backgroundColor:
+                                                          Colors.transparent,
+                                                          child: UpvoteComment(
+                                                            comment_id:
+                                                            comments[index]['id']
+                                                                .toString(),
+                                                          ));
+                                                    }).then((value) async {
+                                                  print(value);
+                                                });
+                                              },
+                                              icon: Icon(
+                                                FontAwesomeIcons.chevronCircleUp,
+                                              ),
+                                            ),
+                                            isThreeLine: true,
+                                          ),
+                                          comments[index]['comments'] == null
+                                              ? SizedBox(
+                                            height: 0,
+                                          )
+                                              : ExpansionTile(
+                                            trailing: SizedBox(
+                                              width: 0,
+                                            ),
+                                            title: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                "View replies",
+                                                textScaleFactor: mediaQueryData
+                                                    .textScaleFactor
+                                                    .clamp(0.5, 1)
+                                                    .toDouble(),
+                                                style: TextStyle(
+                                                  fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                      3,
+                                                ),
+                                              ),
+                                            ),
+                                            children: <Widget>[
+                                              for (var v in comments[index]
+                                              ['comments'])
+                                                ListTile(
+                                                  leading: CircleAvatar(
+                                                    backgroundImage:
+                                                    CachedNetworkImageProvider(
+                                                        v['user_image']),
+                                                  ),
+                                                  title: Text(
+                                                    '${v['author']}',
+                                                    textScaleFactor:
+                                                    mediaQueryData
+                                                        .textScaleFactor
+                                                        .clamp(0.5, 1)
+                                                        .toDouble(),
+                                                  ),
+                                                  subtitle: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .only(
+                                                            bottom: 5),
+                                                        child: Text(
+                                                          "${v['text']}",
+                                                          textScaleFactor:
+                                                          mediaQueryData
+                                                              .textScaleFactor
+                                                              .clamp(0.5, 1)
+                                                              .toDouble(),
+                                                          style: TextStyle(),
+                                                        ),
+                                                      ),
+                                                      Row(
                                                         children: [
-                                                          Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                bottom: 5),
+                                                          GestureDetector(
+                                                            onTap: () {},
                                                             child: Text(
-                                                              "${v['text']}",
+                                                              "Reply",
                                                               textScaleFactor:
                                                               mediaQueryData
                                                                   .textScaleFactor
-                                                                  .clamp(0.5, 1)
+                                                                  .clamp(
+                                                                  0.5,
+                                                                  1)
                                                                   .toDouble(),
-                                                              style: TextStyle(),
+                                                              style:
+                                                              TextStyle(),
                                                             ),
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              GestureDetector(
-                                                                onTap: () {},
-                                                                child: Text(
-                                                                  "Reply",
-                                                                  textScaleFactor:
-                                                                  mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                      0.5,
-                                                                      1)
-                                                                      .toDouble(),
-                                                                  style:
-                                                                  TextStyle(),
-                                                                ),
-                                                              )
-                                                            ],
                                                           )
                                                         ],
-                                                      ),
-                                                      trailing: IconButton(
-                                                        onPressed: () {
-                                                          showDialog(
-                                                              context: context,
-                                                              builder: (context) {
-                                                                return Dialog(
-                                                                    backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                    child:
-                                                                    UpvoteComment(
-                                                                      comment_id: v[
-                                                                      'id']
-                                                                          .toString(),
-                                                                    ));
-                                                              }).then((value) async {
-                                                            print(value);
-                                                          });
-                                                        },
-                                                        icon: Icon(
-                                                          FontAwesomeIcons
-                                                              .chevronCircleUp,
+                                                      )
+                                                    ],
+                                                  ),
+                                                  trailing: IconButton(
+                                                    onPressed: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return Dialog(
+                                                                backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                                child:
+                                                                UpvoteComment(
+                                                                  comment_id: v[
+                                                                  'id']
+                                                                      .toString(),
+                                                                ));
+                                                          }).then((value) async {
+                                                        print(value);
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      FontAwesomeIcons
+                                                          .chevronCircleUp,
+                                                    ),
+                                                  ),
+                                                  isThreeLine: true,
+                                                ),
+
+                                            ],
+                                          ),
+                                          Container(
+
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 50),
+                                              child: Container(
+                                                width: double.infinity,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    new BoxShadow(
+                                                      color: Colors.black54
+                                                          .withOpacity(0.2),
+                                                      blurRadius: 10.0,
+                                                    ),
+                                                  ],
+                                                  color:
+                                                  themeProvider.isLightTheme ==
+                                                      true
+                                                      ? Colors.white
+                                                      : Color(0xff222222),
+                                                  borderRadius:
+                                                  BorderRadius.circular(8),),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    FlatButton(
+                                                      onPressed: () {
+                                                        Navigator.push(context, MaterialPageRoute(
+                                                            builder: (BuildContext context) {
+                                                              return Comments(
+                                                                episodeObject: episodeContent,
+                                                              );
+                                                            })).then((value) {
+                                                          getTags();
+                                                          getComments();
+                                                          if (episodeContent['likes'] == true) {
+                                                            setState(() {
+                                                              likeStatus = Like.liked;
+                                                            });
+                                                          } else {
+                                                            setState(() {
+                                                              likeStatus = Like.unliked;
+                                                            });
+                                                          }
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        child: Row(
+                                                          children: <Widget>[
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(
+                                                                  vertical: 10),
+                                                              child: Row(
+                                                                children: <Widget>[
+                                                                  CircleAvatar(
+                                                                    backgroundImage: prefs.getString(
+                                                                        'displayPicture') ==
+                                                                        null
+                                                                        ? AssetImage(
+                                                                        'assets/images/Thumbnail.png')
+                                                                        : NetworkImage(
+                                                                        prefs.getString(
+                                                                            'displayPicture')),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 10,
+                                                                  ),
+                                                                  Text(
+                                                                    'Add a comment...',
+                                                                    textScaleFactor: mediaQueryData
+                                                                        .textScaleFactor
+                                                                        .clamp(0.5, 1)
+                                                                        .toDouble(),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
                                                       ),
-                                                      isThreeLine: true,
                                                     ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     );
                                   },
                                   itemCount: comments.length,
                                 ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    FlatButton(
-//    color: Colors.blueAccent,
-                                      onPressed: () {
-                                        Navigator.push(context, MaterialPageRoute(
-                                            builder: (BuildContext context) {
-                                              return Comments(
-                                                episodeObject: episodeContent,
-                                              );
-                                            })).then((value) {
-                                          getTags();
-                                          getComments();
-                                          if (episodeContent['likes'] == true) {
-                                            setState(() {
-                                              likeStatus = Like.liked;
-                                            });
-                                          } else {
-                                            setState(() {
-                                              likeStatus = Like.unliked;
-                                            });
-                                          }
-                                        });
-                                      },
-                                      child: Container(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 10),
-                                              child: Row(
-                                                children: <Widget>[
-                                                  CircleAvatar(
-                                                    backgroundImage: prefs.getString(
-                                                        'displayPicture') ==
-                                                        null
-                                                        ? AssetImage(
-                                                        'assets/images/Thumbnail.png')
-                                                        : NetworkImage(
-                                                        prefs.getString(
-                                                            'displayPicture')),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Text(
-                                                    'Add a comment...',
-                                                    textScaleFactor: mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.5, 1)
-                                                        .toDouble(),
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ],
+
                             ),
                         ]),
                       ),
