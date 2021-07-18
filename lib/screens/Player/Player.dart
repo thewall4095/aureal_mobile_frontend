@@ -476,8 +476,9 @@ class _PlayerState extends State<Player> {
                                               print(value);
                                             });
                                             setState(() {
-                                              episodeObject.ifVoted =
-                                                  !episodeObject.ifVoted;
+                                              if(episodeObject.ifVoted != true){
+                                                episodeObject.ifVoted = true;
+                                              }
                                             });
                                             setState(() {
                                               isUpvoteLoading = false;

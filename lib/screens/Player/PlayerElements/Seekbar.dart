@@ -116,7 +116,9 @@ class _SeekbarState extends State<Seekbar> {
             activeColor: themeProvider.isLightTheme == false
                 ? Colors.white
                 : kPrimaryColor,
-            inactiveColor: Color(widget.dominantColor).withOpacity(0.5),
+            inactiveColor: widget.dominantColor == null
+                ? Colors.blue
+                : Color(widget.dominantColor),
             min: 0,
             max: widget.duration.inMilliseconds.toDouble(),
             value: percent * widget.duration.inMilliseconds.toDouble(),
