@@ -16,7 +16,6 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
@@ -171,8 +170,6 @@ class _PodcastViewState extends State<PodcastView> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
-
-
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -748,37 +745,34 @@ class _PodcastViewState extends State<PodcastView> {
                           ])
                         ]));
               } else {
-                if (index == episodeList.length + 1) {
-                  return isLoading == false
-                      ? (_controller.position.pixels !=
-                              _controller.position.maxScrollExtent
-                          ? SizedBox()
-                      : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Shimmer.fromColors(
-                        baseColor: themeProvider.isLightTheme == false
-                            ? kPrimaryColor
-                            : Colors.white,
-                        highlightColor: themeProvider.isLightTheme == false
-                            ? Color(0xff3a3a3a)
-                            : Colors.white,
-                    )
-                  )
-                  )
-
-                :Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Shimmer.fromColors(
-                        baseColor: themeProvider.isLightTheme == false
-                            ? kPrimaryColor
-                            : Colors.white,
-                        highlightColor: themeProvider.isLightTheme == false
-                            ? Color(0xff3a3a3a)
-                            : Colors.white,
-                      )
-                  )
-                      ;
-                }
+                // if (index == episodeList.length + 1) {
+                //   return isLoading == false
+                //       ? (_controller.position.pixels !=
+                //               _controller.position.maxScrollExtent
+                //           ? SizedBox()
+                //           : Padding(
+                //               padding:
+                //                   const EdgeInsets.symmetric(horizontal: 10),
+                //               child: Shimmer.fromColors(
+                //                 baseColor: themeProvider.isLightTheme == false
+                //                     ? kPrimaryColor
+                //                     : Colors.white,
+                //                 highlightColor:
+                //                     themeProvider.isLightTheme == false
+                //                         ? Color(0xff3a3a3a)
+                //                         : Colors.white,
+                //               )))
+                //       : Padding(
+                //           padding: const EdgeInsets.symmetric(horizontal: 10),
+                //           child: Shimmer.fromColors(
+                //             baseColor: themeProvider.isLightTheme == false
+                //                 ? kPrimaryColor
+                //                 : Colors.white,
+                //             highlightColor: themeProvider.isLightTheme == false
+                //                 ? Color(0xff3a3a3a)
+                //                 : Colors.white,
+                //           ));
+                // }
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -1366,7 +1360,6 @@ class _PodcastViewState extends State<PodcastView> {
                                           //   icon: Icon(
                                           //       Icons.arrow_circle_down_outlined),
                                           // ),
-
                                         ],
                                       ),
                                     ],
@@ -1410,11 +1403,10 @@ class _PodcastViewState extends State<PodcastView> {
                   ),
                 );
               }
-            }, childCount: episodeList.length + 2))
+            }, childCount: episodeList.length + 1))
           ],
         ),
       ),
-
       bottomSheet: BottomPlayer(),
     );
   }
