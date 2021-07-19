@@ -181,7 +181,7 @@ class _CommentsState extends State<Comments> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+
         elevation: 0,
         leading: IconButton(
           onPressed: () {
@@ -190,118 +190,130 @@ class _CommentsState extends State<Comments> {
           icon: Icon(
             Icons.navigate_before,
           ),
+
+        ),
+        title: Text(
+          "${widget.episodeObject['podcast_name']}",
+          textScaleFactor: 1.0,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: SizeConfig.safeBlockHorizontal * 3,
+              fontWeight: FontWeight.w800,
+          ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
               children: [
-                CachedNetworkImage(
-                  imageUrl: displayPicture == null
-                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                      : displayPicture,
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      height: MediaQuery.of(context).size.width / 5,
-                      width: MediaQuery.of(context).size.width / 5,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover)),
-                    );
-                  },
-                ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 40,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, top: 30),
-                  child: Text(
-                    "${comments[0]['author']}",
-                    textScaleFactor: 1.0,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: SizeConfig.safeBlockHorizontal * 4,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xffe8e8e8)),
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                     "${widget.episodeObject['name']}",
+                      textScaleFactor: 1.0,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 4,
+                          fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height / 1.2,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black
+                      .withOpacity(01),
+                  blurRadius: 10.0,
+                ),
+              ],
+              color:
+              themeProvider.isLightTheme ==
+                  true
+                  ? Colors.white
+                  : Color(0xff222222),
+
             ),
-            Container(
-              height: MediaQuery.of(context).size.height / 1.3,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Color(0xff222222),
-              ),
-              child: Stack(
-                children: <Widget>[
-                  ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == comments.length) {
-                        return SizedBox(
-                          height: 400,
-                        );
-                      } else {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black54.withOpacity(0.2),
-                                  blurRadius: 10.0,
-                                ),
-                              ],
-                              color: themeProvider.isLightTheme == true
-                                  ? Colors.white
-                                  : Color(0xff222222),
-                              borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: <Widget>[
+                ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == comments.length) {
+                      return SizedBox(
+                        height: 400,
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: comments[index]
+                                                ['user_image'] ==
+                                            null
+                                        ? AssetImage(
+                                            'assets/images/person.png')
+                                        : NetworkImage(comments[index]
+                                            ['user_image']),
+                                    fit: BoxFit.cover),
+                                shape: BoxShape.circle,
+                                // color: Colors.white,
+                              ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: comments[index]
-                                                      ['user_image'] ==
-                                                  null
-                                              ? AssetImage(
-                                                  'assets/images/person.png')
-                                              : NetworkImage(comments[index]
-                                                  ['user_image']),
-                                          fit: BoxFit.cover),
-                                      shape: BoxShape.circle,
-                                      // color: Colors.white,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Row(
-                                      children: <Widget>[
-                                        SizedBox(
-                                          width: 10,
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      boxShadow: [
+                                        new BoxShadow(
+                                          color: Colors.black
+                                              .withOpacity(01),
+                                          blurRadius: 10.0,
                                         ),
-                                        Expanded(
+                                      ],
+                                    color: themeProvider.isLightTheme == true
+                                        ? Colors.white
+                                        : kPrimaryColor,
+                                    borderRadius:BorderRadius.only(
+                                        topRight: Radius.circular(15.0),
+                                        bottomRight: Radius.circular(15.0),
+                                          bottomLeft: Radius.circular(15))),
+                                  child: Row(
+
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: <Widget>[
-                                              // Wrap(
-                                              //   direction: Axis.horizontal,
-                                              //   children: <Widget>[
                                               Text(
                                                 '${comments[index]['author']}',
                                                 textScaleFactor: mediaQueryData
@@ -313,6 +325,7 @@ class _CommentsState extends State<Comments> {
                                                     fontWeight:
                                                         FontWeight.w600),
                                               ),
+                                              SizedBox(height: 5,),
                                               Text(
                                                 '${comments[index]['text']}',
                                                 textScaleFactor: mediaQueryData
@@ -320,33 +333,17 @@ class _CommentsState extends State<Comments> {
                                                     .clamp(0.5, 1)
                                                     .toDouble(),
                                                 style: TextStyle(
-                                                    // color: Colors.white,
+
                                                     fontWeight:
                                                         FontWeight.normal),
                                               ),
-                                              //   ],
-                                              // ),
-                                              SizedBox(
-                                                height: 4,
-                                              ),
+
+
                                               Row(
+                                                mainAxisAlignment: MainAxisAlignment.end,
                                                 children: <Widget>[
-                                                  // Text(
-                                                  //   timeago.format(DateTime.parse(
-                                                  //       comments[index]
-                                                  //           ['createdAt'])),
-                                                  //   textScaleFactor:
-                                                  //       mediaQueryData
-                                                  //           .textScaleFactor
-                                                  //           .clamp(0.5, 1)
-                                                  //           .toDouble(),
-                                                  //   style: TextStyle(
-                                                  //       // color: Colors.grey,
-                                                  //       fontSize: SizeConfig
-                                                  //               .safeBlockHorizontal *
-                                                  //           3.2),
-                                                  // ),
                                                   SizedBox(
+                                                    height: 30,
                                                     width: 20,
                                                   ),
                                                   GestureDetector(
@@ -362,20 +359,30 @@ class _CommentsState extends State<Comments> {
                                                                 ['id'];
                                                       });
                                                     },
-                                                    child: Text(
-                                                      "Reply",
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5, 1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          // color: Colors.grey,
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.blue,
+                                                   borderRadius: BorderRadius.circular(20)
+                                                      ),
+                                                      height: 20,
+                                                      width: 40,
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Reply",
+                                                          textScaleFactor:
+                                                              mediaQueryData
+                                                                  .textScaleFactor
+                                                                  .clamp(0.5, 1)
+                                                                  .toDouble(),
+                                                          style: TextStyle(
+                                                              // color: Colors.grey,
+                                                              fontSize: SizeConfig
+                                                                      .safeBlockHorizontal *
+                                                                  3),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
                                               comments[index]['comments'] ==
@@ -461,26 +468,9 @@ class _CommentsState extends State<Comments> {
                                                                                     //     .white,
                                                                                     fontWeight: FontWeight.normal),
                                                                               ),
-                                                                              //   ],
-                                                                              // ),
-                                                                              // Text(
-                                                                              //   '${v['author']}  ${v['text']}',
-                                                                              //   style: TextStyle(
-                                                                              //       color: Colors
-                                                                              //           .white,
-                                                                              //       fontSize:
-                                                                              //           SizeConfig.safeBlockHorizontal *
-                                                                              //               3.2),
-                                                                              // ),
+
                                                                               Row(
                                                                                 children: <Widget>[
-                                                                                  // Text(
-                                                                                  //   timeago.format(DateTime.parse(v['createdAt'])),
-                                                                                  //   textScaleFactor: 1.0,
-                                                                                  //   style: TextStyle(
-                                                                                  //       // color: Colors.grey,
-                                                                                  //       fontSize: SizeConfig.safeBlockHorizontal * 3),
-                                                                                  // ),
                                                                                   SizedBox(
                                                                                     width: 10,
                                                                                   ),
@@ -611,110 +601,136 @@ class _CommentsState extends State<Comments> {
                                                     )
                                             ],
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      upVoteComment(
-                                          comments[index]['id'].toString());
-                                    },
-                                    icon: Icon(
-                                      FontAwesomeIcons.chevronCircleUp,
-                                      // color: Colors.white,
-                                    ),
-                                  ),
-                                  // Icon(
-                                  //   FontAwesomeIcons.heart,
-                                  //   color: Colors.white,
-                                  //   size: 13,
-                                  // )
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                    itemCount: comments.length + 1,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Stack(
-                        children: [
-                          Container(
-                            child: isSending == false
-                                ? SizedBox(
-                                    width: 0,
-                                  )
-                                : LinearProgressIndicator(
-                                    minHeight: 50,
-                                    backgroundColor: Colors.blue,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xff6249EF)),
-                                  ),
-                          ),
-                          texting == CommentState.reply
-                              ? Builder(
-                                  builder: (context) {
-                                    return SingleChildScrollView(
+                            SizedBox(
+                              width: 10,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                upVoteComment(
+                                    comments[index]['id'].toString());
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.chevronCircleUp,
+                                // color: Colors.white,
+                              ),
+                            ),
+                            // Icon(
+                            //   FontAwesomeIcons.heart,
+                            //   color: Colors.white,
+                            //   size: 13,
+                            // )
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  itemCount: comments.length + 1,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Stack(
+                      children: [
+                        Container(
+                          child: isSending == false
+                              ? SizedBox(
+                                  width: 0,
+                                )
+                              : LinearProgressIndicator(
+                                  minHeight: 50,
+                                  backgroundColor: Colors.blue,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xff6249EF)),
+                                ),
+                        ),
+                        texting == CommentState.reply
+                            ? Builder(
+                                builder: (context) {
+                                  return SingleChildScrollView(
+                                    child: Center(
                                       child: Container(
+                                        decoration: BoxDecoration(
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                color: Colors.black54.withOpacity(0.2),
+                                                blurRadius:10.0,
+                                              ),
+                                            ],
+                                            color: isSending == false
+                                                ?  kPrimaryColor
+                                                : Colors.transparent,
+                                            borderRadius: BorderRadius.circular(10)),
+                                        width: MediaQuery.of(context).size.width / 1.3,
                                         padding: EdgeInsets.only(
                                             bottom: MediaQuery.of(context)
                                                 .viewInsets
                                                 .bottom),
                                         child: Column(
                                           children: <Widget>[
-                                            Container(
-                                              color: isSending == false
-                                                  ? kSecondaryColor
-                                                  : Colors.transparent,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "Replying to $replyingTo",
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5, 1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3.2),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          texting = CommentState
-                                                              .comment;
-                                                        });
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.clear,
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Replying to $replyingTo",
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(0.5, 1)
+                                                            .toDouble(),
+                                                    style: TextStyle(
                                                         color: Colors.grey,
-                                                        size: 15,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            3.2),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        texting = CommentState
+                                                            .comment;
+                                                      });
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.clear,
+                                                      color: Colors.grey,
+                                                      size: 15,
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
+
                                             Container(
-                                              color: kSecondaryColor,
+                                              decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    new BoxShadow(
+                                                      color: Colors.black54.withOpacity(0.2),
+                                                      blurRadius:10.0,
+                                                    ),
+                                                  ],
+                                                  color: isSending == false
+                                                      ?kPrimaryColor
+                                                      : Colors.transparent,
+                                                  borderRadius: BorderRadius.circular(10)),
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom)
+                                              ,
+                                              width: MediaQuery.of(context).size.width / 1.3,
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
@@ -744,8 +760,10 @@ class _CommentsState extends State<Comments> {
                                                       controller:
                                                           _commentsController,
                                                       enabled: true,
-                                                      minLines: 1,
-                                                      maxLines: 10,
+
+                                                          autofocus: true,
+                                                          maxLines: null,
+
                                                       style: TextStyle(
                                                           color: Colors.white),
                                                       decoration: InputDecoration(
@@ -793,34 +811,42 @@ class _CommentsState extends State<Comments> {
                                           ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                )
-                              : Builder(
+                                    ),
+                                  );
+                                },
+                              )
+                            : Padding(
+                              padding: const EdgeInsets.only(left: 40,bottom: 20),
+                              child: Builder(
                                   builder: (context) {
                                     return SingleChildScrollView(
                                       child: Container(
+
+                                        decoration: BoxDecoration(
+                                        boxShadow: [
+                                        new BoxShadow(
+                                        color: Colors.black
+                                        .withOpacity(01),
+                                    blurRadius: 10.0,
+                                    ),
+                                    ],
+                                    color: themeProvider.isLightTheme == true
+                                    ? Colors.white
+                                        : kPrimaryColor,
+                                            borderRadius: BorderRadius.circular(10)),
                                         padding: EdgeInsets.only(
                                             bottom: MediaQuery.of(context)
                                                 .viewInsets
-                                                .bottom),
-                                        color: isSending == false
-                                            ? kSecondaryColor
-                                            : Colors.transparent,
+                                                .bottom)
+                                        ,
+                                        width: MediaQuery.of(context).size.width / 1.3,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10),
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
-                                              CircleAvatar(
-                                                radius: 15,
-                                                backgroundImage: displayPicture ==
-                                                        null
-                                                    ? AssetImage(
-                                                        'assets/images/Thumbnail.png')
-                                                    : NetworkImage(
-                                                        displayPicture),
-                                              ),
+                                             Icon( Icons.chat_bubble_outline),
                                               SizedBox(
                                                 width: 10,
                                               ),
@@ -836,7 +862,7 @@ class _CommentsState extends State<Comments> {
                                                 minLines: 1,
                                                 maxLines: 10,
                                                 style: TextStyle(
-                                                    color: Colors.white),
+                                                   ),
                                                 decoration: InputDecoration(
                                                     border: InputBorder.none,
                                                     hintText:
@@ -858,20 +884,12 @@ class _CommentsState extends State<Comments> {
                                                     await postComment();
                                                   }
                                                 },
-                                                child: Text(
-                                                  "Post",
-                                                  textScaleFactor:
-                                                      mediaQueryData
-                                                          .textScaleFactor
-                                                          .clamp(0.5, 1)
-                                                          .toDouble(),
-                                                  style: TextStyle(
-                                                      color: kActiveColor,
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          3.4),
-                                                ),
-                                              )
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(left: 20),
+                                                  child: Icon(
+                                                     Icons.send
+                                              ),
+                                                ))
                                             ],
                                           ),
                                         ),
@@ -879,15 +897,15 @@ class _CommentsState extends State<Comments> {
                                     );
                                   },
                                 ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                            ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
 
       // body: Stack(

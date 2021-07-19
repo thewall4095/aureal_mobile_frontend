@@ -44,7 +44,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   var popular_trending = [];
   String displayPicture;
   String hiveUserName;
-
+  bool isExpanded = false;
   void getLocalData() async {
     pref = await SharedPreferences.getInstance();
     print(pref.getString('token'));
@@ -68,7 +68,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
     getDiscoverContent();
     super.initState();
   }
-
+  void onPanUpdate(DragUpdateDetails details) {
+    if (details.delta.dy < 0) {
+      setState(() {
+        isExpanded = true;
+      });
+    } else if (details.delta.dy > 0) {
+      setState(() {
+        isExpanded = false;
+      });
+    }
+  }
   String creator = '';
 
   SharedPreferences pref;
@@ -109,6 +119,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         });
       }
     }
+
 
     Future<void> _pullRefresh() async {
       print('proceedd');
@@ -358,11 +369,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     onTap: () {
                                                                       Navigator.push(
                                                                           context,
-                                                                          MaterialPageRoute(builder:
-                                                                              (context) {
-                                                                        return PodcastView(
-                                                                            v['id']);
-                                                                      }));
+                                                                          SlideRightRoute(widget: PodcastView(
+                                                                              v['id'])));
+
                                                                     },
                                                                     child:
                                                                         Container(
@@ -378,35 +387,35 @@ class _DiscoverPageState extends State<DiscoverPage> {
 //
                                                                       child:
                                                                           Container(
-                                                                        child:
-                                                                            CachedNetworkImage(
-                                                                          imageBuilder:
-                                                                              (context, imageProvider) {
-                                                                            return Container(
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                                                              ),
-                                                                              height: MediaQuery.of(context).size.width,
-                                                                              width: MediaQuery.of(context).size.width,
-                                                                            );
-                                                                          },
-                                                                          placeholder:
-                                                                              (context, String url) {
-                                                                            return Container(
-                                                                              width: MediaQuery.of(context).size.width / 4,
-                                                                              height: MediaQuery.of(context).size.width / 4,
-                                                                            );
-                                                                          },
-                                                                          memCacheHeight:
-                                                                              (MediaQuery.of(context).size.height).floor(),
-                                                                          imageUrl: v['image'] == null
-                                                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                              : v['image'],
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(Icons.error),
-                                                                        ),
-                                                                      ),
+                                                                          child:
+                                                                          CachedNetworkImage(
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                                ),
+                                                                                height: MediaQuery.of(context).size.width,
+                                                                                width: MediaQuery.of(context).size.width,
+                                                                              );
+                                                                            },
+                                                                            placeholder:
+                                                                                (context, String url) {
+                                                                              return Container(
+                                                                                width: MediaQuery.of(context).size.width / 4,
+                                                                                height: MediaQuery.of(context).size.width / 4,
+                                                                              );
+                                                                            },
+                                                                            memCacheHeight:
+                                                                            (MediaQuery.of(context).size.height).floor(),
+                                                                            imageUrl: v['image'] == null
+                                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                                : v['image'],
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(Icons.error),
+                                                                          ),
+                                                                          ),
                                                                     ),
                                                                   ),
                                                                   Padding(
@@ -884,12 +893,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           onTap: () {
                                                                             Navigator.push(
                                                                                 context,
-                                                                                MaterialPageRoute(
-                                                                                    builder:
-                                                                                        (context) {
-                                                                              return PodcastView(
-                                                                                  a['id']);
-                                                                            }));
+                                                                                SlideRightRoute(widget:
+
+                                                                             PodcastView(
+                                                                                  a['id'])));
+
                                                                           },
                                                                           child:
                                                                               Container(

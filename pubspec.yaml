@@ -63,7 +63,9 @@ dependencies:
   flutter_ffmpeg: ^0.4.0
   image_picker: any
   image_cropper: any
-  circular_clip_route: ^0.1.2
+  focused_menu: ^1.0.0
+
+
 
 #  in_app_update: any
 #  flutter_image_compress: ^1.0.0

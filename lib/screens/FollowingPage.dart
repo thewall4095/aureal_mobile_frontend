@@ -18,6 +18,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -263,6 +265,7 @@ class _FollowingPageState extends State<FollowingPage>
       onWillPop: _onBackPressed,
       child: Scaffold(
         body: NestedScrollView(
+          physics: BouncingScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
@@ -282,19 +285,17 @@ class _FollowingPageState extends State<FollowingPage>
                           height: 30,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                                 itemCount: hiveEpisodes.length ,
+                                 itemCount: hiveEpisodes.length -1 ,
                               itemBuilder: (BuildContext context, int index) {
                                 return WidgetANimator(
-                                    // for (var v in categories.categoryList)
                                   Row(
                                     children: [
                                       for (var v in categories.categoryList)
                                       GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) {
-                                            return CategoryView(categoryObject: v);
-                                          }));
+                                          SlideRightRoute(widget:
+                                           CategoryView(categoryObject: v)));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(2.0),
@@ -349,7 +350,7 @@ class _FollowingPageState extends State<FollowingPage>
               child: Container(
                 child: ListView.builder(
                   controller: _scrollController,
-                    itemCount: favPodcast.length,
+                    itemCount: favPodcast.length - 1,
                     itemBuilder: (BuildContext context, int index) {
                       return WidgetANimator(
                         Column(
@@ -389,10 +390,9 @@ class _FollowingPageState extends State<FollowingPage>
                                                 InkWell(
                                                   onTap: () {
                                                     Navigator.push(context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                              return PodcastView(v['id']);
-                                                            }));
+                                                    SlideRightRoute(widget:
+                                                             PodcastView(v['id'])));
+
                                                   },
                                                   child: Padding(
                                                     padding: const EdgeInsets.all(8.0),
@@ -667,11 +667,10 @@ class _FollowingPageState extends State<FollowingPage>
                                           InkWell(
                                             onTap: () {
                                               Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return EpisodeView(
-                                                    episodeId: v['id']);
-                                              }));
+                                              SlideRightRoute(widget:
+                                                 EpisodeView(
+                                                    episodeId: v['id'])));
+
                                             },
                                             child: Padding(
                                               padding: const EdgeInsets.symmetric(
@@ -780,12 +779,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   onTap: () {
                                                                     Navigator.push(
                                                                         context,
-                                                                        MaterialPageRoute(
-                                                                            builder:
-                                                                                (context) {
-                                                                      return PodcastView(
-                                                                          v['podcast_id']);
-                                                                    }));
+                                                                    SlideRightRoute(widget:
+                                                                     PodcastView(
+                                                                          v['podcast_id'])));
+
                                                                   },
                                                                   child: Text(
                                                                     v['podcast_name'],
@@ -1047,14 +1044,12 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         null) {
                                                                       Navigator.push(
                                                                           context,
-                                                                          MaterialPageRoute(
-                                                                              builder:
-                                                                                  (context) {
-                                                                        return Comments(
+                                                                      SlideRightRoute(widget:
+                                                                     Comments(
                                                                           episodeObject:
                                                                               v,
-                                                                        );
-                                                                      }));
+                                                                      ))  );
+
                                                                     } else {
                                                                       showBarModalBottomSheet(
                                                                           context:
@@ -1307,20 +1302,16 @@ class _FollowingPageState extends State<FollowingPage>
                                               ),
                                             ),
                                           ),
-
-                                        //
-                                        // Shimmer.fromColors(
-                                        //   direction: ShimmerDirection.ttb,
-                                        //   baseColor: Color(0xff3a3a3a),
-                                        //   highlightColor: kPrimaryColor,
-                                        //   child: Container(
-                                        //     color: kSecondaryColor,
-                                        //     height: 10,
-                                        //     width:
-                                        //         MediaQuery.of(context).size.width,
-                                        //   ),
-                                        // ),
-                                      ],
+                                     Container(
+                                    height: 10,
+                                    width: double.infinity,
+                                    child: LinearProgressIndicator(
+                                    minHeight: 10,
+                                    backgroundColor: Colors.blue,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xff6249EF)),
+                                    ),
+                                    )
+                                                                      ],
                                     ),
                                   )
                           ],

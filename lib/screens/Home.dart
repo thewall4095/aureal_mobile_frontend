@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:circular_clip_route/circular_clip_route.dart';
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -396,12 +396,11 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.push(context, CircularClipRoute(
-                  builder: (_) =>Profile(),
-              expandFrom: context,
-              // Navigator.push(context, MaterialPageRoute(builder: (context) {
-              //   return Profile();
-              ));
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, _) {
+                    return SecondScreen();
+                  },
+                  opaque: false));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -591,7 +590,6 @@ class _BottomPlayerState extends State<BottomPlayer> {
               child: Container(
                 height: SizeConfig.safeBlockVertical * 6,
                 width: double.infinity,
-
                 decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(10)),

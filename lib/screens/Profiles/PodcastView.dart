@@ -38,6 +38,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../PlayerState.dart';
 import '../../main.dart';
+import '../RouteAnimation.dart';
 // import 'package:hive_flutter/hive_flutter.dart';
 
 enum FollowState {
@@ -805,11 +806,9 @@ class _PodcastViewState extends State<PodcastView> {
                             contentPadding: EdgeInsets.zero,
 
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return EpisodeView(
-                                    episodeId: episodeList[index - 1]['id']);
-                              }));
+                              Navigator.push(context,   SlideRightRoute(widget:
+                               EpisodeView(
+                                    episodeId: episodeList[index - 1]['id'])));
                             },
                             //
                             title: Text(
@@ -1099,15 +1098,13 @@ class _PodcastViewState extends State<PodcastView> {
                                                               'HiveUserName') !=
                                                           null) {
                                                         Navigator.push(context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) {
-                                                          return Comments(
+                                                        SlideRightRoute(widget:
+                                                        Comments(
                                                             episodeObject:
                                                                 episodeList[
                                                                     index - 1],
-                                                          );
-                                                        }));
+                                                        )));
+
                                                       } else {
                                                         showBarModalBottomSheet(
                                                             context: context,
