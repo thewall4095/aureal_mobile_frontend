@@ -240,7 +240,7 @@ class _CommentsState extends State<Comments> {
                 new BoxShadow(
                   color: Colors.black
                       .withOpacity(01),
-                  blurRadius: 10.0,
+                  blurRadius: 5.0,
                 ),
               ],
               color:
@@ -291,7 +291,7 @@ class _CommentsState extends State<Comments> {
                                         new BoxShadow(
                                           color: Colors.black
                                               .withOpacity(01),
-                                          blurRadius: 10.0,
+                                          blurRadius: 5.0,
                                         ),
                                       ],
                                     color: themeProvider.isLightTheme == true
@@ -660,7 +660,7 @@ class _CommentsState extends State<Comments> {
                                             boxShadow: [
                                               new BoxShadow(
                                                 color: Colors.black54.withOpacity(0.2),
-                                                blurRadius:10.0,
+                                                blurRadius:5.0,
                                               ),
                                             ],
                                             color: isSending == false
@@ -718,7 +718,7 @@ class _CommentsState extends State<Comments> {
                                                   boxShadow: [
                                                     new BoxShadow(
                                                       color: Colors.black54.withOpacity(0.2),
-                                                      blurRadius:10.0,
+                                                      blurRadius:5.0,
                                                     ),
                                                   ],
                                                   color: isSending == false
@@ -827,7 +827,7 @@ class _CommentsState extends State<Comments> {
                                         new BoxShadow(
                                         color: Colors.black
                                         .withOpacity(01),
-                                    blurRadius: 10.0,
+                                    blurRadius: 5.0,
                                     ),
                                     ],
                                     color: themeProvider.isLightTheme == true
@@ -866,7 +866,7 @@ class _CommentsState extends State<Comments> {
                                                 decoration: InputDecoration(
                                                     border: InputBorder.none,
                                                     hintText:
-                                                        'Comment as @$user',
+                                                        'Comment as',
                                                     hintStyle: TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: SizeConfig

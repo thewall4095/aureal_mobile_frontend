@@ -248,47 +248,69 @@ class _CategoryViewState extends State<CategoryView> {
                         ),
 
                         width: double.infinity,
-                        child: Row(
-                          children: <Widget>[
+                        child: Column(
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Container(
-                              height: 80,
-                              width: 80,
-                              // child: FadeInImage.assetNetwork(
-                              //     placeholder: 'assets/images/Thumbnail.png',
-                              //     image: '${result[index]['image']}'),
-                              child:  CachedNetworkImage(
-                                imageBuilder:
-                                    (context, imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                    ),
-                                    height: MediaQuery.of(context).size.width,
-                                    width: MediaQuery.of(context).size.width,
-                                  );
-                                },
-                                imageUrl: '${result[index]['image']}',
-                                fit: BoxFit.cover,
-                                // memCacheHeight:
-                                //     MediaQuery.of(
-                                //             context)
-                                //         .size
-                                //         .width
-                                //         .ceil(),
-                                memCacheHeight: MediaQuery.of(context)
-                                    .size
-                                    .height
-                                    .floor(),
+                              height: MediaQuery.of(context).size.height /10,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10,left: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                  CachedNetworkImage(
+                                    imageBuilder:
+                                        (context, imageProvider) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                        ),
+                                        width: MediaQuery.of(
+                                            context)
+                                            .size
+                                            .width /
+                                            7,
+                                        height: MediaQuery.of(
+                                            context)
+                                            .size
+                                            .width /
+                                            7,
+                                      );
+                                    },
+                                    imageUrl: '${result[index]['image']}',
+                                    fit: BoxFit.cover,
+                                    // memCacheHeight:
+                                    //     MediaQuery.of(
+                                    //             context)
+                                    //         .size
+                                    //         .width
+                                    //         .ceil(),
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        7,
+                                    height: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        7,
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
 
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),),
-
-                            SizedBox(width: 10),
-                            Expanded(
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20,bottom: 10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
                                     "${result[index]['name']}",
@@ -301,13 +323,13 @@ class _CategoryViewState extends State<CategoryView> {
                                       // color: Colors.white,
                                         fontSize:
                                         SizeConfig.safeBlockHorizontal * 3.5,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(
                                     height: 4,
                                   ),
                                   Text(
-                                    result[index]['author'],
+                                    "${result[index]['author']}",
                                     textScaleFactor: mediaQueryData.textScaleFactor
                                         .clamp(0.5, 0.9)
                                         .toDouble(),
@@ -321,42 +343,120 @@ class _CategoryViewState extends State<CategoryView> {
                                   SizedBox(
                                     height: 5,
                                   ),
-//                                        Wrap(
-//                                          runSpacing: 10,
-//                                          spacing: 10,
-//                                          runAlignment: WrapAlignment.start,
-//                                          children: <Widget>[
-//                                            for (var v in podcasts[index]
-//                                                ['major_tags'])
-//                                              Container(
-//                                                decoration: BoxDecoration(
-//                                                    borderRadius:
-//                                                        BorderRadius.circular(
-//                                                            15),
-//                                                    color: kSecondaryColor),
-//                                                child: Padding(
-//                                                  padding: const EdgeInsets
-//                                                          .symmetric(
-//                                                      horizontal: 8,
-//                                                      vertical: 5),
-//                                                  child: Text(
-//                                                    v['name'],
-//                                                    style: TextStyle(
-//                                                        color: Colors.grey,
-//                                                        fontSize: 13),
-//                                                  ),
-//                                                ),
-//                                              )
-//                                          ],
-//                                        )
+
                                 ],
                               ),
                             )
-                          ],
+                              ],
+                           )
+
+//                             Row(
+//                               children: <Widget>[
+//                                 Container(
+//                                   height: 80,
+//                                   width: 80,
+//                                   child:  CachedNetworkImage(
+//                                     imageBuilder:
+//                                         (context, imageProvider) {
+//                                       return Container(
+//                                         decoration: BoxDecoration(
+//                                           borderRadius: BorderRadius.circular(10),
+//                                           image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+//                                         ),
+//                                         height: MediaQuery.of(context).size.width,
+//                                         width: MediaQuery.of(context).size.width,
+//                                       );
+//                                     },
+//                                     imageUrl: '${result[index]['image']}',
+//                                     fit: BoxFit.cover,
+//                                     // memCacheHeight:
+//                                     //     MediaQuery.of(
+//                                     //             context)
+//                                     //         .size
+//                                     //         .width
+//                                     //         .ceil(),
+//                                     memCacheHeight: MediaQuery.of(context)
+//                                         .size
+//                                         .height
+//                                         .floor(),
+//
+//                                     errorWidget: (context, url, error) =>
+//                                         Icon(Icons.error),
+//                                   ),),
+//
+//                                 SizedBox(width: 10),
+//                                 Expanded(
+//                                   child: Column(
+//                                     crossAxisAlignment: CrossAxisAlignment.start,
+//                                     children: <Widget>[
+//                                       Text(
+//                                         "${result[index]['name']}",
+//                                         textScaleFactor: mediaQueryData.textScaleFactor
+//                                             .clamp(0.5, 1.3)
+//                                             .toDouble(),
+//                                         maxLines: 1,
+//                                         overflow: TextOverflow.ellipsis,
+//                                         style: TextStyle(
+//                                           // color: Colors.white,
+//                                             fontSize:
+//                                             SizeConfig.safeBlockHorizontal * 3.5,
+//                                             fontWeight: FontWeight.w400),
+//                                       ),
+//                                       SizedBox(
+//                                         height: 4,
+//                                       ),
+//                                       Text(
+//                                         result[index]['author'],
+//                                         textScaleFactor: mediaQueryData.textScaleFactor
+//                                             .clamp(0.5, 0.9)
+//                                             .toDouble(),
+//                                         maxLines: 2,
+//                                         overflow: TextOverflow.ellipsis,
+//                                         style: TextStyle(
+//                                           //  color: Colors.grey,
+//                                             fontSize:
+//                                             SizeConfig.safeBlockHorizontal * 3),
+//                                       ),
+//                                       SizedBox(
+//                                         height: 5,
+//                                       ),
+// //                                        Wrap(
+// //                                          runSpacing: 10,
+// //                                          spacing: 10,
+// //                                          runAlignment: WrapAlignment.start,
+// //                                          children: <Widget>[
+// //                                            for (var v in podcasts[index]
+// //                                                ['major_tags'])
+// //                                              Container(
+// //                                                decoration: BoxDecoration(
+// //                                                    borderRadius:
+// //                                                        BorderRadius.circular(
+// //                                                            15),
+// //                                                    color: kSecondaryColor),
+// //                                                child: Padding(
+// //                                                  padding: const EdgeInsets
+// //                                                          .symmetric(
+// //                                                      horizontal: 8,
+// //                                                      vertical: 5),
+// //                                                  child: Text(
+// //                                                    v['name'],
+// //                                                    style: TextStyle(
+// //                                                        color: Colors.grey,
+// //                                                        fontSize: 13),
+// //                                                  ),
+// //                                                ),
+// //                                              )
+// //                                          ],
+// //                                        )
+//                                     ],
+//                                   ),
+//                                 )
+//                               ],
+//                             ),
+
                         ),
                       ),
                     ),
-                  )
               );
             }
 
