@@ -90,14 +90,35 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     }
   }
 
-  void getAurealRewardsTransactions() async {
+  var cumulativePoints = [];
 
+  void getCumulativePoints() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/getCumulativePoints?user_id=${prefs.getString('userId')}';
+    print(cumulativePoints);
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(response.body);
+
+        setState(() {
+            cumulativePoints = jsonDecode(response.body)['points'];
+
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getAurealRewardsTransactions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$page&pageSize=$pageSize';
     print('api called');
-
-
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -149,16 +170,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
       });
     }
   }
-void countPoints(){
-  Random seed = Random();
-  const int MAX_VALUE = 0;
 
-  int Points = seed.nextInt(rewardsTransactions[0]['points']);
-  int newPoints = seed.nextInt(rewardsTransactions[0]['points']);
-  int sum = Points + newPoints;
-
-  print('$Points + $newPoints= $sum');
-}
   double x = 1892.98479;
 
   @override
@@ -168,7 +180,8 @@ void countPoints(){
     getAurealRewardsTransactions();
     getHiveRewardData();
     getHiveTransactions();
-  //  countPoints();
+    getCumulativePoints();
+    //  countPoints();
 
     _scrollRewardsController = ScrollController();
     _scrollRewardsController.addListener(() {
@@ -179,7 +192,6 @@ void countPoints(){
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -222,49 +234,131 @@ void countPoints(){
                                   controller: _tabController,
                                   children: [
                                     Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  '164.029 Points',
-                                                  style: TextStyle(
-                                                      fontSize: SizeConfig
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    IconButton(
+                                                        icon:iconGenerator(
+                                                            cumulativePoints[1]
+                                                            ['action_type']),
+                                                        onPressed: () {}),
+                                                    Text(
+                                                      "Vote",
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
                                                               .safeBlockHorizontal *
-                                                          5),
+                                                              5),
+                                                    ),
+                                                    Text(
+                                                      " ${cumulativePoints[1]["total_points"]}",
+
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              5),
+                                                    )
+                                                  ],
                                                 ),
-                                                IconButton(
-                                                    icon: Icon(Icons
-                                                        .arrow_drop_down_circle),
-                                                    onPressed: () {})
-                                              ],
-                                            ),
-                                          ),
-                                          InkWell(
-                                            child: Container(
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text('123.909'),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10),
-                                                    child:
-                                                        Icon(Icons.add_circle),
-                                                  )
-                                                ],
                                               ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                              // InkWell(
+                                              //   child: Container(
+                                              //     child: Row(
+                                              //       mainAxisSize:
+                                              //           MainAxisSize.min,
+                                              //       children: [
+                                              //         Padding(
+                                              //           padding:
+                                              //               const EdgeInsets
+                                              //                       .symmetric(
+                                              //                   horizontal: 10),
+                                              //           child: Icon(
+                                              //               Icons.add_circle),
+                                              //         )
+                                              //       ],
+                                              //     ),
+                                              //   ),
+                                              // ),
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                  MainAxisSize.min,
+                                                  children: [
+                                                    IconButton(
+                                                        icon: iconGenerator(
+                                                            cumulativePoints[2]
+                                                            ['action_type']),
+                                                        onPressed: () {}),
+                                                    Text(
+                                                      " Heartbeat",
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                              5),
+                                                    ),
+                                                    Text(
+                                                      " ${cumulativePoints[2]["total_points"]}",
+
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                              5),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                  MainAxisSize.min,
+                                                  children: [
+                                                    IconButton(
+                                                        icon: iconGenerator(
+                                                            cumulativePoints[0]
+                                                            ['action_type']),
+                                                        onPressed: () {}),
+                                                    Text(
+                                                      " Comment",
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                              5),
+                                                    ),
+                                                    Text(
+                                                      " ${cumulativePoints[0]["total_points"]}",
+
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                              5),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+
+                                            ],
+                                          ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -391,7 +485,8 @@ void countPoints(){
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, int index) {
-                              print( '${double.parse(rewardsTransactions[index]['points'].toString())} points');
+                              print(
+                                  '${double.parse(rewardsTransactions[index]['points'].toString())} points');
                               // return Text('${rewardsTransactions[index]}');
                               return Container(
                                 child: ListTile(
@@ -405,7 +500,6 @@ void countPoints(){
                                       '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
                                   trailing: Text(
                                       '${double.parse(rewardsTransactions[index]['points'].toString())} points'),
-
                                 ),
                               );
                             },
@@ -420,8 +514,7 @@ void countPoints(){
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: kSecondaryColor),
+                                    border: Border.all(color: kSecondaryColor),
                                     // border: Border.all(
                                     //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
@@ -479,8 +572,7 @@ void countPoints(){
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: kSecondaryColor),
+                                    border: Border.all(color: kSecondaryColor),
                                     // border: Border.all(
                                     //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
