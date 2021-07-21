@@ -14,6 +14,7 @@ import 'package:jitsi_meet/feature_flag/feature_flag.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:auditory/Accounts/HiveAccount.dart';
 
 import '../CategoriesProvider.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
@@ -125,8 +126,14 @@ class _CommunityPageState extends State<CommunityPage> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  _joinMeeting();
+                                  // _joinMeeting();
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return HiveAccount();
+                                      });
                                 },
+
                                 child: Container(
                                   height: MediaQuery.of(context).size.height / 9,
                                   decoration: BoxDecoration(
@@ -237,7 +244,7 @@ _joinMeeting() async {
     };
 
     var options = JitsiMeetingOptions(room: 'roomTexttext') // ll be trimmed
-      ..serverURL = "https://meet.jit.si"
+      ..serverURL = "https://sessions.aureal.one"
       ..subject = "Meeting with Gunschu"
       ..userDisplayName = "My Name"
       ..userEmail = "myemail@email.com"
@@ -245,15 +252,23 @@ _joinMeeting() async {
       ..audioOnly = true
       ..audioMuted = true
       ..videoMuted = true
-      ..featureFlags.addAll(featureFlags);
-      // ..webOptions = {
-      //   "roomName": 'THEROOMNAME',
-      //   "width": "100%",
-      //   "height": "100%",
-      //   "enableWelcomePage": false,
-      //   "chromeExtensionBanner": null,
-      //   "userInfo": {"displayName": 'THEWALL'}
-      // };
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": 'THEROOMNAME',
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {"displayName": 'THEWALL'},
+        "configOverwrite": {
+          "toolbarButtons": [
+            'closedcaptions',
+            'fodeviceselection', 'hangup',
+            'raisehand',
+            'tileview',
+          ]
+        }
+      };
 
     await JitsiMeet.joinMeeting(
       options,

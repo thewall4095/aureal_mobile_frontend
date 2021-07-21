@@ -73,7 +73,7 @@ dependencies:
   intl_phone_field: ^2.0.0
 #  advance_pdf_viewer: ^1.2.1+2
   flutter_media_notification: ^1.2.6
-#  flutter_inappwebview: ^5.3.2
+  flutter_inappwebview: ^5.3.2
   otp_text_field: ^1.1.0
   pin_code_fields: ^7.0.0
   flutter_background: ^1.0.0
