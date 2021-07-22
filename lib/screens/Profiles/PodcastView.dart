@@ -445,16 +445,21 @@ class _PodcastViewState extends State<PodcastView> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.5,
-                                  height:
-                                      MediaQuery.of(context).size.width / 2.5,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Hero(
+                                    tag: '${podcastData['id']}',
                                     child: CachedNetworkImage(
                                       imageBuilder: (context, imageProvider) {
                                         return Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.5,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -525,7 +530,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                   .clamp(0.5, 1)
                                                   .toDouble(),
                                               style: TextStyle(
-                                                    color: Color(0xffe8e8e8).withOpacity(0.5),
+                                                  color: Color(0xffe8e8e8)
+                                                      .withOpacity(0.5),
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: SizeConfig
                                                           .safeBlockHorizontal *
@@ -804,9 +810,12 @@ class _PodcastViewState extends State<PodcastView> {
                             contentPadding: EdgeInsets.zero,
 
                             onTap: () {
-                              Navigator.push(context,   SlideRightRoute(widget:
-                               EpisodeView(
-                                    episodeId: episodeList[index - 1]['id'])));
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                      widget: EpisodeView(
+                                          episodeId: episodeList[index - 1]
+                                              ['id'])));
                             },
                             //
                             title: Text(
@@ -1095,14 +1104,16 @@ class _PodcastViewState extends State<PodcastView> {
                                                       if (prefs.getString(
                                                               'HiveUserName') !=
                                                           null) {
-                                                        Navigator.push(context,
-                                                        SlideRightRoute(widget:
-                                                        Comments(
-                                                            episodeObject:
-                                                                episodeList[
-                                                                    index - 1],
-                                                        )));
-
+                                                        Navigator.push(
+                                                            context,
+                                                            SlideRightRoute(
+                                                                widget:
+                                                                    Comments(
+                                                              episodeObject:
+                                                                  episodeList[
+                                                                      index -
+                                                                          1],
+                                                            )));
                                                       } else {
                                                         showBarModalBottomSheet(
                                                             context: context,
