@@ -27,6 +27,7 @@ import 'Player/VideoPlayer.dart';
 import 'Profiles/Comments.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
+import 'RouteAnimation.dart';
 import 'buttonPages/settings/Theme-.dart';
 
 class DiscoverPage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   var popular_trending = [];
   String displayPicture;
   String hiveUserName;
-
+  bool isExpanded = false;
   void getLocalData() async {
     pref = await SharedPreferences.getInstance();
     print(pref.getString('token'));
@@ -67,7 +68,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
     getDiscoverContent();
     super.initState();
   }
-
+  void onPanUpdate(DragUpdateDetails details) {
+    if (details.delta.dy < 0) {
+      setState(() {
+        isExpanded = true;
+      });
+    } else if (details.delta.dy > 0) {
+      setState(() {
+        isExpanded = false;
+      });
+    }
+  }
   String creator = '';
 
   SharedPreferences pref;
@@ -109,6 +120,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       }
     }
 
+
     Future<void> _pullRefresh() async {
       print('proceedd');
       await discoverData.getDiscoverProvider();
@@ -140,9 +152,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         child: InkWell(
                           onTap: () {
                             Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return ReferralProgram();
-                            }));
+                                SlideRightRoute(widget: ReferralProgram()));
                           },
                           child: Container(
                               decoration: BoxDecoration(
@@ -359,11 +369,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     onTap: () {
                                                                       Navigator.push(
                                                                           context,
-                                                                          MaterialPageRoute(builder:
-                                                                              (context) {
-                                                                        return PodcastView(
-                                                                            v['id']);
-                                                                      }));
+                                                                          SlideRightRoute(widget: PodcastView(
+                                                                              v['id'])));
+
                                                                     },
                                                                     child:
                                                                         Container(
@@ -379,35 +387,35 @@ class _DiscoverPageState extends State<DiscoverPage> {
 //
                                                                       child:
                                                                           Container(
-                                                                        child:
-                                                                            CachedNetworkImage(
-                                                                          imageBuilder:
-                                                                              (context, imageProvider) {
-                                                                            return Container(
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                                                              ),
-                                                                              height: MediaQuery.of(context).size.width,
-                                                                              width: MediaQuery.of(context).size.width,
-                                                                            );
-                                                                          },
-                                                                          placeholder:
-                                                                              (context, String url) {
-                                                                            return Container(
-                                                                              width: MediaQuery.of(context).size.width / 4,
-                                                                              height: MediaQuery.of(context).size.width / 4,
-                                                                            );
-                                                                          },
-                                                                          memCacheHeight:
-                                                                              (MediaQuery.of(context).size.height).floor(),
-                                                                          imageUrl: v['image'] == null
-                                                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                              : v['image'],
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(Icons.error),
-                                                                        ),
-                                                                      ),
+                                                                          child:
+                                                                          CachedNetworkImage(
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                                ),
+                                                                                height: MediaQuery.of(context).size.width,
+                                                                                width: MediaQuery.of(context).size.width,
+                                                                              );
+                                                                            },
+                                                                            placeholder:
+                                                                                (context, String url) {
+                                                                              return Container(
+                                                                                width: MediaQuery.of(context).size.width / 4,
+                                                                                height: MediaQuery.of(context).size.width / 4,
+                                                                              );
+                                                                            },
+                                                                            memCacheHeight:
+                                                                            (MediaQuery.of(context).size.height).floor(),
+                                                                            imageUrl: v['image'] == null
+                                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                                : v['image'],
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(Icons.error),
+                                                                          ),
+                                                                          ),
                                                                     ),
                                                                   ),
                                                                   Padding(
@@ -501,7 +509,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                             mainAxisSpacing: 10,
                                                             crossAxisSpacing: 1,
                                                             childAspectRatio:
-                                                                1 / 2.55),
+                                                                1 / 2.6),
                                                     children: [
                                                       for (var a
                                                           in recentlyPlayed)
@@ -704,17 +712,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 padding: const EdgeInsets.only(bottom: 5),
                                                                                 child: GestureDetector(
                                                                                   onTap: () {
-                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                                                      return EpisodeView(
-                                                                                        episodeId: a['id'],
-                                                                                      );
-                                                                                    }));
+                                                                                    Navigator.push(context,SlideRightRoute(widget: EpisodeView(
+                                                                                           episodeId: a['id'])));
+
+
                                                                                   },
                                                                                   child: GestureDetector(
                                                                                     onTap: () {
-                                                                                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                                                        return PodcastView(a['podcast_id']);
-                                                                                      }));
+                                                                                      Navigator.push(context, SlideRightRoute(widget:
+                                                                                       PodcastView(a['podcast_id'])));
+
                                                                                     },
                                                                                     child: Text(
                                                                                       a['name'].toString(),
@@ -800,11 +807,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                     InkWell(
                                                                                       onTap: () {
                                                                                         if (pref.getString('HiveUserName') != null) {
-                                                                                          Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                                                            return Comments(
-                                                                                              episodeObject: a,
+                                                                                          Navigator.push(context, SlideRightRoute(widget:
+                                                                                        Comments(
+                                                                                              episodeObject: a,))
                                                                                             );
-                                                                                          }));
+
                                                                                         } else {
                                                                                           showBarModalBottomSheet(
                                                                                               context: context,
@@ -864,148 +871,152 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       .size
                                                                       .height *
                                                                   0.17),
-                                                      child: ListView(
+                                                      child: ListView.builder(
                                                         scrollDirection:
                                                             Axis.horizontal,
-                                                        children: [
-                                                          for (var a
-                                                              in v['data'])
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      15,
-                                                                      8,
-                                                                      0,
-                                                                      8),
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                          builder:
-                                                                              (context) {
-                                                                    return PodcastView(
-                                                                        a['id']);
-                                                                  }));
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    boxShadow: [
-                                                                      new BoxShadow(
-                                                                        color: Colors
-                                                                            .black54
-                                                                            .withOpacity(0.2),
-                                                                        blurRadius:
-                                                                            10.0,
-                                                                      ),
-                                                                    ],
-                                                                    color: themeProvider.isLightTheme ==
-                                                                            true
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Color(
-                                                                            0xff222222),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            15),
-                                                                  ),
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width *
-                                                                      0.38,
-                                                                  child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
+                                                               itemCount:   v['data'].length ,
+                                                          itemBuilder: (BuildContext context, int index) {
+                                                            return WidgetANimator(
+                                                                  Row(
                                                                     children: [
-                                                                      CachedNetworkImage(
-                                                                        imageBuilder:
-                                                                            (context,
-                                                                                imageProvider) {
-                                                                          return Container(
-                                                                            decoration:
-                                                                                BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width * 0.38,
-                                                                            height:
-                                                                                MediaQuery.of(context).size.width * 0.38,
-                                                                          );
-                                                                        },
-                                                                        memCacheHeight:
-                                                                            (MediaQuery.of(context).size.height).floor(),
-                                                                        imageUrl: a['image'] !=
-                                                                                null
-                                                                            ? a['image']
-                                                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                                        placeholder:
-                                                                            (context,
-                                                                                imageProvider) {
-                                                                          return Container(
-                                                                            decoration:
-                                                                                BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
-                                                                            height:
-                                                                                MediaQuery.of(context).size.width * 0.38,
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width * 0.38,
-                                                                          );
-                                                                        },
-                                                                      ),
+                                                                      for (var a
+                                                                      in v['data'])
                                                                       Padding(
-                                                                        padding: const EdgeInsets.fromLTRB(
-                                                                            8,
-                                                                            8,
-                                                                            8,
-                                                                            0),
-                                                                        child:
-                                                                            Text(
-                                                                          a['name'],
-                                                                          maxLines:
-                                                                              2,
-                                                                          textScaleFactor:
-                                                                              1.0,
-                                                                          // style:
-                                                                          //     TextStyle(color: Color(0xffe8e8e8)),
-                                                                        ),
-                                                                      ),
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.fromLTRB(
-                                                                            8,
-                                                                            0,
-                                                                            8,
-                                                                            8),
-                                                                        child:
-                                                                            Text(
-                                                                          a['author'],
-                                                                          maxLines:
-                                                                              2,
-                                                                          textScaleFactor:
-                                                                              1.0,
-                                                                          style: TextStyle(
-                                                                              fontSize: SizeConfig.safeBlockHorizontal * 2.5,
-                                                                              color: Color(0xffe777777)),
+                                                                        padding:
+                                                                            const EdgeInsets
+                                                                                    .fromLTRB(
+                                                                                15,
+                                                                                8,
+                                                                                0,
+                                                                                8),
+                                                                        child: InkWell(
+                                                                          onTap: () {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                SlideRightRoute(widget:
+
+                                                                             PodcastView(
+                                                                                  a['id'])));
+
+                                                                          },
+                                                                          child:
+                                                                              Container(
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              boxShadow: [
+                                                                                new BoxShadow(
+                                                                                  color: Colors
+                                                                                      .black54
+                                                                                      .withOpacity(0.2),
+                                                                                  blurRadius:
+                                                                                      10.0,
+                                                                                ),
+                                                                              ],
+                                                                              color: themeProvider.isLightTheme ==
+                                                                                      true
+                                                                                  ? Colors
+                                                                                      .white
+                                                                                  : Color(
+                                                                                      0xff222222),
+                                                                              borderRadius:
+                                                                                  BorderRadius.circular(
+                                                                                      15),
+                                                                            ),
+                                                                            width: MediaQuery.of(
+                                                                                        context)
+                                                                                    .size
+                                                                                    .width *
+                                                                                0.38,
+                                                                            child: Column(
+                                                                              crossAxisAlignment:
+                                                                                  CrossAxisAlignment
+                                                                                      .start,
+                                                                              mainAxisSize:
+                                                                                  MainAxisSize
+                                                                                      .min,
+                                                                              children: [
+                                                                                CachedNetworkImage(
+                                                                                  imageBuilder:
+                                                                                      (context,
+                                                                                          imageProvider) {
+                                                                                    return Container(
+                                                                                      decoration:
+                                                                                          BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
+                                                                                      width:
+                                                                                          MediaQuery.of(context).size.width * 0.38,
+                                                                                      height:
+                                                                                          MediaQuery.of(context).size.width * 0.38,
+                                                                                    );
+                                                                                  },
+                                                                                  memCacheHeight:
+                                                                                      (MediaQuery.of(context).size.height).floor(),
+                                                                                  imageUrl: a['image'] !=
+                                                                                          null
+                                                                                      ? a['image']
+                                                                                      : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                                                  placeholder:
+                                                                                      (context,
+                                                                                          imageProvider) {
+                                                                                    return Container(
+                                                                                      decoration:
+                                                                                          BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
+                                                                                      height:
+                                                                                          MediaQuery.of(context).size.width * 0.38,
+                                                                                      width:
+                                                                                          MediaQuery.of(context).size.width * 0.38,
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.fromLTRB(
+                                                                                      8,
+                                                                                      8,
+                                                                                      8,
+                                                                                      0),
+                                                                                  child:
+                                                                                      Text(
+                                                                                    a['name'],
+                                                                                    maxLines:
+                                                                                        2,
+                                                                                    textScaleFactor:
+                                                                                        1.0,
+                                                                                    // style:
+                                                                                    //     TextStyle(color: Color(0xffe8e8e8)),
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.fromLTRB(
+                                                                                      8,
+                                                                                      0,
+                                                                                      8,
+                                                                                      8),
+                                                                                  child:
+                                                                                      Text(
+                                                                                    a['author'],
+                                                                                    maxLines:
+                                                                                        2,
+                                                                                    textScaleFactor:
+                                                                                        1.0,
+                                                                                    style: TextStyle(
+                                                                                        fontSize: SizeConfig.safeBlockHorizontal * 2.5,
+                                                                                        color: Color(0xffe777777)),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            )
-                                                        ],
+                                                                  )
+
+                                                            );
+                                                          }
+
                                                       ),
                                                     )
                                                   : Container(
-                                                      // color: themeProvider
-                                                      //     .isLightTheme ==
-                                                      //     true
-                                                      //     ? Color(0xffE8E8E8)
-                                                      //     : Color(0xff222222),
+
                                                       width: double.infinity,
                                                       height: SizeConfig
                                                               .blockSizeVertical *
@@ -1017,153 +1028,161 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       .size
                                                                       .height *
                                                                   0.14),
-                                                      child: ListView(
+                                                      child: ListView.builder(
                                                         scrollDirection:
                                                             Axis.horizontal,
-                                                        children: <Widget>[
-                                                          for (var a
-                                                              in v['data'])
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      15,
-                                                                      8,
-                                                                      0,
-                                                                      8),
-                                                              child: Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8),
-                                                                ),
-                                                                child: Column(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        if (a['duration'] !=
-                                                                            null) {
-                                                                          currentlyPlaying
-                                                                              .stop();
-                                                                          currentlyPlaying.episodeObject =
-                                                                              a;
-                                                                          currentlyPlaying
-                                                                              .play();
-                                                                        } else {
-                                                                          Navigator.push(
-                                                                              context,
-                                                                              MaterialPageRoute(builder: (context) {
+                                                     itemCount: v['data'].length,
+                                                itemBuilder: (BuildContext context, int index) {
+                                                return WidgetANimator(
+                                                  Row(
+                                                    children: [
+                                                      for (var a
+                                                      in v['data'])
+                                                        Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .fromLTRB(
+                                                              15,
+                                                              8,
+                                                              0,
+                                                              8),
+                                                          child: Container(
+                                                            decoration:
+                                                            BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  8),
+                                                            ),
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                              MainAxisSize
+                                                                  .min,
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: <
+                                                                  Widget>[
+                                                                GestureDetector(
+                                                                  onTap:
+                                                                      () {
+                                                                    if (a['duration'] !=
+                                                                        null) {
+                                                                      currentlyPlaying
+                                                                          .stop();
+                                                                      currentlyPlaying.episodeObject =
+                                                                          a;
+                                                                      currentlyPlaying
+                                                                          .play();
+                                                                    } else {
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(builder: (context) {
                                                                             return PodcastView(a['id']);
                                                                           }));
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          CachedNetworkImage(
-                                                                        imageBuilder:
-                                                                            (context,
-                                                                                imageProvider) {
-                                                                          return Container(
-                                                                            decoration:
-                                                                                BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width / 4,
-                                                                            height:
-                                                                                MediaQuery.of(context).size.width / 4,
-                                                                          );
-                                                                        },
-                                                                        placeholder:
-                                                                            (context,
-                                                                                String url) {
-                                                                          return Container(
-                                                                            decoration:
-                                                                                BoxDecoration(
-                                                                              image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover),
-                                                                            ),
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width / 4,
-                                                                            height:
-                                                                                MediaQuery.of(context).size.width / 4,
-                                                                          );
-                                                                        },
-                                                                        memCacheHeight:
-                                                                            (MediaQuery.of(context).size.height).floor(),
-                                                                        imageUrl: a['image'] !=
-                                                                                null
-                                                                            ? a['image']
-                                                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          10,
-                                                                    ),
-                                                                    Flexible(
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(left: 5),
-                                                                        child:
-                                                                            Container(
-                                                                          width:
-                                                                              MediaQuery.of(context).size.width / 4,
-                                                                          child:
-                                                                              Column(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
-                                                                            children: <Widget>[
-                                                                              Text(
-                                                                                a['name'] != null ? a['name'] : ' ',
-                                                                                textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                maxLines: 2,
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                style: TextStyle(
-                                                                                    //     color: C
-                                                                                    //       .wh,
-                                                                                    fontWeight: FontWeight.normal,
-                                                                                    fontSize: SizeConfig.safeBlockHorizontal * 3.4),
-                                                                              ),
-                                                                              a['author'] == null
-                                                                                  ? Text('  ')
-                                                                                  : Text(
-                                                                                      a['author'],
-                                                                                      textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                      maxLines: 1,
-                                                                                      overflow: TextOverflow.ellipsis,
-                                                                                      style: TextStyle(
-                                                                                        color: Color(0xff777777),
-                                                                                        fontSize: SizeConfig.safeBlockHorizontal * 2.5,
-                                                                                        //    color: Colors.black54
-                                                                                      ),
-                                                                                    )
-                                                                            ],
-                                                                          ),
+                                                                    }
+                                                                  },
+                                                                  child:
+                                                                  CachedNetworkImage(
+                                                                    imageBuilder:
+                                                                        (context,
+                                                                        imageProvider) {
+                                                                      return Container(
+                                                                        decoration:
+                                                                        BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
+                                                                        width:
+                                                                        MediaQuery.of(context).size.width / 4,
+                                                                        height:
+                                                                        MediaQuery.of(context).size.width / 4,
+                                                                      );
+                                                                    },
+                                                                    placeholder:
+                                                                        (context,
+                                                                        String url) {
+                                                                      return Container(
+                                                                        decoration:
+                                                                        BoxDecoration(
+                                                                          image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover),
                                                                         ),
+                                                                        width:
+                                                                        MediaQuery.of(context).size.width / 4,
+                                                                        height:
+                                                                        MediaQuery.of(context).size.width / 4,
+                                                                      );
+                                                                    },
+                                                                    memCacheHeight:
+                                                                    (MediaQuery.of(context).size.height).floor(),
+                                                                    imageUrl: a['image'] !=
+                                                                        null
+                                                                        ? a['image']
+                                                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height:
+                                                                  10,
+                                                                ),
+                                                                Flexible(
+                                                                  child:
+                                                                  Padding(
+                                                                    padding:
+                                                                    const EdgeInsets.only(left: 5),
+                                                                    child:
+                                                                    Container(
+                                                                      width:
+                                                                      MediaQuery.of(context).size.width / 4,
+                                                                      child:
+                                                                      Column(
+                                                                        crossAxisAlignment:
+                                                                        CrossAxisAlignment.start,
+                                                                        children: <Widget>[
+                                                                          Text(
+                                                                            a['name'] != null ? a['name'] : ' ',
+                                                                            textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                            maxLines: 2,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            style: TextStyle(
+                                                                              //     color: C
+                                                                              //       .wh,
+                                                                                fontWeight: FontWeight.normal,
+                                                                                fontSize: SizeConfig.safeBlockHorizontal * 3.4),
+                                                                          ),
+                                                                          a['author'] == null
+                                                                              ? Text('  ')
+                                                                              : Text(
+                                                                            a['author'],
+                                                                            textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                            maxLines: 1,
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            style: TextStyle(
+                                                                              color: Color(0xff777777),
+                                                                              fontSize: SizeConfig.safeBlockHorizontal * 2.5,
+                                                                              //    color: Colors.black54
+                                                                            ),
+                                                                          )
+                                                                        ],
                                                                       ),
                                                                     ),
-                                                                  ],
+                                                                  ),
                                                                 ),
-                                                              ),
+                                                              ],
                                                             ),
-                                                        ],
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
+                                                );
+                                                }
+
+
                                                       ),
                                                     )
                                     ],
                                   ),
                                 ),
                               ),
-                      SizedBox(
-                        height: 50,
-                      )
+
+
                     ],
                   ),
                 )),

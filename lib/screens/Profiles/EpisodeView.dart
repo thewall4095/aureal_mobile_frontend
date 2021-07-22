@@ -14,6 +14,7 @@ import 'package:auditory/models/Episode.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
+import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -1096,6 +1097,15 @@ class _EpisodeViewState extends State<EpisodeView>
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 8),
                                           child: ListTile(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return Comments(
+                                                  episodeObject: episodeContent,
+                                                );
+                                              }));
+                                            },
                                             title:
                                                 Text("Join the conversation"),
                                             trailing:

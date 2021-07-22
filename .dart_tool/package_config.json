@@ -398,6 +398,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "focused_menu",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/focused_menu-1.0.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "font_awesome_flutter",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/font_awesome_flutter-9.0.0",
       "packageUri": "lib/",
@@ -992,7 +998,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-07-17T08:50:48.528943Z",
+  "generated": "2021-07-22T07:51:16.005419Z",
   "generator": "pub",
   "generatorVersion": "2.13.3"
 }

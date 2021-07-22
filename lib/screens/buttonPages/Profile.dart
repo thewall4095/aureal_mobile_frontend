@@ -40,6 +40,35 @@ import 'Bio.dart';
 import 'Downloads.dart';
 import 'Settings.dart';
 
+
+
+class SecondScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              child: TweenAnimationBuilder(
+                  tween: Tween(begin: 0.0, end: 0.9),
+                  duration: Duration(milliseconds: 1500),
+                  builder: (context, value, child) {
+                    return ShaderMask(
+                        shaderCallback: (rect) {
+                          return RadialGradient(
+                              radius: value * 5, colors: [Colors.white, Colors.white, Colors.transparent, Colors.transparent], stops: [10, 1, 1, 1.0], center: FractionalOffset(0.1,0.0))
+                              .createShader(rect);
+                        },
+                        child: Profile());
+                  }),
+            );
+          },
+        ));
+  }
+}
+
+
 class Profile extends StatefulWidget {
   static const String id = 'Profile';
 

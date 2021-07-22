@@ -396,9 +396,11 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return Profile();
-              }));
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, _) {
+                    return SecondScreen();
+                  },
+                  opaque: false));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -588,7 +590,6 @@ class _BottomPlayerState extends State<BottomPlayer> {
               child: Container(
                 height: SizeConfig.safeBlockVertical * 6,
                 width: double.infinity,
-
                 decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(10)),

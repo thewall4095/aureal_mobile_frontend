@@ -621,6 +621,7 @@ class _PlayerState extends State<Player> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListView(
+                        physics: BouncingScrollPhysics(),
                         controller: controller,
                         children: [
                           SizedBox(
