@@ -161,7 +161,7 @@ class _PlayerState extends State<Player> {
   final List<StreamSubscription> _subscriptions = [];
   int progress = 0;
 
-  var dominantColor;
+  var dominantColor = 0xff222222;
   int hexOfRGBA(int r, int g, int b, {double opacity = 0.3}) {
     r = (r < 0) ? -r : r;
     g = (g < 0) ? -g : g;
@@ -193,24 +193,11 @@ class _PlayerState extends State<Player> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    // TODO: implement dispose
-    print('Dispose Called//////////////////////////////////////////////');
-    var episodeObject = Provider.of<PlayerChange>(context);
-    episodeObject.dursaver.addToDatabase(
-        episodeObject.episodeObject['id'],
-        episodeObject.audioPlayer.currentPosition.valueWrapper.value,
-        episodeObject
-            .audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
 
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var episodeObject = Provider.of<PlayerChange>(context);
     getColor(episodeObject.episodeObject['image'] == null
         ? episodeObject.episodeObject['podcast_image']
         : episodeObject.episodeObject['image']);
@@ -232,6 +219,27 @@ class _PlayerState extends State<Player> {
         .add(AssetsAudioPlayer.addNotificationOpenAction((notification) {
       return false;
     }));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // TODO: implement dispose
+    print('Dispose Called//////////////////////////////////////////////');
+    // var episodeObject = Provider.of<PlayerChange>(context);
+    // episodeObject.dursaver.addToDatabase(
+    //     episodeObject.episodeObject['id'],
+    //     episodeObject.audioPlayer.currentPosition.valueWrapper.value,
+    //     episodeObject
+    //         .audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
 
 //    duration = Duration(seconds: episodeObject.episodeObject['duration']);
 //    print(duration.toString());
@@ -476,7 +484,8 @@ class _PlayerState extends State<Player> {
                                               print(value);
                                             });
                                             setState(() {
-                                              if(episodeObject.ifVoted != true){
+                                              if (episodeObject.ifVoted !=
+                                                  true) {
                                                 episodeObject.ifVoted = true;
                                               }
                                             });

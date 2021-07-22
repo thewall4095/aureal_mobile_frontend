@@ -326,7 +326,7 @@ class _PodcastViewState extends State<PodcastView> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    final currentlyPlaying = Provider.of<PlayerChange>(context);
+    final currentlyPlaying = Provider.of<PlayerChange>(context, listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
@@ -512,20 +512,24 @@ class _PodcastViewState extends State<PodcastView> {
                                                         .safeBlockHorizontal *
                                                     5),
                                           ),
-                                          Text(
-                                            podcastData['author'],
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 1)
-                                                .toDouble(),
-                                            style: TextStyle(
-                                                //   color: Color(0xffe8e8e8),
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    4),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            child: Text(
+                                              podcastData['author'],
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1)
+                                                  .toDouble(),
+                                              style: TextStyle(
+                                                    color: Color(0xffe8e8e8).withOpacity(0.5),
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      3),
+                                            ),
                                           ),
                                         ],
                                       ),
