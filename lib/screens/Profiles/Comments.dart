@@ -206,28 +206,16 @@ class _CommentsState extends State<Comments> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                     "${widget.episodeObject['name']}",
-                      textScaleFactor: 1.0,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 4,
-                          fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                  ],
+          Text(
+           "${widget.episodeObject['name']}",
+            textScaleFactor: 1.0,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: SizeConfig.safeBlockHorizontal * 4,
+                fontWeight: FontWeight.w800,
                 ),
-              ],
-            ),
           ),
           SizedBox(
             height: 5,
@@ -861,12 +849,13 @@ class _CommentsState extends State<Comments> {
                                                 enabled: true,
                                                 minLines: 1,
                                                 maxLines: 10,
+
                                                 style: TextStyle(
                                                    ),
                                                 decoration: InputDecoration(
                                                     border: InputBorder.none,
                                                     hintText:
-                                                        'Comment as',
+                                                        ' Comment as @$user',
                                                     hintStyle: TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: SizeConfig
