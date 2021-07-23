@@ -149,7 +149,7 @@ class _FollowingPageState extends State<FollowingPage>
     // });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=5";
+        "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=20";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

@@ -1076,43 +1076,52 @@ class _EpisodeViewState extends State<EpisodeView>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Community",
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
+                                    episodeContent['permlink'] == null?SizedBox():Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "Community",
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
                                                   4,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xff222222),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Padding(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 8),
-                                          child: ListTile(
-                                            onTap: () {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                return Comments(
-                                                  episodeObject: episodeContent,
-                                                );
-                                              }));
-                                            },
-                                            title:
-                                                Text("Join the conversation"),
-                                            trailing:
-                                                Icon(Icons.arrow_forward_ios),
+                                              vertical: 15),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Color(0xff222222),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8),
+                                              child: ListTile(
+                                                onTap: () {
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return Comments(
+                                                      episodeObject:
+                                                          episodeContent,
+                                                    );
+                                                  }));
+                                                },
+                                                title: Text(
+                                                    "Join the conversation"),
+                                                trailing: Icon(
+                                                    Icons.arrow_forward_ios),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      ],
                                     ),
                                     episodeContent['summary'] == null
                                         ? SizedBox()
