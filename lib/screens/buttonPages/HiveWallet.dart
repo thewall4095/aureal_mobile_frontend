@@ -114,6 +114,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     }
   }
 
+  bool rewardsList = true;
   void getAurealRewardsTransactions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -127,12 +128,14 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
         setState(() {
           if (page == 0) {
             rewardsTransactions = jsonDecode(response.body)['points'];
+             rewardsList = true;
+            page = page +1;
           } else {
             rewardsTransactions =
                 rewardsTransactions + jsonDecode(response.body)['points'];
+             rewardsList = false;
+            page = page +1;
           }
-
-          page = page + 1;
         });
       } else {
         print(response.statusCode);
@@ -234,130 +237,122 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                   controller: _tabController,
                                   children: [
                                     Container(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                child: Row(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                                   children: [
-                                                    IconButton(
-                                                        icon:iconGenerator(
-                                                            cumulativePoints[1]
-                                                            ['action_type']),
-                                                        onPressed: () {}),
                                                     Text(
-                                                      "Vote",
-                                                      // '${cumulativePoints[]['points']}',
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                              5),
-                                                    ),
-                                                    Text(
-                                                      " ${cumulativePoints[1]["total_points"]}",
+                                                      " ${cumulativePoints[1]["total_points"]+cumulativePoints[2]["total_points"]+cumulativePoints[2]["total_points"]}.00",
 
                                                       // '${cumulativePoints[]['points']}',
                                                       style: TextStyle(
                                                           fontSize: SizeConfig
                                                                   .safeBlockHorizontal *
                                                               5),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                              // InkWell(
-                                              //   child: Container(
-                                              //     child: Row(
-                                              //       mainAxisSize:
-                                              //           MainAxisSize.min,
-                                              //       children: [
-                                              //         Padding(
-                                              //           padding:
-                                              //               const EdgeInsets
-                                              //                       .symmetric(
-                                              //                   horizontal: 10),
-                                              //           child: Icon(
-                                              //               Icons.add_circle),
-                                              //         )
-                                              //       ],
-                                              //     ),
-                                              //   ),
-                                              // ),
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                  MainAxisSize.min,
-                                                  children: [
-                                                    IconButton(
-                                                        icon: iconGenerator(
-                                                            cumulativePoints[2]
-                                                            ['action_type']),
-                                                        onPressed: () {}),
-                                                    Text(
-                                                      " Heartbeat",
-                                                      // '${cumulativePoints[]['points']}',
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                              5),
                                                     ),
-                                                    Text(
-                                                      " ${cumulativePoints[2]["total_points"]}",
-
-                                                      // '${cumulativePoints[]['points']}',
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                              5),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.symmetric(
-                                                    vertical: 10),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                  MainAxisSize.min,
-                                                  children: [
                                                     IconButton(
-                                                        icon: iconGenerator(
-                                                            cumulativePoints[0]
-                                                            ['action_type']),
+                                                        icon: Icon(Icons
+                                                            .arrow_drop_down_circle),
                                                         onPressed: () {}),
-                                                    Text(
-                                                      " Comment",
-                                                      // '${cumulativePoints[]['points']}',
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                              5),
-                                                    ),
-                                                    Text(
-                                                      " ${cumulativePoints[0]["total_points"]}",
-
-                                                      // '${cumulativePoints[]['points']}',
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                              5),
-                                                    )
-                                                  ],
+                                                  ], 
                                                 ),
-                                              ),
 
-                                            ],
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 30),
+                                                  child: Text(
+                                                    "Points",
+                                                    // '${cumulativePoints[]['points']}',
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                            .safeBlockHorizontal *
+                                                            4),
+                                                  ),
+                                                ),
+                                                // InkWell(
+                                                //   child: Container(
+                                                //     child: Row(
+                                                //       mainAxisSize:
+                                                //           MainAxisSize.min,
+                                                //       children: [
+                                                //         Padding(
+                                                //           padding:
+                                                //               const EdgeInsets
+                                                //                       .symmetric(
+                                                //                   horizontal: 10),
+                                                //           child: Icon(
+                                                //               Icons.add_circle),
+                                                //         )
+                                                //       ],
+                                                //     ),
+                                                //   ),
+                                                // ),
+
+                                                //
+                                                // Padding(
+                                                //   padding:
+                                                //   const EdgeInsets.symmetric(
+                                                //       vertical: 10),
+                                                //   child: Row(
+                                                //     mainAxisSize:
+                                                //     MainAxisSize.min,
+                                                //     children: [
+                                                //       IconButton(
+                                                //           icon: iconGenerator(
+                                                //               cumulativePoints[0]
+                                                //               ['action_type']),
+                                                //           onPressed: () {}),
+                                                //       Text(
+                                                //         " Comment",
+                                                //         // '${cumulativePoints[]['points']}',
+                                                //         style: TextStyle(
+                                                //             fontSize: SizeConfig
+                                                //                 .safeBlockHorizontal *
+                                                //                 5),
+                                                //       ),
+                                                //       Text(
+                                                //         " ${cumulativePoints[0]["total_points"]}",
+                                                //
+                                                //         // '${cumulativePoints[]['points']}',
+                                                //         style: TextStyle(
+                                                //             fontSize: SizeConfig
+                                                //                 .safeBlockHorizontal *
+                                                //                 5),
+                                                //       )
+                                                //     ],
+                                                //   ),
+                                                // ),
+
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(8.0),
+                                    //   child: InkWell(
+                                    //     child: Container(
+                                    //       child: Row(
+                                    //         mainAxisSize: MainAxisSize.min,
+                                    //         children: [
+                                    //           Text('123.909'),
+                                    //           Padding(
+                                    //             padding: const EdgeInsets
+                                    //                 .symmetric(
+                                    //                 horizontal: 10),
+                                    //             child:
+                                    //             Icon(Icons.add_circle),
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // )
+
+                                              ],
+                                            ),
                                           ),
                                     ),
                                     Padding(
@@ -481,12 +476,14 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                       children: [
                         Container(
                           child: ListView.builder(
+                            itemCount: rewardsTransactions.length  ,
                             controller: _scrollRewardsController,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, int index) {
-                              print(
-                                  '${double.parse(rewardsTransactions[index]['points'].toString())} points');
+
+                              // print(
+                              //     '${double.parse(rewardsTransactions[index]['points'].toString())} points');
                               // return Text('${rewardsTransactions[index]}');
                               return Container(
                                 child: ListTile(
@@ -495,15 +492,15 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                       rewardsTransactions[index]
                                           ['action_type']),
                                   title: Text(
-                                      'Points for ${rewardsTransactions[index]['action_type']}'),
+                                      'Points for ${rewardsTransactions[index ]['action_type']}'),
                                   subtitle: Text(
                                       '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
                                   trailing: Text(
-                                      '${double.parse(rewardsTransactions[index]['points'].toString())} points'),
+                                      '${double.parse(rewardsTransactions[index ]['points'].toString())} points'),
                                 ),
                               );
                             },
-                            itemCount: rewardsTransactions.length,
+
                           ),
                         ),
                         Container(
@@ -532,7 +529,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                           children: [
                                             Text("Transfer"),
                                             Text(
-                                                "${transferHive[index][1]['op'][1]['amount']}"),
+                                                "${transferHive[index + 1][1]['op'][1]['amount']}"),
                                           ],
                                         ),
                                         collapsed: Text(
