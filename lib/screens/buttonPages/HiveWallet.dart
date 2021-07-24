@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auditory/screens/RouteAnimation.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:expandable/expandable.dart';
@@ -29,7 +30,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
 
   var rewardsData;
   int page = 0;
-  int pageSize = 10;
+  int pageNumber = 0;
   var hiveTransactions;
 
   List claimedRewards = [];
@@ -113,36 +114,47 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
       print(e);
     }
   }
-
-  bool rewardsList = true;
+  // bool isLoading;
+  bool isRewardsListPaginationLoading = true;
   void getAurealRewardsTransactions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$page&pageSize=$pageSize';
+        'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=10';
     print('api called');
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        print(response.body);
-
-        setState(() {
-          if (page == 0) {
-            rewardsTransactions = jsonDecode(response.body)['points'];
-             rewardsList = true;
-            page = page +1;
-          } else {
+        if (pageNumber != 0) {
+          print(response.body);
+          setState(() {
             rewardsTransactions =
                 rewardsTransactions + jsonDecode(response.body)['points'];
-             rewardsList = false;
-            page = page +1;
-          }
-        });
+            isRewardsListPaginationLoading = true;
+            pageNumber = pageNumber + 1;
+          });
+        }else{
+          setState(() {
+
+            rewardsTransactions = jsonDecode(response.body)['points'];
+            pageNumber = pageNumber+1;
+          });
+        }
+  //         // } else {
+  //         //   rewardsTransactions =
+  //         //       rewardsTransactions + jsonDecode(response.body)['points'];
+  //         //    rewardsList = false;
+  //         //   page = page +1;
+  //         }
+  //       });
       } else {
         print(response.statusCode);
       }
     } catch (e) {
       print(e);
     }
+    setState(() {
+      isRewardsListPaginationLoading = false;
+    });
   }
 
   bool isScreenLoading = true;
@@ -187,12 +199,12 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     //  countPoints();
 
     _scrollRewardsController = ScrollController();
-    _scrollRewardsController.addListener(() {
-      if (_scrollRewardsController.position.pixels ==
-          _scrollRewardsController.position.maxScrollExtent) {
-        getAurealRewardsTransactions();
-      }
-    });
+    _scrollRewardsController.addListener(() { if(
+    _scrollRewardsController.position.pixels ==
+        _scrollRewardsController.position.maxScrollExtent)
+{
+  getAurealRewardsTransactions();
+}});
     super.initState();
   }
 
@@ -474,34 +486,37 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        Container(
-                          child: ListView.builder(
-                            itemCount: rewardsTransactions.length  ,
-                            controller: _scrollRewardsController,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, int index) {
+                        ListView.builder(
+                          itemCount: rewardsTransactions.length  ,
+                          controller: _scrollRewardsController,
+                          itemBuilder: (context, int index) {
+                            // print(
+                            //     '${double.parse(rewardsTransactions[index]['points'].toString())} points');
+                            // return Text('${rewardsTransactions[index]}');
+                            return  WidgetANimator(
+                               Column(
+                                children: [
+                                  Container(
+                                    child: ListTile(
+                                      minVerticalPadding: 10,
+                                      leading: iconGenerator(
+                                          rewardsTransactions[index]
+                                              ['action_type']),
+                                      title: Text(
+                                          'Points for ${rewardsTransactions[index ]['action_type']}'),
+                                      subtitle: Text(
+                                          '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
+                                      trailing: Text(
+                                          '${double.parse(rewardsTransactions[index ]['points'].toString())} points'),
+                                    ),
 
-                              // print(
-                              //     '${double.parse(rewardsTransactions[index]['points'].toString())} points');
-                              // return Text('${rewardsTransactions[index]}');
-                              return Container(
-                                child: ListTile(
-                                  minVerticalPadding: 10,
-                                  leading: iconGenerator(
-                                      rewardsTransactions[index]
-                                          ['action_type']),
-                                  title: Text(
-                                      'Points for ${rewardsTransactions[index ]['action_type']}'),
-                                  subtitle: Text(
-                                      '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
-                                  trailing: Text(
-                                      '${double.parse(rewardsTransactions[index ]['points'].toString())} points'),
-                                ),
-                              );
-                            },
+                                  ),
 
-                          ),
+                                ],
+                              ),
+                            );
+                          },
+
                         ),
                         Container(
                           child: ListView.builder(
@@ -529,7 +544,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                           children: [
                                             Text("Transfer"),
                                             Text(
-                                                "${transferHive[index + 1][1]['op'][1]['amount']}"),
+                                                "${transferHive[index ][1]['op'][1]['amount']}"),
                                           ],
                                         ),
                                         collapsed: Text(

@@ -673,7 +673,6 @@ class _FollowingPageState extends State<FollowingPage>
                                           SlideRightRoute(widget:
                                           EpisodeView(
                                               episodeId: v['id'])));
-
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(

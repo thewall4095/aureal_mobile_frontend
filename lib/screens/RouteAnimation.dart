@@ -39,9 +39,9 @@ class _AnimatorState extends State<Animator>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(duration: Duration(milliseconds: 290), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 550), vsync: this);
     animation =
-        CurvedAnimation(parent: animationController, curve: Curves.easeInOut);
+        CurvedAnimation(parent: animationController, curve: Curves.easeIn);
     timer = Timer(widget.time, animationController.forward);
   }
   @override
