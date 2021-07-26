@@ -290,7 +290,7 @@ class _FollowingPageState extends State<FollowingPage>
                           height: 30,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                                 itemCount: hiveEpisodes.length -1 ,
+                                 itemCount: hiveEpisodes.length  ,
                               itemBuilder: (BuildContext context, int index) {
                                 return WidgetANimator(
                                   Row(

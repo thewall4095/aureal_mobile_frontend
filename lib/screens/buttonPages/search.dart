@@ -129,6 +129,7 @@ class SearchFunctionality extends SearchDelegate {
     Colors.yellow,
     Colors.pink,
   ];
+
   Future getSearch() async {
     final TextEditingController _textController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -241,10 +242,12 @@ class SearchFunctionality extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     // throw UnimplementedError();
+
+    // return Container();
     var categories = Provider.of<CategoriesProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    return Container(
+    Container(
       color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
       child: GridView.count(
         crossAxisCount: 2,
@@ -578,17 +581,16 @@ class _ResultsSectionState extends State<ResultsSection>
                                     decoration: BoxDecoration(
                                       boxShadow: [
                                         new BoxShadow(
-                                          color: Colors.black54.withOpacity(0.2),
+                                          color:
+                                              Colors.black54.withOpacity(0.2),
                                           blurRadius: 10.0,
                                         ),
                                       ],
                                       color: themeProvider.isLightTheme == true
                                           ? Colors.white
                                           : Color(0xff222222),
-                                      borderRadius:
-                                      BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-
                                     width: double.infinity,
                                     child: Row(
                                       children: [
@@ -601,55 +603,61 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   .size
                                                   .width /
                                               5,
-                                      child:  CachedNetworkImage(
-                                          height:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              5,
-                                          width:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              5,
-                                        imageBuilder:
-                                            (context, imageProvider) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                            ),
-                                            height: MediaQuery.of(context).size.width,
-                                            width: MediaQuery.of(context).size.width,
-                                          );
-                                        },
-                                        imageUrl: podcastResult[index]
-                                        ['image'] ==
-                                            null
-                                            ? 'assets/images/Thumbnail.png'
-                                            : podcastResult[index]
-                                        ['image'],
-                                        fit: BoxFit.cover,
-                                        // memCacheHeight:
-                                        //     MediaQuery.of(
-                                        //             context)
-                                        //         .size
-                                        //         .width
-                                        //         .ceil(),
-                                        memCacheHeight: MediaQuery.of(context)
-                                            .size
-                                            .height
-                                            .floor(),
+                                          child: CachedNetworkImage(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              );
+                                            },
+                                            imageUrl: podcastResult[index]
+                                                        ['image'] ==
+                                                    null
+                                                ? 'assets/images/Thumbnail.png'
+                                                : podcastResult[index]['image'],
+                                            fit: BoxFit.cover,
+                                            // memCacheHeight:
+                                            //     MediaQuery.of(
+                                            //             context)
+                                            //         .size
+                                            //         .width
+                                            //         .ceil(),
+                                            memCacheHeight:
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .height
+                                                    .floor(),
 
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 15, vertical: 10),
                                           child: Container(
-                                         //   height: double.infinity,
+                                            //   height: double.infinity,
                                             width: 240,
                                             child: Column(
                                                 crossAxisAlignment:
@@ -657,10 +665,11 @@ class _ResultsSectionState extends State<ResultsSection>
                                                 children: [
                                                   Text(
                                                     "${podcastResult[index]['name']}",
-                                                    textScaleFactor: mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(1, 1.3)
-                                                        .toDouble(),
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(1, 1.3)
+                                                            .toDouble(),
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -678,26 +687,25 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   ),
                                                   Text(
                                                     '${podcastResult[index]['author']}',
-                                                    textScaleFactor: mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.5, 1.3)
-                                                        .toDouble(),
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(0.5, 1.3)
+                                                            .toDouble(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                        color: themeProvider
-                                                                    .isLightTheme !=
-                                                                true
-                                                            ? Colors.white
-                                                                .withOpacity(
-                                                                    0.5)
-                                                            : kPrimaryColor
-                                                                .withOpacity(
-                                                                    0.5),
-                                                        // fontSize: SizeConfig
-                                                        //         .safeBlockHorizontal *
-                                                        //     4
+                                                      color: themeProvider
+                                                                  .isLightTheme !=
+                                                              true
+                                                          ? Colors.white
+                                                              .withOpacity(0.5)
+                                                          : kPrimaryColor
+                                                              .withOpacity(0.5),
+                                                      // fontSize: SizeConfig
+                                                      //         .safeBlockHorizontal *
+                                                      //     4
                                                     ),
                                                   ),
                                                 ]),
@@ -1162,3 +1170,132 @@ class _ResultsSectionState extends State<ResultsSection>
     );
   }
 }
+
+// class SearchCategoryView extends StatefulWidget {
+//   // var categoryObject;
+//   //
+//   // SearchCategoryView({@required this.categoryObject});
+//
+//   @override
+//   _SearchCategoryViewState createState() => _SearchCategoryViewState();
+// }
+//
+// class _SearchCategoryViewState extends State<SearchCategoryView> {
+//   var  searchCategory = [];
+//   int pageNumber = 0;
+//   PageController _pageController = PageController();
+//   int selectedIndex = 0;
+// // void getCategoryView()async{
+// //   SharedPreferences prefs = await SharedPreferences.getInstance();
+// //   String url =" https://api.aureal.one/public/categorySearch?category_ids=${widget.categoryObject['id']}&user_id=${prefs.getString('userId')}";
+// //   try {
+// //     http.Response response = await http.get(Uri.parse(url));
+// //     if (response.statusCode == 200) {
+// //       print(response.body);
+// //       setState(() {
+// //         searchCategory = jsonDecode(response.body)['PodcastList'];
+// //       });
+// //     }
+// //   } catch (e) {
+// //     print(e);
+// //   }
+// // }
+// //
+// //   void getCategoryPodcastsPaginated() async {
+// //
+// //     SharedPreferences prefs = await SharedPreferences.getInstance();
+// //     String url =
+// //         'https://api.aureal.one/public/categorySearch?category_ids=${widget.categoryObject['id']}&user_id=${prefs.getString('userId')}&page=$pageNumber}';
+// //     try {
+// //       http.Response response = await http.get(Uri.parse(url));
+// //       if (response.statusCode == 200) {
+// //         print(response.body);
+// //         setState(() {
+// //           searchCategory = searchCategory + jsonDecode(response.body)['PodcastList'];
+// //           pageNumber = pageNumber + 1;
+// //         });
+// //       }
+// //     } catch (e) {
+// //       print(e);
+// //     }
+// //   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     var categories = Provider.of<CategoriesProvider>(context);
+//     return Scaffold(
+//       backgroundColor: Colors.black,
+//       body: SafeArea(
+//         child: Row(
+//           children: [
+//             SizedBox(
+//               width: 150,
+//               child: ListView.separated(
+//                   itemCount: categories.categoryList.length,
+//                   scrollDirection: Axis.vertical,
+//                   separatorBuilder: (BuildContext context, int index) {
+//                     return SizedBox(height: 5);
+//                   },
+//                   itemBuilder: (BuildContext context, int index) {
+//                     return GestureDetector(
+//                       onTap: () {
+//                         setState((){
+//                           selectedIndex = index;
+//                           _pageController.jumpToPage(index);
+//                         });
+//                       },
+//                       child: Container(
+//                         child: Row(
+//                           children: [
+//                             AnimatedContainer(
+//                                 duration: Duration(milliseconds: 500),
+//                                 color: Colors.blue,
+//                                 height: (selectedIndex == index) ? 15 : 0,
+//                                 width: 2),
+//                             Expanded(
+//                               child: AnimatedContainer(
+//                                 duration: Duration(milliseconds: 500),
+//                                 alignment: Alignment.center,
+//                                 height: 50,
+//                                 color: (selectedIndex == index)
+//                                     ? Colors.blueGrey.withOpacity(0.2)
+//                                     : Colors.transparent,
+//                                 child: Text(
+//                                   categories.categoryList[index]['name']
+//                                       .toString(),
+//                                   textAlign: TextAlign.start,
+//                                   textScaleFactor: 0.75,
+//                                   style: TextStyle(
+//                                       color: Colors.white,
+//                                       fontSize:
+//                                       SizeConfig.safeBlockHorizontal * 4),
+//                                 ),
+//                               ),
+//                             )
+//                           ],
+//                         ),
+//                       ),
+//                     );
+//                   }),
+//             ),
+//             Expanded(
+//                 child: Container(
+//                   child: PageView(
+//                     scrollDirection: Axis.vertical,
+//                     controller: _pageController,
+//                     children: [
+//                       for (var v in categories.categoryList)
+//                         for (var i = 0; i <categories.categoryList.length; i--)
+//                           Container(
+//                             color: Colors.black,
+//                             // child: CategoryView(categoryObject:v),
+//                           )
+//                     ],
+//                   ),
+//                 ))
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

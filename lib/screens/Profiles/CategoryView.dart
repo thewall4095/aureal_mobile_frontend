@@ -208,58 +208,82 @@ class _CategoryViewState extends State<CategoryView> {
 //          ),
 //        ],
 //      ),
-      body: ListView.builder(
-          controller: controller,
-          itemCount: result.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == result.length) {
-              return Container(
-                height: 10,
-                width: double.infinity,
-                child: LinearProgressIndicator(
-                  minHeight: 10,
-                  backgroundColor: Colors.blue,
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xff6249EF)),
-                ),
-              );
-            } else {
-              return WidgetANimator(
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return PodcastView(result[index]['id']);
-                      }));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            new BoxShadow(
-                              color: Colors.black54.withOpacity(0.2),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                          color: themeProvider.isLightTheme == true
-                              ? Colors.white
-                              : Color(0xff222222),
-                          borderRadius:
-                          BorderRadius.circular(8),
-                        ),
+      body: CategoryViewContent(result: result, controller: controller,),
+    );
+  }
+}
 
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height /10,
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 10,left: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
+class CategoryViewContent extends StatefulWidget {
+  var categoryObject;
+
+  List result;
+  ScrollController controller;
+
+  CategoryViewContent({@required this.result, @required this.controller,@required this.categoryObject});
+
+  @override
+  _CategoryViewContentState createState() => _CategoryViewContentState();
+}
+
+class _CategoryViewContentState extends State<CategoryViewContent> {
+  @override
+  Widget build(BuildContext context) {
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final mediaQueryData = MediaQuery.of(context);
+
+    return ListView.builder(
+        controller: widget.controller,
+        itemCount: widget.result.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (index == widget.result.length) {
+            return Container(
+              height: 10,
+              width: double.infinity,
+              child: LinearProgressIndicator(
+                minHeight: 10,
+                backgroundColor: Colors.blue,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xff6249EF)),
+              ),
+            );
+          } else {
+            return WidgetANimator(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return PodcastView(widget.result[index]['id']);
+                  }));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          new BoxShadow(
+                            color: Colors.black54.withOpacity(0.2),
+                            blurRadius: 10.0,
+                          ),
+                        ],
+                        color: themeProvider.isLightTheme == true
+                            ? Colors.white
+                            : Color(0xff222222),
+                        borderRadius:
+                        BorderRadius.circular(8),
+                      ),
+
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment:
+                        MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height /10,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10,left: 15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
                                   CachedNetworkImage(
                                     imageBuilder:
                                         (context, imageProvider) {
@@ -280,7 +304,7 @@ class _CategoryViewState extends State<CategoryView> {
                                             7,
                                       );
                                     },
-                                    imageUrl: '${result[index]['image']}',
+                                    imageUrl: '${widget.result[index]['image']}',
                                     fit: BoxFit.cover,
                                     // memCacheHeight:
                                     //     MediaQuery.of(
@@ -302,53 +326,53 @@ class _CategoryViewState extends State<CategoryView> {
                                         Icon(Icons.error),
                                   ),
 
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20,bottom: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "${result[index]['name']}",
-                                    textScaleFactor: mediaQueryData.textScaleFactor
-                                        .clamp(0.5, 1.3)
-                                        .toDouble(),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      // color: Colors.white,
-                                        fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3.5,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
-                                  Text(
-                                    "${result[index]['author']}",
-                                    textScaleFactor: mediaQueryData.textScaleFactor
-                                        .clamp(0.5, 0.9)
-                                        .toDouble(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      //  color: Colors.grey,
-                                        fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-
                                 ],
                               ),
-                            )
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20,bottom: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "${widget.result[index]['name']}",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.5, 1.3)
+                                      .toDouble(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    // color: Colors.white,
+                                      fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.5,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  "${widget.result[index]['author']}",
+                                  textScaleFactor: mediaQueryData.textScaleFactor
+                                      .clamp(0.5, 0.9)
+                                      .toDouble(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    //  color: Colors.grey,
+                                      fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+
                               ],
-                           )
+                            ),
+                          )
+                        ],
+                      )
 
 //                             Row(
 //                               children: <Widget>[
@@ -454,13 +478,13 @@ class _CategoryViewState extends State<CategoryView> {
 //                               ],
 //                             ),
 
-                        ),
-                      ),
-                    ),
-              );
-            }
+                  ),
+                ),
+              ),
+            );
+          }
 
-          }),
-    );
+        });
   }
 }
+
