@@ -8,6 +8,7 @@ import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/recorderApp/Transcription.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import "package:badges/badges.dart";
 import 'package:cached_network_image/cached_network_image.dart';
@@ -464,6 +465,18 @@ class _HomeState extends State<Home> {
               await showSearch(
                   context: context, delegate: SearchFunctionality());
             },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.mic,
+              //     color: Colors.white,
+            ),
+                onPressed: () {
+                Navigator.of(context).push(   SlideRightRoute(widget:
+
+                AudioRecognize()));
+                },
+
           )
         ],
       ),
