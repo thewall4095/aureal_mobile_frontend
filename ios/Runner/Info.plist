@@ -86,9 +86,9 @@
 	<key>NSMotionUsageDescription</key>
 	<string>It requires app to function properly</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>It requires app to function properly</string>
+	<string>App requires this to allow uploading image.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>It requires app to function properly</string>
+	<string>App requires this to allow recording audio.</string>
 	<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 	<true/>
 	<key>NSTemporaryExceptionMinimumTLSVersion</key>
