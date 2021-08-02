@@ -539,8 +539,10 @@ class _PublishState extends State<Publish> {
                         });
                   },
                   child: Container(
+
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
+                      border: Border.all(),
                       color: kSecondaryColor,
                     ),
                     width: double.infinity,
@@ -550,7 +552,7 @@ class _PublishState extends State<Publish> {
                         child: Text(
                           "Tags",
                           style: TextStyle(
-                              color: Colors.white,
+                            //  color: Colors.white,
                               fontSize: SizeConfig.safeBlockHorizontal * 4),
                         ),
                       ),
@@ -585,6 +587,7 @@ class _PublishState extends State<Publish> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
+                                    border: Border.all(),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(35)),
                                     gradient: LinearGradient(colors: [
@@ -599,7 +602,7 @@ class _PublishState extends State<Publish> {
                                     child: Text(
                                       "Publish now",
                                       style: TextStyle(
-                                          color: Colors.white,
+                                        //  color: Colors.white,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   3.2),

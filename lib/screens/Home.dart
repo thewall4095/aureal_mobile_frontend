@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
+import "package:badges/badges.dart";
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import "package:badges/badges.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +27,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
+import '../NotificationProvider.dart';
 import '../PlayerState.dart';
 import '../models/message.dart';
 import 'CommunityPage.dart';
@@ -83,11 +87,12 @@ class _HomeState extends State<Home> {
   String status = 'hidden';
   String userId;
   List<Message> messages = [];
+
   void addExistingPodcast(var somevariable) async {
     ScrollController _scrollController = ScrollController();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+    final notificationPlugin = Provider.of<NotificationPlugin>(context);
     String url = 'https://api.aureal.one/public/createFromRSS';
     var map = Map<String, dynamic>();
     map['user_id'] = prefs.getString('userId');
@@ -360,12 +365,12 @@ class _HomeState extends State<Home> {
     getLocalData();
     _handleIncomingLinks();
     _handleInitialUri();
-
     super.initState();
   }
 
   bool open = false;
-
+  var notificationList = [];
+  int countNotification = 10;
   Launcher launcher = Launcher();
 
   @override
@@ -384,20 +389,29 @@ class _HomeState extends State<Home> {
     if (category.isFetchedCategories == false) {
       getCategoryData(context);
     }
-
     SizeConfig().init(context);
+    int count = 0;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: CircleAvatar(
-            radius: SizeConfig.safeBlockHorizontal * 6,
-            backgroundImage: CachedNetworkImageProvider(
-              displayPicture == null
-                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                  : displayPicture,
-              scale: 0.5,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8),
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, _) {
+                    return SecondScreen();
+                  },
+                  opaque: false));
+            },
+            icon: CircleAvatar(
+              radius: SizeConfig.safeBlockHorizontal * 6,
+              backgroundImage: CachedNetworkImageProvider(
+                displayPicture == null
+                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                    : displayPicture,
+                scale: 0.5,
+              ),
             ),
           ),
         ),
@@ -428,14 +442,20 @@ class _HomeState extends State<Home> {
                   },
                 )
               : SizedBox(height: 0, width: 0),
-          IconButton(
-            icon: Icon(
-              Icons.notifications_none,
-              //    color: Colors.white,
+          Center(
+            child: IconButton(
+              icon: Badge(
+                badgeColor: Colors.blue,
+                badgeContent: Text("$count"),
+                child: Icon(
+                  Icons.notifications_none,
+                  //    color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, NotificationPage.id);
+              },
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, NotificationPage.id);
-            },
           ),
           IconButton(
             icon: Icon(
@@ -450,7 +470,8 @@ class _HomeState extends State<Home> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
+        backgroundColor:
+            themeProvider.isLightTheme == false ? Colors.black : Colors.white,
         elevation: 10,
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
@@ -484,17 +505,17 @@ class _HomeState extends State<Home> {
             icon: Icon(FontAwesomeIcons.compass),
             activeIcon: Icon(FontAwesomeIcons.solidCompass),
           ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(
-              Icons.perm_identity,
-              size: 28,
-            ),
-            activeIcon: Icon(
-              Icons.person,
-              size: 28,
-            ),
-          ),
+          // BottomNavigationBarItem(
+          //   label: "",
+          //   icon: Icon(
+          //     Icons.perm_identity,
+          //     size: 28,
+          //   ),
+          //   activeIcon: Icon(
+          //     Icons.person,
+          //     size: 28,
+          //   ),
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -540,24 +561,40 @@ class _BottomPlayerState extends State<BottomPlayer> {
     var episodeObject = Provider.of<PlayerChange>(context);
 
     return episodeObject.episodeName != null
-        ? GestureDetector(
-            onTap: () {
-              showBarModalBottomSheet(
-                  //    backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (context) {
-                    return Player();
-                  });
-              // Navigator.pushNamed(context, Player.id);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                showBarModalBottomSheet(
+                    bounce: true,
+                    context: context,
+                    builder: (context) {
+                      return Stack(
+                        children: [
+                          Center(
+                            child: ClipRect(
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 40, sigmaY: -50),
+                                child: Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(child: Player()),
+                        ],
+                      );
+                    });
+                // Navigator.pushNamed(context, Player.id);
+              },
               child: Container(
                 height: SizeConfig.safeBlockVertical * 6,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black),
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -582,7 +619,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                   splashColor: Colors.blue,
                                   icon: Icon(
                                     Icons.pause,
-                                    //color: Colors.white,
+                                    color: Colors.white,
                                   ),
                                   onPressed: () {
                                     episodeObject.pause();
@@ -593,7 +630,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                   splashColor: Colors.blue,
                                   icon: Icon(
                                     Icons.play_arrow,
-                                    //    color: Colors.white,
+                                    color: Colors.white,
                                   ),
                                   onPressed: () {
                                     episodeObject.resume();
@@ -642,7 +679,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             icon: Icon(
                               FontAwesomeIcons.chevronCircleUp,
                               size: 20,
-                              //     color: Colors.black,
+                              color: Colors.white,
                             ),
                             onPressed: () {
                               Fluttertoast.showToast(msg: 'Upvote done');
@@ -693,7 +730,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             pauseAfterRound: Duration(seconds: 2),
                             text: ' ${episodeObject.episodeName} ',
                             style: TextStyle(
-                                //   color: Colors.white,
+                                color: Colors.white,
                                 fontSize: SizeConfig.safeBlockHorizontal * 3.2),
                             blankSpace: 100,
                           ),
