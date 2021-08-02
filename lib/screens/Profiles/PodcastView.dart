@@ -16,7 +16,6 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
@@ -172,8 +171,6 @@ class _PodcastViewState extends State<PodcastView> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/episode?podcast_id=${widget.podcastId}&user_id=${prefs.getString('userId')}&page=$pageNumber';
-
-
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -648,8 +645,8 @@ class _PodcastViewState extends State<PodcastView> {
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
               if (index == 0) {
-                return  WidgetANimator(
-                   Padding(
+                return WidgetANimator(
+                  Padding(
                       padding: const EdgeInsets.fromLTRB(15, 30, 15, 15),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,35 +737,33 @@ class _PodcastViewState extends State<PodcastView> {
                       ? (_controller.position.pixels !=
                               _controller.position.maxScrollExtent
                           ? SizedBox()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Shimmer.fromColors(
+                                baseColor: themeProvider.isLightTheme == false
+                                    ? kPrimaryColor
+                                    : Colors.white,
+                                highlightColor:
+                                    themeProvider.isLightTheme == false
+                                        ? Color(0xff3a3a3a)
+                                        : Colors.white,
+                              )))
                       : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Shimmer.fromColors(
-                        baseColor: themeProvider.isLightTheme == false
-                            ? kPrimaryColor
-                            : Colors.white,
-                        highlightColor: themeProvider.isLightTheme == false
-                            ? Color(0xff3a3a3a)
-                            : Colors.white,
-                    )
-                  )
-                  )
-
-                :Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Shimmer.fromColors(
-                        baseColor: themeProvider.isLightTheme == false
-                            ? kPrimaryColor
-                            : Colors.white,
-                        highlightColor: themeProvider.isLightTheme == false
-                            ? Color(0xff3a3a3a)
-                            : Colors.white,
-                      )
-                  );
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Shimmer.fromColors(
+                            baseColor: themeProvider.isLightTheme == false
+                                ? kPrimaryColor
+                                : Colors.white,
+                            highlightColor: themeProvider.isLightTheme == false
+                                ? Color(0xff3a3a3a)
+                                : Colors.white,
+                          ));
                 }
-                return  WidgetANimator(
-                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                return WidgetANimator(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
                     child: Column(
                       children: [
                         Container(
@@ -792,9 +787,12 @@ class _PodcastViewState extends State<PodcastView> {
                               contentPadding: EdgeInsets.zero,
 
                               onTap: () {
-                                Navigator.push(context,   SlideRightRoute(widget:
-                                 EpisodeView(
-                                      episodeId: episodeList[index - 1]['id'])));
+                                Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                        widget: EpisodeView(
+                                            episodeId: episodeList[index - 1]
+                                                ['id'])));
                               },
                               //
                               title: Text(
@@ -807,14 +805,15 @@ class _PodcastViewState extends State<PodcastView> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     //       color: Colors.white,
-                                    fontSize: SizeConfig.safeBlockHorizontal * 4),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4),
                               ),
                               subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     episodeList[index - 1]['summary'] == null
                                         ? SizedBox(
-                                            height: 0,
+                                            height: 20,
                                           )
                                         : Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -871,13 +870,14 @@ class _PodcastViewState extends State<PodcastView> {
                                                               ['votes'] ==
                                                           null
                                                   ? (creator ==
-                                                          prefs
-                                                              .getString('userId')
+                                                          prefs.getString(
+                                                              'userId')
                                                       ? GestureDetector(
                                                           onTap: () async {
                                                             await publishManually(
                                                                 episodeList[
-                                                                        index - 1]
+                                                                        index -
+                                                                            1]
                                                                     ['id']);
                                                           },
                                                           child: Padding(
@@ -892,24 +892,24 @@ class _PodcastViewState extends State<PodcastView> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             20),
-                                                                border:
-                                                                    Border.all(),
+                                                                border: Border
+                                                                    .all(),
                                                               ),
                                                               child: Padding(
                                                                 padding: const EdgeInsets
                                                                         .symmetric(
                                                                     horizontal:
                                                                         20,
-                                                                    vertical: 5),
+                                                                    vertical:
+                                                                        5),
                                                                 child: Text(
                                                                   "Publish",
-                                                                  textScaleFactor:
-                                                                      mediaQueryData
-                                                                          .textScaleFactor
-                                                                          .clamp(
-                                                                              0.5,
-                                                                              1)
-                                                                          .toDouble(),
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
                                                                   style:
                                                                       TextStyle(),
                                                                 ),
@@ -926,28 +926,26 @@ class _PodcastViewState extends State<PodcastView> {
                                                                 'HiveUserName') !=
                                                             null) {
                                                           setState(() {
-                                                            episodeList[index - 1]
-                                                                    [
+                                                            episodeList[index -
+                                                                        1][
                                                                     'isLoading'] =
                                                                 true;
                                                           });
                                                           showDialog(
-                                                              context: context,
-                                                              builder: (context) {
-                                                                return Dialog(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    child: UpvoteEpisode(
-                                                                        permlink: episodeList[index -
-                                                                                1]
-                                                                            [
-                                                                            'permlink'],
-                                                                        episode_id:
-                                                                            episodeList[index - 1]
-                                                                                [
-                                                                                'id']));
-                                                              }).then((value) async {
+                                                                  context: context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return Dialog(
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .transparent,
+                                                                        child: UpvoteEpisode(
+                                                                            permlink:
+                                                                                episodeList[index - 1]['permlink'],
+                                                                            episode_id: episodeList[index - 1]['id']));
+                                                                  })
+                                                              .then(
+                                                                  (value) async {
                                                             print(value);
                                                           });
                                                           // await upvoteEpisode(
@@ -957,28 +955,31 @@ class _PodcastViewState extends State<PodcastView> {
                                                           //     episode_id: episodeList[
                                                           //         index - 1]['id']);
                                                           setState(() {
-                                                            episodeList[index - 1]
-                                                                    ['ifVoted'] =
+                                                            episodeList[index -
+                                                                        1][
+                                                                    'ifVoted'] =
                                                                 !episodeList[
-                                                                        index - 1]
+                                                                        index -
+                                                                            1]
                                                                     ['ifVoted'];
-                                                            episodeList[index - 1]
-                                                                    [
+                                                            episodeList[index -
+                                                                        1][
                                                                     'isLoading'] =
                                                                 false;
                                                           });
                                                         } else {
                                                           showBarModalBottomSheet(
                                                               context: context,
-                                                              builder: (context) {
+                                                              builder:
+                                                                  (context) {
                                                                 return HiveDetails();
                                                               });
                                                         }
                                                       },
                                                       child: Padding(
                                                         padding:
-                                                            const EdgeInsets.only(
-                                                                right: 5),
+                                                            const EdgeInsets
+                                                                .only(right: 5),
                                                         child: Container(
                                                           decoration: episodeList[index - 1]
                                                                       [
@@ -1016,17 +1017,19 @@ class _PodcastViewState extends State<PodcastView> {
                                                                     ? Container(
                                                                         height:
                                                                             18,
-                                                                        width: 18,
+                                                                        width:
+                                                                            18,
                                                                         child:
                                                                             SpinKitPulse(
-                                                                          color: Colors
-                                                                              .blue,
+                                                                          color:
+                                                                              Colors.blue,
                                                                         ),
                                                                       )
                                                                     : Icon(
                                                                         FontAwesomeIcons
                                                                             .chevronCircleUp,
-                                                                        size: 15,
+                                                                        size:
+                                                                            15,
                                                                       ),
                                                                 Padding(
                                                                   padding: const EdgeInsets
@@ -1048,11 +1051,9 @@ class _PodcastViewState extends State<PodcastView> {
                                                                   ),
                                                                 ),
                                                                 Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              4),
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      right: 4),
                                                                   child: Text(
                                                                     '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
                                                                     textScaleFactor: mediaQueryData
@@ -1083,26 +1084,29 @@ class _PodcastViewState extends State<PodcastView> {
                                                         if (prefs.getString(
                                                                 'HiveUserName') !=
                                                             null) {
-                                                          Navigator.push(context,
-                                                          SlideRightRoute(widget:
-                                                          Comments(
-                                                              episodeObject:
-                                                                  episodeList[
-                                                                      index - 1],
-                                                          )));
-
+                                                          Navigator.push(
+                                                              context,
+                                                              SlideRightRoute(
+                                                                  widget:
+                                                                      Comments(
+                                                                episodeObject:
+                                                                    episodeList[
+                                                                        index -
+                                                                            1],
+                                                              )));
                                                         } else {
                                                           showBarModalBottomSheet(
                                                               context: context,
-                                                              builder: (context) {
+                                                              builder:
+                                                                  (context) {
                                                                 return HiveDetails();
                                                               });
                                                         }
                                                       },
                                                       child: Padding(
                                                         padding:
-                                                            const EdgeInsets.only(
-                                                                right: 5),
+                                                            const EdgeInsets
+                                                                .only(right: 5),
                                                         child: Container(
                                                           decoration: BoxDecoration(
                                                               border: Border.all(
@@ -1157,37 +1161,37 @@ class _PodcastViewState extends State<PodcastView> {
                                                           ['url']
                                                       .toString()
                                                       .contains('.mp4'));
-                                                  if (episodeList[index - 1]['url']
+                                                  if (episodeList[index - 1]['url'].toString().contains('.mp4') == true ||
+                                                      episodeList[index - 1]['url']
                                                               .toString()
-                                                              .contains('.mp4') ==
+                                                              .contains(
+                                                                  '.m4v') ==
                                                           true ||
                                                       episodeList[index - 1]['url']
                                                               .toString()
-                                                              .contains('.m4v') ==
+                                                              .contains(
+                                                                  '.flv') ==
                                                           true ||
                                                       episodeList[index - 1]['url']
                                                               .toString()
-                                                              .contains('.flv') ==
+                                                              .contains(
+                                                                  '.f4v') ==
+                                                          true ||
+                                                      episodeList[index - 1]['url']
+                                                              .toString()
+                                                              .contains(
+                                                                  '.ogv') ==
+                                                          true ||
+                                                      episodeList[index - 1]['url']
+                                                              .toString()
+                                                              .contains(
+                                                                  '.ogx') ==
                                                           true ||
                                                       episodeList[index - 1]
                                                                   ['url']
                                                               .toString()
-                                                              .contains('.f4v') ==
-                                                          true ||
-                                                      episodeList[index - 1]
-                                                                  ['url']
-                                                              .toString()
-                                                              .contains('.ogv') ==
-                                                          true ||
-                                                      episodeList[index - 1]
-                                                                  ['url']
-                                                              .toString()
-                                                              .contains('.ogx') ==
-                                                          true ||
-                                                      episodeList[index - 1]
-                                                                  ['url']
-                                                              .toString()
-                                                              .contains('.wmv') ==
+                                                              .contains(
+                                                                  '.wmv') ==
                                                           true ||
                                                       episodeList[index - 1]
                                                                   ['url']
@@ -1223,8 +1227,10 @@ class _PodcastViewState extends State<PodcastView> {
 
                                                       currentlyPlaying
                                                               .episodeObject =
-                                                          episodeList[index - 1];
-                                                      currentlyPlaying.playList =
+                                                          episodeList[
+                                                              index - 1];
+                                                      currentlyPlaying
+                                                              .playList =
                                                           episodeList;
                                                       print(currentlyPlaying
                                                           .playList);
@@ -1245,7 +1251,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: kSecondaryColor),
+                                                          color:
+                                                              kSecondaryColor),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               30)),
@@ -1263,13 +1270,15 @@ class _PodcastViewState extends State<PodcastView> {
                                                           padding:
                                                               const EdgeInsets
                                                                       .symmetric(
-                                                                  horizontal: 8),
+                                                                  horizontal:
+                                                                      8),
                                                           child: Text(
                                                             '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
                                                             textScaleFactor:
                                                                 mediaQueryData
                                                                     .textScaleFactor
-                                                                    .clamp(0.5, 1)
+                                                                    .clamp(
+                                                                        0.5, 1)
                                                                     .toDouble(),
                                                             // style: TextStyle(
                                                             //      color: Color(0xffe8e8e8)
@@ -1286,7 +1295,8 @@ class _PodcastViewState extends State<PodcastView> {
                                         ),
                                         Row(
                                           children: [
-                                            episodeList[index - 1]['permlink'] ==
+                                            episodeList[index - 1]
+                                                            ['permlink'] ==
                                                         null ||
                                                     episodeList[index - 1]
                                                             ['votes'] ==
@@ -1296,14 +1306,16 @@ class _PodcastViewState extends State<PodcastView> {
                                                     height: 0,
                                                   )
                                                 : (creator ==
-                                                        prefs.getString('userId')
+                                                        prefs
+                                                            .getString('userId')
                                                     ? IconButton(
-                                                        icon:
-                                                            Icon(Icons.more_vert),
+                                                        icon: Icon(
+                                                            Icons.more_vert),
                                                         onPressed: () {
                                                           showBarModalBottomSheet(
                                                               context: context,
-                                                              builder: (context) {
+                                                              builder:
+                                                                  (context) {
                                                                 return Container(
                                                                   child:
                                                                       AddToCommunity(
@@ -1349,7 +1361,6 @@ class _PodcastViewState extends State<PodcastView> {
                                             //   icon: Icon(
                                             //       Icons.arrow_circle_down_outlined),
                                             // ),
-
                                           ],
                                         ),
                                       ],
@@ -1364,11 +1375,12 @@ class _PodcastViewState extends State<PodcastView> {
                                         currentlyPlaying.episodeObject['id'] &&
                                     currentlyPlaying.episodeObject['id'] != null
                                 ? Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 7),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(30),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                           gradient: LinearGradient(colors: [
                                             Color(0xff5d5da8),
                                             Color(0xff5bc3ef)
@@ -1398,7 +1410,6 @@ class _PodcastViewState extends State<PodcastView> {
           ],
         ),
       ),
-
       bottomSheet: BottomPlayer(),
     );
   }
