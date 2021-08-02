@@ -24,6 +24,8 @@ class PlayerChange extends ChangeNotifier {
 
   var _playList;
 
+  bool _ifVoted;
+
   String episodeName;
   String podcastName;
   String author;
@@ -38,6 +40,13 @@ class PlayerChange extends ChangeNotifier {
   Dio dio = Dio();
 
   Map<String, dynamic> get episodeObject => _episodeObject;
+
+  bool get ifVoted => _ifVoted;
+
+  set ifVoted(bool newValue) {
+    _ifVoted = newValue;
+    notifyListeners();
+  }
 
 //  set musicPlaylist(var newValue) {
 //    _musicPlaylist = newValue;
@@ -63,6 +72,8 @@ class PlayerChange extends ChangeNotifier {
 //    duration = Duration(seconds: _episodeObject['duration'].toInt());
     id = _episodeObject['id'];
     permlink = _episodeObject['permlink'];
+    _ifVoted = _episodeObject['ifVoted'];
+    print("ifVoted is $ifVoted");
 
     notifyListeners();
   }
@@ -111,9 +122,9 @@ class PlayerChange extends ChangeNotifier {
     print(dur.runtimeType);
     state = PlayerState.playing;
 
-    currentIndex = _playList.indexOf(_episodeObject);
-    print(
-        '$currentIndex ////////////////////////////////////////////////////////////////////');
+    // currentIndex = _playList.indexOf(_episodeObject);
+    // print(
+    //     '$currentIndex ////////////////////////////////////////////////////////////////////');
 
     audioPlayer.open(
       Audio.network(_episodeObject['url'],
@@ -175,8 +186,11 @@ class PlayerChange extends ChangeNotifier {
     if (audioPlayer.isPlaying == true) {
       var a = dursaver.getAllEpisodes();
       print(a.toString());
+
       dursaver.addToDatabase(
-          episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+          episodeObject['id'],
+          audioPlayer.currentPosition.valueWrapper.value,
+          audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
     }
   }
 
@@ -189,7 +203,9 @@ class PlayerChange extends ChangeNotifier {
     audioPlayer.pause();
     _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
     dursaver.addToDatabase(
-        _episodeObject['id'], audioPlayer.currentPosition.valueWrapper.value);
+        _episodeObject['id'],
+        audioPlayer.currentPosition.valueWrapper.value,
+        audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
   }
 
   void resume() {

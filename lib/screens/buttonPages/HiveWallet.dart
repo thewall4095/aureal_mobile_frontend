@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:auditory/screens/RouteAnimation.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:expandable/expandable.dart';
@@ -28,7 +30,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
 
   var rewardsData;
   int page = 0;
-  int pageSize = 10;
+  int pageNumber = 0;
   var hiveTransactions;
 
   List claimedRewards = [];
@@ -89,27 +91,21 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     }
   }
 
-  void getAurealRewardsTransactions() async {
-    print('/////////////////////rewards api being called');
+  var cumulativePoints = [];
 
+  void getCumulativePoints() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$page&pageSize=$pageSize';
-
+        'https://api.aureal.one/public/getCumulativePoints?user_id=${prefs.getString('userId')}';
+    print(cumulativePoints);
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         print(response.body);
 
         setState(() {
-          if (page == 0) {
-            rewardsTransactions = jsonDecode(response.body)['points'];
-          } else {
-            rewardsTransactions =
-                rewardsTransactions + jsonDecode(response.body)['points'];
-          }
+            cumulativePoints = jsonDecode(response.body)['points'];
 
-          page = page + 1;
         });
       } else {
         print(response.statusCode);
@@ -117,6 +113,48 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     } catch (e) {
       print(e);
     }
+  }
+  // bool isLoading;
+  bool isRewardsListPaginationLoading = true;
+  void getAurealRewardsTransactions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/getPoints?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=10';
+    print('api called');
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        if (pageNumber != 0) {
+          print(response.body);
+          setState(() {
+            rewardsTransactions =
+                rewardsTransactions + jsonDecode(response.body)['points'];
+            isRewardsListPaginationLoading = true;
+            pageNumber = pageNumber + 1;
+          });
+        }else{
+          setState(() {
+
+            rewardsTransactions = jsonDecode(response.body)['points'];
+            pageNumber = pageNumber+1;
+          });
+        }
+  //         // } else {
+  //         //   rewardsTransactions =
+  //         //       rewardsTransactions + jsonDecode(response.body)['points'];
+  //         //    rewardsList = false;
+  //         //   page = page +1;
+  //         }
+  //       });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isRewardsListPaginationLoading = false;
+    });
   }
 
   bool isScreenLoading = true;
@@ -157,14 +195,16 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
     getAurealRewardsTransactions();
     getHiveRewardData();
     getHiveTransactions();
+    getCumulativePoints();
+    //  countPoints();
 
     _scrollRewardsController = ScrollController();
-    _scrollRewardsController.addListener(() {
-      if (_scrollRewardsController.position.pixels ==
-          _scrollRewardsController.position.maxScrollExtent) {
-        getAurealRewardsTransactions();
-      }
-    });
+    _scrollRewardsController.addListener(() { if(
+    _scrollRewardsController.position.pixels ==
+        _scrollRewardsController.position.maxScrollExtent)
+{
+  getAurealRewardsTransactions();
+}});
     super.initState();
   }
 
@@ -209,49 +249,123 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                   controller: _tabController,
                                   children: [
                                     Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  '164.029 Points',
-                                                  style: TextStyle(
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          5),
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      " ${cumulativePoints[1]["total_points"]+cumulativePoints[2]["total_points"]+cumulativePoints[2]["total_points"]}.00",
+
+                                                      // '${cumulativePoints[]['points']}',
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              5),
+                                                    ),
+                                                    IconButton(
+                                                        icon: Icon(Icons
+                                                            .arrow_drop_down_circle),
+                                                        onPressed: () {}),
+                                                  ], 
                                                 ),
-                                                IconButton(
-                                                    icon: Icon(Icons
-                                                        .arrow_drop_down_circle),
-                                                    onPressed: () {})
+
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 30),
+                                                  child: Text(
+                                                    "Points",
+                                                    // '${cumulativePoints[]['points']}',
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                            .safeBlockHorizontal *
+                                                            4),
+                                                  ),
+                                                ),
+                                                // InkWell(
+                                                //   child: Container(
+                                                //     child: Row(
+                                                //       mainAxisSize:
+                                                //           MainAxisSize.min,
+                                                //       children: [
+                                                //         Padding(
+                                                //           padding:
+                                                //               const EdgeInsets
+                                                //                       .symmetric(
+                                                //                   horizontal: 10),
+                                                //           child: Icon(
+                                                //               Icons.add_circle),
+                                                //         )
+                                                //       ],
+                                                //     ),
+                                                //   ),
+                                                // ),
+
+                                                //
+                                                // Padding(
+                                                //   padding:
+                                                //   const EdgeInsets.symmetric(
+                                                //       vertical: 10),
+                                                //   child: Row(
+                                                //     mainAxisSize:
+                                                //     MainAxisSize.min,
+                                                //     children: [
+                                                //       IconButton(
+                                                //           icon: iconGenerator(
+                                                //               cumulativePoints[0]
+                                                //               ['action_type']),
+                                                //           onPressed: () {}),
+                                                //       Text(
+                                                //         " Comment",
+                                                //         // '${cumulativePoints[]['points']}',
+                                                //         style: TextStyle(
+                                                //             fontSize: SizeConfig
+                                                //                 .safeBlockHorizontal *
+                                                //                 5),
+                                                //       ),
+                                                //       Text(
+                                                //         " ${cumulativePoints[0]["total_points"]}",
+                                                //
+                                                //         // '${cumulativePoints[]['points']}',
+                                                //         style: TextStyle(
+                                                //             fontSize: SizeConfig
+                                                //                 .safeBlockHorizontal *
+                                                //                 5),
+                                                //       )
+                                                //     ],
+                                                //   ),
+                                                // ),
+
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(8.0),
+                                    //   child: InkWell(
+                                    //     child: Container(
+                                    //       child: Row(
+                                    //         mainAxisSize: MainAxisSize.min,
+                                    //         children: [
+                                    //           Text('123.909'),
+                                    //           Padding(
+                                    //             padding: const EdgeInsets
+                                    //                 .symmetric(
+                                    //                 horizontal: 10),
+                                    //             child:
+                                    //             Icon(Icons.add_circle),
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // )
+
                                               ],
                                             ),
                                           ),
-                                          InkWell(
-                                            child: Container(
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text('123.909'),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 10),
-                                                    child:
-                                                        Icon(Icons.add_circle),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -372,30 +486,37 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                     child: TabBarView(
                       controller: _tabController,
                       children: [
-                        Container(
-                          child: ListView.builder(
-                            controller: _scrollRewardsController,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, int index) {
-                              // return Text('${rewardsTransactions[index]}');
-                              return Container(
-                                child: ListTile(
-                                  minVerticalPadding: 10,
-                                  leading: iconGenerator(
-                                      rewardsTransactions[index]
-                                          ['action_type']),
-                                  title: Text(
-                                      'Points for ${rewardsTransactions[index]['action_type']}'),
-                                  subtitle: Text(
-                                      '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
-                                  trailing: Text(
-                                      '${double.parse(rewardsTransactions[index]['points'].toString())} points'),
-                                ),
-                              );
-                            },
-                            itemCount: rewardsTransactions.length,
-                          ),
+                        ListView.builder(
+                          itemCount: rewardsTransactions.length  ,
+                          controller: _scrollRewardsController,
+                          itemBuilder: (context, int index) {
+                            // print(
+                            //     '${double.parse(rewardsTransactions[index]['points'].toString())} points');
+                            // return Text('${rewardsTransactions[index]}');
+                            return  WidgetANimator(
+                               Column(
+                                children: [
+                                  Container(
+                                    child: ListTile(
+                                      minVerticalPadding: 10,
+                                      leading: iconGenerator(
+                                          rewardsTransactions[index]
+                                              ['action_type']),
+                                      title: Text(
+                                          'Points for ${rewardsTransactions[index ]['action_type']}'),
+                                      subtitle: Text(
+                                          '${timeago.format(DateTime.parse(rewardsTransactions[index]['updatedAt']))}'),
+                                      trailing: Text(
+                                          '${double.parse(rewardsTransactions[index ]['points'].toString())} points'),
+                                    ),
+
+                                  ),
+
+                                ],
+                              ),
+                            );
+                          },
+
                         ),
                         Container(
                           child: ListView.builder(
@@ -405,8 +526,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: kSecondaryColor),
+                                    border: Border.all(color: kSecondaryColor),
                                     // border: Border.all(
                                     //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
@@ -424,7 +544,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                           children: [
                                             Text("Transfer"),
                                             Text(
-                                                "${transferHive[index][1]['op'][1]['amount']}"),
+                                                "${transferHive[index ][1]['op'][1]['amount']}"),
                                           ],
                                         ),
                                         collapsed: Text(
@@ -464,8 +584,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border:
-                                        Border.all(color: kSecondaryColor),
+                                    border: Border.all(color: kSecondaryColor),
                                     // border: Border.all(
                                     //   color: kSecondaryColor,
                                     color: themeProvider.isLightTheme == true
@@ -548,8 +667,8 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
 //
 // }
 
-Widget iconGenerator(var action_type) {
-  switch (action_type) {
+Widget iconGenerator(var actionType) {
+  switch (actionType) {
     case 'vote':
       return Icon(FontAwesomeIcons.chevronCircleUp);
       break;

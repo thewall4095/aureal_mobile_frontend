@@ -1,19 +1,19 @@
 import 'dart:convert';
 
-import 'package:auditory/NotificationProvider.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:auditory/utilities/constants.dart';
-import 'package:auditory/screens/buttonPages/Profile.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
+import 'package:uni_links/uni_links.dart';
+
+import 'settings/Theme-.dart';
 
 class NotificationPage extends StatefulWidget {
   static const String id = "NotificationsPage";
@@ -28,10 +28,9 @@ class _NotificationPageState extends State<NotificationPage>
   final _messaging = FirebaseMessaging.instance;
 
   Dio dio = Dio();
-
   TabController _tabController;
+    String displayPicture;
 
-  String displayPicture;
 
   var notificationList = [];
 
@@ -46,7 +45,8 @@ class _NotificationPageState extends State<NotificationPage>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}';
-    print( 'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}');
+    print(
+        'https://api.aureal.one/public/getNotifications?user_id=${prefs.getString('userId')}');
     try {
       http.Response response = await http.get(Uri.parse(url));
 
@@ -58,9 +58,9 @@ class _NotificationPageState extends State<NotificationPage>
       }
     } catch (e) {
       print(e);
+
     }
   }
-
 
   void sendNotifications() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -86,6 +86,7 @@ class _NotificationPageState extends State<NotificationPage>
     }
   }
 
+
   void viewedNotification(int notificationId) async {
     String url = 'https://api.aureal.one/public/viewedNotificaiton';
     var map = Map<String, dynamic>();
@@ -95,7 +96,7 @@ class _NotificationPageState extends State<NotificationPage>
 
     var response = await dio.post(url, data: formData);
     print(response.toString());
-   print('notification_id');
+    print('notification_id');
   }
 
   @override
@@ -103,6 +104,7 @@ class _NotificationPageState extends State<NotificationPage>
     // TODO: implement initState
     getNotifications();
     getLocalData();
+
     _tabController = TabController(length: 4, vsync: this);
     super.initState();
   }
@@ -117,6 +119,7 @@ class _NotificationPageState extends State<NotificationPage>
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     SizeConfig().init(context);
     return Scaffold(
       body: NestedScrollView(
@@ -124,7 +127,7 @@ class _NotificationPageState extends State<NotificationPage>
           return <Widget>[
             SliverAppBar(
               elevation: 0,
-            //  backgroundColor: Colors.transparent,
+              //  backgroundColor: Colors.transparent,
               // leading: IconButton(
               //   icon: displayPicture != null
               //       ? CircleAvatar(
@@ -154,24 +157,25 @@ class _NotificationPageState extends State<NotificationPage>
 //                  onPressed: () => debugPrint('Action Notification'),
 //                ),
               ],
-              // expandedHeight: 170,
+       //       expandedHeight: 170,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
                   padding: EdgeInsets.fromLTRB(16, 0, 0, 64),
                   height: 50,
                   alignment: Alignment.bottomLeft,
-                  child: Text('Notifications',
-                      textScaleFactor: 0.75,
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      )),
+                  // child: Text('Notifications',
+                  //     textScaleFactor: 0.75,
+                  //     style: TextStyle(
+                  //       fontSize: 36,
+                  //       fontWeight: FontWeight.bold,
+                  //     )),
                 ),
               ),
             ),
           ];
         },
+
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Container(
@@ -185,48 +189,119 @@ class _NotificationPageState extends State<NotificationPage>
                         for (var v in notificationList)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                               // viewedNotification(v['id']);
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
+                            child: Container(
+                              width: double.infinity,
+                              child: GestureDetector(
+                                onTap: (){
+                                  print(v['data']);
+                                  if( v['data']['episode_id']!= null)
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return EpisodeView(
+                                            episodeId: v['data']['episode_id'],
+                                          );
+                                        }));
+
+                                },
+                                child: Column(
+                                  children: [
                                     Container(
-                                      height: 65,
-                                      width: 65,
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder:
-                                            'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                        image: v['data']['image'] == null
-                                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                            : v['data']['image'],
-                                       // fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          GestureDetector(
-                                            child: Text(
-                                              v['title'],
-                                              textScaleFactor: 0.75,
-                                              style: TextStyle(
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3.2),
-                                            ),
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color: Colors.black54.withOpacity(0.2),
+                                            blurRadius: 10.0,
                                           ),
                                         ],
+                                        color: themeProvider.isLightTheme == true
+                                            ? Colors.white
+                                            : Color(0xff222222),
+                                        borderRadius:
+                                        BorderRadius.circular(8),
                                       ),
-                                    )
+
+                                      width: double.infinity,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            height: 65,
+                                            width: 65,
+                                            child: CachedNetworkImage(
+                                              imageBuilder: (context, imageProvider) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+
+                                                    borderRadius:
+                                                    BorderRadius.circular(10),
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover),
+                                                  ),
+                                                  height:
+                                                  MediaQuery.of(context).size.width,
+                                                  width:
+                                                  MediaQuery.of(context).size.width,
+                                                );
+                                              },
+                                              imageUrl:  v['data']['image'] == null
+                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                  : v['data']['image'],
+                                              fit: BoxFit.cover,
+                                              // memCacheHeight:
+                                              //     MediaQuery.of(
+                                              //             context)
+                                              //         .size
+                                              //         .width
+                                              //         .ceil(),
+                                              memCacheHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height
+                                                  .floor(),
+
+                                              errorWidget: (context, url, error) =>
+                                                  Icon(Icons.error),
+                                            ),
+
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                GestureDetector(
+                                                  child: Text(
+                                                    v['title'],
+                                                    textScaleFactor: 0.75,
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            3.2),
+                                                  ),
+
+                                                ),
+                                                SizedBox(height: 10,),
+                                                Text(
+                                                  v['body'],
+                                                  textScaleFactor: 0.75,
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                          3.2),
+                                                ),
+
+                                              ],
+
+                                            ),
+
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

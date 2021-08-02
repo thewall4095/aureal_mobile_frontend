@@ -15,7 +15,7 @@ import 'package:flutter/widgets.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+// import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'dart:io' as io;
 import 'package:path_provider/path_provider.dart';
 
@@ -47,7 +47,7 @@ class _SoundEditorState extends State<SoundEditor> {
   StreamSubscription _positionSubscription;
   StreamSubscription _audioPlayerStateSubscription;
 
-  final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
+  // final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
 
   bool loading = true;
 
@@ -114,14 +114,14 @@ class _SoundEditorState extends State<SoundEditor> {
         customPath +
         DateTime.now().millisecondsSinceEpoch.toString();
 
-    _fFmpeg
-        .execute(
-            '-i ${audioUrl} -filter_complex showwavespic=colors=3F67F6 -frames:v 1 ${customPath}.png')
-        .then((value) {
-      setState(() {
-        imagePath = '${customPath}.png';
-      });
-    });
+    // _fFmpeg
+    //     .execute(
+    //         '-i ${audioUrl} -filter_complex showwavespic=colors=3F67F6 -frames:v 1 ${customPath}.png')
+    //     .then((value) {
+    //   setState(() {
+    //     imagePath = '${customPath}.png';
+    //   });
+    // });
 
     setState(() {
       loading = false;

@@ -4,11 +4,9 @@ String DurationCalculator(int duration) {
     duration %= 3600;
     var minutes = (duration / 60).floor();
     var seconds = duration % 60;
-    return (hours.toString() +
-        ":" +
+    return ((hours == 0 ? '' : hours.toString() + ' hr ') +
         minutes.toString() +
-        ":" +
-        seconds.toString());
+        " min ");
   } catch (e) {
     return 'Some Issue';
   }

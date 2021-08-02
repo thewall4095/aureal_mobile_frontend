@@ -254,6 +254,7 @@ class _CommunityViewState extends State<CommunityView>
           bottomSheet: BottomPlayer(),
           body: Container(
             child: ListView(
+              physics: BouncingScrollPhysics(),
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),

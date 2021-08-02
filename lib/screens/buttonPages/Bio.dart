@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -9,6 +10,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,7 +41,7 @@ class _BioState extends State<Bio> {
   bool isLoading = false;
   bool isImageLoading = false;
   final picker = ImagePicker();
-
+  var bioObject;
   File _image;
 
   Dio dio = Dio();
@@ -111,6 +114,46 @@ class _BioState extends State<Bio> {
     });
   }
 
+  var data;
+
+  void getUserDetails() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/private/users?user_id=${prefs.getString('userId')}';
+    Map<String, String> header = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      'encoding': 'encoding',
+//      'Authorization': "Bearer $token"
+      HttpHeaders.authorizationHeader: "Bearer ${prefs.getString('token')}"
+    };
+
+    try {
+      http.Response response = await http.get(Uri.parse(url), headers: header);
+      if (response.statusCode == 200) {
+        print(response.body);
+        if (this.mounted) {
+          setState(() {
+            data = jsonDecode(response.body)['users'];
+            prefs.setString(
+                'FullName', jsonDecode(response.body)['users']['fullname']);
+
+            prefs.setString(
+                'userName', jsonDecode(response.body)['users']['username']);
+            displayPicture = jsonDecode(response.body)['users']['img'];
+            // status = jsonDecode(response.body)['users']['settings']['Account']
+            // ['Presence'];
+
+            prefs.getString('HiveUserName');
+            // jsonDecode(response.body)['users']['email'];
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void _openFileExplorer() async {
     setState(() => _loadingPath = true);
     try {
@@ -157,6 +200,12 @@ class _BioState extends State<Bio> {
     _upload();
   }
 
+  TextEditingController _descriptionController = TextEditingController();
+
+  String instagram = '';
+  String twitter = '';
+  String linkedin = '';
+
   void _upload() async {
     setState(() {
       isLoading = true;
@@ -201,7 +250,7 @@ class _BioState extends State<Bio> {
     }
 
     if (bio != '') {
-      map['settings_Account_Bio'] = bio;
+      map['settings_Account_Bio'] = bio + '\n' + description;
     } else {
       map['settings_Account_Bio'] = widget.bio;
     }
@@ -213,12 +262,35 @@ class _BioState extends State<Bio> {
       //isImageLoading = false;
     }
 
+    if (linkedin != '') {
+      map['linkedin'] = linkedin;
+    }
+
+    if (instagram != '') {
+      map['instagram'] = instagram;
+    } else {
+      map['instagram'] = data['instagram'];
+    }
+
+    if (twitter != '') {
+      map['twitter'] = twitter;
+    } else {
+      map['twitter'] = data['twitter'];
+    }
+
+    if (website != '') {
+      map['website'] = website;
+    } else {
+      map['website'] = data['website'];
+    }
+
     FormData formData = FormData.fromMap(map);
 
     try {
       var response = await intercept.postRequest(formData, url);
-      var data = jsonDecode(response)['user'];
+      var data = jsonDecode(response.toString())['user'];
       prefs.setString('displayPicture', data['img']);
+      // print(response.toStrin());
       print(response.runtimeType);
     } catch (e) {
       print(e);
@@ -229,12 +301,17 @@ class _BioState extends State<Bio> {
     Navigator.pop(context, "done");
   }
 
+  String description = '';
+  String website = '';
+
   @override
   void initState() {
     // TODO: implement initState
+    getUserDetails();
     super.initState();
     fullNameTextEditingControler.text = widget.fullname;
     bioTextEditingControler.text = widget.bio;
+
   }
 
   Future<void> _pullRefreshEpisodes() async {
@@ -244,213 +321,386 @@ class _BioState extends State<Bio> {
     await activeButtonState();
   }
 
+  AppBar _appBar() {
+    return AppBar(
+      //   backgroundColor: Colors.transparent,
+      elevation: 0,
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldGlobalKey,
-      // backgroundColor: kPrimaryColor,
-      appBar: AppBar(
-        //   backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.navigate_before,
-            //     color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Edit Profile',
-          textScaleFactor: 0.75,
-          // style: TextStyle(color: Colors.white),
-        ),
-        actions: <Widget>[
-          isImageLoading == true
-              ? SizedBox(
-                  height: 0,
-                  width: 0,
-                )
-              : FlatButton(
-                  onPressed: () {
-                    updateUserDetails();
-                  },
-                  child: Text(
-                    "Save",
-                    textScaleFactor: 0.75,
-                    //     style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                )
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    decoration: displayUrl == null
-                        ? BoxDecoration(
-                            image: DecorationImage(
-                              image: widget.displayPicture != null
-                                  ? CachedNetworkImageProvider(
-                                      widget.displayPicture)
-                                  // ? NetworkImage(widget.displayPicture)
-                                  : AssetImage('assets/images/person.png'),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.navigate_before,
+                //     color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            title: Text(
+              'Edit Profile',
+              textScaleFactor: 0.75,
+              // style: TextStyle(color: Colors.white),
+            ),
+            actions: <Widget>[
+              isImageLoading == true
+                  ? SizedBox(
+                      height: 0,
+                      width: 0,
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        updateUserDetails();
+                      },
+                      icon: Icon(FontAwesomeIcons.check))
+            ],
+            pinned: true,
+            expandedHeight: MediaQuery.of(context).size.height / 3.5,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      decoration: displayUrl == null
+                          ? BoxDecoration(
+                              image: DecorationImage(
+                                image: widget.displayPicture != null
+                                    ? CachedNetworkImageProvider(
+                                        widget.displayPicture)
+                                    // ? NetworkImage(widget.displayPicture)
+                                    : AssetImage('assets/images/person.png'),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                          : BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(displayUrl),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                          )
-                        : BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: CachedNetworkImageProvider(displayUrl),
-                              fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                      child: isImageLoading == true
+                          ? SpinKitPulse(
+                              color: Colors.blue,
+                            )
+                          : SizedBox(
+                              height: 0,
+                              width: 0,
                             ),
-                          ),
-                    height: 100,
-                    width: 100,
-                    child: isImageLoading == true
-                        ? SpinKitPulse(
-                            color: Colors.blue,
-                          )
-                        : SizedBox(
-                            height: 0,
-                            width: 0,
-                          ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      getImageFile();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 40),
-                      child: Text(
-                        "Edit",
-                        textScaleFactor: 0.75,
-                        style: TextStyle(
-                            //   color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600),
-                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                        height: 40,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          //  color: kSecondaryColor
-                        ),
-                        child: Center(
-                            // child: TextField(
-                            //   controller: fullNameTextEditingControler,
-                            //   style: TextStyle(color: Colors.white54),
-                            //   onChanged: (value) {
-                            //     setState(() {
-                            //       fullname = value;
-                            //     });
-                            //     activeButtonState();
-                            //   },
-                            //   decoration: InputDecoration(
-                            //       //  hintText: widget.fullname,
-                            //       hintStyle: TextStyle(
-                            //         color: Colors.white54,
-                            //       ),
-                            //       contentPadding:
-                            //           EdgeInsets.fromLTRB(10, 0, 10, 10)),
-                            // ),
-                            //  child: TextFormField(
-                            //    initialValue: widget.fullname,
-                            //    controller: fullNameTextEditingControler,
-                            //    onChanged: (value) {
-                            //      setState(() {
-                            //        fullname = value;
-                            //      });
-                            //      activeButtonState();
-                            //    },
-                            // //   style: TextStyle(color: Color(0xffe8e8e8)),
-                            //    decoration: InputDecoration(
-                            //      disabledBorder: OutlineInputBorder(),
-                            //      labelText: 'Full Name',
-                            //  //    labelStyle: TextStyle(color: Color(0xffe8e8e8)),
-                            //      border: OutlineInputBorder(),
-                            //    ),
-                            //  ),
-                            ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: kSecondaryColor),
-                          borderRadius: BorderRadius.circular(8),
-                          //    color: kSecondaryColor,
-                        ),
-                        width: double.infinity,
-                        height: 80,
-                        child: TextFormField(
-                          maxLines: 6,
-                          initialValue: widget.bio,
-                          controller: bioTextEditingControler,
-                          onChanged: (value) {
-                            setState(() {
-                              bio = value;
-                            });
-                            activeButtonState();
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                          onTap: () {
+                            getImageFile();
                           },
-                          // style: TextStyle(color: Color(0xffe8e8e8)),
-                          decoration: InputDecoration(
-                            disabledBorder: OutlineInputBorder(),
-                            labelText: 'Bio',
-                            // hintText: "XYZ TYX",
-                            //   labelStyle: TextStyle(color: Color(0xffe8e8e8)),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        // child: TextField(
-                        //   controller: bioTextEditingControler,
-                        //   style: TextStyle(color: Colors.white54),
-                        //   maxLines: 6,
-                        //   onChanged: (value) {
-                        //     setState(() {
-                        //       bio = value;
-                        //     });
-                        //     activeButtonState();
-                        //   },
-                        //   decoration: InputDecoration(
-                        //       //   hintText: widget.bio,
-                        //       hintStyle: TextStyle(
-                        //         color: Colors.white54,
-                        //       ),
-                        //       border: InputBorder.none,
-                        //       contentPadding: EdgeInsets.symmetric(
-                        //           horizontal: 10, vertical: 10)),
-                        // ),
-                      ),
-                    ],
-                  )
-                ],
+                          child: Text(
+                            "Change Profile Photo",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: SizeConfig.blockSizeHorizontal * 4),
+                          )),
+                    ),
+                    Divider(
+                      color: kSecondaryColor,
+                    ),
+                    //     SizedBox(height: 10)
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            //   child: TextField(
+            //     enabled: false,
+            //     decoration: InputDecoration(
+            //       // hintText: data['hive_username'],
+            //       labelText: 'Username',
+            //     ),
+            //     onChanged: ((value) {
+            //       setState(() {});
+            //     }),
+            //   ),
+            // ),
+
+            // Padding(
+            //   padding:
+            //       const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+            //   child: TextField(
+            //     maxLines: 3,
+            //     decoration: InputDecoration(hintText: 'Bio', labelText: 'Bio'),
+            //     onChanged: ((value) {
+            //       setState(() {
+            //         //   _bioController.text = value;
+            //       });
+            //     }),
+            //   ),
+            // ),
+
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+              child: TextFormField(
+                decoration: InputDecoration(  hintText: data['bio'] != null
+        ? data['bio']
+        : 'Bio', labelText: 'Bio'),
+                controller: bioTextEditingControler,
+                autofocus: true,
+                maxLines: null,
+                initialValue: widget.bio,
+                onChanged: (value) {
+                  setState(() {
+
+                    bio = value;
+                  });
+                  activeButtonState();
+                },
+
+              ),
+
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText:
+                        'Write a show description about you, this will be there on your podcast page',
+                    labelText: 'Description'),
+                maxLines: null,
+                onChanged: ((value) {
+                  setState(() {
+                    description = value;
+                    //_phoneController.text = value;
+                  });
+                }),
+              ),
+            ),
+            SizedBox(height: 30),
+            Divider(),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+              child: Text("Profile Information"),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        instagram = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                        icon: Icon(FontAwesomeIcons.instagram),
+                        hintText: data['instagram'] != null
+                            ? data['instagram']
+                            : 'https://instagram.com/john_snow'),
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        twitter = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                        icon: Icon(FontAwesomeIcons.twitter),
+                        hintText:
+                            '${data['twitter'] == null ? 'https://twitter.com/@john_snow' : data['twitter']} '),
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        linkedin = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                        icon: Icon(FontAwesomeIcons.linkedinIn),
+                        hintText:
+                            '${data['linkedin'] != null ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        website = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                        icon: Icon(FontAwesomeIcons.link),
+                        hintText: data['website'] == null
+                            ? 'https://aureal.one'
+                            : data['website']),
+                  ),
+                ],
+              ),
+            )
+          ]))
+        ],
+      ),
+    );
+  }
+
+  Widget oldWidget() {
+    return SafeArea(
+      child: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 40),
+                    child: Text(
+                      "Edit",
+                      textScaleFactor: 0.75,
+                      style: TextStyle(
+                          //   color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: kSecondaryColor),
+                        borderRadius: BorderRadius.circular(8),
+                        //    color: kSecondaryColor,
+                      ),
+                      width: double.infinity,
+                      height: 80,
+                      child: TextFormField(
+                        maxLines: 6,
+                        initialValue: widget.fullname,
+                        controller: fullNameTextEditingControler,
+                        onChanged: (value) {
+                          setState(() {
+                            fullname = value;
+                          });
+                          activeButtonState();
+                        },
+                        // style: TextStyle(color: Color(0xffe8e8e8)),
+                        decoration: InputDecoration(
+                          disabledBorder: OutlineInputBorder(),
+                          labelText: 'Profile Name',
+                          hintText: widget.fullname,
+                          //   labelStyle: TextStyle(color: Color(0xffe8e8e8)),
+                          border: OutlineInputBorder(),
+                        ),
+
+                        // Container(
+                        //   width: double.infinity,
+                        //   height: 80,
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(8),
+                        //     //  color: kSecondaryColor
+                        //   ),
+                        //   child: TextField(
+                        //     controller: fullNameTextEditingControler,
+                        //     style: TextStyle(color: Colors.white54),
+                        //     onChanged: (value) {
+                        //       setState(() {
+                        //         fullname = value;
+                        //       });
+                        //       activeButtonState();
+                        //     },
+                        //     decoration: InputDecoration(
+                        //          hintText: widget.fullname,
+                        //         hintStyle: TextStyle(
+                        //           color: Colors.white,
+                        //         ),
+                        //         contentPadding:
+                        //             EdgeInsets.fromLTRB(10, 0, 10, 10)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: kSecondaryColor),
+                        borderRadius: BorderRadius.circular(8),
+                        //    color: kSecondaryColor,
+                      ),
+                      width: double.infinity,
+                      height: 80,
+                      child: TextFormField(
+                        maxLines: 6,
+                        initialValue: widget.bio,
+                        controller: bioTextEditingControler,
+                        onChanged: (value) {
+                          setState(() {
+                            bio = value;
+                          });
+                          activeButtonState();
+                        },
+                        // style: TextStyle(color: Color(0xffe8e8e8)),
+                        decoration: InputDecoration(
+                          disabledBorder: OutlineInputBorder(),
+                          labelText: 'Bio',
+                          //   labelStyle: TextStyle(color: Color(0xffe8e8e8)),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      // child: TextField(
+                      //   controller: bioTextEditingControler,
+                      //   style: TextStyle(color: Colors.white54),
+                      //   maxLines: 6,
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       bio = value;
+                      //     });
+                      //     activeButtonState();
+                      //   },
+                      //   decoration: InputDecoration(
+                      //       //   hintText: widget.bio,
+                      //       hintStyle: TextStyle(
+                      //         color: Colors.white54,
+                      //       ),
+                      //       border: InputBorder.none,
+                      //       contentPadding: EdgeInsets.symmetric(
+                      //           horizontal: 10, vertical: 10)),
+                      // ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

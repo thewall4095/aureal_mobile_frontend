@@ -197,8 +197,8 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.black,
+        borderRadius: BorderRadius.circular(8),
+        color: Color(0xff222222),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -215,10 +215,15 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
                     Text(
                       "Your vote value:",
                       style: TextStyle(
+                          color: Colors.white,
                           fontSize: SizeConfig.safeBlockHorizontal * 3),
                     ),
                     Text(
-                        '\$ ${((factor * _value) / 100).toStringAsPrecision(3)}'),
+                      '\$ ${((factor * _value) / 100).toStringAsPrecision(3)}',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),

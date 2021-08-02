@@ -128,12 +128,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
-  - flutter_ffmpeg (0.4.0):
-    - Flutter
-    - flutter_ffmpeg/https (= 0.4.0)
-  - flutter_ffmpeg/https (0.4.0):
-    - Flutter
-    - mobile-ffmpeg-https (= 4.4)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_media_notification (0.0.1):
@@ -198,7 +192,6 @@ PODS:
     - TOCropViewController (~> 2.6.0)
   - image_picker (0.0.1):
     - Flutter
-  - mobile-ffmpeg-https (4.4)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -244,7 +237,6 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
-  - flutter_ffmpeg (from `.symlinks/plugins/flutter_ffmpeg/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_media_notification (from `.symlinks/plugins/flutter_media_notification/ios`)
   - flutter_share (from `.symlinks/plugins/flutter_share/ios`)
@@ -282,7 +274,6 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
-    - mobile-ffmpeg-https
     - nanopb
     - PromisesObjC
     - SDWebImage
@@ -311,8 +302,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_downloader:
     :path: ".symlinks/plugins/flutter_downloader/ios"
-  flutter_ffmpeg:
-    :path: ".symlinks/plugins/flutter_ffmpeg/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_media_notification:
@@ -369,7 +358,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 1a33b4af3c8042ed6ddacb6c031894af2064bfab
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
-  flutter_ffmpeg: bc8496ea20331e486cd29a03a3c6ff10d32db565
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_media_notification: b950606ee6c7bc8b1fbecd8ad0f0b5c6f884d781
   flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
@@ -384,7 +372,6 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
-  mobile-ffmpeg-https: 311fc4a8f671cf36d1d6b8f421e8246b790978d9
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0

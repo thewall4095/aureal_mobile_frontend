@@ -541,7 +541,8 @@ class _BrowsePageState extends State<BrowsePage>
                 ),
               ),
               Expanded(
-                child: TabBarView(
+                child:
+                TabBarView(
                   controller: _tabController,
                   children: <Widget>[
                     Container(
