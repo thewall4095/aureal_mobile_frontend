@@ -70,7 +70,7 @@ class _AnimatorState extends State<Animator>
       child: widget.child,
       builder: (BuildContext context, Widget child) {
         return AnimatedOpacity(
-          opacity: animation.value,duration: Duration(seconds: 2),
+          opacity: animation.value,duration: Duration(seconds: 1),
           child: Transform.translate(
             offset: Offset(2, (1 - animation.value) * 50),
             child: child,
@@ -84,11 +84,11 @@ Timer timer;
 Duration duration = Duration();
 wait() {
   if (timer == null || !timer.isActive) {
-    timer = Timer(Duration(microseconds: 200), () {
+    timer = Timer(Duration(microseconds: 1), () {
       duration = Duration();
     });
   }
-  duration += Duration(milliseconds:10);
+  duration += Duration(milliseconds:1);
   return duration;
 }
 class WidgetANimator extends StatelessWidget {

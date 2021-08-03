@@ -339,7 +339,6 @@ class _EpisodeViewState extends State<EpisodeView>
       setState(() {
         dominantColor = hexOfRGBA(value[0], value[1], value[2]);
         print(dominantColor.toString());
-
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Color(dominantColor),
         ));
@@ -359,7 +358,7 @@ class _EpisodeViewState extends State<EpisodeView>
     return Scaffold(
       // bottomSheet: UpvoteWidget(),
       body: ModalProgressHUD(
-        color: Colors.transparent,
+        color: Colors.black,
         inAsyncCall: isLoading,
         child: isLoading == true
             ? Container(

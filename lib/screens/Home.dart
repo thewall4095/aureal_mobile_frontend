@@ -37,6 +37,7 @@ import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
+import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
 import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
@@ -397,11 +398,8 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, _) {
-                    return SecondScreen();
-                  },
-                  opaque: false));
+              Navigator.of(context).push(   SlideRightRoute(widget:
+              Profile()));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -443,14 +441,15 @@ class _HomeState extends State<Home> {
               : SizedBox(height: 0, width: 0),
           Center(
             child: IconButton(
-              icon: Badge(
-                badgeColor: Colors.blue,
-                badgeContent: Text("$count"),
-                child: Icon(
-                  Icons.notifications_none,
-                  //    color: Colors.white,
-                ),
-              ),
+              icon: Icon(Icons.notifications_none),
+              // icon: Badge(
+              //   badgeColor: Colors.blue,
+              //   badgeContent: Text("$count"),
+              //   child: Icon(
+              //     Icons.notifications_none,
+              //     //    color: Colors.white,
+              //   ),
+              // ),
               onPressed: () {
                 Navigator.pushNamed(context, NotificationPage.id);
               },
@@ -466,18 +465,18 @@ class _HomeState extends State<Home> {
                   context: context, delegate: SearchFunctionality());
             },
           ),
-          IconButton(
-            icon: Icon(
-              Icons.mic,
-              //     color: Colors.white,
-            ),
-                onPressed: () {
-                Navigator.of(context).push(   SlideRightRoute(widget:
-
-                AudioRecognize()));
-                },
-
-          )
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.mic,
+          //     //     color: Colors.white,
+          //   ),
+          //       onPressed: () {
+          //       Navigator.of(context).push(   SlideRightRoute(widget:
+          //
+          //       AudioRecognize()));
+          //       },
+          //
+          // )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

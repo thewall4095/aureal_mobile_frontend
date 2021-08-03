@@ -182,11 +182,10 @@ class _PodcastViewState extends State<PodcastView> {
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
         // episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
-        podcastData = jsonDecode(response.body)['podcast'];
-        print(jsonDecode(response.body)['podcast']['ifFollows']
-            .runtimeType
-            .toString());
+
+
         setState(() {
+          podcastData = jsonDecode(response.body)['podcast'];
           follows = jsonDecode(response.body)['podcast']['ifFollows'];
         });
 
@@ -310,10 +309,15 @@ class _PodcastViewState extends State<PodcastView> {
         controller: _controller,
         slivers: <Widget>[
           SliverPersistentHeader(
-            delegate: _AnimationHeader(podcastData),
+            delegate: _AnimationHeader(
+                podcastId: podcastData,
+                follows: follows,
+                dominantColor: dominantColor,
+                followState: followState),
             pinned: true,
           ),
           // SliverAppBar(
+          //   centerTitle: true,
           //   pinned: true,
           //   floating: true,
           //   //   backgroundColor: kPrimaryColor,
@@ -629,7 +633,7 @@ class _PodcastViewState extends State<PodcastView> {
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int index) {
             if (index == 0) {
-              return WidgetANimator(
+              return
                 Padding(
                     padding: const EdgeInsets.fromLTRB(15, 30, 15, 15),
                     child: Column(
@@ -638,36 +642,36 @@ class _PodcastViewState extends State<PodcastView> {
                           podcastData == null
                               ? Container()
                               : htmlMatch.hasMatch(
-                                          podcastData['description']) ==
-                                      true
-                                  ? Text(
-                                      '${(parse(podcastData['description']).body.text)}',
-                                      maxLines: seeMore == true ? 30 : 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 1.5)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          //      color: Colors.grey,
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  3),
-                                    )
-                                  : Text(
-                                      podcastData['description'],
-                                      maxLines: seeMore == true ? 30 : 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 1)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          //  color: Colors.grey,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3),
-                                    ),
+                              podcastData['description']) ==
+                              true
+                              ? Text(
+                            '${(parse(podcastData['description']).body.text)}',
+                            maxLines: seeMore == true ? 30 : 2,
+                            overflow: TextOverflow.ellipsis,
+                            textScaleFactor: mediaQueryData
+                                .textScaleFactor
+                                .clamp(0.5, 1.5)
+                                .toDouble(),
+                            style: TextStyle(
+                              //      color: Colors.grey,
+                                fontSize:
+                                SizeConfig.blockSizeHorizontal *
+                                    3),
+                          )
+                              : Text(
+                            podcastData['description'],
+                            maxLines: seeMore == true ? 30 : 2,
+                            overflow: TextOverflow.ellipsis,
+                            textScaleFactor: mediaQueryData
+                                .textScaleFactor
+                                .clamp(0.5, 1)
+                                .toDouble(),
+                            style: TextStyle(
+                              //  color: Colors.grey,
+                                fontSize:
+                                SizeConfig.safeBlockHorizontal *
+                                    3),
+                          ),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -705,48 +709,47 @@ class _PodcastViewState extends State<PodcastView> {
                                         .clamp(0.5, 1.5)
                                         .toDouble(),
                                     style: TextStyle(
-                                        //     color: Color(0xffe8e8e8),
+                                      //     color: Color(0xffe8e8e8),
                                         fontWeight: FontWeight.w500,
                                         fontSize:
-                                            SizeConfig.safeBlockHorizontal *
-                                                5)),
+                                        SizeConfig.safeBlockHorizontal *
+                                            5)),
                               ],
                             ),
                           ])
-                        ])),
-              );
+                        ]));
             } else {
               if (index == episodeList.length + 1) {
                 return isLoading == false
                     ? (_controller.position.pixels !=
-                            _controller.position.maxScrollExtent
-                        ? SizedBox()
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Shimmer.fromColors(
-                              baseColor: themeProvider.isLightTheme == false
-                                  ? kPrimaryColor
-                                  : Colors.white,
-                              highlightColor:
-                                  themeProvider.isLightTheme == false
-                                      ? Color(0xff3a3a3a)
-                                      : Colors.white,
-                            )))
+                    _controller.position.maxScrollExtent
+                    ? SizedBox()
                     : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Shimmer.fromColors(
-                          baseColor: themeProvider.isLightTheme == false
-                              ? kPrimaryColor
-                              : Colors.white,
-                          highlightColor: themeProvider.isLightTheme == false
-                              ? Color(0xff3a3a3a)
-                              : Colors.white,
-                        ));
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor:
+                      themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                    )))
+                    : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor: themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                    ));
               }
-              return WidgetANimator(
+              return
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Column(
                     children: [
                       Container(
@@ -768,14 +771,13 @@ class _PodcastViewState extends State<PodcastView> {
                               horizontal: 20, vertical: 15),
                           child: ListTile(
                             contentPadding: EdgeInsets.zero,
-
                             onTap: () {
                               Navigator.push(
                                   context,
                                   SlideRightRoute(
                                       widget: EpisodeView(
                                           episodeId: episodeList[index - 1]
-                                              ['id'])));
+                                          ['id'])));
                             },
                             //
                             title: Text(
@@ -795,403 +797,403 @@ class _PodcastViewState extends State<PodcastView> {
                                 children: [
                                   episodeList[index - 1]['summary'] == null
                                       ? SizedBox(
-                                          height: 0,
-                                        )
+                                    height: 0,
+                                  )
                                       : Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10.0),
-                                          child: htmlMatch.hasMatch(
-                                                      episodeList[index - 1]
-                                                          ['summary']) ==
-                                                  true
-                                              ? Text(
-                                                  '${(parse(episodeList[index - 1]['summary']).body.text)}',
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor:
-                                                      mediaQueryData
-                                                          .textScaleFactor
-                                                          .clamp(0.5, 1)
-                                                          .toDouble(),
-                                                  style: TextStyle(
-                                                      //       color: Colors.grey,
-                                                      fontSize: SizeConfig
-                                                              .blockSizeHorizontal *
-                                                          3.5),
-                                                )
-                                              : Text(
-                                                  episodeList[index - 1]
-                                                      ['summary'],
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor:
-                                                      mediaQueryData
-                                                          .textScaleFactor
-                                                          .clamp(0.5, 1)
-                                                          .toDouble(),
-                                                  style: TextStyle(
-                                                      //         color: Colors.grey,
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          3.5),
-                                                ),
-                                        ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: htmlMatch.hasMatch(
+                                        episodeList[index - 1]
+                                        ['summary']) ==
+                                        true
+                                        ? Text(
+                                      '${(parse(episodeList[index - 1]['summary']).body.text)}',
+                                      maxLines: 2,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      textScaleFactor:
+                                      mediaQueryData
+                                          .textScaleFactor
+                                          .clamp(0.5, 1)
+                                          .toDouble(),
+                                      style: TextStyle(
+                                        //       color: Colors.grey,
+                                          fontSize: SizeConfig
+                                              .blockSizeHorizontal *
+                                              3.5),
+                                    )
+                                        : Text(
+                                      episodeList[index - 1]
+                                      ['summary'],
+                                      maxLines: 2,
+                                      overflow:
+                                      TextOverflow.ellipsis,
+                                      textScaleFactor:
+                                      mediaQueryData
+                                          .textScaleFactor
+                                          .clamp(0.5, 1)
+                                          .toDouble(),
+                                      style: TextStyle(
+                                        //         color: Colors.grey,
+                                          fontSize: SizeConfig
+                                              .safeBlockHorizontal *
+                                              3.5),
+                                    ),
+                                  ),
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
                                           Row(children: [
                                             episodeList[index - 1]
-                                                            ['permlink'] ==
-                                                        null ||
-                                                    episodeList[index - 1]
-                                                            ['votes'] ==
-                                                        null
+                                            ['permlink'] ==
+                                                null ||
+                                                episodeList[index - 1]
+                                                ['votes'] ==
+                                                    null
                                                 ? (creator ==
-                                                        prefs
-                                                            .getString('userId')
-                                                    ? GestureDetector(
-                                                        onTap: () async {
-                                                          await publishManually(
-                                                              episodeList[
-                                                                      index - 1]
-                                                                  ['id']);
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 5),
-                                                          child: Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                              border:
-                                                                  Border.all(),
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      20,
-                                                                  vertical: 5),
-                                                              child: Text(
-                                                                "Publish",
-                                                                textScaleFactor:
-                                                                    mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.5,
-                                                                            1)
-                                                                        .toDouble(),
-                                                                style:
-                                                                    TextStyle(),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : SizedBox(
-                                                        width: 0,
-                                                      ))
-                                                : InkWell(
-                                                    onTap: () async {
-                                                      if (prefs.getString(
-                                                              'HiveUserName') !=
-                                                          null) {
-                                                        setState(() {
-                                                          episodeList[index - 1]
-                                                                  [
-                                                                  'isLoading'] =
-                                                              true;
-                                                        });
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return Dialog(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  child: UpvoteEpisode(
-                                                                      permlink: episodeList[index -
-                                                                              1]
-                                                                          [
-                                                                          'permlink'],
-                                                                      episode_id:
-                                                                          episodeList[index - 1]
-                                                                              [
-                                                                              'id']));
-                                                            }).then((value) async {
-                                                          print(value);
-                                                        });
-                                                        // await upvoteEpisode(
-                                                        //     permlink: episodeList[
-                                                        //             index - 1]
-                                                        //         ['permlink'],
-                                                        //     episode_id: episodeList[
-                                                        //         index - 1]['id']);
-                                                        setState(() {
-                                                          episodeList[index - 1]
-                                                                  ['ifVoted'] =
-                                                              !episodeList[
-                                                                      index - 1]
-                                                                  ['ifVoted'];
-                                                          episodeList[index - 1]
-                                                                  [
-                                                                  'isLoading'] =
-                                                              false;
-                                                        });
-                                                      } else {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return HiveDetails();
-                                                            });
-                                                      }
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 5),
-                                                      child: Container(
-                                                        decoration: episodeList[index - 1]
-                                                                    [
-                                                                    'ifVoted'] ==
-                                                                true
-                                                            ? BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                        colors: [
-                                                                      Color(
-                                                                          0xff5bc3ef),
-                                                                      Color(
-                                                                          0xff5d5da8)
-                                                                    ]),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        30))
-                                                            : BoxDecoration(
-                                                                border: Border.all(
-                                                                    color:
-                                                                        kSecondaryColor),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(30)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5.0),
-                                                          child: Row(
-                                                            children: [
-                                                              episodeList[index -
-                                                                              1]
-                                                                          [
-                                                                          'isLoading'] ==
-                                                                      true
-                                                                  ? Container(
-                                                                      height:
-                                                                          18,
-                                                                      width: 18,
-                                                                      child:
-                                                                          SpinKitPulse(
-                                                                        color: Colors
-                                                                            .blue,
-                                                                      ),
-                                                                    )
-                                                                  : Icon(
-                                                                      FontAwesomeIcons
-                                                                          .chevronCircleUp,
-                                                                      size: 15,
-                                                                    ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        8),
-                                                                child: Text(
-                                                                  '${episodeList[index - 1]['votes']}',
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.5,
-                                                                          1)
-                                                                      .toDouble(),
-                                                                  style: TextStyle(
-                                                                      //        color: Color(
-                                                                      // 0xffe8e8e8)
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            4),
-                                                                child: Text(
-                                                                  '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.5,
-                                                                          1)
-                                                                      .toDouble(),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
+                                                prefs
+                                                    .getString('userId')
+                                                ? GestureDetector(
+                                              onTap: () async {
+                                                await publishManually(
+                                                    episodeList[
+                                                    index - 1]
+                                                    ['id']);
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets
+                                                    .only(
+                                                    right: 5),
+                                                child: Container(
+                                                  decoration:
+                                                  BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(
+                                                        20),
+                                                    border:
+                                                    Border.all(),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal:
+                                                        20,
+                                                        vertical: 5),
+                                                    child: Text(
+                                                      "Publish",
+                                                      textScaleFactor:
+                                                      mediaQueryData
+                                                          .textScaleFactor
+                                                          .clamp(
+                                                          0.5,
+                                                          1)
+                                                          .toDouble(),
+                                                      style:
+                                                      TextStyle(),
                                                     ),
                                                   ),
-                                            episodeList[index - 1]
-                                                            ['permlink'] ==
-                                                        null ||
+                                                ),
+                                              ),
+                                            )
+                                                : SizedBox(
+                                              width: 0,
+                                            ))
+                                                : InkWell(
+                                              onTap: () async {
+                                                if (prefs.getString(
+                                                    'HiveUserName') !=
+                                                    null) {
+                                                  setState(() {
                                                     episodeList[index - 1]
-                                                            ['votes'] ==
-                                                        null
-                                                ? SizedBox(
-                                                    width: 0,
-                                                  )
-                                                : InkWell(
-                                                    onTap: () {
-                                                      if (prefs.getString(
-                                                              'HiveUserName') !=
-                                                          null) {
-                                                        Navigator.push(
-                                                            context,
-                                                            SlideRightRoute(
-                                                                widget:
-                                                                    Comments(
-                                                              episodeObject:
-                                                                  episodeList[
-                                                                      index -
-                                                                          1],
-                                                            )));
-                                                      } else {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return HiveDetails();
-                                                            });
-                                                      }
-                                                    },
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 5),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color:
-                                                                    kSecondaryColor),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        30)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5.0),
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .mode_comment_outlined,
-                                                                size: 15,
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        8),
-                                                                child: Text(
-                                                                  episodeList[index -
-                                                                              1]
-                                                                          [
-                                                                          'comments_count']
-                                                                      .toString(),
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.5,
-                                                                          1)
-                                                                      .toDouble(),
-                                                                  // style: TextStyle(
-                                                                  //      color: Color(0xffe8e8e8)
-                                                                  //     ),
-                                                                ),
-                                                              ),
-                                                            ],
+                                                    [
+                                                    'isLoading'] =
+                                                    true;
+                                                  });
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return Dialog(
+                                                            backgroundColor:
+                                                            Colors
+                                                                .transparent,
+                                                            child: UpvoteEpisode(
+                                                                permlink: episodeList[index -
+                                                                    1]
+                                                                [
+                                                                'permlink'],
+                                                                episode_id:
+                                                                episodeList[index - 1]
+                                                                [
+                                                                'id']));
+                                                      }).then((value) async {
+                                                    print(value);
+                                                  });
+                                                  // await upvoteEpisode(
+                                                  //     permlink: episodeList[
+                                                  //             index - 1]
+                                                  //         ['permlink'],
+                                                  //     episode_id: episodeList[
+                                                  //         index - 1]['id']);
+                                                  setState(() {
+                                                    episodeList[index - 1]
+                                                    ['ifVoted'] =
+                                                    !episodeList[
+                                                    index - 1]
+                                                    ['ifVoted'];
+                                                    episodeList[index - 1]
+                                                    [
+                                                    'isLoading'] =
+                                                    false;
+                                                  });
+                                                } else {
+                                                  showBarModalBottomSheet(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return HiveDetails();
+                                                      });
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Container(
+                                                  decoration: episodeList[index - 1]
+                                                  [
+                                                  'ifVoted'] ==
+                                                      true
+                                                      ? BoxDecoration(
+                                                      gradient:
+                                                      LinearGradient(
+                                                          colors: [
+                                                            Color(
+                                                                0xff5bc3ef),
+                                                            Color(
+                                                                0xff5d5da8)
+                                                          ]),
+                                                      borderRadius:
+                                                      BorderRadius.circular(
+                                                          30))
+                                                      : BoxDecoration(
+                                                      border: Border.all(
+                                                          color:
+                                                          kSecondaryColor),
+                                                      borderRadius:
+                                                      BorderRadius.circular(30)),
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(5.0),
+                                                    child: Row(
+                                                      children: [
+                                                        episodeList[index -
+                                                            1]
+                                                        [
+                                                        'isLoading'] ==
+                                                            true
+                                                            ? Container(
+                                                          height:
+                                                          18,
+                                                          width: 18,
+                                                          child:
+                                                          SpinKitPulse(
+                                                            color: Colors
+                                                                .blue,
+                                                          ),
+                                                        )
+                                                            : Icon(
+                                                          FontAwesomeIcons
+                                                              .chevronCircleUp,
+                                                          size: 15,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                              8),
+                                                          child: Text(
+                                                            '${episodeList[index - 1]['votes']}',
+                                                            textScaleFactor: mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(
+                                                                0.5,
+                                                                1)
+                                                                .toDouble(),
+                                                            style: TextStyle(
+                                                              //        color: Color(
+                                                              // 0xffe8e8e8)
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
+                                                        Padding(
+                                                          padding:
+                                                          const EdgeInsets
+                                                              .only(
+                                                              right:
+                                                              4),
+                                                          child: Text(
+                                                            '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
+                                                            textScaleFactor: mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(
+                                                                0.5,
+                                                                1)
+                                                                .toDouble(),
+                                                          ),
+                                                        )
+                                                      ],
                                                     ),
                                                   ),
+                                                ),
+                                              ),
+                                            ),
+                                            episodeList[index - 1]
+                                            ['permlink'] ==
+                                                null ||
+                                                episodeList[index - 1]
+                                                ['votes'] ==
+                                                    null
+                                                ? SizedBox(
+                                              width: 0,
+                                            )
+                                                : InkWell(
+                                              onTap: () {
+                                                if (prefs.getString(
+                                                    'HiveUserName') !=
+                                                    null) {
+                                                  Navigator.push(
+                                                      context,
+                                                      SlideRightRoute(
+                                                          widget:
+                                                          Comments(
+                                                            episodeObject:
+                                                            episodeList[
+                                                            index -
+                                                                1],
+                                                          )));
+                                                } else {
+                                                  showBarModalBottomSheet(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return HiveDetails();
+                                                      });
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color:
+                                                          kSecondaryColor),
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          30)),
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(5.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .mode_comment_outlined,
+                                                          size: 15,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                              8),
+                                                          child: Text(
+                                                            episodeList[index -
+                                                                1]
+                                                            [
+                                                            'comments_count']
+                                                                .toString(),
+                                                            textScaleFactor: mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(
+                                                                0.5,
+                                                                1)
+                                                                .toDouble(),
+                                                            // style: TextStyle(
+                                                            //      color: Color(0xffe8e8e8)
+                                                            //     ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                             InkWell(
                                               onTap: () {
                                                 print(episodeList[index - 1]
-                                                        ['url']
+                                                ['url']
                                                     .toString()
                                                     .contains('.mp4'));
                                                 if (episodeList[index - 1]['url']
-                                                            .toString()
-                                                            .contains('.mp4') ==
+                                                    .toString()
+                                                    .contains('.mp4') ==
+                                                    true ||
+                                                    episodeList[index - 1]['url']
+                                                        .toString()
+                                                        .contains('.m4v') ==
                                                         true ||
                                                     episodeList[index - 1]['url']
-                                                            .toString()
-                                                            .contains('.m4v') ==
-                                                        true ||
-                                                    episodeList[index - 1]['url']
-                                                            .toString()
-                                                            .contains('.flv') ==
+                                                        .toString()
+                                                        .contains('.flv') ==
                                                         true ||
                                                     episodeList[index - 1]
-                                                                ['url']
-                                                            .toString()
-                                                            .contains('.f4v') ==
+                                                    ['url']
+                                                        .toString()
+                                                        .contains('.f4v') ==
                                                         true ||
                                                     episodeList[index - 1]
-                                                                ['url']
-                                                            .toString()
-                                                            .contains('.ogv') ==
+                                                    ['url']
+                                                        .toString()
+                                                        .contains('.ogv') ==
                                                         true ||
                                                     episodeList[index - 1]
-                                                                ['url']
-                                                            .toString()
-                                                            .contains('.ogx') ==
+                                                    ['url']
+                                                        .toString()
+                                                        .contains('.ogx') ==
                                                         true ||
                                                     episodeList[index - 1]
-                                                                ['url']
-                                                            .toString()
-                                                            .contains('.wmv') ==
+                                                    ['url']
+                                                        .toString()
+                                                        .contains('.wmv') ==
                                                         true ||
                                                     episodeList[index - 1]
-                                                                ['url']
-                                                            .toString()
-                                                            .contains('.webm') ==
+                                                    ['url']
+                                                        .toString()
+                                                        .contains('.webm') ==
                                                         true) {
                                                   currentlyPlaying.stop();
                                                   Navigator.push(context,
                                                       MaterialPageRoute(
                                                           builder: (context) {
-                                                    return PodcastVideoPlayer(
-                                                      episodeObject:
-                                                          episodeList[
+                                                            return PodcastVideoPlayer(
+                                                              episodeObject:
+                                                              episodeList[
                                                               index - 1],
-                                                    );
-                                                  }));
+                                                            );
+                                                          }));
                                                 } else {
                                                   if (episodeList[index - 1]
-                                                              ['url']
-                                                          .toString()
-                                                          .contains('.pdf') ==
+                                                  ['url']
+                                                      .toString()
+                                                      .contains('.pdf') ==
                                                       true) {
                                                     // Navigator.push(context,
                                                     //     MaterialPageRoute(
@@ -1205,8 +1207,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                     currentlyPlaying.stop();
 
                                                     currentlyPlaying
-                                                            .episodeObject =
-                                                        episodeList[index - 1];
+                                                        .episodeObject =
+                                                    episodeList[index - 1];
                                                     currentlyPlaying.playList =
                                                         episodeList;
                                                     print(currentlyPlaying
@@ -1230,11 +1232,11 @@ class _PodcastViewState extends State<PodcastView> {
                                                     border: Border.all(
                                                         color: kSecondaryColor),
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            30)),
+                                                    BorderRadius.circular(
+                                                        30)),
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(5),
+                                                  const EdgeInsets.all(5),
                                                   child: Row(
                                                     children: [
                                                       Icon(
@@ -1244,16 +1246,16 @@ class _PodcastViewState extends State<PodcastView> {
                                                       ),
                                                       Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 8),
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 8),
                                                         child: Text(
                                                           '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
                                                           textScaleFactor:
-                                                              mediaQueryData
-                                                                  .textScaleFactor
-                                                                  .clamp(0.5, 1)
-                                                                  .toDouble(),
+                                                          mediaQueryData
+                                                              .textScaleFactor
+                                                              .clamp(0.5, 1)
+                                                              .toDouble(),
                                                           // style: TextStyle(
                                                           //      color: Color(0xffe8e8e8)
                                                           //     ),
@@ -1270,41 +1272,41 @@ class _PodcastViewState extends State<PodcastView> {
                                       Row(
                                         children: [
                                           episodeList[index - 1]['permlink'] ==
-                                                      null ||
-                                                  episodeList[index - 1]
-                                                          ['votes'] ==
-                                                      null
+                                              null ||
+                                              episodeList[index - 1]
+                                              ['votes'] ==
+                                                  null
                                               ? SizedBox(
-                                                  width: 0,
-                                                  height: 0,
-                                                )
+                                            width: 0,
+                                            height: 0,
+                                          )
                                               : (creator ==
-                                                      prefs.getString('userId')
-                                                  ? IconButton(
-                                                      icon:
-                                                          Icon(Icons.more_vert),
-                                                      onPressed: () {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return Container(
-                                                                child:
-                                                                    AddToCommunity(
-                                                                  episodeObject:
-                                                                      episodeList[
-                                                                          index -
-                                                                              1],
-                                                                ),
-                                                                // color:
-                                                                //     kSecondaryColor,
-                                                              );
-                                                            });
-                                                      },
-                                                    )
-                                                  : SizedBox(
-                                                      width: 0,
-                                                      height: 0,
-                                                    )),
+                                              prefs.getString('userId')
+                                              ? IconButton(
+                                            icon:
+                                            Icon(Icons.more_vert),
+                                            onPressed: () {
+                                              showBarModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Container(
+                                                      child:
+                                                      AddToCommunity(
+                                                        episodeObject:
+                                                        episodeList[
+                                                        index -
+                                                            1],
+                                                      ),
+                                                      // color:
+                                                      //     kSecondaryColor,
+                                                    );
+                                                  });
+                                            },
+                                          )
+                                              : SizedBox(
+                                            width: 0,
+                                            height: 0,
+                                          )),
 
                                           // IconButton(
                                           //   onPressed: () async {
@@ -1336,6 +1338,7 @@ class _PodcastViewState extends State<PodcastView> {
                                       ),
                                     ],
                                   ),
+
                                 ]),
                           ),
                         ),
@@ -1343,42 +1346,50 @@ class _PodcastViewState extends State<PodcastView> {
                       Builder(builder: (context) {
                         if (currentlyPlaying.episodeObject != null) {
                           return episodeList[index - 1]['id'] ==
-                                      currentlyPlaying.episodeObject['id'] &&
-                                  currentlyPlaying.episodeObject['id'] != null
+                              currentlyPlaying.episodeObject['id'] &&
+                              currentlyPlaying.episodeObject['id'] != null
                               ? Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 7),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(30),
-                                        gradient: LinearGradient(colors: [
-                                          Color(0xff5d5da8),
-                                          Color(0xff5bc3ef)
-                                        ])),
-                                    width: double.maxFinite *
-                                        (currentlyPlaying
-                                                .audioPlayer
-                                                .realtimePlayingInfos
-                                                .valueWrapper
-                                                .value
-                                                .playingPercent /
-                                            100),
-                                    height: 4,
-                                  ),
-                                )
-                              : SizedBox();
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 7),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  gradient: LinearGradient(colors: [
+                                    Color(0xff5d5da8),
+                                    Color(0xff5bc3ef)
+                                  ])),
+                              width: double.maxFinite *
+                                  (currentlyPlaying
+                                      .audioPlayer
+                                      .realtimePlayingInfos
+                                      .valueWrapper
+                                      .value
+                                      .playingPercent /
+                                      100),
+                              height: 4,
+                            ),
+                          )
+                              : SizedBox(
+
+                          );
                         } else {
-                          return SizedBox();
+                          return SizedBox(
+                          );
                         }
                       }),
+
                     ],
+
                   ),
-                ),
-              );
+
+                );
             }
-          }, childCount: episodeList.length + 2))
+                  }, childCount: episodeList.length + 1)),
+
         ],
       ),
+
+
       bottomSheet: BottomPlayer(),
     );
   }
@@ -1386,74 +1397,61 @@ class _PodcastViewState extends State<PodcastView> {
 
 class _AnimationHeader extends SliverPersistentHeaderDelegate {
   var podcastId;
+  int dominantColor;
 
-  _AnimationHeader(this.podcastId);
+  _AnimationHeader(
+      {this.podcastId,
+      @required this.dominantColor,
+        @required this.dio,
+      @required this.followState,
+      @required this.follows});
 
   RegExp htmlMatch = RegExp(r'(\w+)');
+  Dio dio = Dio();
+  FollowState followState;
+  bool follows;
 
-  get notificationPlugin => null;
-  var episodeList = [];
 
   void podcastShare() async {
     await FlutterShare.share(
-        title: '${podcastData['name']}',
+        title: '${podcastId['name']}',
         text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastData['id']}");
+            "Hey There, I'm listening to ${podcastId['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastId['id']}");
   }
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
 
-  void share({var episodeId, String episodeName}) async {
-    await FlutterShare.share(
-        title: '${podcastData['name']}',
-        text:
-            "Hey There, I'm listening to $episodeName from ${podcastData['name']} on Aureal, here's the link for you https://aureal.one/episode/${episodeId.toString()}");
-  }
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = podcastId;
 
-  SharedPreferences prefs;
+    FormData formData = FormData.fromMap(map);
 
-  void getPodcastData() async {
-    prefs = await SharedPreferences.getInstance();
-    String url =
-        'https://api.aureal.one/public/podcast?podcast_id=${podcastId}&user_id=${prefs.getString('userId')}';
-    print(url);
     try {
-      http.Response response = await http.get(Uri.parse(url));
-      print(jsonDecode(response.body));
-      if (response.statusCode == 200) {
-        episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
-        podcastData = jsonDecode(response.body)['podcast'];
-        print(jsonDecode(response.body)['podcast']['ifFollows']
-            .runtimeType
-            .toString());
-      } else {
-        print(response.statusCode);
-      }
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
     } catch (e) {
       print(e);
     }
   }
 
-  // var dominantColor;
-  // void initState() {
-  //
-  //   getPodcastData();
-  // }
-  //
-
   var podcastData;
-  double _maxExtent = 300;
+  double _maxExtent = 290;
   double _minExtent = 130;
   double _maxImageSize = 180;
   double _minImageSize = 80;
-  double _maxTitleSize = 25;
+  double _maxTitleSize = 20;
   double _maxSubTitleSize = 15;
-  double _minTitleSize = 16;
-  double _minSubTitleSize = 12;
+  double _minTitleSize = 15;
+  double _minSubTitleSize = 10;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    print(shrinkOffset);
     final percent = shrinkOffset / _maxExtent;
-    final size = MediaQuery.of(context).size;
     final currentImageSize =
         (_maxImageSize * (1 - percent)).clamp(_minImageSize, _maxImageSize);
     final SubSize = (_maxSubTitleSize * (1 - percent)).clamp(
@@ -1464,96 +1462,133 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
       _minTitleSize,
       _maxTitleSize,
     );
-    final maxMargin = size.width / 6;
-    final textMovement = 50;
+    print(shrinkOffset);
+    final buttonMargin = 320;
+    final followButton = 200;
+    final maxMargin = 200;
+    final textMovement = 150;
+    final marginFollow = 500;
+    final buttonMargin1 = buttonMargin +(marginFollow  * percent);
+    final buttonFollowMargin = followButton +(marginFollow * percent);
     final leftTextMargin = maxMargin + (textMovement * percent);
+    final mediaQueryData = MediaQuery.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Container(
-      // decoration: BoxDecoration( gradient: LinearGradient(
-      //     begin: Alignment.topCenter,
-      //     end: Alignment.bottomCenter,
-      //     colors: [Color(0xff3a3a3a ), Colors.black])
-      // ),
-      child: Stack(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+        Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
+            kPrimaryColor
+      ], begin: Alignment.topCenter, end: Alignment.center)),
+      child: podcastId == null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Shimmer.fromColors(
+                        baseColor: themeProvider.isLightTheme == false
+                            ? kPrimaryColor
+                            : Colors.white,
+                        highlightColor: themeProvider.isLightTheme == false
+                            ? Color(0xff3a3a3a)
+                            : Colors.white,
+                        child: Container(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                color: kSecondaryColor,
+                                width:
+                                    MediaQuery.of(context).size.width / 2.5,
+                                height:
+                                    MediaQuery.of(context).size.width / 2.5,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                // width: MediaQuery.of(context).size.width / 2,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 20,
+                                            color: kSecondaryColor,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 20,
+                                            color: kSecondaryColor,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0,
+                                              right: 8.0,
+                                              top: 8.0),
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 20,
+                                            color: kSecondaryColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  :Stack(
         children: [
           Positioned(
-            top: 40,
-            left: leftTextMargin,
-            height: _maxImageSize,
+            top: (150 * (1 - percent)).clamp(50, leftTextMargin),
+            left: (leftTextMargin * (1 - percent)).clamp(50, leftTextMargin),
+            right: 2,
+            height: _minImageSize,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "${podcastId['name']}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  textScaleFactor:
+                  mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w400,
                       fontSize: TitleSize,
                       letterSpacing: -0.5),
                 ),
                 Text(
                   "${podcastId['author']}",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: SubSize,
-                      letterSpacing: -0.5),
+                    fontWeight: FontWeight.w400,
+                    fontSize: SubSize,
+                  ),
                 ),
-                Container(
-                  height: 5,
-                  width: 5,
-                  color: Colors.white,
-                )
               ],
             ),
           ),
-          // Positioned(
-          //   bottom: 20,
-          //   left: (150 * (1 - percent)).clamp(10, 150),
-          //   height: currentImageSize,
-          //   child: Container(
-          //     height: currentImageSize,
-          //     width: 50,
-          //     color: Colors.white,
-          //   )
-          // )
           Positioned(
-            bottom: 100,
-            left: 350,
-            //height: currentImageSize,
-            child:  IconButton(
-              onPressed: () async {},
-              icon: Icon(
-                  Icons.arrow_circle_down_outlined),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: 200,
-            //height: currentImageSize,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: kSecondaryColor
-                        //    color: Color(0xffe8e8e8),
-                        ,
-                        width: 0.5)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  child: Text(
-                    'Unsubscribe',
-                    style: TextStyle(
-                        //      color: Color(0xffe8e8e8)
-                        ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
+
             bottom: 20,
-            left: 30,
+            left: 10,
             height: currentImageSize,
             child: Container(
               width: currentImageSize,
@@ -1584,6 +1619,96 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
+
+          Positioned(
+            bottom: 28,
+            left: buttonMargin1 ,
+            child: IconButton(
+              onPressed: () async {
+                podcastShare();
+              },
+              icon: Icon(Icons.share),
+            ),
+          ),
+          Positioned(
+            bottom: 36,
+            left: buttonFollowMargin ,
+            child: followState == FollowState.following
+                ? InkWell(
+                onTap: () {
+                  follow();
+                  if (followState ==
+                      FollowState.follow) {
+                    followState =
+                        FollowState
+                            .following;
+                  } else {
+                    followState =
+                        FollowState.follow;
+                  };
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: kSecondaryColor
+                          //    color: Color(0xffe8e8e8),
+                          ,
+                          width: 0.5)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 5),
+                    child: Text(
+                      'Unsubscribe',
+                      textScaleFactor: mediaQueryData.textScaleFactor
+                          .clamp(0.5, 1)
+                          .toDouble(),
+                      style: TextStyle(
+                        //      color: Color(0xffe8e8e8)
+                      ),
+                    ),
+                  ),
+                ))
+                : InkWell(
+              onTap: () async {
+                follow();
+
+                if (followState ==
+                    FollowState.follow) {
+                  followState =
+                      FollowState
+                          .following;
+                } else {
+                  followState =
+                      FollowState.follow;
+                };
+                //  followState;
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        color: kSecondaryColor,
+                        //    color: Color(0xffe8e8e8),
+                        width: 0.5)
+                  //color: Color(0xffe8e8e8)
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 5),
+                  child: Text(
+                    'Subscribe',
+                    textScaleFactor: mediaQueryData.textScaleFactor
+                        .clamp(0.5, 1)
+                        .toDouble(),
+                    style: TextStyle(
+                      // color: Color(0xff3a3a3a)
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1597,7 +1722,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
+      true;
 }
 
 class AddToCommunity extends StatefulWidget {
@@ -1725,7 +1850,6 @@ class _AddToCommunityState extends State<AddToCommunity> {
   Widget build(BuildContext context) {
     var communities = Provider.of<CommunityProvider>(context);
     final mediaQueryData = MediaQuery.of(context);
-
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
@@ -2106,3 +2230,4 @@ class _AddToCommunityState extends State<AddToCommunity> {
     );
   }
 }
+
