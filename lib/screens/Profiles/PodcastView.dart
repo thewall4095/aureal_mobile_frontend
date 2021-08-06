@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:isolate';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:audioplayer/audioplayer.dart';
@@ -307,13 +308,15 @@ class _PodcastViewState extends State<PodcastView> {
     return Scaffold(
       body: CustomScrollView(
         controller: _controller,
+        physics: const BouncingScrollPhysics(),
         slivers: <Widget>[
+          
           SliverPersistentHeader(
             delegate: _AnimationHeader(
                 podcastId: podcastData,
-                follows: follows,
                 dominantColor: dominantColor,
-                followState: followState),
+                followState: followState,
+            follows: follows),
             pinned: true,
           ),
           // SliverAppBar(
@@ -723,7 +726,8 @@ class _PodcastViewState extends State<PodcastView> {
                 return isLoading == false
                     ? (_controller.position.pixels !=
                     _controller.position.maxScrollExtent
-                    ? SizedBox()
+                    ? SizedBox(
+                )
                     : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Shimmer.fromColors(
@@ -771,6 +775,7 @@ class _PodcastViewState extends State<PodcastView> {
                               horizontal: 20, vertical: 15),
                           child: ListTile(
                             contentPadding: EdgeInsets.zero,
+
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -1386,6 +1391,7 @@ class _PodcastViewState extends State<PodcastView> {
             }
                   }, childCount: episodeList.length + 1)),
 
+
         ],
       ),
 
@@ -1438,7 +1444,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   }
 
   var podcastData;
-  double _maxExtent = 290;
+  double _maxExtent = 300;
   double _minExtent = 130;
   double _maxImageSize = 180;
   double _minImageSize = 80;
@@ -1450,7 +1456,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    print(shrinkOffset);
+   // print(shrinkOffset);
     final percent = shrinkOffset / _maxExtent;
     final currentImageSize =
         (_maxImageSize * (1 - percent)).clamp(_minImageSize, _maxImageSize);
@@ -1462,7 +1468,8 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
       _minTitleSize,
       _maxTitleSize,
     );
-    print(shrinkOffset);
+
+
     final buttonMargin = 320;
     final followButton = 200;
     final maxMargin = 200;
@@ -1478,7 +1485,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
           gradient: LinearGradient(colors: [
         Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
             kPrimaryColor
-      ], begin: Alignment.topCenter, end: Alignment.center)),
+      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: podcastId == null
                   ? Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -1557,7 +1564,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                   :Stack(
         children: [
           Positioned(
-            top: (150 * (1 - percent)).clamp(50, leftTextMargin),
+            top: (160 * (1 - percent)).clamp(50, leftTextMargin),
             left: (leftTextMargin * (1 - percent)).clamp(50, leftTextMargin),
             right: 2,
             height: _minImageSize,
@@ -1577,9 +1584,14 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                 ),
                 Text(
                   "${podcastId['author']}",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  textScaleFactor:
+                  mediaQueryData.textScaleFactor.clamp(0.5, 0.8).toDouble(),
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: SubSize,
+                      letterSpacing: -0.5
                   ),
                 ),
               ],
@@ -1595,26 +1607,29 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
               height: currentImageSize,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CachedNetworkImage(
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    );
-                  },
-                  memCacheHeight: (MediaQuery.of(context).size.height).floor(),
-                  placeholder: (context, url) => Container(
-                    width: currentImageSize,
-                    height: currentImageSize,
-                    child: Image.asset('assets/images/Thumbnail.png'),
+                 child: Hero(
+                     tag: '${podcastId['id']}',
+                  child: CachedNetworkImage(
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover),
+                        ),
+                      );
+                    },
+                    memCacheHeight: (MediaQuery.of(context).size.height).floor(),
+                    placeholder: (context, url) => Container(
+                      width: currentImageSize,
+                      height: currentImageSize,
+                      child: Image.asset('assets/images/Thumbnail.png'),
+                    ),
+                    imageUrl: podcastId == null
+                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                        : podcastId['image'],
+                    fit: BoxFit.cover,
                   ),
-                  imageUrl: podcastId == null
-                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                      : podcastId['image'],
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -1645,7 +1660,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                   } else {
                     followState =
                         FollowState.follow;
-                  };
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -1681,7 +1696,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                 } else {
                   followState =
                       FollowState.follow;
-                };
+                }
                 //  followState;
               },
               child: Container(

@@ -1129,7 +1129,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             showBarModalBottomSheet(
                                                                                 context: context,
                                                                                 builder: (context) {
-                                                                                  return Player();
+                                                                                  return BottomPlayer();
                                                                                 });
                                                                           }
                                                                         }

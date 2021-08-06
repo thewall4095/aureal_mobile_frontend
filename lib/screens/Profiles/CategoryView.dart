@@ -351,10 +351,53 @@ class _CategoryViewState extends State<CategoryView>
                             itemCount: explorePodcasts.length + 1,
                             itemBuilder: (context, index) {
                               if( index == explorePodcasts.length){
-                                return  SpinKitThreeBounce(
-                                  color: Colors.white,
-                                  size: 35.0,
-                                );
+                                return   Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Shimmer.fromColors(
+                                      baseColor: themeProvider.isLightTheme == false
+                                          ? kPrimaryColor
+                                          : Colors.white,
+                                      highlightColor: themeProvider.isLightTheme == false
+                                          ? Color(0xff3a3a3a)
+                                          : Colors.white,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Container(
+                                              decoration:
+                                              BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                                color: kSecondaryColor,),
+
+                                              height:
+                                              MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height / 8,
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width / 4,
+                                            ),
+                                          ),
+                                  SizedBox(width: 30),
+                                 Container(
+                                   color: kPrimaryColor,
+                                    height:
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height / 23,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 4,)
+                                        ],
+                                      ),
+                                  ));
                               }
                               return GestureDetector(
                                 onTap: () {
@@ -530,10 +573,52 @@ class _CategoryViewState extends State<CategoryView>
                   delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index){
                     if (index == newPodcasts.length ){
-                      return SpinKitThreeBounce(
-                        color: Colors.white,
-                        size: 35.0,
-                      );
+                      return  Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Shimmer.fromColors(
+                            baseColor: themeProvider.isLightTheme == false
+                                ? kPrimaryColor
+                                : Colors.white,
+                            highlightColor: themeProvider.isLightTheme == false
+                                ? Color(0xff3a3a3a)
+                                : Colors.white,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Container(
+                                    decoration:
+                                    BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                          10),
+                                      color: kSecondaryColor,),
+
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height /6,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 2.8,
+                                  ),
+                                ),
+                                SizedBox(width: 30),
+                                Container(
+                                  color: kPrimaryColor,
+                                  height:
+                                  MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height / 23,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width / 4,)
+                              ],
+                            ),
+                          ));
                     } return GestureDetector(
                         onTap: () {
                           Navigator.push(context,

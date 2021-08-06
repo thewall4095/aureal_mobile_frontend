@@ -5,6 +5,7 @@ import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -304,8 +305,9 @@ class _DownloadPageState extends State<DownloadPage>
             : ListView(
                 children: [
                   for (var v in episodeList)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+             Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: 20, vertical: 15),
                       child: Container(
                         decoration: BoxDecoration(
                             // color: Colors.blue,
@@ -314,9 +316,10 @@ class _DownloadPageState extends State<DownloadPage>
                                     color: kSecondaryColor, width: 2))),
                         width: double.infinity,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 20 ,horizontal: 5),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -326,31 +329,40 @@ class _DownloadPageState extends State<DownloadPage>
                                     width:
                                         MediaQuery.of(context).size.width / 7,
                                     child: CachedNetworkImage(
-                                      imageUrl: v['image'],
-                                      // memCacheHeight:
-                                      //     MediaQuery.of(
-                                      //             context)
-                                      //         .size
-                                      //         .width
-                                      //         .ceil(),
-                                      memCacheHeight: MediaQuery.of(context)
-                                          .size
-                                          .height
-                                          .floor(),
-                                      placeholder: (context, savedDir) =>
-                                          Container(
-                                        child: Image.asset(
-                                            'assets/images/Thumbnail.png'),
+
+                                        imageBuilder: (context, imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                  image: imageProvider, fit: BoxFit.cover),
+                                            ),
+                                          );
+                                        },
+                                        memCacheHeight: (MediaQuery.of(context).size.height).floor(),
+                                        placeholder: (context, url) => Container(
+                                          height:
+                                          MediaQuery.of(context).size.width / 7,
+                                          width:
+                                          MediaQuery.of(context).size.width / 7,
+                                          child: Image.asset('assets/images/Thumbnail.png'),
+                                        ),
+                                      imageUrl: v['image']
+                                            // ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                            // : v['image'],
+                                        //fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ),
+
                                   SizedBox(
-                                    width: 15,
+                                    width: 10,
                                   ),
                                   Column(
                                     children: [
                                       Text(
                                         '${v['podcastName']}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         textScaleFactor: mediaQueryData
                                             .textScaleFactor
                                             .clamp(0.2, 1)
@@ -370,11 +382,13 @@ class _DownloadPageState extends State<DownloadPage>
                                 child: Container(
                                   width: double.infinity,
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         v['name'],
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                         textScaleFactor: mediaQueryData
                                             .textScaleFactor
                                             .clamp(0.2, 1)
