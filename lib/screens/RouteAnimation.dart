@@ -22,6 +22,19 @@ class SlideRightRoute extends PageRouteBuilder {
       }
   );
 }
+class FadeTransition extends StatefulWidget {
+
+
+  @override
+  _FadeTransitionState createState() => _FadeTransitionState();
+}
+
+class _FadeTransitionState extends State<FadeTransition> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
 
 class Animator extends StatefulWidget {
   final Widget child;
@@ -39,7 +52,7 @@ class _AnimatorState extends State<Animator>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(duration: Duration(milliseconds: 550), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 1000), vsync: this);
     animation =
         CurvedAnimation(parent: animationController, curve: Curves.easeIn);
     timer = Timer(widget.time, animationController.forward);
@@ -56,10 +69,10 @@ class _AnimatorState extends State<Animator>
       animation: animation,
       child: widget.child,
       builder: (BuildContext context, Widget child) {
-        return Opacity(
-          opacity: animation.value,
+        return AnimatedOpacity(
+          opacity: animation.value,duration: Duration(seconds: 1),
           child: Transform.translate(
-            offset: Offset(2, (1 - animation.value) * 10),
+            offset: Offset(2, (1 - animation.value) * 50),
             child: child,
           ),
         );
@@ -71,11 +84,11 @@ Timer timer;
 Duration duration = Duration();
 wait() {
   if (timer == null || !timer.isActive) {
-    timer = Timer(Duration(microseconds: 10), () {
+    timer = Timer(Duration(microseconds: 1), () {
       duration = Duration();
     });
   }
-  duration += Duration(milliseconds:50);
+  duration += Duration(milliseconds:1);
   return duration;
 }
 class WidgetANimator extends StatelessWidget {

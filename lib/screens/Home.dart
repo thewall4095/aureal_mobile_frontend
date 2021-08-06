@@ -9,6 +9,7 @@ import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/recorderApp/Transcription.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import "package:badges/badges.dart";
 import 'package:cached_network_image/cached_network_image.dart';
@@ -37,6 +38,7 @@ import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
+import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
 import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
@@ -398,11 +400,8 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).push(PageRouteBuilder(
-                  pageBuilder: (context, animation, _) {
-                    return SecondScreen();
-                  },
-                  opaque: false));
+              Navigator.of(context).push(   SlideRightRoute(widget:
+              Profile()));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -444,14 +443,15 @@ class _HomeState extends State<Home> {
               : SizedBox(height: 0, width: 0),
           Center(
             child: IconButton(
-              icon: Badge(
-                badgeColor: Colors.blue,
-                badgeContent: Text("$count"),
-                child: Icon(
-                  Icons.notifications_none,
-                  //    color: Colors.white,
-                ),
-              ),
+              icon: Icon(Icons.notifications_none),
+              // icon: Badge(
+              //   badgeColor: Colors.blue,
+              //   badgeContent: Text("$count"),
+              //   child: Icon(
+              //     Icons.notifications_none,
+              //     //    color: Colors.white,
+              //   ),
+              // ),
               onPressed: () {
                 Navigator.pushNamed(context, NotificationPage.id);
               },
@@ -466,7 +466,19 @@ class _HomeState extends State<Home> {
               await showSearch(
                   context: context, delegate: SearchFunctionality());
             },
-          )
+          ),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.mic,
+          //     //     color: Colors.white,
+          //   ),
+          //       onPressed: () {
+          //       Navigator.of(context).push(   SlideRightRoute(widget:
+          //
+          //       AudioRecognize()));
+          //       },
+          //
+          // )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -587,65 +599,109 @@ class _BottomPlayerState extends State<BottomPlayer> {
                         ],
                       );
                     });
-                // Navigator.pushNamed(context, Player.id);
+                 // Navigator.pushNamed(context, Player.id);
               },
-              child: Container(
-                height: SizeConfig.safeBlockVertical * 6,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        episodeObject.audioPlayer.builderRealtimePlayingInfos(
-                            builder: (context, infos) {
-                          if (infos == null) {
-                            return SizedBox(
-                              height: 0,
-                              width: 0,
-                            );
-                          } else {
-                            if (infos.isBuffering == true) {
-                              return SpinKitCircle(
-                                size: 15,
-                                color: Colors.white,
+              child: Dismissible(
+                  key: UniqueKey(),
+                  onDismissed: (direction){
+                    setState(() {
+                      episodeObject.pause();
+                      episodeObject.removeListener(() { });
+                    });
+                    episodeObject.removeListener(() { });
+                  },
+                child: Container(
+                  height: SizeConfig.safeBlockVertical * 6,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                              builder: (context, infos) {
+                            if (infos == null) {
+                              return SizedBox(
+                                height: 0,
+                                width: 0,
                               );
                             } else {
-                              if (infos.isPlaying == true) {
-                                return IconButton(
-                                  splashColor: Colors.blue,
-                                  icon: Icon(
-                                    Icons.pause,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    episodeObject.pause();
-                                  },
+                              if (infos.isBuffering == true) {
+                                return SpinKitCircle(
+                                  size: 15,
+                                  color: Colors.white,
                                 );
                               } else {
-                                return IconButton(
-                                  splashColor: Colors.blue,
-                                  icon: Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    episodeObject.resume();
-                                  },
-                                );
+                                if (infos.isPlaying == true) {
+                                  return IconButton(
+                                    splashColor: Colors.blue,
+                                    icon: Icon(
+                                      Icons.pause,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      episodeObject.pause();
+                                    },
+                                  );
+                                } else {
+                                  return IconButton(
+                                    splashColor: Colors.blue,
+                                    icon: Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      episodeObject.resume();
+                                    },
+                                  );
+                                }
                               }
                             }
-                          }
-                        }),
-                        InkWell(
-                          onTap: () {
-                            {
-                              if (episodeObject.permlink == null) {
-                              } else {
-                                if (prefs.getString('HiveUserName') != null) {
+                          }),
+                          InkWell(
+                            onTap: () {
+                              {
+                                if (episodeObject.permlink == null) {
+                                } else {
+                                  if (prefs.getString('HiveUserName') != null) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return Dialog(
+                                              backgroundColor: Colors.transparent,
+                                              child: UpvoteEpisode(
+                                                  episode_id: episodeObject.id,
+                                                  permlink:
+                                                      episodeObject.permlink));
+                                        }).then((value) async {
+                                      print(value);
+                                    });
+                                    Fluttertoast.showToast(msg: 'Upvote done');
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: 'Please connect your Hive Account');
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return HiveDetails();
+                                        });
+                                  }
+                                }
+                              }
+                            },
+                            child: IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.chevronCircleUp,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Fluttertoast.showToast(msg: 'Upvote done');
+                                if (episodeObject.permlink == null) {
+                                } else {
                                   showDialog(
                                       context: context,
                                       builder: (context) {
@@ -660,87 +716,38 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                   });
 
                                   // upvoteEpisode(
-                                  //     episode_id: episodeObject.id,
-                                  //     permlink: episodeObject.permlink);
-                                  Fluttertoast.showToast(msg: 'Upvote done');
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: 'Please connect your Hive Account');
-                                  showBarModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return HiveDetails();
-                                      });
+                                  //     episode_id:
+                                  //         episodeObject
+                                  //             .id,
+                                  //     permlink:
+                                  //         episodeObject
+                                  //             .permlink);
                                 }
-                              }
-                            }
-                          },
-                          child: IconButton(
-                            icon: Icon(
-                              FontAwesomeIcons.chevronCircleUp,
-                              size: 20,
-                              color: Colors.white,
+                              },
                             ),
-                            onPressed: () {
-                              Fluttertoast.showToast(msg: 'Upvote done');
-                              if (episodeObject.permlink == null) {
-                              } else {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                          backgroundColor: Colors.transparent,
-                                          child: UpvoteEpisode(
-                                              episode_id: episodeObject.id,
-                                              permlink:
-                                                  episodeObject.permlink));
-                                    }).then((value) async {
-                                  print(value);
-                                });
 
-                                // upvoteEpisode(
-                                //     episode_id:
-                                //         episodeObject
-                                //             .id,
-                                //     permlink:
-                                //         episodeObject
-                                //             .permlink);
-                              }
-                            },
                           ),
-                          // child: Padding(
-                          //   padding: const EdgeInsets.all(3.0),
-                          //   child: IconButton(
-                          //     onPressed: () {},
-                          //     splashColor: Colors.blue,
-                          //     icon: Icon(
-                          //       FontAwesomeIcons.chevronCircleUp,
-                          //       // color: _hasBeenPressed ? Colors.blue : Colors.black,
-                          //       //color: Colors.white,
-                          //     ),
-                          //
-                          //   ),
-                          //
-                          // ),
-                        ),
-                        Container(
-                          height: 40,
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: Marquee(
-                            pauseAfterRound: Duration(seconds: 2),
-                            text: ' ${episodeObject.episodeName} ',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                            blankSpace: 100,
+
+                          Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: Marquee(
+                              pauseAfterRound: Duration(seconds: 2),
+                              text: ' ${episodeObject.episodeName} ',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                              blankSpace: 100,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ),
-                  ],
+
+                          SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

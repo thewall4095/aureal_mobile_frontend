@@ -1,4 +1,5 @@
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
+import 'package:auditory/screens/Onboarding/Categories.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -9,6 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'settings/security/Security.dart';
 
 class Settings extends StatefulWidget {
   static const String id = "Settings";
@@ -141,51 +144,51 @@ class _SettingsState extends State<Settings> {
                               //     ),
                               //   ),
                               // ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 30),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, Prefrences.id);
-                                  },
-                                  child: Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 160),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            "Preferences",
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 1.5)
-                                                .toDouble(),
-                                            style: TextStyle(
-                                                //  color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    4),
-                                          ),
-                                          Text(
-                                            "Dark Mode, Background Audio",
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 0.8)
-                                                .toDouble(),
-                                            style: TextStyle(
-                                                //       color: Colors.white70,
-                                                fontWeight: FontWeight.w300,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3.4),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(bottom: 30),
+                              //   child: GestureDetector(
+                              //     onTap: () {
+                              //       Navigator.pushNamed(context, Prefrences.id);
+                              //     },
+                              //     child: Container(
+                              //       child: Padding(
+                              //         padding: const EdgeInsets.only(right: 160),
+                              //         child: Column(
+                              //           crossAxisAlignment:
+                              //               CrossAxisAlignment.start,
+                              //           children: <Widget>[
+                              //             Text(
+                              //               "Preferences",
+                              //               textScaleFactor: mediaQueryData
+                              //                   .textScaleFactor
+                              //                   .clamp(0.5, 1.5)
+                              //                   .toDouble(),
+                              //               style: TextStyle(
+                              //                   //  color: Colors.white,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: SizeConfig
+                              //                           .safeBlockHorizontal *
+                              //                       4),
+                              //             ),
+                              //             Text(
+                              //               "Dark Mode, Background Audio",
+                              //               textScaleFactor: mediaQueryData
+                              //                   .textScaleFactor
+                              //                   .clamp(0.5, 0.8)
+                              //                   .toDouble(),
+                              //               style: TextStyle(
+                              //                   //       color: Colors.white70,
+                              //                   fontWeight: FontWeight.w300,
+                              //                   fontSize: SizeConfig
+                              //                           .safeBlockHorizontal *
+                              //                       3.4),
+                              //             )
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 30),
                                 child: GestureDetector(
@@ -340,34 +343,53 @@ class _SettingsState extends State<Settings> {
                                   ),
                                 ),
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //
-                              //       Navigator.pushNamed(
-                              //           context, Notifications.id);
-                              //     },
-                              //     child: Container(
-                              //       child: Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: <Widget>[
-                              //           Text(
-                              //             "Notifications",
-                              //             textScaleFactor: 0.75,
-                              //             style: TextStyle(
-                              //     //            color: Colors.white,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontSize: SizeConfig
-                              //                         .safeBlockHorizontal *
-                              //                     4),
-                              //           ),
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 30),
+                                child: GestureDetector(
+                                  onTap: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) => UserCategories(
+
+                                          )
+                                          ));
+                                  },
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          "Categories",
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1.5)
+                                              .toDouble(),
+                                          style: TextStyle(
+                                            //  color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                                  4),
+                                        ),
+                                        SizedBox(height:5),
+                                        Text(
+                                          "Select Categories",
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 0.8)
+                                              .toDouble(),
+                                          style: TextStyle(
+                                            //       color: Colors.white70,
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                                  3.4),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
                               // Padding(
                               //   padding: const EdgeInsets.only(bottom: 30),
                               //   child: Container(

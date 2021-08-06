@@ -261,11 +261,10 @@ class _EpisodeViewState extends State<EpisodeView>
     });
     _tabController = TabController(length: 2, vsync: this);
     // TODO: implement initState
-
+    _loading = false;
     _progressValue = 0.0;
     await getServerData();
 
-    print(comments.toString());
 
     IsolateNameServer.registerPortWithName(
         _receivePort.sendPort, "downloading");
@@ -299,8 +298,8 @@ class _EpisodeViewState extends State<EpisodeView>
     _tabController.dispose();
   }
 
-  bool isUpvoteButtonLoading = false;
 
+  bool isUpvoteButtonLoading = false;
   void _updateProgress() {
     const oneSec = const Duration(seconds: 1);
     new Timer.periodic(oneSec, (Timer t) {
@@ -339,7 +338,6 @@ class _EpisodeViewState extends State<EpisodeView>
       setState(() {
         dominantColor = hexOfRGBA(value[0], value[1], value[2]);
         print(dominantColor.toString());
-
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Color(dominantColor),
         ));
@@ -359,7 +357,7 @@ class _EpisodeViewState extends State<EpisodeView>
     return Scaffold(
       // bottomSheet: UpvoteWidget(),
       body: ModalProgressHUD(
-        color: Colors.transparent,
+        color: Colors.black,
         inAsyncCall: isLoading,
         child: isLoading == true
             ? Container(
@@ -369,6 +367,7 @@ class _EpisodeViewState extends State<EpisodeView>
               )
             : SafeArea(
                 child: NestedScrollView(
+                  controller: _controller,
                   headerSliverBuilder:
                       (BuildContext context, bool isInnerBoxScrolled) {
                     return <Widget>[
@@ -384,8 +383,49 @@ class _EpisodeViewState extends State<EpisodeView>
                           ),
                         ),
                         actions: <Widget>[
+                          Platform.isAndroid == true
+                              ? GestureDetector(
+                            onTap: () {
+                              startDownload();
+                              setState(() {
+                                _loading = !_loading;
+                                _updateProgress();
+                              });
+                            },
+                            child: Container(
+                                padding:
+                                EdgeInsets.all(15.0),
+                                child: _loading
+                                    ? Column(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .center,
+                                  children: <Widget>[
+                                    CircularProgressIndicator(
+                                      value:
+                                      _progressValue,
+                                    ),
+                                    Text(
+                                        '${(_progressValue * 100).round()}%'),
+                                  ],
+                                )
+                                    : Icon(
+                                    Icons
+                                        .arrow_circle_down,
+                                    color: isDownloading ==
+                                        true
+                                        ? Colors.blue
+                                        : Colors.white)),
+                          )
+                              : SizedBox(
+                            height: 0,
+                            width: 0,
+                          ),
+
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+
+                            },
                             icon: Icon(
                               Icons.share,
                             ),
