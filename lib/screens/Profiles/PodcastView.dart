@@ -318,6 +318,7 @@ class _PodcastViewState extends State<PodcastView> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     ));
