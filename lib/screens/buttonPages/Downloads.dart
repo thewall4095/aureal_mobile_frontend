@@ -409,6 +409,9 @@ class _DownloadPageState extends State<DownloadPage>
                                                 true
                                             ? Text(
                                                 parse(v['summary']).body.text,
+
+                                          overflow: TextOverflow.ellipsis,
+
                                                 textScaleFactor: mediaQueryData
                                                     .textScaleFactor
                                                     .clamp(0.2, 1)
@@ -422,6 +425,8 @@ class _DownloadPageState extends State<DownloadPage>
                                               )
                                             : Text(
                                                 '${v['summary']}',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                                 textScaleFactor: mediaQueryData
                                                     .textScaleFactor
                                                     .clamp(0.2, 1)
