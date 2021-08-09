@@ -320,11 +320,10 @@ class _CommentsState extends State<Comments> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
+
                                                 children: [
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 5),
+                                                    padding: const EdgeInsets.all(8.0),
                                                     child: Icon(
                                                       FontAwesomeIcons
                                                           .chevronCircleUp,
@@ -332,6 +331,7 @@ class _CommentsState extends State<Comments> {
                                                       // color: Colors.white,
                                                     ),
                                                   ),
+                                                  SizedBox(width: 5,),
                                                   Text(
                                                     'Upvote ',
                                                     style: TextStyle(

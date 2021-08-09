@@ -89,7 +89,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    var communities = Provider.of<CommunityProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     var currentlyPlaying = Provider.of<PlayerChange>(context);
 

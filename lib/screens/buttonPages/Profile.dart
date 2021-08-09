@@ -158,7 +158,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   var data;
-
+  var selectedCategories = [];
   void getUserDetails() async {
     setState(() {
       isLoading = true;
@@ -1236,8 +1236,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 15),
+
                                             child: InkWell(
                                               onTap: () {
+
                                                 showBarModalBottomSheet(
                                                     context: context,
                                                     builder: (context) {

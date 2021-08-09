@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 import '../../SearchProvider.dart';
 
 class Search extends StatefulWidget {
@@ -124,11 +125,6 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
 }
 
 class SearchFunctionality extends SearchDelegate {
-  List<Color> colors1 = [
-    //Colors.blue,
-    Colors.yellow,
-    Colors.pink,
-  ];
   Future getSearch() async {
     final TextEditingController _textController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -243,7 +239,6 @@ class SearchFunctionality extends SearchDelegate {
     // throw UnimplementedError();
     var categories = Provider.of<CategoriesProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Container(
       color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
       child: GridView.count(
@@ -499,93 +494,12 @@ class _ResultsSectionState extends State<ResultsSection>
                                         podcastResult[index]['id']);
                                   }));
                                 },
-                                // child: Container(
-                                //   width: double.infinity,
-                                //   child: Row(
-                                //     crossAxisAlignment:
-                                //         CrossAxisAlignment.start,
-                                //     children: <Widget>[
-                                //       ClipRRect(
-                                //         //ClipRRect
-                                //         child: FadeInImage.assetNetwork(
-                                //             height: 80,
-                                //             width: 80,
-                                //             fit: BoxFit.cover,
-                                //             placeholder:
-                                //                 'assets/images/Thumbnail.png',
-                                //             image: podcastResult[index]
-                                //                         ['image'] ==
-                                //                     null
-                                //                 ? 'assets/images/Thumbnail.png'
-                                //                 : podcastResult[index]
-                                //                     ['image']),
-                                //       ),
-                                //       SizedBox(width: 10),
-                                //       Expanded(
-                                //         child: Column(
-                                //           crossAxisAlignment:
-                                //               CrossAxisAlignment.start,
-                                //           mainAxisSize: MainAxisSize.max,
-                                //           mainAxisAlignment:
-                                //               MainAxisAlignment.center,
-                                //           children: <Widget>[
-                                //             Text(
-                                //               "${podcastResult[index]['name']}",
-                                //               textScaleFactor: 0.75,
-                                //               maxLines: 2,
-                                //               overflow: TextOverflow.ellipsis,
-                                //               style: TextStyle(
-                                //                   color: themeProvider
-                                //                               .isLightTheme !=
-                                //                           true
-                                //                       ? Colors.white
-                                //                       : kPrimaryColor,
-                                //                   fontSize: SizeConfig
-                                //                           .safeBlockHorizontal *
-                                //                       4,
-                                //                   fontWeight:
-                                //                       FontWeight.normal),
-                                //             ),
-                                //             SizedBox(
-                                //               height: 3,
-                                //             ),
-                                //             Text(
-                                //               podcastResult[index]['author'],
-                                //               textScaleFactor: 0.75,
-                                //               maxLines: 2,
-                                //               overflow: TextOverflow.ellipsis,
-                                //               style: TextStyle(
-                                //                   color: themeProvider
-                                //                               .isLightTheme !=
-                                //                           true
-                                //                       ? Colors.white
-                                //                           .withOpacity(0.5)
-                                //                       : kPrimaryColor
-                                //                           .withOpacity(0.5),
-                                //                   fontSize: SizeConfig
-                                //                           .safeBlockHorizontal *
-                                //                       4),
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
+
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      boxShadow: [
-                                        new BoxShadow(
-                                          color: Colors.black54.withOpacity(0.2),
-                                          blurRadius: 10.0,
-                                        ),
-                                      ],
-                                      color: themeProvider.isLightTheme == true
-                                          ? Colors.white
-                                          : Color(0xff222222),
-                                      borderRadius:
+                                     borderRadius:
                                       BorderRadius.circular(8),
                                     ),
 

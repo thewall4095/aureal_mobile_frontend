@@ -201,108 +201,96 @@ class _NotificationPageState extends State<NotificationPage>
                                             episodeId: v['data']['episode_id'],
                                           );
                                         }));
-
                                 },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          new BoxShadow(
-                                            color: Colors.black54.withOpacity(0.2),
-                                            blurRadius: 10.0,
-                                          ),
-                                        ],
-                                        color: themeProvider.isLightTheme == true
-                                            ? Colors.white
-                                            : Color(0xff222222),
-                                        borderRadius:
-                                        BorderRadius.circular(8),
-                                      ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: double.infinity,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                              height: 65,
+                                              width: 65,
+                                              child: CachedNetworkImage(
+                                                imageBuilder: (context, imageProvider) {
+                                                  return Container(
+                                                    decoration: BoxDecoration(
 
-                                      width: double.infinity,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Container(
-                                            height: 65,
-                                            width: 65,
-                                            child: CachedNetworkImage(
-                                              imageBuilder: (context, imageProvider) {
-                                                return Container(
-                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius.circular(10),
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                    height:
+                                                    MediaQuery.of(context).size.width,
+                                                    width:
+                                                    MediaQuery.of(context).size.width,
+                                                  );
+                                                },
+                                                imageUrl:  v['data']['image'] == null
+                                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                    : v['data']['image'],
+                                                fit: BoxFit.cover,
+                                                // memCacheHeight:
+                                                //     MediaQuery.of(
+                                                //             context)
+                                                //         .size
+                                                //         .width
+                                                //         .ceil(),
+                                                memCacheHeight: MediaQuery.of(context)
+                                                    .size
+                                                    .height
+                                                    .floor(),
 
-                                                    borderRadius:
-                                                    BorderRadius.circular(10),
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover),
-                                                  ),
-                                                  height:
-                                                  MediaQuery.of(context).size.width,
-                                                  width:
-                                                  MediaQuery.of(context).size.width,
-                                                );
-                                              },
-                                              imageUrl:  v['data']['image'] == null
-                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                  : v['data']['image'],
-                                              fit: BoxFit.cover,
-                                              // memCacheHeight:
-                                              //     MediaQuery.of(
-                                              //             context)
-                                              //         .size
-                                              //         .width
-                                              //         .ceil(),
-                                              memCacheHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height
-                                                  .floor(),
+                                                errorWidget: (context, url, error) =>
+                                                    Icon(Icons.error),
+                                              ),
 
-                                              errorWidget: (context, url, error) =>
-                                                  Icon(Icons.error),
                                             ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  GestureDetector(
+                                                    child: Text(
+                                                      v['title'],
+                                                      textScaleFactor: 0.75,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              3.2),
+                                                    ),
 
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                GestureDetector(
-                                                  child: Text(
-                                                    v['title'],
+                                                  ),
+                                                  SizedBox(height: 10,),
+                                                  Text(
+                                                    v['body'],
                                                     textScaleFactor: 0.75,
                                                     style: TextStyle(
                                                         fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
+                                                            .safeBlockHorizontal *
                                                             3.2),
                                                   ),
 
-                                                ),
-                                                SizedBox(height: 10,),
-                                                Text(
-                                                  v['body'],
-                                                  textScaleFactor: 0.75,
-                                                  style: TextStyle(
-                                                      fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                          3.2),
-                                                ),
+                                                ],
 
-                                              ],
+                                              ),
 
-                                            ),
-
-                                          )
-                                        ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

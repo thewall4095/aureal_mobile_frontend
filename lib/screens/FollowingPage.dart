@@ -1179,9 +1179,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                               Color(0xff5bc3ef)
                                                                             ])),
                                                                     width: double
-                                                                            .maxFinite *
-                                                                        (currentlyPlaying.audioPlayer.realtimePlayingInfos.valueWrapper.value.playingPercent /
-                                                                            100),
+                                                                        .infinity,
                                                                     height: 4,
                                                                   ),
                                                                 )

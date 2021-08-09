@@ -50,6 +50,12 @@
       "languageVersion": "1.19"
     },
     {
+      "name": "avatar_glow",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/avatar_glow-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "badges",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/badges-1.2.0",
       "packageUri": "lib/",
@@ -278,6 +284,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "fixnum",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/fixnum-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -434,6 +446,30 @@
       "languageVersion": "2.6"
     },
     {
+      "name": "google_speech",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/google_speech-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "googleapis_auth",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/googleapis_auth-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "grpc",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/grpc-3.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "highlight_text",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/highlight_text-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "hive",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/hive-1.6.0-nullsafety.2",
       "packageUri": "lib/",
@@ -448,6 +484,12 @@
     {
       "name": "http",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "http2",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/http2-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -514,6 +556,12 @@
     {
       "name": "js",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "json_annotation",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/json_annotation-4.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -704,6 +752,12 @@
       "languageVersion": "2.7"
     },
     {
+      "name": "protobuf",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/protobuf-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "provider",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/provider-5.0.0",
       "packageUri": "lib/",
@@ -778,6 +832,18 @@
     {
       "name": "source_span",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "speech_to_text",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/speech_to_text-4.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "speech_to_text_platform_interface",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/speech_to_text_platform_interface-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -992,7 +1058,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-08-02T12:40:37.867897Z",
+  "generated": "2021-08-07T10:05:06.773955Z",
   "generator": "pub",
   "generatorVersion": "2.13.3"
 }
