@@ -7,6 +7,7 @@ import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Home.dart';
+import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
@@ -1081,11 +1082,11 @@ class _FollowingPageState extends State<FollowingPage>
                                                                                 currentlyPlaying.episodeObject = v;
                                                                                 print(currentlyPlaying.episodeObject.toString());
                                                                                 currentlyPlaying.play();
-                                                                                // showBarModalBottomSheet(
-                                                                                //     context: context,
-                                                                                //     builder: (context) {
-                                                                                //       return Player();
-                                                                                //     });
+                                                                                showBarModalBottomSheet(
+                                                                                    context: context,
+                                                                                    builder: (context) {
+                                                                                      return Player();
+                                                                                    });
                                                                               }
                                                                             }
                                                                           },
@@ -1178,9 +1179,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                               Color(0xff5bc3ef)
                                                                             ])),
                                                                     width: double
-                                                                            .maxFinite *
-                                                                        (currentlyPlaying.audioPlayer.realtimePlayingInfos.valueWrapper.value.playingPercent /
-                                                                            100),
+                                                                        .infinity,
                                                                     height: 4,
                                                                   ),
                                                                 )

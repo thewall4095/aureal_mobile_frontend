@@ -1,39 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
 class SlideRightRoute extends PageRouteBuilder {
   final Widget widget;
   SlideRightRoute({this.widget})
-      : super(
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-        return widget;
-      },
-      transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-        return new SlideTransition(
-          textDirection: TextDirection.ltr,
-          position: new Tween<Offset>(
-            begin: const Offset(1.0, 0.0,),
-
-            end: Offset.zero,
-
-          ).animate(animation),
-          child: child,
-        );
-      }
-  );
-}
-class FadeTransition extends StatefulWidget {
-
-
-  @override
-  _FadeTransitionState createState() => _FadeTransitionState();
-}
-
-class _FadeTransitionState extends State<FadeTransition> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
+      : super(pageBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation) {
+          return widget;
+        }, transitionsBuilder: (BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child) {
+          return new SlideTransition(
+            textDirection: TextDirection.ltr,
+            position: new Tween<Offset>(
+              begin: const Offset(
+                1.0,
+                0.0,
+              ),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        });
 }
 
 class Animator extends StatefulWidget {
@@ -43,6 +33,7 @@ class Animator extends StatefulWidget {
   @override
   _AnimatorState createState() => _AnimatorState();
 }
+
 class _AnimatorState extends State<Animator>
     with SingleTickerProviderStateMixin {
   Timer timer;
@@ -52,27 +43,29 @@ class _AnimatorState extends State<Animator>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(duration: Duration(milliseconds: 1000), vsync: this);
+        AnimationController(duration: Duration(milliseconds: 200), vsync: this);
     animation =
         CurvedAnimation(parent: animationController, curve: Curves.easeIn);
     timer = Timer(widget.time, animationController.forward);
   }
+
   @override
   void dispose() {
+    animationController.dispose();
     super.dispose();
     timer.cancel();
-    animationController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animation,
       child: widget.child,
       builder: (BuildContext context, Widget child) {
-        return AnimatedOpacity(
-          opacity: animation.value,duration: Duration(seconds: 1),
+        return Opacity(
+          opacity: animation.value,
           child: Transform.translate(
-            offset: Offset(2, (1 - animation.value) * 50),
+            offset: Offset(2, (1 - animation.value) * 10),
             child: child,
           ),
         );
@@ -80,17 +73,19 @@ class _AnimatorState extends State<Animator>
     );
   }
 }
+
 Timer timer;
 Duration duration = Duration();
 wait() {
   if (timer == null || !timer.isActive) {
-    timer = Timer(Duration(microseconds: 1), () {
+    timer = Timer(Duration(microseconds: 10), () {
       duration = Duration();
     });
   }
-  duration += Duration(milliseconds:1);
+  duration += Duration(milliseconds: 50);
   return duration;
 }
+
 class WidgetANimator extends StatelessWidget {
   final Widget child;
   WidgetANimator(this.child);
