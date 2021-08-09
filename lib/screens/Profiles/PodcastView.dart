@@ -317,12 +317,14 @@ class _PodcastViewState extends State<PodcastView> {
         slivers: <Widget>[
           SliverPersistentHeader(
             delegate: _AnimationHeader(
-                podcastId: podcastData,
+                podcastData: podcastData,
                 dominantColor: dominantColor,
                 followState: followState,
                 follows: follows),
             pinned: true,
           ),
+          ////////////////////////////////
+
           // SliverAppBar(
           //   centerTitle: true,
           //   pinned: true,
@@ -1363,11 +1365,11 @@ class _PodcastViewState extends State<PodcastView> {
 }
 
 class _AnimationHeader extends SliverPersistentHeaderDelegate {
-  var podcastId;
+  var podcastData;
   int dominantColor;
 
   _AnimationHeader(
-      {this.podcastId,
+      {this.podcastData,
       @required this.dominantColor,
       @required this.dio,
       @required this.followState,
@@ -1380,9 +1382,9 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 
   void podcastShare() async {
     await FlutterShare.share(
-        title: '${podcastId['name']}',
+        title: '${podcastData['name']}',
         text:
-            "Hey There, I'm listening to ${podcastId['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastId['id']}");
+            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastData['id']}");
   }
 
   void follow() async {
@@ -1392,7 +1394,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
     var map = Map<String, dynamic>();
 
     map['user_id'] = prefs.getString('userId');
-    map['podcast_id'] = podcastId;
+    map['podcast_id'] = podcastData;
 
     FormData formData = FormData.fromMap(map);
 
@@ -1404,28 +1406,40 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
     }
   }
 
-  var podcastData;
-  double _maxExtent = 300;
-  double _minExtent = 130;
+  double _maxExtent = 320;
+  double _minExtent = 150;
   double _maxImageSize = 180;
   double _minImageSize = 80;
   double _maxTitleSize = 20;
   double _maxSubTitleSize = 15;
   double _minTitleSize = 15;
   double _minSubTitleSize = 10;
+  double _maxFollowButton = 0;
+
+  void setExtentValue(BuildContext context) {
+    _maxExtent = MediaQuery.of(context).size.height * 0.33;
+    _minExtent = MediaQuery.of(context).size.height / 5.5;
+    _maxImageSize = MediaQuery.of(context).size.width * 0.42;
+    _minImageSize = (MediaQuery.of(context).size.width * 0.42) / 2;
+    _maxTitleSize = ((MediaQuery.of(context).size.width * 0.42) / 2) / 4;
+    _maxFollowButton = MediaQuery.of(context).size.width * 0.2;
+  }
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // print(shrinkOffset);
-    final percent = shrinkOffset / _maxExtent;
-    final currentImageSize =
+    setExtentValue(context);
+    print(shrinkOffset);
+
+    double percent = shrinkOffset / _maxExtent;
+    double currentImageSize =
         (_maxImageSize * (1 - percent)).clamp(_minImageSize, _maxImageSize);
-    final SubSize = (_maxSubTitleSize * (1 - percent)).clamp(
+    double SubSize = (_maxSubTitleSize * (1 - percent)).clamp(
       _minSubTitleSize,
       _maxSubTitleSize,
     );
-    final TitleSize = (_maxTitleSize * (1 - percent)).clamp(
+    double TitleSize = (_maxTitleSize * (1 - percent)).clamp(
       _minTitleSize,
       _maxTitleSize,
     );
@@ -1446,7 +1460,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
         Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
         kPrimaryColor
       ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-      child: podcastId == null
+      child: podcastData == null
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Shimmer.fromColors(
@@ -1515,150 +1529,55 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
             )
           : Stack(
               children: [
-                Positioned(
-                  top: (160 * (1 - percent)).clamp(50, leftTextMargin),
-                  left: (leftTextMargin * (1 - percent))
-                      .clamp(50, leftTextMargin),
-                  right: 2,
-                  height: _minImageSize,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                SafeArea(
+                  child: Row(
                     children: [
-                      Text(
-                        "${podcastId['name']}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        textScaleFactor: mediaQueryData.textScaleFactor
-                            .clamp(0.5, 1)
-                            .toDouble(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: TitleSize,
-                            letterSpacing: -0.5),
-                      ),
-                      Text(
-                        "${podcastId['author']}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        textScaleFactor: mediaQueryData.textScaleFactor
-                            .clamp(0.5, 0.8)
-                            .toDouble(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: SubSize,
-                            letterSpacing: -0.5),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  left: 10,
-                  height: currentImageSize,
-                  child: Container(
-                    width: currentImageSize,
-                    height: currentImageSize,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Hero(
-                        tag: '${podcastId['id']}',
+                      Padding(
+                        padding: const EdgeInsets.all(15),
                         child: CachedNetworkImage(
+                          imageUrl: podcastData['image'],
+                          memCacheHeight:
+                              (MediaQuery.of(context).size.height / 2).ceil(),
                           imageBuilder: (context, imageProvider) {
                             return Container(
+                              width: currentImageSize,
+                              height: currentImageSize,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
-                              ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover)),
                             );
                           },
-                          memCacheHeight:
-                              (MediaQuery.of(context).size.height).floor(),
-                          placeholder: (context, url) => Container(
-                            width: currentImageSize,
-                            height: currentImageSize,
-                            child: Image.asset('assets/images/Thumbnail.png'),
-                          ),
-                          imageUrl: podcastId == null
-                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                              : podcastId['image'],
-                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 28,
-                  left: buttonMargin1,
-                  child: IconButton(
-                    onPressed: () async {
-                      podcastShare();
-                    },
-                    icon: Icon(Icons.share),
-                  ),
-                ),
-                Positioned(
-                  bottom: 36,
-                  left: buttonFollowMargin,
-                  child: followState == FollowState.following
-                      ? InkWell(
-                          onTap: () {
-                            follow();
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: kSecondaryColor
-                                    //    color: Color(0xffe8e8e8),
-                                    ,
-                                    width: 0.5)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
-                              child: Text(
-                                'Unsubscribe',
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.5, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                    //      color: Color(0xffe8e8e8)
-                                    ),
+                      Expanded(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${podcastData['name']}",
+                                style: TextStyle(fontSize: TitleSize),
                               ),
-                            ),
-                          ))
-                      : InkWell(
-                          onTap: () async {
-                            follow();
-
-                            //  followState;
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    color: kSecondaryColor,
-                                    //    color: Color(0xffe8e8e8),
-                                    width: 0.5)
-                                //color: Color(0xffe8e8e8)
-                                ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
-                              child: Text(
-                                'Subscribe',
-                                textScaleFactor: mediaQueryData.textScaleFactor
-                                    .clamp(0.5, 1)
-                                    .toDouble(),
-                                style: TextStyle(
-                                    // color: Color(0xff3a3a3a)
-                                    ),
+                              Text(
+                                "${podcastData['author']}",
+                                style: TextStyle(fontSize: SubSize),
                               ),
-                            ),
-                          ),
-                        ),
-                ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 40,
+                              ),
+                              currentImageSize != _maxImageSize
+                                  ? SizedBox()
+                                  : FollowButton(
+                                      podcastData: podcastData,
+                                      follows: follows,
+                                      followState: followState,
+                                    ),
+                            ]),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
     );
@@ -2180,3 +2099,125 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 //     );
 //   }
 // }
+
+class FollowButton extends StatefulWidget {
+  FollowState followState;
+  bool follows;
+  var podcastData;
+
+  FollowButton(
+      {@required this.podcastData,
+      @required this.follows,
+      @required this.followState});
+
+  @override
+  _FollowButtonState createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  FollowState followState;
+  bool follows;
+
+  Dio dio = Dio();
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = widget.podcastData['id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      followState = widget.followState;
+      follows = widget.follows;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return followState == FollowState.following
+        ? InkWell(
+            onTap: () {
+              follow();
+              setState(() {
+                if (followState == FollowState.follow) {
+                  followState = FollowState.following;
+                } else {
+                  followState = FollowState.follow;
+                }
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: kSecondaryColor
+                      //    color: Color(0xffe8e8e8),
+                      ,
+                      width: 0.5)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: Text(
+                  'Unsubscribe',
+                  textScaleFactor:
+                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                  style: TextStyle(
+                      //      color: Color(0xffe8e8e8)
+                      ),
+                ),
+              ),
+            ))
+        : InkWell(
+            onTap: () async {
+              follow();
+              setState(() {
+                if (followState == FollowState.follow) {
+                  followState = FollowState.following;
+                } else {
+                  followState = FollowState.follow;
+                }
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: kSecondaryColor,
+                      //    color: Color(0xffe8e8e8),
+                      width: 0.5)
+                  //color: Color(0xffe8e8e8)
+                  ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: Text(
+                  'Subscribe',
+                  textScaleFactor:
+                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                  style: TextStyle(
+                      // color: Color(0xff3a3a3a)
+                      ),
+                ),
+              ),
+            ),
+          );
+  }
+}
