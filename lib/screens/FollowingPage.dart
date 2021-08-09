@@ -894,6 +894,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   ),
                                                                 ),
                                                               ),
+                                                              
                                                               Container(
                                                                 width: MediaQuery.of(
                                                                         context)
@@ -1134,8 +1135,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             const EdgeInsets.only(left: 8),
                                                                         child:
                                                                             Icon(
-                                                                          Icons
-                                                                              .more_vert_rounded,
+                                                                          Icons.share,
                                                                           // size: 14,
                                                                         ),
                                                                       ),

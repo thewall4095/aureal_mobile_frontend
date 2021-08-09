@@ -1444,10 +1444,10 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   }
 
   var podcastData;
-  double _maxExtent = 300;
-  double _minExtent = 130;
-  double _maxImageSize = 180;
-  double _minImageSize = 80;
+  double _maxExtent = 280;
+  double _minExtent = 100;
+  double _maxImageSize = 160;
+  double _minImageSize = 60;
   double _maxTitleSize = 20;
   double _maxSubTitleSize = 15;
   double _minTitleSize = 15;
@@ -1472,8 +1472,8 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 
     final buttonMargin = 320;
     final followButton = 200;
-    final maxMargin = 200;
-    final textMovement = 150;
+    final maxMargin = 20;
+    final textMovement = 50;
     final marginFollow = 500;
     final buttonMargin1 = buttonMargin +(marginFollow  * percent);
     final buttonFollowMargin = followButton +(marginFollow * percent);
@@ -1564,10 +1564,10 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
           :Stack(
         children: [
           Positioned(
-            top: (160 * (1 - percent)).clamp(50, leftTextMargin),
-            left: (leftTextMargin * (1 - percent)).clamp(50, leftTextMargin),
-            right: 2,
-            height: _minImageSize,
+            top: 45,
+            left: leftTextMargin,
+            right:  leftTextMargin,
+            height: currentImageSize,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1589,16 +1589,16 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                   textScaleFactor:
                   mediaQueryData.textScaleFactor.clamp(0.5, 0.8).toDouble(),
                   style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: SubSize,
-                      letterSpacing: -0.5
+                    fontWeight: FontWeight.w400,
+                    fontSize: SubSize,
+
                   ),
                 ),
               ],
             ),
           ),
-          Positioned(
 
+          Positioned(
             bottom: 20,
             left: 10,
             height: currentImageSize,
@@ -1634,7 +1634,43 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-
+          Positioned(
+              bottom: 100,
+              left: 180 ,
+              child: Container(
+            child: Row(
+              children: [
+                Text("Episodes"),
+                SizedBox(
+                  width: 20,
+                ),
+                Container(
+                  height: 60,
+                  width: 5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text("Upvote"),
+                SizedBox(
+                  width: 20,
+                ),
+                // Container(
+                //   height: 60,
+                //   width: 5,
+                //   color: Colors.white,
+                // ),
+                // SizedBox(
+                //   width: 20,
+                // ),
+                // Text("")
+              ],
+            ),
+          )),
           Positioned(
             bottom: 28,
             left: buttonMargin1 ,

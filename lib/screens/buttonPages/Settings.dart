@@ -6,6 +6,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -32,13 +33,14 @@ class _SettingsState extends State<Settings> {
     }
   }
 
+  SharedPreferences prefs;
   Dio dio = Dio();
 
   void setData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     loggedInUser = prefs.getString('userId');
   }
-
+  String hiveUserName;
   void feedBack() async {
     String url = "'https://api.aureal.one/public/report";
 
@@ -91,481 +93,362 @@ class _SettingsState extends State<Settings> {
           ),
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       print("Account Settings");
-                              //       Navigator.pushNamed(
-                              //           context, AccountSettings.id);
-                              //     },
-                              //     child: Container(
-                              //       width: double.infinity,
-                              //       child: Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: <Widget>[
-                              //           Text(
-                              //             "Accounts",
-                              //             textScaleFactor: 0.75,
-                              //             style: TextStyle(
-                              //                // color: Colors.white,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontSize: SizeConfig
-                              //                         .safeBlockHorizontal *
-                              //                     4),
-                              //           ),
-                              //           Text(
-                              //             "Profile, Subscriptions, Presence",
-                              //             textScaleFactor: 0.75,
-                              //             style: TextStyle(
-                              //              //
-                              //               //  color: Colors.white70,
-                              //                 fontWeight: FontWeight.w300,
-                              //                 fontSize: SizeConfig
-                              //                         .safeBlockHorizontal *
-                              //                     3.4),
-                              //           )
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       Navigator.pushNamed(context, Prefrences.id);
-                              //     },
-                              //     child: Container(
-                              //       child: Padding(
-                              //         padding: const EdgeInsets.only(right: 160),
-                              //         child: Column(
-                              //           crossAxisAlignment:
-                              //               CrossAxisAlignment.start,
-                              //           children: <Widget>[
-                              //             Text(
-                              //               "Preferences",
-                              //               textScaleFactor: mediaQueryData
-                              //                   .textScaleFactor
-                              //                   .clamp(0.5, 1.5)
-                              //                   .toDouble(),
-                              //               style: TextStyle(
-                              //                   //  color: Colors.white,
-                              //                   fontWeight: FontWeight.bold,
-                              //                   fontSize: SizeConfig
-                              //                           .safeBlockHorizontal *
-                              //                       4),
-                              //             ),
-                              //             Text(
-                              //               "Dark Mode, Background Audio",
-                              //               textScaleFactor: mediaQueryData
-                              //                   .textScaleFactor
-                              //                   .clamp(0.5, 0.8)
-                              //                   .toDouble(),
-                              //               style: TextStyle(
-                              //                   //       color: Colors.white70,
-                              //                   fontWeight: FontWeight.w300,
-                              //                   fontSize: SizeConfig
-                              //                           .safeBlockHorizontal *
-                              //                       3.4),
-                              //             )
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 30),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Scaffold(
-                                            appBar: AppBar(
-                                              title: Text(
-                                                "Send Feedback",
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4),
-                                                textScaleFactor: 1.0,
+          child: Expanded(
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          showBarModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Scaffold(
+                                  appBar: AppBar(
+                                    title: Text(
+                                      "Send Feedback",
+                                      style: TextStyle(
+                                          fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                              3),
+                                      textScaleFactor: 1.0,
+                                    ),
+                                  ),
+                                  body: Container(
+                                    child: ListView(
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 15,
+                                                      vertical: 20),
+                                              child: Container(
+                                                decoration:
+                                                    BoxDecoration(
+                                                  color:
+                                                      kSecondaryColor,
+                                                  borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                              10),
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets
+                                                          .all(8.0),
+                                                  child: TextField(
+                                                    onChanged:
+                                                        (value) {
+                                                      setState(() {
+                                                        feedback =
+                                                            value;
+                                                      });
+                                                    },
+                                                    maxLines: 30,
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                            body: Container(
-                                              child: ListView(
-                                                children: [
-                                                  Column(
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 20,
+                                                      horizontal: 15),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  if (feedback
+                                                          .isEmpty ==
+                                                      true) {
+                                                    Fluttertoast
+                                                        .showToast(
+                                                            msg:
+                                                                "Please enter a message");
+                                                  } else {
+                                                    feedBack();
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color:
+                                                          kSecondaryColor,
+                                                      borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                                  10)),
+                                                  child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
-                                                            .spaceBetween,
+                                                            .center,
                                                     children: [
                                                       Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 15,
-                                                                vertical: 20),
-                                                        child: Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                kSecondaryColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: TextField(
-                                                              onChanged:
-                                                                  (value) {
-                                                                setState(() {
-                                                                  feedback =
-                                                                      value;
-                                                                });
-                                                              },
-                                                              maxLines: 30,
-                                                            ),
-                                                          ),
+                                                        padding: const EdgeInsets
+                                                                .symmetric(
+                                                            vertical:
+                                                                15),
+                                                        child: Text(
+                                                          "Send",
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  SizeConfig.safeBlockHorizontal *
+                                                                      4),
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 20,
-                                                                horizontal: 15),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            if (feedback
-                                                                    .isEmpty ==
-                                                                true) {
-                                                              Fluttertoast
-                                                                  .showToast(
-                                                                      msg:
-                                                                          "Please enter a message");
-                                                            } else {
-                                                              feedBack();
-                                                            }
-                                                          },
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                color:
-                                                                    kSecondaryColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10)),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          15),
-                                                                  child: Text(
-                                                                    "Send",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            SizeConfig.safeBlockHorizontal *
-                                                                                4),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
                                                     ],
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        });
-                                    // Navigator.pushNamed(context, Prefrences.id);
-                                  },
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "Send Feedback",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1.5)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //  color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  4),
+                                            )
+                                          ],
                                         ),
-                                        Text(
-                                          "Let us know if you see anything troubling",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 0.8)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                              //       color: Colors.white70,
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  3.4),
-                                        )
                                       ],
                                     ),
                                   ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 30),
-                                child: GestureDetector(
-                                  onTap: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) => UserCategories(
-
-                                          )
-                                          ));
-                                  },
-                                  child: Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          "Categories",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1.5)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                            //  color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: SizeConfig
-                                                  .safeBlockHorizontal *
-                                                  4),
-                                        ),
-                                        SizedBox(height:5),
-                                        Text(
-                                          "Select Categories",
-                                          textScaleFactor: mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 0.8)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                            //       color: Colors.white70,
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: SizeConfig
-                                                  .safeBlockHorizontal *
-                                                  3.4),
-                                        )
-                                      ],
-                                    ),
+                                );
+                              });
+                          // Navigator.pushNamed(context, Prefrences.id);
+                        },
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Send Feedback",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 1.5)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                        //  color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: SizeConfig
+                                                .safeBlockHorizontal *
+                                            3.5),
                                   ),
-                                ),
+                                  Text(
+                                    "Let us know if you see anything troubling",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 0.8)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                        //       color: Colors.white70,
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: SizeConfig
+                                                .safeBlockHorizontal *
+                                            3),
+                                  )
+                                ],
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: <Widget>[
-                              //         Text(
-                              //           "Dashboard",
-                              //           textScaleFactor: 0.75,
-                              //           style: TextStyle(
-                              //       //        color: Colors.white,
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize:
-                              //                   SizeConfig.safeBlockHorizontal *
-                              //                       4),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: GestureDetector(
-                              //       onTap: () {
-                              //         Navigator.pushNamed(context, Security.id);
-                              //       },
-                              //       child: Column(
-                              //         crossAxisAlignment:
-                              //             CrossAxisAlignment.start,
-                              //         children: <Widget>[
-                              //           Text(
-                              //             "Security + Privacy",
-                              //             textScaleFactor: 0.75,
-                              //             style: TextStyle(
-                              //             //    color: Colors.white,
-                              //                 fontWeight: FontWeight.bold,
-                              //                 fontSize: SizeConfig
-                              //                         .safeBlockHorizontal *
-                              //                     4),
-                              //           ),
-                              //           Text(
-                              //             "Contact, Password",
-                              //             textScaleFactor: 0.75,
-                              //             style: TextStyle(
-                              //          //       color: Colors.white70,
-                              //                 fontWeight: FontWeight.w300,
-                              //                 fontSize: SizeConfig
-                              //                         .safeBlockHorizontal *
-                              //                     3.4),
-                              //           )
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: <Widget>[
-                              //         Text(
-                              //           "Recommendations",
-                              //           textScaleFactor: 0.75,
-                              //           style: TextStyle(
-                              //        //       color: Colors.white,
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize:
-                              //                   SizeConfig.safeBlockHorizontal *
-                              //                       4),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: <Widget>[
-                              //         Text(
-                              //           "System",
-                              //           textScaleFactor: 0.75,
-                              //           style: TextStyle(
-                              //    //           color: Colors.white,
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize:
-                              //                   SizeConfig.safeBlockHorizontal *
-                              //                       4),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: <Widget>[
-                              //         Text(
-                              //           "Community Guidelines",
-                              //           textScaleFactor: 0.75,
-                              //           style: TextStyle(
-                              //           //    color: Colors.white,
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize:
-                              //                   SizeConfig.safeBlockHorizontal *
-                              //                       4),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
-                              // Padding(
-                              //   padding: const EdgeInsets.only(bottom: 30),
-                              //   child: Container(
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: <Widget>[
-                              //         Text(
-                              //           "Terms of Service",
-                              //           textScaleFactor: 0.75,
-                              //           style: TextStyle(
-                              //         //      color: Colors.white,
-                              //               fontWeight: FontWeight.bold,
-                              //               fontSize:
-                              //                   SizeConfig.safeBlockHorizontal *
-                              //                       4),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
+                              Icon(Icons.arrow_forward_ios_rounded,size: 15)
                             ],
                           ),
                         ),
+                      ),
+                      SizedBox(height: 30,),
+                      GestureDetector(
+                        onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => UserCategories(
+
+                                )
+                                ));
+                        },
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Categories",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 1.5)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                      //  color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: SizeConfig
+                                            .safeBlockHorizontal *
+                                            3.5),
+                                  ),
+                                  SizedBox(height:5),
+                                  Text(
+                                    "Select Categories",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 0.8)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                      //       color: Colors.white70,
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: SizeConfig
+                                            .safeBlockHorizontal *
+                                            3),
+                                  )
+                                ],
+                              ),
+                              Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30,),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Version",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 1.5)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //  color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: SizeConfig
+                                          .safeBlockHorizontal *
+                                          3.5),
+                                ),
+                                SizedBox(height:5),
+
+                              ],
+                            ),
+                            Text("1.0.49"),
+                        //    Icon(Icons.arrow_forward_ios_rounded)
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height/2.1,
+                ),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: 3, // space between underline and text
+                          ),
+                          decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(
+                                color: Colors.white,  // Text colour here
+                                width: 1.0, // Underline width
+                              ))
+                          ),
+
+                          child: Text(
+                            "Privacy Policy",
+                            style: TextStyle(
+                              color: Colors.white,  // Text colour here
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5,),
+                        Text("and"),
+                        SizedBox(width: 5,),
+                        Container(
+                          padding: EdgeInsets.only(
+                            bottom: 3, // space between underline and text
+                          ),
+                          decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(
+                                color: Colors.white,  // Text colour here
+                                width: 1.0, // Underline width
+                              ))
+                          ),
+
+                          child: Text(
+                            "Terms of Use",
+                            style: TextStyle(
+                              color: Colors.white,  // Text colour here
+                            ),
+                          ),
+                        ),
                       ],
+
+                    ),
+                    // Container(
+                    //   padding: EdgeInsets.only(
+                    //     bottom: 3, // space between underline and text
+                    //   ),
+                    //   decoration: BoxDecoration(
+                    //       border: Border(bottom: BorderSide(
+                    //         color: Colors.white,  // Text colour here
+                    //         width: 1.0, // Underline width
+                    //       ))
+                    //   ),
+                    //
+                    //   child: Text(
+                    //     "Privacy Policy and Terms of Use",
+                    //     style: TextStyle(
+                    //       color: Colors.white,  // Text colour here
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(height: 20,),
+                    Text(
+                      hiveUserName != null
+                                              ? "Logged in with ( @${hiveUserName} )"
+                                              : "Logged in with Hive",
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            //     color: Color(0xffe8e8e8),
+                                            fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                3)),
+                    //   "Logged in with Hive",style: TextStyle(
+                    //   fontSize: 12
+                    // ),),
+                    SizedBox(height: 20,),
+                    InkWell(
+                        onTap: () {
+                          logout();
+                          prefs.clear();
+                        },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        height: MediaQuery.of(context).size.height /18,
+                        width: MediaQuery.of(context).size.width /1.2,
+                        child: Center(child: Text("Log Out",style: TextStyle(
+                            color: Colors.white
+                        ),)),
+
+                      ),
                     ),
                   ],
                 ),
-              ),
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              //   child: Center(
-              //     child: Container(
-              //       decoration: BoxDecoration(
-              //           border: Border.all(
-              //               color: Colors.blue, width: 2.0)),
-              //       width: double.infinity,
-              //       child: RaisedButton(
-              //         color: Colors.transparent,
-              //         elevation: 0,
-              //         onPressed: () {
-              //           logout();
-              //         },
-              //         child: Text(
-              //           "Log out",
-              //           textScaleFactor: 0.75,
-              //           style: TextStyle(
-              //            //   color: Colors.white,
-              //               fontSize: SizeConfig.safeBlockHorizontal * 4),
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // )
-            ],
+              ],
+
+            ),
           ),
         ));
   }

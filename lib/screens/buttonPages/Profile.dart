@@ -36,6 +36,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Home.dart';
 import '../RewardsScreen.dart';
+import '../RouteAnimation.dart';
 import 'Bio.dart';
 import 'Downloads.dart';
 import 'Settings.dart';
@@ -387,7 +388,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             //     )
             //   ],
             // ),
-
             resizeToAvoidBottomInset: true,
             body: ModalProgressHUD(
               inAsyncCall: isProfileLoading,
@@ -1013,291 +1013,521 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //     ],
                             //   ),
                             // ),
-                            ReferralDashboard(),
                             Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Divider(
-                                    color: kSecondaryColor,
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      SlideRightRoute(widget: ReferralProgram()));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Invite ",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //  color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          SizedBox(height:5),
+                                          Text(
+                                            "Invite friends and earn rewards",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
+                                      ),
+                                      Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Container(
-                                        //   width: double.infinity,
-                                        //   decoration: BoxDecoration(
-                                        //       border: Border(
-                                        //           bottom:
-                                        //               BorderSide(color: kSecondaryColor))),
-                                        //   child: Padding(
-                                        //     padding: const EdgeInsets.symmetric(vertical: 15),
-                                        //     child: InkWell(
-                                        //       onTap: () {
-                                        //         Navigator.push(context,
-                                        //             MaterialPageRoute(builder: (context) {
-                                        //           return CreateCommunity();
-                                        //         })).then((value) async {
-                                        //           await _pullRefreshEpisodes();
-                                        //         });
-                                        //       },
-                                        //       child: Text(
-                                        //         "Add your community",
-                                        //         textScaleFactor: mediaQueryData.textScaleFactor
-                                        //             .clamp(0.2, 1)
-                                        //             .toDouble(),
-                                        //         style: TextStyle(
-                                        //           fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                        //           //      color: Color(0xffe8e8e8),
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) {
-                                                  return Rewards();
-                                                }));
-                                              },
-                                              child: Text(
-                                                "Your rewards",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //    color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                showBarModalBottomSheet(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return DownloadPage();
-                                                    });
-                                              },
-                                              child: Text(
-                                                "Library",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //        color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                showBarModalBottomSheet(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .height,
-                                                        // child: InAppWebView(
-                                                        //     gestureRecognizers:
-                                                        //         gestureRecognizers,
-                                                        //     initialFile:
-                                                        //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
-                                                        child: WebView(
-                                                          gestureRecognizers:
-                                                              Set()
-                                                                ..add(
-                                                                  Factory<
-                                                                      VerticalDragGestureRecognizer>(
-                                                                    () =>
-                                                                        VerticalDragGestureRecognizer(),
-                                                                  ), // or null
-                                                                ),
-                                                          gestureNavigationEnabled:
-                                                              true,
-                                                          javascriptMode:
-                                                              JavascriptMode
-                                                                  .unrestricted,
-                                                          initialUrl:
-                                                              'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
-                                                        ),
-                                                      );
-                                                    });
-                                              },
-                                              child: Text(
-                                                "Your wallet",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //        color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                hiveUserName == null
-                                                    ? Navigator
-                                                        .pushNamedAndRemoveUntil(
-                                                            context,
-                                                            HiveAccount.id,
-                                                            (route) => false)
-                                                    : print('nothing');
-                                              },
-                                              child: Text(
-                                                hiveUserName != null
-                                                    ? "Connected with your Hive Account ( @${hiveUserName} )"
-                                                    : "Connect your Hive Account",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //     color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-
-                                            child: InkWell(
-                                              onTap: () {
-
-                                                showBarModalBottomSheet(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Settings();
-                                                    });
-                                              },
-                                              child: Text(
-                                                "Setting",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //  color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(
-                                                color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                logout();
-                                                prefs.clear();
-                                              },
-                                              child: Text(
-                                                "Sign Out",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                  //    color: Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        // SignInButton(Buttons.Google,
-                                        //     text: 'Sign Out of Google',
-                                        //     onPressed: () => authBloc.logout())
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            )
+                            ),
+                            // ReferralDashboard(),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      SlideRightRoute(widget:   Rewards()));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Your rewards",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //  color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          SizedBox(height:5),
+                                          Text(
+                                            "Check your rewards",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
+                                      ),
+                                      Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: InkWell(
+                                  onTap: () {
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .height,
+                                            // child: InAppWebView(
+                                            //     gestureRecognizers:
+                                            //         gestureRecognizers,
+                                            //     initialFile:
+                                            //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
+                                            child: WebView(
+                                              gestureRecognizers:
+                                              Set()
+                                                ..add(
+                                                  Factory<
+                                                      VerticalDragGestureRecognizer>(
+                                                        () =>
+                                                        VerticalDragGestureRecognizer(),
+                                                  ), // or null
+                                                ),
+                                              gestureNavigationEnabled:
+                                              true,
+                                              javascriptMode:
+                                              JavascriptMode
+                                                  .unrestricted,
+                                              initialUrl:
+                                              'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
+                                            ),
+                                          );
+                                        });
+                                  },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Your wallet",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //  color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          SizedBox(height:5),
+                                          Text(
+                                            "Hive wallet",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
+                                      ),
+                                      Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      SlideRightRoute(widget: Settings()));
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Setting",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //  color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          SizedBox(height:5),
+                                          Text(
+                                            "Categories , Languages",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                              //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
+                                      ),
+                                      Icon(Icons.arrow_forward_ios_rounded,size: 15,)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //       horizontal: 15, vertical: 20),
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Divider(
+                            //         color: kSecondaryColor,
+                            //       ),
+                            //       Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             horizontal: 10),
+                            //         child: Column(
+                            //           crossAxisAlignment:
+                            //               CrossAxisAlignment.start,
+                            //           children: [
+                            //             // Container(
+                            //             //   width: double.infinity,
+                            //             //   decoration: BoxDecoration(
+                            //             //       border: Border(
+                            //             //           bottom:
+                            //             //               BorderSide(color: kSecondaryColor))),
+                            //             //   child: Padding(
+                            //             //     padding: const EdgeInsets.symmetric(vertical: 15),
+                            //             //     child: InkWell(
+                            //             //       onTap: () {
+                            //             //         Navigator.push(context,
+                            //             //             MaterialPageRoute(builder: (context) {
+                            //             //           return CreateCommunity();
+                            //             //         })).then((value) async {
+                            //             //           await _pullRefreshEpisodes();
+                            //             //         });
+                            //             //       },
+                            //             //       child: Text(
+                            //             //         "Add your community",
+                            //             //         textScaleFactor: mediaQueryData.textScaleFactor
+                            //             //             .clamp(0.2, 1)
+                            //             //             .toDouble(),
+                            //             //         style: TextStyle(
+                            //             //           fontSize: SizeConfig.safeBlockHorizontal * 4,
+                            //             //           //      color: Color(0xffe8e8e8),
+                            //             //         ),
+                            //             //       ),
+                            //             //     ),
+                            //             //   ),
+                            //             // ),
+                            //             // Container(
+                            //             //   width: double.infinity,
+                            //             //   decoration: BoxDecoration(
+                            //             //     border: Border(
+                            //             //       bottom: BorderSide(
+                            //             //         color: kSecondaryColor,
+                            //             //       ),
+                            //             //     ),
+                            //             //   ),
+                            //             //   child: Padding(
+                            //             //     padding: const EdgeInsets.symmetric(
+                            //             //         vertical: 15),
+                            //             //     child: InkWell(
+                            //             //       onTap: () {
+                            //             //         Navigator.push(context,
+                            //             //             MaterialPageRoute(
+                            //             //                 builder: (context) {
+                            //             //           return Rewards();
+                            //             //         }));
+                            //             //       },
+                            //             //       child: Text(
+                            //             //         "Your rewards",
+                            //             //         textScaleFactor: 1.0,
+                            //             //         style: TextStyle(
+                            //             //           //    color: Color(0xffe8e8e8),
+                            //             //           fontSize: SizeConfig
+                            //             //                   .safeBlockHorizontal *
+                            //             //               4,
+                            //             //         ),
+                            //             //       ),
+                            //             //     ),
+                            //             //   ),
+                            //             // ),
+                            //             // Container(
+                            //             //   width: double.infinity,
+                            //             //   decoration: BoxDecoration(
+                            //             //     border: Border(
+                            //             //       bottom: BorderSide(
+                            //             //         color: kSecondaryColor,
+                            //             //       ),
+                            //             //     ),
+                            //             //   ),
+                            //             //   child: Padding(
+                            //             //     padding: const EdgeInsets.symmetric(
+                            //             //         vertical: 15),
+                            //             //     child: InkWell(
+                            //             //       onTap: () {
+                            //             //         showBarModalBottomSheet(
+                            //             //             context: context,
+                            //             //             builder: (context) {
+                            //             //               return DownloadPage();
+                            //             //             });
+                            //             //       },
+                            //             //       child: Text(
+                            //             //         "Library",
+                            //             //         textScaleFactor: 1.0,
+                            //             //         style: TextStyle(
+                            //             //           //        color: Color(0xffe8e8e8),
+                            //             //           fontSize: SizeConfig
+                            //             //                   .safeBlockHorizontal *
+                            //             //               4,
+                            //             //         ),
+                            //             //       ),
+                            //             //     ),
+                            //             //   ),
+                            //             // ),
+                            //             Container(
+                            //               width: double.infinity,
+                            //               decoration: BoxDecoration(
+                            //                 border: Border(
+                            //                   bottom: BorderSide(
+                            //                     color: kSecondaryColor,
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //               child: Padding(
+                            //                 padding: const EdgeInsets.symmetric(
+                            //                     vertical: 15),
+                            //                 child: InkWell(
+                            //                   onTap: () {
+                            //                     showBarModalBottomSheet(
+                            //                         context: context,
+                            //                         builder: (context) {
+                            //                           return Container(
+                            //                             height: MediaQuery.of(
+                            //                                     context)
+                            //                                 .size
+                            //                                 .height,
+                            //                             // child: InAppWebView(
+                            //                             //     gestureRecognizers:
+                            //                             //         gestureRecognizers,
+                            //                             //     initialFile:
+                            //                             //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
+                            //                             child: WebView(
+                            //                               gestureRecognizers:
+                            //                                   Set()
+                            //                                     ..add(
+                            //                                       Factory<
+                            //                                           VerticalDragGestureRecognizer>(
+                            //                                         () =>
+                            //                                             VerticalDragGestureRecognizer(),
+                            //                                       ), // or null
+                            //                                     ),
+                            //                               gestureNavigationEnabled:
+                            //                                   true,
+                            //                               javascriptMode:
+                            //                                   JavascriptMode
+                            //                                       .unrestricted,
+                            //                               initialUrl:
+                            //                                   'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
+                            //                             ),
+                            //                           );
+                            //                         });
+                            //                   },
+                            //                   child: Text(
+                            //                     "Your wallet",
+                            //                     textScaleFactor: 1.0,
+                            //                     style: TextStyle(
+                            //                       //        color: Color(0xffe8e8e8),
+                            //                       fontSize: SizeConfig
+                            //                               .safeBlockHorizontal *
+                            //                           4,
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             Container(
+                            //               width: double.infinity,
+                            //               decoration: BoxDecoration(
+                            //                 border: Border(
+                            //                   bottom: BorderSide(
+                            //                     color: kSecondaryColor,
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //               child: Padding(
+                            //                 padding: const EdgeInsets.symmetric(
+                            //                     vertical: 15),
+                            //                 child: InkWell(
+                            //                   onTap: () {
+                            //                     hiveUserName == null
+                            //                         ? Navigator
+                            //                             .pushNamedAndRemoveUntil(
+                            //                                 context,
+                            //                                 HiveAccount.id,
+                            //                                 (route) => false)
+                            //                         : print('nothing');
+                            //                   },
+                            //                   child: Text(
+                            //                     hiveUserName != null
+                            //                         ? "Connected with your Hive Account ( @${hiveUserName} )"
+                            //                         : "Connect your Hive Account",
+                            //                     textScaleFactor: 1.0,
+                            //                     style: TextStyle(
+                            //                       //     color: Color(0xffe8e8e8),
+                            //                       fontSize: SizeConfig
+                            //                               .safeBlockHorizontal *
+                            //                           4,
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             Container(
+                            //               width: double.infinity,
+                            //               decoration: BoxDecoration(
+                            //                 border: Border(
+                            //                   bottom: BorderSide(
+                            //                     color: kSecondaryColor,
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //               child: Padding(
+                            //                 padding: const EdgeInsets.symmetric(
+                            //                     vertical: 15),
+                            //
+                            //                 child: InkWell(
+                            //                   onTap: () {
+                            //                     showBarModalBottomSheet(
+                            //                         context: context,
+                            //                         builder: (context) {
+                            //                           return Settings();
+                            //                         });
+                            //                   },
+                            //                   child: Text(
+                            //                     "Setting",
+                            //                     textScaleFactor: 1.0,
+                            //                     style: TextStyle(
+                            //                       //  color: Color(0xffe8e8e8),
+                            //                       fontSize: SizeConfig
+                            //                               .safeBlockHorizontal *
+                            //                           4,
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             Container(
+                            //               width: double.infinity,
+                            //               decoration: BoxDecoration(
+                            //                 border: Border(
+                            //                   bottom: BorderSide(
+                            //                     color: kSecondaryColor,
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //               child: Padding(
+                            //                 padding: const EdgeInsets.symmetric(
+                            //                     vertical: 15),
+                            //                 child: InkWell(
+                            //                   onTap: () {
+                            //                     logout();
+                            //                     prefs.clear();
+                            //                   },
+                            //                   child: Text(
+                            //                     "Sign Out",
+                            //                     textScaleFactor: 1.0,
+                            //                     style: TextStyle(
+                            //                       //    color: Color(0xffe8e8e8),
+                            //                       fontSize: SizeConfig
+                            //                               .safeBlockHorizontal *
+                            //                           4,
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             // SignInButton(Buttons.Google,
+                            //             //     text: 'Sign Out of Google',
+                            //             //     onPressed: () => authBloc.logout())
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // )
                           ]),
                         ),
                       ],
