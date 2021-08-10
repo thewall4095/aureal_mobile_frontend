@@ -261,32 +261,21 @@ class _UserCategoriesState extends State<UserCategories> {
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 5, vertical: 5),
-                              child: GestureDetector(
-                                onTap: () {
-                                  // setState(() {
-                                  //   if (selectedCategories.contains(v['id'])) {
-                                  //     selectedCategories.remove(v['id']);
-                                  //   } else {
-                                  //     selectedCategories.add(v['id']);
-                                  //   }
-                                  // });
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(30),
-                                  color:Colors.blue),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 15),
-                                    child: Text(
-                                      v['name'],
-                                      textScaleFactor: 0.75,
-                                      style: TextStyle(
-                                          fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3,
-                                          color:Colors.white)
-                                    ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(),
+                                    borderRadius: BorderRadius.circular(30),
+                                color:Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 15),
+                                  child: Text(
+                                    v['name'],
+                                    textScaleFactor: 0.75,
+                                    style: TextStyle(
+                                        fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3,
+                                        color:Colors.black)
                                   ),
                                 ),
                               ),

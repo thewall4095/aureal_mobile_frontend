@@ -1380,12 +1380,6 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   FollowState followState;
   bool follows;
 
-  void podcastShare() async {
-    await FlutterShare.share(
-        title: '${podcastData['name']}',
-        text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastData['id']}");
-  }
 
   void follow() async {
     print("Follow function started");
@@ -1411,7 +1405,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   double _maxImageSize = 180;
   double _minImageSize = 80;
   double _maxTitleSize = 20;
-  double _maxSubTitleSize = 15;
+  double _maxSubTitleSize = 12;
   double _minTitleSize = 15;
   double _minSubTitleSize = 10;
   double _maxFollowButton = 0;
@@ -1421,7 +1415,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
     _minExtent = MediaQuery.of(context).size.height / 5.5;
     _maxImageSize = MediaQuery.of(context).size.width * 0.42;
     _minImageSize = (MediaQuery.of(context).size.width * 0.42) / 2;
-    _maxTitleSize = ((MediaQuery.of(context).size.width * 0.42) / 2) / 4;
+    _maxTitleSize = ((MediaQuery.of(context).size.width * 0.35) / 2) / 4;
     _maxFollowButton = MediaQuery.of(context).size.width * 0.2;
   }
 
@@ -1559,9 +1553,13 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                                 "${podcastData['name']}",
                                 style: TextStyle(fontSize: TitleSize),
                               ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height / 100,
+                              ),
                               Text(
                                 "${podcastData['author']}",
-                                style: TextStyle(fontSize: SubSize),
+                                style: TextStyle(fontSize: SubSize,
+                                fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 40,
@@ -1593,7 +1591,155 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
 }
+class FollowButton extends StatefulWidget {
+  FollowState followState;
+  bool follows;
+  var podcastData;
 
+  FollowButton(
+      {@required this.podcastData,
+      @required this.follows,
+      @required this.followState});
+
+  @override
+  _FollowButtonState createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  FollowState followState;
+  bool follows;
+
+  Dio dio = Dio();
+  void podcastShare() async {
+    await FlutterShare.share(
+        title: '${widget.podcastData['name']}',
+        text:
+        "Hey There, I'm listening to ${widget.podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${widget.podcastData['id']}");
+  }
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = widget.podcastData['id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      followState = widget.followState;
+      follows = widget.follows;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Row(
+      children: [
+        followState == FollowState.following
+            ? InkWell(
+                onTap: () {
+                  follow();
+                  setState(() {
+                    if (followState == FollowState.follow) {
+                      followState = FollowState.following;
+                    } else {
+                      followState = FollowState.follow;
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: kSecondaryColor
+                          //    color: Color(0xffe8e8e8),
+                          ,
+                          width: 0.5)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Text(
+                      'Unsubscribe',
+                      textScaleFactor: mediaQueryData.textScaleFactor
+                          .clamp(0.5, 1)
+                          .toDouble(),
+                      style: TextStyle(
+                          //      color: Color(0xffe8e8e8)
+                          ),
+                    ),
+                  ),
+                ))
+            : InkWell(
+                onTap: () async {
+                  follow();
+                  setState(() {
+                    if (followState == FollowState.follow) {
+                      followState = FollowState.following;
+                    } else {
+                      followState = FollowState.follow;
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: kSecondaryColor,
+                          //    color: Color(0xffe8e8e8),
+                          width: 0.5)
+                      //color: Color(0xffe8e8e8)
+                      ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Text(
+                      'Subscribe',
+                      textScaleFactor: mediaQueryData.textScaleFactor
+                          .clamp(0.5, 1)
+                          .toDouble(),
+                      style: TextStyle(
+                          // color: Color(0xff3a3a3a)
+                          ),
+                    ),
+                  ),
+                ),
+              ),
+    GestureDetector(
+                                    onTap: podcastShare,
+                                    child: Column(
+                                      children: <Widget>[
+                                        IconButton(
+                                          onPressed: () {
+                                            podcastShare();
+                                          },
+                                          icon: Icon(
+                                            FontAwesomeIcons.shareAlt,
+                                            //    color: Colors.grey,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),)
+      ],
+    );
+  }
+}
 // class AddToCommunity extends StatefulWidget {
 //   var episodeObject;
 //
@@ -2099,125 +2245,3 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 //     );
 //   }
 // }
-
-class FollowButton extends StatefulWidget {
-  FollowState followState;
-  bool follows;
-  var podcastData;
-
-  FollowButton(
-      {@required this.podcastData,
-      @required this.follows,
-      @required this.followState});
-
-  @override
-  _FollowButtonState createState() => _FollowButtonState();
-}
-
-class _FollowButtonState extends State<FollowButton> {
-  FollowState followState;
-  bool follows;
-
-  Dio dio = Dio();
-
-  void follow() async {
-    print("Follow function started");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = 'https://api.aureal.one/public/follow';
-    var map = Map<String, dynamic>();
-
-    map['user_id'] = prefs.getString('userId');
-    map['podcast_id'] = widget.podcastData['id'];
-
-    FormData formData = FormData.fromMap(map);
-
-    try {
-      var response = await dio.post(url, data: formData);
-      print(response.toString());
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-      followState = widget.followState;
-      follows = widget.follows;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return followState == FollowState.following
-        ? InkWell(
-            onTap: () {
-              follow();
-              setState(() {
-                if (followState == FollowState.follow) {
-                  followState = FollowState.following;
-                } else {
-                  followState = FollowState.follow;
-                }
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: kSecondaryColor
-                      //    color: Color(0xffe8e8e8),
-                      ,
-                      width: 0.5)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text(
-                  'Unsubscribe',
-                  textScaleFactor:
-                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                  style: TextStyle(
-                      //      color: Color(0xffe8e8e8)
-                      ),
-                ),
-              ),
-            ))
-        : InkWell(
-            onTap: () async {
-              follow();
-              setState(() {
-                if (followState == FollowState.follow) {
-                  followState = FollowState.following;
-                } else {
-                  followState = FollowState.follow;
-                }
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: kSecondaryColor,
-                      //    color: Color(0xffe8e8e8),
-                      width: 0.5)
-                  //color: Color(0xffe8e8e8)
-                  ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text(
-                  'Subscribe',
-                  textScaleFactor:
-                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                  style: TextStyle(
-                      // color: Color(0xff3a3a3a)
-                      ),
-                ),
-              ),
-            ),
-          );
-  }
-}
