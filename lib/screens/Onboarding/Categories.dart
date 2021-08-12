@@ -241,10 +241,22 @@ class _UserCategoriesState extends State<UserCategories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-          ],
+      appBar: AppBar(
+        elevation: 0,
+        //     backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(
+            Icons.navigate_before,
+          ),
+          onPressed: () {
+            print("Pop button pressed");
+            Navigator.pop(context);
+          },
         ),
+        title: Text(
+          "Categories",
+        ),
+      ),
            body:Stack(
             children: <Widget>[
               Padding(
@@ -310,6 +322,7 @@ class _UserCategoriesState extends State<UserCategories> {
                       //   ),
                       // ),
                     ],
+
                   ),
                 ),
               ),

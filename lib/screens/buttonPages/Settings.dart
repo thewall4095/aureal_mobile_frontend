@@ -190,7 +190,7 @@ void hiveUser ()async{
                                                           value;
                                                     });
                                                   },
-                                                  maxLines: 30,
+                                                  maxLines: 25,
                                                 ),
                                               ),
                                             ),
@@ -296,14 +296,14 @@ void hiveUser ()async{
                       ),
                     ),
                     SizedBox(height: 30,),
-                    GestureDetector(
-                      onTap: () {
+                    InkWell(
+                        onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => UserCategories(
 
                               )
                               ));
-                      },
+                        },
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -348,7 +348,7 @@ void hiveUser ()async{
                     ),
                     SizedBox(height: 30,),
                     Container(
-                      child:    GestureDetector(
+                      child:  InkWell(
                         onTap:(){
                           launcher.launchInBrowser("https://play.google.com/store/apps/details?id=co.titandlt.auditory");
 
