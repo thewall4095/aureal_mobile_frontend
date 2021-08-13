@@ -262,7 +262,7 @@ class _PlayerState extends State<Player> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 13,
+                      height: MediaQuery.of(context).size.height / 15.5,
                     ),
                     CachedNetworkImage(
                       imageUrl: episodeObject.episodeObject['image'] == null
@@ -280,7 +280,7 @@ class _PlayerState extends State<Player> {
                       },
                     ),
                     SizedBox(
-                      height: 20,
+                      height: MediaQuery.of(context).size.height / 48,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15),
@@ -315,7 +315,7 @@ class _PlayerState extends State<Player> {
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 20,
+                      height: MediaQuery.of(context).size.height / 50,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15),

@@ -454,7 +454,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 SizedBox(
-                                                  height: 55,
+                                                  height:MediaQuery.of(context).size.height/40,  // height: 55,
                                                 ),
                                                 Text(
                                                   "$userName",
@@ -465,8 +465,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                           7),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                  padding: const EdgeInsets.all(8.0),
                                                   child: prefs.getString(
                                                       'HiveUserName') ==
                                                       null
@@ -529,78 +528,73 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                   //     BorderRadius
                                                   //         .circular(15),
                                                   //   ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                            vertical: 10),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: [
-                                                        data['instagram'] == null ||
-                                                                data['instagram'] ==
-                                                                    ''
-                                                            ? SizedBox()
-                                                            : IconButton(
-                                                                icon: Icon(
-                                                                    FontAwesomeIcons
-                                                                        .instagram),
-                                                                iconSize: 15,
-                                                                onPressed: () {
-                                                                  launcher.launchInBrowser(
-                                                                      data[
-                                                                          'instagram'],
-                                                                      );
-                                                                },
-                                                              ),
-                                                        data['twitter'] == null ||
-                                                                data['twitter'] ==
-                                                                    ''
-                                                            ? SizedBox()
-                                                            : IconButton(
-                                                                icon: Icon(
-                                                                    FontAwesomeIcons
-                                                                        .twitter),
-                                                          iconSize: 15,
-                                                                onPressed: () {
-                                                                  launcher.launchInBrowser(
-                                                                      data[
-                                                                          'twitter']);
-                                                                },
-                                                              ),
-                                                        data['linkedin'] == null ||
-                                                                data['linkedin'] ==
-                                                                    ''
-                                                            ? SizedBox()
-                                                            : IconButton(
-                                                                icon: Icon(
-                                                                    FontAwesomeIcons
-                                                                        .linkedin),
-                                                          iconSize: 15,
-                                                                onPressed: () {
-                                                                  launcher.launchInBrowser(
-                                                                      data[
-                                                                          'linkedin']);
-                                                                },
-                                                              ),
-                                                        data['website'] == null ||
-                                                                data['website'] ==
-                                                                    ''
-                                                            ? SizedBox()
-                                                            : IconButton(
-                                                                icon: Icon(
-                                                                    FontAwesomeIcons
-                                                                        .externalLinkSquareAlt),
-                                                          iconSize: 15,
-                                                                onPressed: () {
-                                                                  launcher.launchInBrowser(
-                                                                      data[
-                                                                          'website']);
-                                                                },
-                                                              )
-                                                      ],
-                                                    ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      data['instagram'] == null ||
+                                                              data['instagram'] ==
+                                                                  ''
+                                                          ? SizedBox()
+                                                          : IconButton(
+                                                              icon: Icon(
+                                                                  FontAwesomeIcons
+                                                                      .instagram),
+                                                              iconSize: 15,
+                                                              onPressed: () {
+                                                                launcher.launchInBrowser(
+                                                                    data[
+                                                                        'instagram'],
+                                                                    );
+                                                              },
+                                                            ),
+                                                      data['twitter'] == null ||
+                                                              data['twitter'] ==
+                                                                  ''
+                                                          ? SizedBox()
+                                                          : IconButton(
+                                                              icon: Icon(
+                                                                  FontAwesomeIcons
+                                                                      .twitter),
+                                                        iconSize: 15,
+                                                              onPressed: () {
+                                                                launcher.launchInBrowser(
+                                                                    data[
+                                                                        'twitter']);
+                                                              },
+                                                            ),
+                                                      data['linkedin'] == null ||
+                                                              data['linkedin'] ==
+                                                                  ''
+                                                          ? SizedBox()
+                                                          : IconButton(
+                                                              icon: Icon(
+                                                                  FontAwesomeIcons
+                                                                      .linkedin),
+                                                        iconSize: 15,
+                                                              onPressed: () {
+                                                                launcher.launchInBrowser(
+                                                                    data[
+                                                                        'linkedin']);
+                                                              },
+                                                            ),
+                                                      data['website'] == null ||
+                                                              data['website'] ==
+                                                                  ''
+                                                          ? SizedBox()
+                                                          : IconButton(
+                                                              icon: Icon(
+                                                                  FontAwesomeIcons
+                                                                      .externalLinkSquareAlt),
+                                                        iconSize: 15,
+                                                              onPressed: () {
+                                                                launcher.launchInBrowser(
+                                                                    data[
+                                                                        'website']);
+                                                              },
+                                                            )
+                                                    ],
                                                   ),
                                                 ),
                                               ]),
@@ -608,8 +602,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                     Positioned(
-                                      top: 60,
-                                      left: 150,
+                                      top: MediaQuery.of(context).size.height/20,
+                                      left: MediaQuery.of(context).size.height/6,
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
@@ -1175,14 +1169,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             child: ListView(children: [
                               Container(
                                 height: MediaQuery.of(context).size.height * 0.26,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 10),
-                                      child: Text(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
                                         "Your Podcasts",
                                         textScaleFactor: 1.0,
                                         style: TextStyle(
@@ -1190,213 +1183,213 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                 SizeConfig.safeBlockHorizontal *
                                                     5),
                                       ),
-                                    ),
-                                    Container(
-                                      height: MediaQuery.of(context).size.height *
-                                          0.2,
-                                      child: ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: [
-                                          for (var v in podcastList)
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  15, 8, 0, 8),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  Navigator.push(context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) {
-                                                    return PodcastView(v['id']);
-                                                  }));
-                                                },
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      4.5,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        decoration: BoxDecoration(
-                                                          boxShadow: [
-                                                            new BoxShadow(
-                                                              color: Colors
-                                                                  .black54
-                                                                  .withOpacity(
-                                                                      0.2),
-                                                              blurRadius: 10.0,
-                                                            ),
-                                                          ],
-                                                          color: themeProvider
-                                                                      .isLightTheme ==
-                                                                  true
-                                                              ? Colors.white
-                                                              : Color(0xff222222),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(15),
-                                                        ),
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                4.5,
-                                                        height:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                4.5,
-                                                        child: CachedNetworkImage(
-                                                          imageUrl: v['image'],
-                                                          imageBuilder: (context,
-                                                              imageProvider) {
-                                                            return Container(
-                                                              height: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  4.5,
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  4.5,
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  image: DecorationImage(
-                                                                      image:
-                                                                          imageProvider,
-                                                                      fit: BoxFit
-                                                                          .cover)),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            vertical: 8),
-                                                        child:
-                                                            Text("${v['name']}"),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                15, 8, 0, 8),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    if (prefs.getString(
-                                                            'HiveUserName') ==
-                                                        null) {
-                                                      showBarModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return HiveDetails();
-                                                          });
-                                                    } else {
-                                                      showBarModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return EmailVerificationDialog(
-                                                              username:
-                                                                  prefs.getString(
-                                                                      'userName'),
-                                                            );
-                                                          });
-                                                    }
+                                      Container(
+                                        height: MediaQuery.of(context).size.height *
+                                            0.2,
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: [
+                                            for (var v in podcastList)
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    15, 8, 0, 8),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return PodcastView(v['id']);
+                                                    }));
                                                   },
                                                   child: Container(
-                                                    decoration: BoxDecoration(
-                                                      boxShadow: [
-                                                        new BoxShadow(
-                                                          color: Colors.black54
-                                                              .withOpacity(0.2),
-                                                          blurRadius: 10.0,
-                                                        ),
-                                                      ],
-                                                      color: themeProvider
-                                                                  .isLightTheme ==
-                                                              true
-                                                          ? Colors.white
-                                                          : Color(0xff222222),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                    ),
                                                     width: MediaQuery.of(context)
                                                             .size
                                                             .width /
                                                         4.5,
-                                                    height: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        4.5,
-                                                    child: Center(
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.add,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          decoration: BoxDecoration(
+                                                            boxShadow: [
+                                                              new BoxShadow(
+                                                                color: Colors
+                                                                    .black54
+                                                                    .withOpacity(
+                                                                        0.2),
+                                                                blurRadius: 10.0,
+                                                              ),
+                                                            ],
+                                                            color: themeProvider
+                                                                        .isLightTheme ==
+                                                                    true
+                                                                ? Colors.white
+                                                                : Color(0xff222222),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(15),
                                                           ),
-                                                        ],
-                                                      ),
+                                                          width:
+                                                              MediaQuery.of(context)
+                                                                      .size
+                                                                      .width /
+                                                                  4.5,
+                                                          height:
+                                                              MediaQuery.of(context)
+                                                                      .size
+                                                                      .width /
+                                                                  4.5,
+                                                          child: CachedNetworkImage(
+                                                            imageUrl: v['image'],
+                                                            imageBuilder: (context,
+                                                                imageProvider) {
+                                                              return Container(
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width /
+                                                                    4.5,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width /
+                                                                    4.5,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                10),
+                                                                    image: DecorationImage(
+                                                                        image:
+                                                                            imageProvider,
+                                                                        fit: BoxFit
+                                                                            .cover)),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                                  .symmetric(
+                                                              vertical: 8),
+                                                          child:
+                                                              Text("${v['name']}"),
+                                                        )
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                          vertical: 8,
-                                                          horizontal: 5),
-                                                  child: Text("Add a podcast"),
-                                                ),
-                                              ],
+                                              ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  15, 8, 0, 8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      if (prefs.getString(
+                                                              'HiveUserName') ==
+                                                          null) {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return HiveDetails();
+                                                            });
+                                                      } else {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return EmailVerificationDialog(
+                                                                username:
+                                                                    prefs.getString(
+                                                                        'userName'),
+                                                              );
+                                                            });
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          new BoxShadow(
+                                                            color: Colors.black54
+                                                                .withOpacity(0.2),
+                                                            blurRadius: 10.0,
+                                                          ),
+                                                        ],
+                                                        color: themeProvider
+                                                                    .isLightTheme ==
+                                                                true
+                                                            ? Colors.white
+                                                            : Color(0xff222222),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                15),
+                                                      ),
+                                                      width: MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                      height: MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                      child: Center(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.add,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                            vertical: 8,
+                                                            horizontal: 5),
+                                                    child: Text("Add a podcast"),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          // Padding(
-                                          //   padding:
-                                          //       const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                          //   child: Column(
-                                          //     children: [
-                                          //
-                                          //       Container(
-                                          //         decoration: BoxDecoration(
-                                          //             color: Color(0xff222222),
-                                          //             borderRadius:
-                                          //                 BorderRadius.circular(10)),
-                                          //         width:
-                                          //             MediaQuery.of(context).size.width /
-                                          //                 4.5,
-                                          //         height:
-                                          //             MediaQuery.of(context).size.width /
-                                          //                 4.5,
-                                          //         child: Icon(Icons.add),
-                                          //       ),
-                                          //       Padding(
-                                          //         padding: const EdgeInsets.all(8.0),
-                                          //         child: Text("Add a podcast"),
-                                          //       )
-                                          //     ],
-                                          //   ),
-                                          // ),
-                                        ],
+                                            // Padding(
+                                            //   padding:
+                                            //       const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                            //   child: Column(
+                                            //     children: [
+                                            //
+                                            //       Container(
+                                            //         decoration: BoxDecoration(
+                                            //             color: Color(0xff222222),
+                                            //             borderRadius:
+                                            //                 BorderRadius.circular(10)),
+                                            //         width:
+                                            //             MediaQuery.of(context).size.width /
+                                            //                 4.5,
+                                            //         height:
+                                            //             MediaQuery.of(context).size.width /
+                                            //                 4.5,
+                                            //         child: Icon(Icons.add),
+                                            //       ),
+                                            //       Padding(
+                                            //         padding: const EdgeInsets.all(8.0),
+                                            //         child: Text("Add a podcast"),
+                                            //       )
+                                            //     ],
+                                            //   ),
+                                            // ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               // Container(

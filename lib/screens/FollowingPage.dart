@@ -390,7 +390,7 @@ class _FollowingPageState extends State<FollowingPage>
                                               ),
                                             ),
                                             Container(
-                                                height: 200,
+                                                height: MediaQuery.of(context).size.height/4.2,
                                                 child: ListView(
                                                   scrollDirection:
                                                       Axis.horizontal,
@@ -537,6 +537,7 @@ class _FollowingPageState extends State<FollowingPage>
                                       ),
                                 hiveEpisodeLoading == true
                                     ? Container(
+
                                         child: Column(
                                           children: [
                                             for (int i = 0; i < 50; i++)
@@ -683,6 +684,7 @@ class _FollowingPageState extends State<FollowingPage>
                                       )
                                     : Container(
                                         child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             for (var v in hiveEpisodes)
                                               InkWell(
@@ -1131,15 +1133,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                                                 v);
                                                                       },
                                                                       child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.only(left: 8),
-                                                                        child:
-                                                                            Icon(
+                                                                          Icon(
                                                                           Icons.share,
                                                                           // size: 14,
                                                                         ),
-                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
