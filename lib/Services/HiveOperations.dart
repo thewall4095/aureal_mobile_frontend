@@ -244,7 +244,7 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
                 await upvoteEpisode(
                     permlink: widget.permlink,
                     episode_id: widget.episode_id,
-                    weight: value);
+                    weight: value * 100);
                 Navigator.pop(context);
               },
             ),
@@ -337,7 +337,7 @@ class _UpvoteCommentState extends State<UpvoteComment> {
                     onChangeEnd: (value) async {
                       print("this is the final value: $value");
                       await upVoteComment(
-                          commentId: widget.comment_id, weight: _value);
+                          commentId: widget.comment_id, weight: _value*100);
                       Navigator.pop(context);
                     },
                   ),

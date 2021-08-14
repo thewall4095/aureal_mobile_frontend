@@ -648,7 +648,7 @@ class _PodcastViewState extends State<PodcastView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         podcastData == null
-                            ? Container()
+                            ? SizedBox()
                             : htmlMatch.hasMatch(podcastData['description']) ==
                                     true
                                 ? Text(
@@ -727,28 +727,269 @@ class _PodcastViewState extends State<PodcastView> {
                 return isLoading == false
                     ? (_controller.position.pixels !=
                             _controller.position.maxScrollExtent
-                        ? SizedBox()
+                        ?  Padding(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor:
+                      themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                      SizeConfig.screenWidth / 28),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            2,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                              // Column(
+                              //   mainAxisAlignment:
+                              //   MainAxisAlignment.start,
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ))
                         : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Shimmer.fromColors(
-                              baseColor: themeProvider.isLightTheme == false
-                                  ? kPrimaryColor
-                                  : Colors.white,
-                              highlightColor:
-                                  themeProvider.isLightTheme == false
-                                      ? Color(0xff3a3a3a)
-                                      : Colors.white,
-                            )))
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Shimmer.fromColors(
-                          baseColor: themeProvider.isLightTheme == false
-                              ? kPrimaryColor
-                              : Colors.white,
-                          highlightColor: themeProvider.isLightTheme == false
-                              ? Color(0xff3a3a3a)
-                              : Colors.white,
-                        ));
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor:
+                      themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                      SizeConfig.screenWidth / 28),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            2,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                             Row(
+                                 children: [
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                 ],
+                             )
+                              // Column(
+                              //   mainAxisAlignment:
+                              //   MainAxisAlignment.start,
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )))
+                    :SizedBox();
               }
               return Padding(
                 padding:
@@ -1380,7 +1621,6 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   FollowState followState;
   bool follows;
 
-
   void follow() async {
     print("Follow function started");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1525,7 +1765,20 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
               children: [
                 SafeArea(
                   child: Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      currentImageSize != _maxImageSize
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 80),
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                  )),
+                            )
+                          : SizedBox(),
                       Padding(
                         padding: const EdgeInsets.all(15),
                         child: CachedNetworkImage(
@@ -1554,12 +1807,14 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                                 style: TextStyle(fontSize: TitleSize),
                               ),
                               SizedBox(
-                                height: MediaQuery.of(context).size.height / 100,
+                                height:
+                                    MediaQuery.of(context).size.height / 100,
                               ),
                               Text(
                                 "${podcastData['author']}",
-                                style: TextStyle(fontSize: SubSize,
-                                fontWeight: FontWeight.w400),
+                                style: TextStyle(
+                                    fontSize: SubSize,
+                                    fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 40,
@@ -1591,6 +1846,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
       true;
 }
+
 class FollowButton extends StatefulWidget {
   FollowState followState;
   bool follows;
@@ -1610,11 +1866,12 @@ class _FollowButtonState extends State<FollowButton> {
   bool follows;
 
   Dio dio = Dio();
+
   void podcastShare() async {
     await FlutterShare.share(
         title: '${widget.podcastData['name']}',
         text:
-        "Hey There, I'm listening to ${widget.podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${widget.podcastData['id']}");
+            "Hey There, I'm listening to ${widget.podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${widget.podcastData['id']}");
   }
 
   void follow() async {
@@ -1720,22 +1977,23 @@ class _FollowButtonState extends State<FollowButton> {
                   ),
                 ),
               ),
-    GestureDetector(
-                                    onTap: podcastShare,
-                                    child: Column(
-                                      children: <Widget>[
-                                        IconButton(
-                                          onPressed: () {
-                                            podcastShare();
-                                          },
-                                          icon: Icon(
-                                            FontAwesomeIcons.shareAlt,
-                                            //    color: Colors.grey,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      ],
-                                    ),)
+        GestureDetector(
+          onTap: podcastShare,
+          child: Column(
+            children: <Widget>[
+              IconButton(
+                onPressed: () {
+                  podcastShare();
+                },
+                icon: Icon(
+                  FontAwesomeIcons.shareAlt,
+                  //    color: Colors.grey,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

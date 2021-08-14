@@ -454,7 +454,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 SizedBox(
-                                                  height:MediaQuery.of(context).size.height/40,  // height: 55,
+                                                  height:MediaQuery.of(context).size.height/50,  // height: 55,
                                                 ),
                                                 Text(
                                                   "$userName",
@@ -602,8 +602,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                     Positioned(
-                                      top: MediaQuery.of(context).size.height/20,
-                                      left: MediaQuery.of(context).size.height/6,
+                                      top: MediaQuery.of(context).size.height/20 ,
+                                      left: MediaQuery.of(context).size.height/5.8,
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
