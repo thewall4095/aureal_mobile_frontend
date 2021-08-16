@@ -384,17 +384,33 @@ class _CategoryViewState extends State<CategoryView>
                                             ),
                                           ),
                                   SizedBox(width: 30),
-                                 Container(
-                                   color: kPrimaryColor,
-                                    height:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height / 23,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width / 4,)
+                                 Column(
+                                   children: [
+                                     Container(
+                                       color: kPrimaryColor,
+                                        height:
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .height /50,
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width / 4,),
+                                     SizedBox(height: 5,),
+                                     Container(
+                                       color: kPrimaryColor,
+                                       height:
+                                       MediaQuery
+                                           .of(context)
+                                           .size
+                                           .height / 50,
+                                       width: MediaQuery
+                                           .of(context)
+                                           .size
+                                           .width / 4,),
+                                   ],
+                                 )
                                         ],
                                       ),
                                   ));
@@ -605,17 +621,33 @@ class _CategoryViewState extends State<CategoryView>
                                   ),
                                 ),
                                 SizedBox(width: 30),
-                                Container(
-                                  color: kPrimaryColor,
-                                  height:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 23,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 4,)
+                                Column(
+                                  children: [
+                                    Container(
+                                      color: kPrimaryColor,
+                                      height:
+                                      MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height /50,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width / 4,),
+                                    SizedBox(height: 5,),
+                                    Container(
+                                      color: kPrimaryColor,
+                                      height:
+                                      MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height / 50,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width / 4,),
+                                  ],
+                                )
                               ],
                             ),
                           ));

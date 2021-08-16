@@ -63,12 +63,8 @@ dependencies:
 #  flutter_ffmpeg: ^0.4.0
   image_picker: any
   image_cropper: any
-  focused_menu: ^1.0.0
-  speech_to_text: any
-  highlight_text: any
-  avatar_glow: any
-  google_speech: any
-
+  social_share: any
+  share:  any
 
 
 #  in_app_update: any

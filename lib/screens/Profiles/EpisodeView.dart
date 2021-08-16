@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
 import 'package:auditory/PlayerState.dart';
@@ -350,7 +350,6 @@ class _EpisodeViewState extends State<EpisodeView>
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
-
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     SizeConfig().init(context);
@@ -424,6 +423,7 @@ class _EpisodeViewState extends State<EpisodeView>
 
                           IconButton(
                             onPressed: () {
+                              share(episodeObject: episodeObject.episodeObject);
 
                             },
                             icon: Icon(
@@ -434,7 +434,6 @@ class _EpisodeViewState extends State<EpisodeView>
                         expandedHeight: episodeContent['permlink'] == null
                             ? MediaQuery.of(context).size.height / 1.47
                             : MediaQuery.of(context).size.height / 1.2,
-
                         flexibleSpace: FlexibleSpaceBar(
                           background: Stack(
                             children: [
@@ -491,7 +490,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                       SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height /
-                                                40,
+                                                80,
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

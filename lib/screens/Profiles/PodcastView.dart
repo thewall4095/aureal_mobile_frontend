@@ -12,6 +12,7 @@ import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
+import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -722,6 +723,7 @@ class _PodcastViewState extends State<PodcastView> {
                           ),
                         ])
                       ]));
+
             } else {
               if (index == episodeList.length + 1) {
                 return isLoading == false
@@ -1978,7 +1980,7 @@ class _FollowButtonState extends State<FollowButton> {
                 ),
               ),
         GestureDetector(
-          onTap: podcastShare,
+          onTap:  podcastShare,
           child: Column(
             children: <Widget>[
               IconButton(

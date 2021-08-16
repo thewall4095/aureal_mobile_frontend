@@ -28,6 +28,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 import 'PlayerElements/Seekbar.dart';
 
 enum PlayerState { stopped, playing, paused }
@@ -250,7 +251,7 @@ class _PlayerState extends State<Player> {
       children: [
         Container(
           width: double.infinity,
-          height: MediaQuery.of(context).size.height,
+         // height: MediaQuery.of(context).size.height,
           child: Stack(
             // crossAxisAlignment: CrossAxisAlignment.center,
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -338,7 +339,7 @@ class _PlayerState extends State<Player> {
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
-                                        height: 260,
+                                        height: 380,
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 15, vertical: 10),
@@ -367,9 +368,9 @@ class _PlayerState extends State<Player> {
                                               ),
                                               FlatButton(
                                                 onPressed: () {
-                                                  // episodeObject
-                                                  //     .audioPlayer
-                                                  //     .setPlaySpeed(0.5);
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(0.5);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Row(
@@ -387,15 +388,35 @@ class _PlayerState extends State<Player> {
                                               ),
                                               FlatButton(
                                                 onPressed: () {
-                                                  // episodeObject
-                                                  //     .audioPlayer
-                                                  //     .setPlaySpeed(1.0);
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(0.75);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Row(
                                                   children: [
                                                     Text(
-                                                      "1X",
+                                                      "0.75X",
+                                                      textScaleFactor: 0.75,
+                                                      style: TextStyle(
+                                                          color: Colors.white
+                                                              .withOpacity(
+                                                              0.7)),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(1.0);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "Normal",
                                                       textScaleFactor: 0.75,
                                                       style: TextStyle(
                                                           color: Colors.white
@@ -407,9 +428,29 @@ class _PlayerState extends State<Player> {
                                               ),
                                               FlatButton(
                                                 onPressed: () {
-                                                  // episodeObject
-                                                  //     .audioPlayer
-                                                  //     .setPlaySpeed(1.5);
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(1.25);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "1.25X",
+                                                      textScaleFactor: 0.75,
+                                                      style: TextStyle(
+                                                          color: Colors.white
+                                                              .withOpacity(
+                                                              0.7)),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(1.5);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Row(
@@ -427,9 +468,9 @@ class _PlayerState extends State<Player> {
                                               ),
                                               FlatButton(
                                                 onPressed: () {
-                                                  // episodeObject
-                                                  //     .audioPlayer
-                                                  //     .setPlaySpeed(2.0);
+                                                  episodeObject
+                                                      .audioPlayer
+                                                      .setPlaySpeed(2.0);
                                                   Navigator.pop(context);
                                                 },
                                                 child: Row(

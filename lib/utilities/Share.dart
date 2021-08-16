@@ -1,5 +1,6 @@
 import 'package:flutter_share/flutter_share.dart';
 
+import 'package:social_share/social_share.dart';
 void share({var episodeObject}) async {
   // String sharableLink;
 

@@ -264,412 +264,1001 @@ class _FollowingPageState extends State<FollowingPage>
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        body: ModalProgressHUD(
-          color: Colors.transparent,
-          inAsyncCall: isFollowingPageLoading,
-          child: isFollowingPageLoading == true
-              ? Container()
-              : NestedScrollView(
-                  physics: BouncingScrollPhysics(),
-                  headerSliverBuilder:
-                      (BuildContext context, bool isInnerBoxScrolled) {
-                    return <Widget>[
-                      SliverAppBar(
-                        automaticallyImplyLeading: false,
-                        expandedHeight: 30,
-                        pinned: true,
-                        //     backgroundColor: kPrimaryColor,
-                        bottom: PreferredSize(
-                          preferredSize: Size.fromHeight(20),
-                          child: Container(
-                            height: 60,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Container(
-                                height: 30,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        for (var v in categories.categoryList)
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  SlideRightRoute(
-                                                      widget: CategoryView(
-                                                          categoryObject: v)));
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(2.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: kSecondaryColor),
-                                                    // color: Color(0xff3a3a3a),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 3),
-                                                  child: Center(
-                                                    child: Text(
-                                                      v['name'],
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5, 1.1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          //  color:
-                                                          // Color(0xffe8e8e8),
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3.4),
-                                                    ),
+        body: isFollowingPageLoading == true
+            ? Padding(
+            padding:
+            const EdgeInsets.symmetric(horizontal: 10),
+            child: Shimmer.fromColors(
+                direction: ShimmerDirection.ltr,
+              baseColor:  Color(0xff3a3a3a),
+              highlightColor:
+              Color(0xff3a3a3a),
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                  color: kSecondaryColor,
+                ),
+                height: 25,
+                width:
+                MediaQuery.of(context).size.width/8,
+                //    color: kSecondaryColor,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kSecondaryColor,
+                            ),
+                            height: 25,
+                            width:
+                            MediaQuery.of(context).size.width/8,
+                            //    color: kSecondaryColor,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kSecondaryColor,
+                            ),
+                            height: 25,
+                            width:
+                            MediaQuery.of(context).size.width/8,
+                            //    color: kSecondaryColor,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kSecondaryColor,
+                            ),
+                            height: 25,
+                            width:
+                            MediaQuery.of(context).size.width/8,
+                            //    color: kSecondaryColor,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kSecondaryColor,
+                            ),
+                            height: 25,
+                            width:
+                            MediaQuery.of(context).size.width/8,
+                            //    color: kSecondaryColor,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: kSecondaryColor,
+                            ),
+                            height: 25,
+                            width:
+                            MediaQuery.of(context).size.width/8,
+                            //    color: kSecondaryColor,
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 50,),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      width:
+                                      MediaQuery.of(context).size.width /
+                                          7,
+                                      height:
+                                      MediaQuery.of(context).size.width /
+                                          7,
+                                      decoration: BoxDecoration(
+                                              color: kSecondaryColor,
+                                        borderRadius:BorderRadius.circular(10)
+                                      ),
+                                  ),
+                                  SizedBox(width :10),
+                                  Container(
+                                    color: kSecondaryColor,
+                                    height: 10,
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        2,
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 110),
+                                child: Container(
+                                  color: kSecondaryColor,
+                                  height: 10,
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      4,
+                                ),
+                              ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    height:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    decoration: BoxDecoration(
+                                        color: kSecondaryColor,
+                                        borderRadius:BorderRadius.circular(10)
+                                    ),
+                                  ),
+                                  SizedBox(width :10),
+                                  Container(
+                                    color: kSecondaryColor,
+                                    height: 10,
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        2,
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 110),
+                                child: Container(
+                                  color: kSecondaryColor,
+                                  height: 10,
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      4,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    height:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    decoration: BoxDecoration(
+                                        color: kSecondaryColor,
+                                        borderRadius:BorderRadius.circular(10)
+                                    ),
+                                  ),
+                                  SizedBox(width :10),
+                                  Container(
+                                    color: kSecondaryColor,
+                                    height: 10,
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        2,
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 110),
+                                child: Container(
+                                  color: kSecondaryColor,
+                                  height: 10,
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      4,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20,),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    height:
+                                    MediaQuery.of(context).size.width /
+                                        7,
+                                    decoration: BoxDecoration(
+                                        color: kSecondaryColor,
+                                        borderRadius:BorderRadius.circular(10)
+                                    ),
+                                  ),
+                                  SizedBox(width :10),
+                                  Container(
+                                    color: kSecondaryColor,
+                                    height: 10,
+                                    width: MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        2,
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 110),
+                                child: Container(
+                                  color: kSecondaryColor,
+                                  height: 10,
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      4,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Column(
+                      //   mainAxisAlignment:
+                      //   MainAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.symmetric(
+                      //           horizontal: 15, vertical: 5),
+                      //       child: Container(
+                      //         height: 5,
+                      //         width: MediaQuery.of(context)
+                      //             .size
+                      //             .width,
+                      //         color: kSecondaryColor,
+                      //       ),
+                      //     ),
+                      //     Padding(
+                      //       padding: const EdgeInsets.symmetric(
+                      //           horizontal: 15, vertical: 5),
+                      //       child: Container(
+                      //         height: 5,
+                      //         width: MediaQuery.of(context)
+                      //             .size
+                      //             .width,
+                      //         color: kSecondaryColor,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // )
+                    ],
+                  ),
+                ),
+              ),
+            ))
+            : NestedScrollView(
+                physics: BouncingScrollPhysics(),
+                headerSliverBuilder:
+                    (BuildContext context, bool isInnerBoxScrolled) {
+                  return <Widget>[
+                    SliverAppBar(
+                      automaticallyImplyLeading: false,
+                      expandedHeight: 30,
+                      pinned: true,
+                      //     backgroundColor: kPrimaryColor,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(20),
+                        child: Container(
+                          height: 60,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Container(
+                              height: 30,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Row(
+                                    children: [
+                                      for (var v in categories.categoryList)
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                SlideRightRoute(
+                                                    widget: CategoryView(
+                                                        categoryObject: v)));
+                                          },
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.all(2.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: kSecondaryColor),
+                                                  // color: Color(0xff3a3a3a),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: Padding(
+                                                padding: const EdgeInsets
+                                                        .symmetric(
+                                                    horizontal: 15,
+                                                    vertical: 3),
+                                                child: Center(
+                                                  child: Text(
+                                                    v['name'],
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(0.5, 1.1)
+                                                            .toDouble(),
+                                                    style: TextStyle(
+                                                        //  color:
+                                                        // Color(0xffe8e8e8),
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            3.4),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      )
-                    ];
-                  },
-                  body: RefreshIndicator(
-                    onRefresh: _pullRefreshEpisodes,
-                    child: ListView(
-                      controller: _scrollController,
-                      children: [
-                        Container(
-                          child: WidgetANimator(
-                            Column(
-                              children: [
-                                favPodcast.length == 0 ||
-                                        favPodcast.length == null
-                                    ? SizedBox(
-                                        height: 0,
-                                        width: 0,
-                                      )
-                                    : Container(
-                                        width: double.infinity,
+                      ),
+                    )
+                  ];
+                },
+                body: RefreshIndicator(
+                  onRefresh: _pullRefreshEpisodes,
+                  child: ListView(
+                    controller: _scrollController,
+                    children: [
+                      Container(
+                        child: WidgetANimator(
+                          Column(
+                            children: [
+                              favPodcast.length == 0 ||
+                                      favPodcast.length == null
+                                  ? Padding(
+                                  padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                                  child: Shimmer.fromColors(
+                                    baseColor: themeProvider.isLightTheme == false
+                                        ? kPrimaryColor
+                                        : Colors.white,
+                                    highlightColor:
+                                    themeProvider.isLightTheme == false
+                                        ? Color(0xff3a3a3a)
+                                        : Colors.white,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                        border: Border.all(color: kSecondaryColor,),
+
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 10),
-                                              child: Text(
-                                                "Your Favourites",
-                                                textScaleFactor: mediaQueryData
-                                                    .textScaleFactor
-                                                    .clamp(0.5, 1.3)
-                                                    .toDouble(),
-                                                style: TextStyle(
-                                                    //    color: Color(0xffe8e8e8),
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        7,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                            Container(
-                                                height: MediaQuery.of(context).size.height/4.2,
-                                                child: ListView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
+                                            Row(
+                                              children: [
+                                                SizedBox(
+                                                    width:
+                                                    SizeConfig.screenWidth / 28),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                                   children: [
-                                                    for (var v in favPodcast)
-                                                      InkWell(
-                                                        onTap: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              SlideRightRoute(
-                                                                  widget: PodcastView(
-                                                                      v['id'])));
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              CachedNetworkImage(
-                                                                imageBuilder:
-                                                                    (context,
-                                                                        imageProvider) {
-                                                                  return Container(
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                      image: DecorationImage(
-                                                                          image:
-                                                                              imageProvider,
-                                                                          fit: BoxFit
-                                                                              .cover),
-                                                                    ),
-                                                                    width: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width /
-                                                                        4,
-                                                                    height: MediaQuery.of(context)
-                                                                            .size
-                                                                            .width /
-                                                                        4,
-                                                                  );
-                                                                },
-                                                                imageUrl:
-                                                                    v['image'],
-                                                                memCacheWidth:
-                                                                    (MediaQuery.of(context)
-                                                                            .size
-                                                                            .width)
-                                                                        .floor(),
-                                                                memCacheHeight:
-                                                                    (MediaQuery.of(context)
-                                                                            .size
-                                                                            .width)
-                                                                        .floor(),
-                                                                placeholder:
-                                                                    (context,
-                                                                            url) =>
-                                                                        Container(
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      4,
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      4,
-                                                                  child: Image
-                                                                      .asset(
-                                                                          'assets/images/Thumbnail.png'),
-                                                                ),
-                                                                errorWidget: (context,
-                                                                        url,
-                                                                        error) =>
-                                                                    Icon(Icons
-                                                                        .error),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        10),
-                                                                child:
-                                                                    Container(
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      4,
-                                                                  child: Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        v['name'],
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                1)
-                                                                            .toDouble(),
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          // color: Colors.white,
-                                                                          fontSize:
-                                                                              SizeConfig.safeBlockHorizontal * 4,
-                                                                        ),
-                                                                      ),
-                                                                      Text(
-                                                                        v['author'],
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                0.9)
-                                                                            .toDouble(),
-                                                                        maxLines:
-                                                                            2,
-                                                                        style: TextStyle(
-                                                                            // color:
-                                                                            //     Colors.white,
-                                                                            fontSize: SizeConfig.safeBlockHorizontal * 3),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
+                                                    Container(
+                                                      color: kSecondaryColor,
+                                                      height: 10,
+                                                      width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                          2,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Container(
+                                                      color: kSecondaryColor,
+                                                      height: 10,
+                                                      width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                          4,
+                                                    )
                                                   ],
-                                                )),
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: kSecondaryColor,
+                                                    ),
+                                                    height: 25,
+                                                    width:
+                                                    MediaQuery.of(context).size.width/8,
+                                                    //    color: kSecondaryColor,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: kSecondaryColor,
+                                                    ),
+                                                    height: 25,
+                                                    width:
+                                                    MediaQuery.of(context).size.width/8,
+                                                    //    color: kSecondaryColor,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: kSecondaryColor,
+                                                    ),
+                                                    height: 25,
+                                                    width:
+                                                    MediaQuery.of(context).size.width/8,
+                                                    //    color: kSecondaryColor,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                            // Column(
+                                            //   mainAxisAlignment:
+                                            //   MainAxisAlignment.start,
+                                            //   children: [
+                                            //     Padding(
+                                            //       padding: const EdgeInsets.symmetric(
+                                            //           horizontal: 15, vertical: 5),
+                                            //       child: Container(
+                                            //         height: 5,
+                                            //         width: MediaQuery.of(context)
+                                            //             .size
+                                            //             .width,
+                                            //         color: kSecondaryColor,
+                                            //       ),
+                                            //     ),
+                                            //     Padding(
+                                            //       padding: const EdgeInsets.symmetric(
+                                            //           horizontal: 15, vertical: 5),
+                                            //       child: Container(
+                                            //         height: 5,
+                                            //         width: MediaQuery.of(context)
+                                            //             .size
+                                            //             .width,
+                                            //         color: kSecondaryColor,
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // )
                                           ],
                                         ),
                                       ),
-                                hiveEpisodeLoading == true
-                                    ? Container(
-
-                                        child: Column(
-                                          children: [
-                                            for (int i = 0; i < 50; i++)
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Shimmer.fromColors(
-                                                  baseColor: Colors.white,
-                                                  highlightColor:
-                                                      Colors.white30,
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border(
-                                                            top: BorderSide())),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                            4,
-                                                    width: double.infinity,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Row(
+                                    ),
+                                  ))
+                                  : Container(
+                                      width: double.infinity,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 10),
+                                            child: Text(
+                                              "Your Favourites",
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1.3)
+                                                  .toDouble(),
+                                              style: TextStyle(
+                                                  //    color: Color(0xffe8e8e8),
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      7,
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                          ),
+                                          Container(
+                                              height: MediaQuery.of(context).size.height/4.2,
+                                              child: ListView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                children: [
+                                                  for (var v in favPodcast)
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            SlideRightRoute(
+                                                                widget: PodcastView(
+                                                                    v['id'])));
+                                                      },
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(15),
-                                                              child: Container(
+                                                            CachedNetworkImage(
+                                                              imageBuilder:
+                                                                  (context,
+                                                                      imageProvider) {
+                                                                return Container(
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    image: DecorationImage(
+                                                                        image:
+                                                                            imageProvider,
+                                                                        fit: BoxFit
+                                                                            .cover),
+                                                                  ),
+                                                                  width: MediaQuery.of(context)
+                                                                          .size
+                                                                          .width /
+                                                                      4,
+                                                                  height: MediaQuery.of(context)
+                                                                          .size
+                                                                          .width /
+                                                                      4,
+                                                                );
+                                                              },
+                                                              imageUrl:
+                                                                  v['image'],
+                                                              memCacheWidth:
+                                                                  (MediaQuery.of(context)
+                                                                          .size
+                                                                          .width)
+                                                                      .floor(),
+                                                              memCacheHeight:
+                                                                  (MediaQuery.of(context)
+                                                                          .size
+                                                                          .width)
+                                                                      .floor(),
+                                                              placeholder:
+                                                                  (context,
+                                                                          url) =>
+                                                                      Container(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width /
+                                                                    4,
                                                                 height: MediaQuery.of(
                                                                             context)
                                                                         .size
                                                                         .width /
-                                                                    7,
+                                                                    4,
+                                                                child: Image
+                                                                    .asset(
+                                                                        'assets/images/Thumbnail.png'),
+                                                              ),
+                                                              errorWidget: (context,
+                                                                      url,
+                                                                      error) =>
+                                                                  Icon(Icons
+                                                                      .error),
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical:
+                                                                      10),
+                                                              child:
+                                                                  Container(
                                                                 width: MediaQuery.of(
                                                                             context)
                                                                         .size
                                                                         .width /
-                                                                    7,
-                                                                color:
-                                                                    kSecondaryColor,
+                                                                    4,
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      v['name'],
+                                                                      textScaleFactor: mediaQueryData
+                                                                          .textScaleFactor
+                                                                          .clamp(0.5,
+                                                                              1)
+                                                                          .toDouble(),
+                                                                      overflow:
+                                                                          TextOverflow.ellipsis,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        // color: Colors.white,
+                                                                        fontSize:
+                                                                            SizeConfig.safeBlockHorizontal * 4,
+                                                                      ),
+                                                                    ),
+                                                                    Text(
+                                                                      v['author'],
+                                                                      textScaleFactor: mediaQueryData
+                                                                          .textScaleFactor
+                                                                          .clamp(0.5,
+                                                                              0.9)
+                                                                          .toDouble(),
+                                                                      maxLines:
+                                                                          2,
+                                                                      style: TextStyle(
+                                                                          // color:
+                                                                          //     Colors.white,
+                                                                          fontSize: SizeConfig.safeBlockHorizontal * 3),
+                                                                    )
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                                width: SizeConfig
-                                                                        .screenWidth /
-                                                                    28),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Container(
-                                                                  color:
-                                                                      kSecondaryColor,
-                                                                  height: 10,
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      2,
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 10,
-                                                                ),
-                                                                Container(
-                                                                  color:
-                                                                      kSecondaryColor,
-                                                                  height: 10,
-                                                                  width: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      4,
-                                                                )
-                                                              ],
-                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              )),
+                                        ],
+                                      ),
+                                    ),
+                              hiveEpisodeLoading == true
+                                  ? Container(
+                                      child: Column(
+                                        children: [
+                                          for (int i = 0; i < 50; i++)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Shimmer.fromColors(
+                                                baseColor: Colors.white,
+                                                highlightColor:
+                                                    Colors.white30,
+                                                child:  Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(10),
+                                                    border: Border.all(color: kSecondaryColor,),
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            Container(
+                                                              width:
+                                                              MediaQuery.of(context).size.width /
+                                                                  7,
+                                                              height:
+                                                              MediaQuery.of(context).size.width /
+                                                                  7,
+                                                              decoration: BoxDecoration(
+                                                                  color: kSecondaryColor,
+                                                                  borderRadius:BorderRadius.circular(10)
+                                                              ),
+                                                            ),
+                                                            SizedBox(width :10),
+                                                            Container(
+                                                              color: kSecondaryColor,
+                                                              height: 10,
+                                                              width: MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                                  2,
+                                                            ),
                                                           ],
                                                         ),
                                                         Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
+                                                          padding: const EdgeInsets.only(right: 110),
                                                           child: Container(
+                                                            color: kSecondaryColor,
                                                             height: 10,
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            color:
-                                                                kSecondaryColor,
+                                                            width: MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                                4,
                                                           ),
                                                         ),
-                                                        Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
                                                           children: [
                                                             Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      15,
-                                                                  vertical: 5),
+                                                              padding: const EdgeInsets.all(15),
                                                               child: Container(
-                                                                height: 5,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                color:
-                                                                    kSecondaryColor,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  color: kSecondaryColor,
+                                                                ),
+                                                                height: 25,
+                                                                width:
+                                                                MediaQuery.of(context).size.width/8,
+                                                                //    color: kSecondaryColor,
                                                               ),
                                                             ),
                                                             Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      15,
-                                                                  vertical: 5),
+                                                              padding: const EdgeInsets.all(15),
                                                               child: Container(
-                                                                height: 5,
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                color:
-                                                                    kSecondaryColor,
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  color: kSecondaryColor,
+                                                                ),
+                                                                height: 25,
+                                                                width:
+                                                                MediaQuery.of(context).size.width/8,
+                                                                //    color: kSecondaryColor,
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(15),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                  borderRadius: BorderRadius.circular(10),
+                                                                  color: kSecondaryColor,
+                                                                ),
+                                                                height: 25,
+                                                                width:
+                                                                MediaQuery.of(context).size.width/8,
+                                                                //    color: kSecondaryColor,
                                                               ),
                                                             ),
                                                           ],
@@ -679,540 +1268,633 @@ class _FollowingPageState extends State<FollowingPage>
                                                   ),
                                                 ),
                                               ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            for (var v in hiveEpisodes)
-                                              InkWell(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      SlideRightRoute(
-                                                          widget: EpisodeView(
-                                                              episodeId:
-                                                                  v['id'])));
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 10),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          boxShadow: [
-                                                            new BoxShadow(
-                                                              color: Colors
-                                                                  .black54
-                                                                  .withOpacity(
-                                                                      0.2),
-                                                              blurRadius: 10.0,
-                                                            ),
-                                                          ],
-                                                          color: themeProvider
-                                                                      .isLightTheme ==
-                                                                  true
-                                                              ? Colors.white
-                                                              : Color(
-                                                                  0xff222222),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(8),
-                                                        ),
-                                                        width: double.infinity,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 20,
-                                                                  horizontal:
-                                                                      20),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  CachedNetworkImage(
-                                                                    imageBuilder:
-                                                                        (context,
-                                                                            imageProvider) {
-                                                                      return Container(
-                                                                        decoration:
-                                                                            BoxDecoration(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                          image: DecorationImage(
-                                                                              image: imageProvider,
-                                                                              fit: BoxFit.cover),
-                                                                        ),
-                                                                        width:
-                                                                            MediaQuery.of(context).size.width /
-                                                                                7,
-                                                                        height:
-                                                                            MediaQuery.of(context).size.width /
-                                                                                7,
-                                                                      );
-                                                                    },
-                                                                    imageUrl: v[
-                                                                        'image'],
-                                                                    memCacheWidth: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width
-                                                                        .floor(),
-                                                                    memCacheHeight: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width
-                                                                        .floor(),
-                                                                    placeholder:
-                                                                        (context,
-                                                                                url) =>
-                                                                            Container(
-                                                                      width: MediaQuery.of(context)
-                                                                              .size
-                                                                              .width /
-                                                                          7,
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          for (var v in hiveEpisodes)
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    SlideRightRoute(
+                                                        widget: EpisodeView(
+                                                            episodeId:
+                                                                v['id'])));
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets
+                                                        .symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 10),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Container(
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        boxShadow: [
+                                                          new BoxShadow(
+                                                            color: Colors
+                                                                .black54
+                                                                .withOpacity(
+                                                                    0.2),
+                                                            blurRadius: 10.0,
+                                                          ),
+                                                        ],
+                                                        color: themeProvider
+                                                                    .isLightTheme ==
+                                                                true
+                                                            ? Colors.white
+                                                            : Color(
+                                                                0xff222222),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                      ),
+                                                      width: double.infinity,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                vertical: 20,
+                                                                horizontal:
+                                                                    20),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                CachedNetworkImage(
+                                                                  imageBuilder:
+                                                                      (context,
+                                                                          imageProvider) {
+                                                                    return Container(
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(10),
+                                                                        image: DecorationImage(
+                                                                            image: imageProvider,
+                                                                            fit: BoxFit.cover),
+                                                                      ),
+                                                                      width:
+                                                                          MediaQuery.of(context).size.width /
+                                                                              7,
                                                                       height:
                                                                           MediaQuery.of(context).size.width /
                                                                               7,
-                                                                      child: Image
-                                                                          .asset(
-                                                                              'assets/images/Thumbnail.png'),
-                                                                    ),
-                                                                    errorWidget: (context,
-                                                                            url,
-                                                                            error) =>
-                                                                        Icon(Icons
-                                                                            .error),
+                                                                    );
+                                                                  },
+                                                                  imageUrl: v[
+                                                                      'image'],
+                                                                  memCacheWidth: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width
+                                                                      .floor(),
+                                                                  memCacheHeight: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width
+                                                                      .floor(),
+                                                                  placeholder:
+                                                                      (context,
+                                                                              url) =>
+                                                                          Container(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        7,
+                                                                    height:
+                                                                        MediaQuery.of(context).size.width /
+                                                                            7,
+                                                                    child: Image
+                                                                        .asset(
+                                                                            'assets/images/Thumbnail.png'),
                                                                   ),
-                                                                  SizedBox(
-                                                                      width: SizeConfig
-                                                                              .screenWidth /
-                                                                          26),
-                                                                  Expanded(
-                                                                    child:
-                                                                        Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        GestureDetector(
-                                                                          onTap:
-                                                                              () {
-                                                                            Navigator.push(context,
-                                                                                SlideRightRoute(widget: PodcastView(v['podcast_id'])));
-                                                                          },
-                                                                          child:
-                                                                              Text(
-                                                                            v['podcast_name'],
-                                                                            textScaleFactor:
-                                                                                mediaQueryData.textScaleFactor.clamp(0.1, 1.2).toDouble(),
-                                                                            style: TextStyle(
-                                                                                // color: Color(
-                                                                                //     0xffe8e8e8),
-                                                                                fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                                                                fontWeight: FontWeight.normal),
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          '${timeago.format(DateTime.parse(v['published_at']))}',
-                                                                          textScaleFactor: mediaQueryData
-                                                                              .textScaleFactor
-                                                                              .clamp(0.5, 0.9)
-                                                                              .toDouble(),
-                                                                          style: TextStyle(
-                                                                              // color: Color(
-                                                                              //     0xffe8e8e8),
-                                                                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        10),
-                                                                child:
-                                                                    Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  child: Column(
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Icon(Icons
+                                                                          .error),
+                                                                ),
+                                                                SizedBox(
+                                                                    width: SizeConfig
+                                                                            .screenWidth /
+                                                                        26),
+                                                                Expanded(
+                                                                  child:
+                                                                      Column(
                                                                     crossAxisAlignment:
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: [
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          Navigator.push(context,
+                                                                              SlideRightRoute(widget: PodcastView(v['podcast_id'])));
+                                                                        },
+                                                                        child:
+                                                                            Text(
+                                                                          v['podcast_name'],
+                                                                          textScaleFactor:
+                                                                              mediaQueryData.textScaleFactor.clamp(0.1, 1.2).toDouble(),
+                                                                          style: TextStyle(
+                                                                              // color: Color(
+                                                                              //     0xffe8e8e8),
+                                                                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                                                              fontWeight: FontWeight.normal),
+                                                                        ),
+                                                                      ),
                                                                       Text(
-                                                                        v['name'],
+                                                                        '${timeago.format(DateTime.parse(v['published_at']))}',
                                                                         textScaleFactor: mediaQueryData
                                                                             .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                1)
+                                                                            .clamp(0.5, 0.9)
                                                                             .toDouble(),
                                                                         style: TextStyle(
                                                                             // color: Color(
                                                                             //     0xffe8e8e8),
-                                                                            fontSize: SizeConfig.safeBlockHorizontal * 4.5,
-                                                                            fontWeight: FontWeight.bold),
+                                                                            fontSize: SizeConfig.safeBlockHorizontal * 3.5),
                                                                       ),
-                                                                      Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.symmetric(vertical: 10),
-                                                                        child: v['summary'] ==
-                                                                                null
-                                                                            ? SizedBox(
-                                                                                width: 0,
-                                                                                height: 0)
-                                                                            : (htmlMatch.hasMatch(v['summary']) == true
-                                                                                ? Text(
-                                                                                    parse(v['summary']).body.text,
-                                                                                    textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                    maxLines: 2,
-                                                                                    style: TextStyle(
-                                                                                        // color: Colors.white,
-                                                                                        fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                                                                                  )
-                                                                                : Text(
-                                                                                    '${v['summary']}',
-                                                                                    textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                                                                                    style: TextStyle(
-                                                                                        //      color: Colors.white,
-                                                                                        fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                                                                                  )),
-                                                                      )
                                                                     ],
                                                                   ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical:
+                                                                      10),
+                                                              child:
+                                                                  Container(
+                                                                width: double
+                                                                    .infinity,
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      v['name'],
+                                                                      textScaleFactor: mediaQueryData
+                                                                          .textScaleFactor
+                                                                          .clamp(0.5,
+                                                                              1)
+                                                                          .toDouble(),
+                                                                      style: TextStyle(
+                                                                          // color: Color(
+                                                                          //     0xffe8e8e8),
+                                                                          fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                                                                          fontWeight: FontWeight.bold),
+                                                                    ),
+                                                                    Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.symmetric(vertical: 10),
+                                                                      child: v['summary'] ==
+                                                                              null
+                                                                          ? SizedBox(
+                                                                              width: 0,
+                                                                              height: 0)
+                                                                          : (htmlMatch.hasMatch(v['summary']) == true
+                                                                              ? Text(
+                                                                                  parse(v['summary']).body.text,
+                                                                                  textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                                  maxLines: 2,
+                                                                                  style: TextStyle(
+                                                                                      // color: Colors.white,
+                                                                                      fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                                                )
+                                                                              : Text(
+                                                                                  '${v['summary']}',
+                                                                                  textScaleFactor: mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+                                                                                  style: TextStyle(
+                                                                                      //      color: Colors.white,
+                                                                                      fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                                                )),
+                                                                    )
+                                                                  ],
                                                                 ),
                                                               ),
-                                                              
-                                                              Container(
-                                                                width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      children: [
-                                                                        InkWell(
-                                                                          onTap:
-                                                                              () async {
-                                                                            if (prefs.getString('HiveUserName') !=
-                                                                                null) {
-                                                                              setState(() {
-                                                                                v['isLoading'] = true;
-                                                                              });
-                                                                              double _value = 50.0;
-                                                                              showDialog(
-                                                                                  context: context,
-                                                                                  builder: (context) {
-                                                                                    return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: v['permlink'], episode_id: v['id']));
-                                                                                  }).then((value) async {
-                                                                                print(value);
-                                                                              });
-                                                                              setState(() {
-                                                                                v['ifVoted'] = !v['ifVoted'];
-                                                                              });
-                                                                              setState(() {
-                                                                                v['isLoading'] = false;
-                                                                              });
-                                                                            } else {
-                                                                              showBarModalBottomSheet(
-                                                                                  context: context,
-                                                                                  builder: (context) {
-                                                                                    return HiveDetails();
-                                                                                  });
-                                                                            }
-                                                                          },
+                                                            ),
+
+                                                            Container(
+                                                              width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width,
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () async {
+                                                                          if (prefs.getString('HiveUserName') !=
+                                                                              null) {
+                                                                            setState(() {
+                                                                              v['isLoading'] = true;
+                                                                            });
+                                                                            double _value = 50.0;
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                builder: (context) {
+                                                                                  return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: v['permlink'], episode_id: v['id']));
+                                                                                }).then((value) async {
+                                                                              print(value);
+                                                                            });
+                                                                            setState(() {
+                                                                              v['ifVoted'] = !v['ifVoted'];
+                                                                            });
+                                                                            setState(() {
+                                                                              v['isLoading'] = false;
+                                                                            });
+                                                                          } else {
+                                                                            showBarModalBottomSheet(
+                                                                                context: context,
+                                                                                builder: (context) {
+                                                                                  return HiveDetails();
+                                                                                });
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          decoration: v['ifVoted'] == true
+                                                                              ? BoxDecoration(
+                                                                                  gradient: LinearGradient(colors: [
+                                                                                    Color(0xff5bc3ef),
+                                                                                    Color(0xff5d5da8)
+                                                                                  ]),
+                                                                                  borderRadius: BorderRadius.circular(30))
+                                                                              : BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
+                                                                          child:
+                                                                              Padding(
+                                                                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                                            child: Row(
+                                                                              children: [
+                                                                                v['isLoading'] == true
+                                                                                    ? Container(
+                                                                                        height: 17,
+                                                                                        width: 18,
+                                                                                        child: SpinKitPulse(
+                                                                                          color: Colors.blue,
+                                                                                        ),
+                                                                                      )
+                                                                                    : Icon(
+                                                                                        FontAwesomeIcons.chevronCircleUp,
+                                                                                        size: 15,
+                                                                                        // color:
+                                                                                        //     Color(0xffe8e8e8),
+                                                                                      ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                                  child: Text(
+                                                                                    v['votes'].toString(),
+                                                                                    textScaleFactor: 1.0,
+                                                                                    style: TextStyle(fontSize: 12
+                                                                                        // color:
+                                                                                        //     Color(0xffe8e8e8)
+                                                                                        ),
+                                                                                  ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.only(right: 4),
+                                                                                  child: Text(
+                                                                                    '\$${v['payout_value'].toString().split(' ')[0]}',
+                                                                                    textScaleFactor: 1.0,
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 12,
+
+                                                                                      // color:
+                                                                                      //     Color(0xffe8e8e8)
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (prefs.getString('HiveUserName') !=
+                                                                              null) {
+                                                                            Navigator.push(
+                                                                                context,
+                                                                                SlideRightRoute(
+                                                                                    widget: Comments(
+                                                                                  episodeObject: v,
+                                                                                )));
+                                                                          } else {
+                                                                            showBarModalBottomSheet(
+                                                                                context: context,
+                                                                                builder: (context) {
+                                                                                  return HiveDetails();
+                                                                                });
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
                                                                           child:
                                                                               Container(
-                                                                            decoration: v['ifVoted'] == true
-                                                                                ? BoxDecoration(
-                                                                                    gradient: LinearGradient(colors: [
-                                                                                      Color(0xff5bc3ef),
-                                                                                      Color(0xff5d5da8)
-                                                                                    ]),
-                                                                                    borderRadius: BorderRadius.circular(30))
-                                                                                : BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                                            decoration: BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(4.0),
                                                                               child: Row(
                                                                                 children: [
-                                                                                  v['isLoading'] == true
-                                                                                      ? Container(
-                                                                                          height: 17,
-                                                                                          width: 18,
-                                                                                          child: SpinKitPulse(
-                                                                                            color: Colors.blue,
-                                                                                          ),
-                                                                                        )
-                                                                                      : Icon(
-                                                                                          FontAwesomeIcons.chevronCircleUp,
-                                                                                          size: 15,
-                                                                                          // color:
-                                                                                          //     Color(0xffe8e8e8),
-                                                                                        ),
+                                                                                  Icon(
+                                                                                    Icons.mode_comment_outlined,
+                                                                                    size: 14,
+                                                                                  ),
                                                                                   Padding(
-                                                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                                    padding: const EdgeInsets.symmetric(horizontal: 7),
                                                                                     child: Text(
-                                                                                      v['votes'].toString(),
+                                                                                      v['comments_count'].toString(),
                                                                                       textScaleFactor: 1.0,
-                                                                                      style: TextStyle(fontSize: 12
+                                                                                      style: TextStyle(fontSize: 10
                                                                                           // color:
                                                                                           //     Color(0xffe8e8e8)
                                                                                           ),
                                                                                     ),
                                                                                   ),
-                                                                                  Padding(
-                                                                                    padding: const EdgeInsets.only(right: 4),
-                                                                                    child: Text(
-                                                                                      '\$${v['payout_value'].toString().split(' ')[0]}',
-                                                                                      textScaleFactor: 1.0,
-                                                                                      style: TextStyle(
-                                                                                        fontSize: 12,
-
-                                                                                        // color:
-                                                                                        //     Color(0xffe8e8e8)
-                                                                                      ),
-                                                                                    ),
-                                                                                  )
                                                                                 ],
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            if (prefs.getString('HiveUserName') !=
-                                                                                null) {
-                                                                              Navigator.push(
-                                                                                  context,
-                                                                                  SlideRightRoute(
-                                                                                      widget: Comments(
-                                                                                    episodeObject: v,
-                                                                                  )));
+                                                                      ),
+                                                                      InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          print(v.toString().contains('.mp4'));
+                                                                          if (v.toString().contains('.mp4') == true ||
+                                                                              v.toString().contains('.m4v') == true ||
+                                                                              v.toString().contains('.flv') == true ||
+                                                                              v.toString().contains('.f4v') == true ||
+                                                                              v.toString().contains('.ogv') == true ||
+                                                                              v.toString().contains('.ogx') == true ||
+                                                                              v.toString().contains('.wmv') == true ||
+                                                                              v.toString().contains('.webm') == true) {
+                                                                            currentlyPlaying.stop();
+                                                                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                                              return PodcastVideoPlayer(episodeObject: v);
+                                                                            }));
+                                                                          } else {
+                                                                            if (v.toString().contains('.pdf') == true) {
+                                                                              // Navigator.push(
+                                                                              //     context,
+                                                                              //     MaterialPageRoute(
+                                                                              // der:
+                                                                              //             (context) {
+                                                                              //   return PDFviewer(
+                                                                              //       episodeObject:
+                                                                              //           v);
+                                                                              // }));
                                                                             } else {
+                                                                              currentlyPlaying.stop();
+                                                                              currentlyPlaying.episodeObject = v;
+                                                                              print(currentlyPlaying.episodeObject.toString());
+                                                                              currentlyPlaying.play();
                                                                               showBarModalBottomSheet(
                                                                                   context: context,
                                                                                   builder: (context) {
-                                                                                    return HiveDetails();
+                                                                                    return Player();
                                                                                   });
                                                                             }
-                                                                          },
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.only(right: 60),
                                                                           child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(4.0),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    Icon(
-                                                                                      Icons.mode_comment_outlined,
-                                                                                      size: 14,
+                                                                              Container(
+                                                                            decoration: BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(5),
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.play_circle_outline,
+                                                                                    size: 15,
+                                                                                  ),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                                                                    child: Text(
+                                                                                      DurationCalculator(v['duration']),
+                                                                                      textScaleFactor: 0.75,
+                                                                                      // style: TextStyle(
+                                                                                      //      color: Color(0xffe8e8e8)
+                                                                                      //     ),
                                                                                     ),
-                                                                                    Padding(
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 7),
-                                                                                      child: Text(
-                                                                                        v['comments_count'].toString(),
-                                                                                        textScaleFactor: 1.0,
-                                                                                        style: TextStyle(fontSize: 10
-                                                                                            // color:
-                                                                                            //     Color(0xffe8e8e8)
-                                                                                            ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                        InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            print(v.toString().contains('.mp4'));
-                                                                            if (v.toString().contains('.mp4') == true ||
-                                                                                v.toString().contains('.m4v') == true ||
-                                                                                v.toString().contains('.flv') == true ||
-                                                                                v.toString().contains('.f4v') == true ||
-                                                                                v.toString().contains('.ogv') == true ||
-                                                                                v.toString().contains('.ogx') == true ||
-                                                                                v.toString().contains('.wmv') == true ||
-                                                                                v.toString().contains('.webm') == true) {
-                                                                              currentlyPlaying.stop();
-                                                                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                                                                return PodcastVideoPlayer(episodeObject: v);
-                                                                              }));
-                                                                            } else {
-                                                                              if (v.toString().contains('.pdf') == true) {
-                                                                                // Navigator.push(
-                                                                                //     context,
-                                                                                //     MaterialPageRoute(
-                                                                                // der:
-                                                                                //             (context) {
-                                                                                //   return PDFviewer(
-                                                                                //       episodeObject:
-                                                                                //           v);
-                                                                                // }));
-                                                                              } else {
-                                                                                currentlyPlaying.stop();
-                                                                                currentlyPlaying.episodeObject = v;
-                                                                                print(currentlyPlaying.episodeObject.toString());
-                                                                                currentlyPlaying.play();
-                                                                                showBarModalBottomSheet(
-                                                                                    context: context,
-                                                                                    builder: (context) {
-                                                                                      return Player();
-                                                                                    });
-                                                                              }
-                                                                            }
-                                                                          },
-                                                                          child:
-                                                                              Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(right: 60),
-                                                                            child:
-                                                                                Container(
-                                                                              decoration: BoxDecoration(border: Border.all(color: kSecondaryColor), borderRadius: BorderRadius.circular(30)),
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(5),
-                                                                                child: Row(
-                                                                                  children: [
-                                                                                    Icon(
-                                                                                      Icons.play_circle_outline,
-                                                                                      size: 15,
-                                                                                    ),
-                                                                                    Padding(
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                                                                      child: Text(
-                                                                                        DurationCalculator(v['duration']),
-                                                                                        textScaleFactor: 0.75,
-                                                                                        // style: TextStyle(
-                                                                                        //      color: Color(0xffe8e8e8)
-                                                                                        //     ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        share(
-                                                                            episodeObject:
-                                                                                v);
-                                                                      },
-                                                                      child:
-                                                                          Icon(
-                                                                          Icons.share,
-                                                                          // size: 14,
-                                                                        ),
-                                                                    ),
-                                                                  ],
-                                                                ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  InkWell(
+                                                                    onTap:
+                                                                        () {
+                                                                      share(
+                                                                          episodeObject:
+                                                                              v);
+                                                                    },
+                                                                    child:
+                                                                        Icon(
+                                                                        Icons.share,
+                                                                        // size: 14,
+                                                                      ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ],
-                                                          ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
-                                                      Builder(
-                                                          builder: (context) {
-                                                        if (currentlyPlaying
-                                                                .episodeName !=
-                                                            null) {
-                                                          return v['id'] ==
-                                                                      currentlyPlaying
-                                                                              .episodeObject[
-                                                                          'id'] &&
-                                                                  currentlyPlaying
-                                                                              .episodeObject[
-                                                                          'id'] !=
-                                                                      null
-                                                              ? Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      horizontal:
-                                                                          7),
-                                                                  child:
-                                                                      Container(
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                30),
-                                                                        gradient:
-                                                                            LinearGradient(
-                                                                                colors: [
-                                                                              Color(0xff5d5da8),
-                                                                              Color(0xff5bc3ef)
-                                                                            ])),
-                                                                    width: double
-                                                                        .infinity,
-                                                                    height: 4,
-                                                                  ),
-                                                                )
-                                                              : SizedBox();
-                                                        } else {
-                                                          return SizedBox();
-                                                        }
-                                                      }),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                    Builder(
+                                                        builder: (context) {
+                                                      if (currentlyPlaying
+                                                              .episodeName !=
+                                                          null) {
+                                                        return v['id'] ==
+                                                                    currentlyPlaying
+                                                                            .episodeObject[
+                                                                        'id'] &&
+                                                                currentlyPlaying
+                                                                            .episodeObject[
+                                                                        'id'] !=
+                                                                    null
+                                                            ? Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        7),
+                                                                child:
+                                                                    Container(
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              30),
+                                                                      gradient:
+                                                                          LinearGradient(
+                                                                              colors: [
+                                                                            Color(0xff5d5da8),
+                                                                            Color(0xff5bc3ef)
+                                                                          ])),
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 4,
+                                                                ),
+                                                              )
+                                                            : SizedBox();
+                                                      } else {
+                                                        return SizedBox();
+                                                      }
+                                                    }),
+                                                  ],
                                                 ),
                                               ),
-                                            Container(
-                                              height: 10,
-                                              width: double.infinity,
-                                              child: LinearProgressIndicator(
-                                                minHeight: 10,
-                                                backgroundColor: Colors.blue,
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                            Color>(
-                                                        Color(0xff6249EF)),
+                                            ),
+                                          Shimmer.fromColors(
+                                            baseColor: themeProvider.isLightTheme == false
+                                                ? kPrimaryColor
+                                                : Colors.white,
+                                            highlightColor:
+                                            themeProvider.isLightTheme == false
+                                                ? Color(0xff3a3a3a)
+                                                : Colors.white,
+                                            child:  Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(10),
+                                                border: Border.all(color: kSecondaryColor,),
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                              ],
-                            ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Container(
+                                                          width:
+                                                          MediaQuery.of(context).size.width /
+                                                              7,
+                                                          height:
+                                                          MediaQuery.of(context).size.width /
+                                                              7,
+                                                          decoration: BoxDecoration(
+                                                              color: kSecondaryColor,
+                                                              borderRadius:BorderRadius.circular(10)
+                                                          ),
+                                                        ),
+                                                        SizedBox(width :10),
+                                                        Container(
+                                                          color: kSecondaryColor,
+                                                          height: 10,
+                                                          width: MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                              2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(right: 110),
+                                                      child: Container(
+                                                        color: kSecondaryColor,
+                                                        height: 10,
+                                                        width: MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                            4,
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(15),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: kSecondaryColor,
+                                                            ),
+                                                            height: 25,
+                                                            width:
+                                                            MediaQuery.of(context).size.width/8,
+                                                            //    color: kSecondaryColor,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(15),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: kSecondaryColor,
+                                                            ),
+                                                            height: 25,
+                                                            width:
+                                                            MediaQuery.of(context).size.width/8,
+                                                            //    color: kSecondaryColor,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(15),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(10),
+                                                              color: kSecondaryColor,
+                                                            ),
+                                                            height: 25,
+                                                            width:
+                                                            MediaQuery.of(context).size.width/8,
+                                                            //    color: kSecondaryColor,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }
