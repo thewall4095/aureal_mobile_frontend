@@ -856,13 +856,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.3"
-  scroll_to_index:
+  scrollable_positioned_list:
     dependency: "direct main"
     description:
-      name: scroll_to_index
+      name: scrollable_positioned_list
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "0.1.10"
   share:
     dependency: "direct main"
     description:

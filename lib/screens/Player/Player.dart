@@ -37,8 +37,11 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_share/social_share.dart';
 import 'dart:math' as math;
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'PlayerElements/Seekbar.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+
 import 'package:screenshot/screenshot.dart';
 enum PlayerState { stopped, playing, paused }
 
@@ -74,27 +77,29 @@ class _PlayerState extends State<Player> {
   var storedepisodes = [];
   var episodeContent;
   var episodeObject;
- String transcript;
+  List transcript;
   bool isUpvoteLoading = false;
 
+  int currentIndex = 0;
 
-  // void Transcription() async {
-  //   String url ="https://api.aureal.one/public/getTranscription?episode_id=533910";
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   try {
-  //     http.Response response = await http.get(Uri.parse(url));
-  //     print(response.body);
-  //     if (response.statusCode == 200) {
-  //       setState(() {
-  //        transcript = jsonDecode(response.body)['transcription'];
-  //       });
-  //       print(transcript);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+
+  void Transcription() async {
+    String url ="https://api.aureal.one/public/getTranscription?episode_id=533910";
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+         transcript = jsonDecode(response.body)['data']['transcription'];
+        });
+        print(transcript);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
 
   void getInitialComments(BuildContext context) {
@@ -227,6 +232,7 @@ class _PlayerState extends State<Player> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Transcription();
     var episodeObject = Provider.of<PlayerChange>(context, listen: false);
 
     getColor(episodeObject.episodeObject['image'] == null
@@ -272,8 +278,15 @@ class _PlayerState extends State<Player> {
   final picker = ImagePicker();
   File _image;
 
+  _scrollToBottom(){
+    _controller.jumpTo(_controller.position.maxScrollExtent);
+  }
+
   @override
   Widget build(BuildContext context) {
+WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+
+
     var episodeObject = Provider.of<PlayerChange>(context);
 
 //    duration = Duration(seconds: episodeObject.episodeObject['duration']);
@@ -804,6 +817,23 @@ class _PlayerState extends State<Player> {
                                 scrollDirection: Axis.vertical,
                                 child: Column(
                                   children: [
+                                    GestureDetector(
+                                      onTap:
+                                    () {
+                              Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
+                              );
+                              },
+
+
+                                        child
+                                          : Container(
+                                          height: 50,
+                                          width: 50,
+                                          color: Colors.white,
+                                      ),
+                                    ),
                                     Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -816,209 +846,20 @@ class _PlayerState extends State<Player> {
                                             MediaQuery.of(context).size.height,
                                         padding: EdgeInsets.all(20.0),
                                         child: ListView(
+                                          controller: _controller,
                                           children: <Widget>[
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  1.04,
-                                              width: double.infinity,
-                                              child: CarouselSlider(
-                                                items: [
-                                                  GestureDetector(
-                                                    onLongPress: () async {
-                                                      showModalBottomSheet(
-                                                          context: context,
-                                                          builder: (builder) {
-                                                            return new Container(
-                                                                height: 350.0,
-                                                                color: Colors
-                                                                    .transparent,
-                                                                child:
-                                                                    new Container(
-                                                                  decoration:
-                                                                      new BoxDecoration(
-                                                                          // color: Colors
-                                                                          //     .white,
-                                                                          borderRadius: new BorderRadius.only(
-                                                                              topLeft: const Radius.circular(10.0),
-                                                                              topRight: const Radius.circular(10.0))),
-                                                                  child: Column(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                    children: [
-                                                                      Card(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        child: Container(
-                                                                            color: Colors
-                                                                                .transparent,
-                                                                            height:
-                                                                                100,
-                                                                            width:
-                                                                                double.infinity,
-                                                                            child: Padding(padding: const EdgeInsets.all(8.0), child: Text(" Hey There, I'm listening to  froon Aureal, \n \nhere's the link for you https://aureal.one/episode/"))),
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                                                                        children: [
-                                                                          IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                              final pickedFile = await picker.getImage(source: ImageSource.gallery);
-                                                                              SocialShare.shareInstagramStory(
-                                                                                pickedFile.path,
-                                                                                backgroundTopColor: "#ffffff",
-                                                                                backgroundBottomColor: "#000000",
-                                                                                attributionURL: "https://deep-link-url",
-                                                                              ).then((data) {
-                                                                                print(data);
-                                                                              });
-                                                                            },
-                                                                            icon:
-                                                                                Icon(
-                                                                              FontAwesomeIcons.instagram,
-                                                                              size: 50,
-                                                                            ),
-                                                                          ),
-                                                                          // ),
-                                                                          // IconButton(
-                                                                          //   onPressed:
-                                                                          //       () async {
-                                                                          //     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-                                                                          //     SocialShare.shareInstagramStory(
-                                                                          //       pickedFile.path,
-                                                                          //       backgroundTopColor: "#ffffff",
-                                                                          //       backgroundBottomColor: "#000000",
-                                                                          //       attributionURL: "https://deep-link-url",
-                                                                          //     ).then((data) {
-                                                                          //       print(data);
-                                                                          //     });
-                                                                          //   },
-                                                                          //   icon:
-                                                                          //       Icon(
-                                                                          //     FontAwesomeIcons.instagram,
-                                                                          //     size: 50,
-                                                                          //   ),
-                                                                          // ),
-                                                                          // ),
-                                                                          // IconButton(
-                                                                          //   onPressed:
-                                                                          //       () async {
-                                                                          //     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-                                                                          //     SocialShare.shareInstagramStory(
-                                                                          //       pickedFile.path,
-                                                                          //       backgroundTopColor: "#ffffff",
-                                                                          //       backgroundBottomColor: "#000000",
-                                                                          //       attributionURL: "https://deep-link-url",
-                                                                          //     ).then((data) {
-                                                                          //       print(data);
-                                                                          //     });
-                                                                          //   },
-                                                                          //   icon:
-                                                                          //       Icon(
-                                                                          //     FontAwesomeIcons.instagram,
-                                                                          //     size: 50,
-                                                                          //   ),
-                                                                          // ),
-                                                                          IconButton(
-                                                                            onPressed: () async {
-                                                                              SocialShare.shareTwitter(
-                                                                                "Aureal",
-                                                                                hashtags: ["Aurealone","Hive"],
-                                                                                url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
-                                                                                trailingText:"Hey There, I'm listening to ${episodeObject.episodeObject['image']}",
-                                                                              ).then((data) {
-                                                                                print(data);
-                                                                              });
-                                                                            },
-                                                                            icon:
-                                                                                Icon(
-                                                                              FontAwesomeIcons.twitter,
-                                                                              size: 50,
-                                                                            ),
-                                                                          ),
-                                                                          IconButton(
-                                                                            onPressed:
-                                                                                () async {
-                                                                                  SocialShare.shareSms(
-                                                                                    "This is Social Share Sms example",
-                                                                                    url: "\nhttps://google.com/",
-                                                                                    trailingText: "\nhello",
-                                                                                  ).then((data) {
-                                                                                    print(data);
-                                                                                  });
-                                                                                },
-                                                                            icon:
-                                                                                Icon(
-                                                                              FontAwesomeIcons.sms,
-                                                                              size: 50,
-                                                                            ),
-                                                                          ),
-                                                                          // IconButton(
-                                                                          //   onPressed: () async {
-                                                                          //     SocialShare.checkInstalledAppsForShare().then((data) {
-                                                                          //       print(data.toString());
-                                                                          //     });
-                                                                          //   },
-                                                                          //   icon:
-                                                                          //   Icon(
-                                                                          //     FontAwesomeIcons.wizardsOfTheCoast,
-                                                                          //     size: 50,
-                                                                          //   ),
-                                                                          // ),
-                                                                          IconButton(
-                                                                            onPressed: () async {
-                                                                              SocialShare.copyToClipboard(
-                                                                                "This is Social Share plugin",
-                                                                              ).then((data) {
-                                                                                print(data);
-                                                                              });
-                                                                            },
-                                                                            icon:
-                                                                            Icon(
-                                                                              FontAwesomeIcons.clipboard,
-                                                                              size: 50,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ));
-                                                          });
-                                                    },
-                                                    child: Card(
-                                                      color: Colors.transparent,
-                                                      child: Container(
-                                                          color: Colors
-                                                              .transparent,
-                                                          height: 100,
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child: Text("ksjdb"),
-                                                          )),
-                                                    ),
-                                                  )
-                                                ],
-                                                options: CarouselOptions(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.9,
-                                                    autoPlay: true,
-                                                    enableInfiniteScroll: true,
-                                                    viewportFraction: 0.3,
-                                                    aspectRatio: 4 / 3,
-                                                    pauseAutoPlayOnTouch: true,
-                                                    enlargeCenterPage: false),
+                                            for(var v in transcript)
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                                child: Card(
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                        color: Colors.transparent,
+                                                        child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
+                                                    ))),
                                               ),
-                                            )
                                           ],
                                         )),
                                   ],
@@ -2846,5 +2687,227 @@ class MClipper extends CustomClipper<Rect> {
   bool shouldReclip(CustomClipper<Rect> oldClipper) {
     // TODO: implement shouldReclip
     return true;
+  }
+}
+const numberOfItems = 5001;
+const minItemHeight = 20.0;
+const maxItemHeight = 150.0;
+const scrollDuration = Duration(seconds: 2);
+
+const randomMax = 1 << 32;
+class ScrollablePositionedListPage extends StatefulWidget {
+  const ScrollablePositionedListPage({Key key}) : super(key: key);
+
+  @override
+  _ScrollablePositionedListPageState createState() =>
+      _ScrollablePositionedListPageState();
+}
+
+class _ScrollablePositionedListPageState
+    extends State<ScrollablePositionedListPage> {
+  /// Controller to scroll or jump to a particular item.
+  final ItemScrollController itemScrollController = ItemScrollController();
+
+  /// Listener that reports the position of items when the list is scrolled.
+  final ItemPositionsListener itemPositionsListener =
+  ItemPositionsListener.create();
+  List<double> itemHeights;
+  List<Color> itemColors;
+  bool reversed = false;
+
+  /// The alignment to be used next time the user scrolls or jumps to an item.
+  double alignment = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final heightGenerator = Random(328902348);
+    final colorGenerator = Random(42490823);
+    itemHeights = List<double>.generate(
+        numberOfItems,
+            (int _) =>
+        heightGenerator.nextDouble() * (maxItemHeight - minItemHeight) +
+            minItemHeight);
+    itemColors = List<Color>.generate(numberOfItems,
+            (int _) => Color(colorGenerator.nextInt(randomMax)).withOpacity(1));
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      Material(
+        child: OrientationBuilder(
+          builder: (context, orientation) =>
+              Column(
+                children: <Widget>[
+                  Expanded(
+                    child: list(orientation),
+                  ),
+                  positionsView,
+                  Row(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          scrollControlButtons,
+                          const SizedBox(height: 10),
+                          jumpControlButtons,
+                          alignmentControl,
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              ),
+        ),
+      );
+
+  Widget get alignmentControl =>
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          const Text('Alignment: '),
+          SizedBox(
+            width: 200,
+            child: SliderTheme(
+              data: SliderThemeData(
+                showValueIndicator: ShowValueIndicator.always,
+              ),
+              child: Slider(
+                value: alignment,
+                label: alignment.toStringAsFixed(2),
+                onChanged: (double value) => setState(() => alignment = value),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget list(Orientation orientation) =>
+      ScrollablePositionedList.builder(
+        itemCount: numberOfItems,
+        itemBuilder: (context, index) => item(index, orientation),
+        itemScrollController: itemScrollController,
+        itemPositionsListener: itemPositionsListener,
+        reverse: reversed,
+        scrollDirection: orientation == Orientation.portrait
+            ? Axis.vertical
+            : Axis.horizontal,
+      );
+
+  Widget get positionsView =>
+      ValueListenableBuilder<Iterable<ItemPosition>>(
+        valueListenable: itemPositionsListener.itemPositions,
+        builder: (context, positions, child) {
+          int min;
+          int max;
+          if (positions.isNotEmpty) {
+            // Determine the first visible item by finding the item with the
+            // smallest trailing edge that is greater than 0.  i.e. the first
+            // item whose trailing edge in visible in the viewport.
+            min = positions
+                .where((ItemPosition position) => position.itemTrailingEdge > 0)
+                .reduce((ItemPosition min, ItemPosition position) =>
+            position.itemTrailingEdge < min.itemTrailingEdge
+                ? position
+                : min)
+                .index;
+            // Determine the last visible item by finding the item with the
+            // greatest leading edge that is less than 1.  i.e. the last
+            // item whose leading edge in visible in the viewport.
+            max = positions
+                .where((ItemPosition position) => position.itemLeadingEdge < 1)
+                .reduce((ItemPosition max, ItemPosition position) =>
+            position.itemLeadingEdge > max.itemLeadingEdge
+                ? position
+                : max)
+                .index;
+          }
+          return Row(
+            children: <Widget>[
+              Expanded(child: Text('First Item: ${min ?? ''}')),
+              Expanded(child: Text('Last Item: ${max ?? ''}')),
+              const Text('Reversed: '),
+              Checkbox(
+                  value: reversed,
+                  onChanged: (bool value) =>
+                      setState(() {
+                        reversed = value;
+                      }))
+            ],
+          );
+        },
+      );
+
+  Widget get scrollControlButtons =>
+      Row(
+        children: <Widget>[
+          const Text('scroll to'),
+          scrollButton(0),
+          scrollButton(5),
+          scrollButton(10),
+          scrollButton(100),
+          scrollButton(1000),
+          scrollButton(5000),
+        ],
+      );
+
+  Widget get jumpControlButtons =>
+      Row(
+        children: <Widget>[
+          const Text('jump to'),
+          jumpButton(0),
+          jumpButton(5),
+          jumpButton(10),
+          jumpButton(100),
+          jumpButton(1000),
+          jumpButton(5000),
+        ],
+      );
+
+  final _scrollButtonStyle = ButtonStyle(
+    padding: MaterialStateProperty.all(
+      const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+    ),
+    minimumSize: MaterialStateProperty.all(Size.zero),
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  );
+
+  Widget scrollButton(int value) =>
+      TextButton(
+        key: ValueKey<String>('Scroll$value'),
+        onPressed: () => scrollTo(value),
+        child: Text('$value'),
+        style: _scrollButtonStyle,
+      );
+
+  Widget jumpButton(int value) =>
+      TextButton(
+        key: ValueKey<String>('Jump$value'),
+        onPressed: () => jumpTo(value),
+        child: Text('$value'),
+        style: _scrollButtonStyle,
+      );
+
+  void scrollTo(int index) =>
+      itemScrollController.scrollTo(
+          index: index,
+          duration: scrollDuration,
+          curve: Curves.easeInOutCubic,
+          alignment: alignment);
+
+  void jumpTo(int index) =>
+      itemScrollController.jumpTo(index: index, alignment: alignment);
+
+  /// Generate item number [i].
+  Widget item(int i, Orientation orientation) {
+    return SizedBox(
+      height: orientation == Orientation.portrait ? itemHeights[i] : null,
+      width: orientation == Orientation.landscape ? itemHeights[i] : null,
+      child: Container(
+        color: itemColors[i],
+        child: Center(
+          child: Text('Item $i'),
+        ),
+      ),
+    );
   }
 }

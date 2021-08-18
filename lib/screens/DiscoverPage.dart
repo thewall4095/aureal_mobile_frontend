@@ -1280,3 +1280,4 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 }
+
