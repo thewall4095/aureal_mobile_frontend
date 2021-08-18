@@ -734,6 +734,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "screenshot",
+      "rootUri": "file:///home/chinmay/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/screenshot-1.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "scroll_to_index",
+      "rootUri": "file:///home/chinmay/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/scroll_to_index-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "share",
       "rootUri": "file:///home/chinmay/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4",
       "packageUri": "lib/",
@@ -1004,7 +1016,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-08-16T13:01:12.602002Z",
+  "generated": "2021-08-18T14:05:15.591636Z",
   "generator": "pub",
   "generatorVersion": "2.13.0"
 }

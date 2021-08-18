@@ -63,8 +63,11 @@ dependencies:
 #  flutter_ffmpeg: ^0.4.0
   image_picker: any
   image_cropper: any
+  screenshot: any
   social_share: any
   share:  any
+  scroll_to_index: any
+
 
 
 #  in_app_update: any

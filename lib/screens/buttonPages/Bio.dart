@@ -41,7 +41,6 @@ class _BioState extends State<Bio> {
   bool isLoading = false;
   bool isImageLoading = false;
   final picker = ImagePicker();
-  var bioObject;
   File _image;
 
   Dio dio = Dio();

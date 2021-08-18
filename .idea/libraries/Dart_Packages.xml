@@ -856,6 +856,20 @@
             </list>
           </value>
         </entry>
+        <entry key="screenshot">
+          <value>
+            <list>
+              <option value="$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/screenshot-1.2.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="scroll_to_index">
+          <value>
+            <list>
+              <option value="$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/scroll_to_index-2.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="share">
           <value>
             <list>
@@ -1286,6 +1300,8 @@
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.1.5/lib" />
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/rflutter_alert-2.0.2/lib" />
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.26.0/lib" />
+      <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/screenshot-1.2.3/lib" />
+      <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/scroll_to_index-2.0.0/lib" />
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4/lib" />
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.5.7+3/lib" />
       <root url="file://$USER_HOME$/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_macos-0.0.1+11/lib" />
