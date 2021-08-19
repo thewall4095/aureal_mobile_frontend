@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "animated_text_kit",
+      "rootUri": "file:///home/chinmay/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "archive",
       "rootUri": "file:///home/chinmay/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/archive-3.1.2",
       "packageUri": "lib/",
@@ -1016,7 +1022,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-08-18T15:53:46.124510Z",
+  "generated": "2021-08-19T11:28:09.179930Z",
   "generator": "pub",
   "generatorVersion": "2.13.0"
 }

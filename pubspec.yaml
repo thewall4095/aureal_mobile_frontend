@@ -67,6 +67,7 @@ dependencies:
   social_share: any
   share:  any
   scrollable_positioned_list: any
+  animated_text_kit: ^4.2.1
 
 
 

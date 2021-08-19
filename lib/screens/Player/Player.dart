@@ -41,7 +41,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'PlayerElements/Seekbar.dart';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:screenshot/screenshot.dart';
 enum PlayerState { stopped, playing, paused }
 
@@ -82,7 +82,7 @@ class _PlayerState extends State<Player> {
 
   int currentIndex = 0;
 
-
+  final ItemScrollController itemScrollController = ItemScrollController();
   void Transcription() async {
     String url ="https://api.aureal.one/public/getTranscription?episode_id=533910";
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -285,10 +285,22 @@ class _PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
 WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-
-
     var episodeObject = Provider.of<PlayerChange>(context);
-
+      episodeObject.audioPlayer.currentPosition.listen((event) {
+        var currentPositionSeconds = event.inMilliseconds/1000;
+        if(transcript!=null && transcript.length > 0){
+          // List<String> filteredTranscript  = transcript.where((item) {
+          //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
+          // });
+          print('hre');
+          print(event.inMilliseconds/1000);
+          print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+              // setState(() {
+              // //  itemScrollController.scrollTo(index: transcript.length,);
+              // });
+          // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+        }
+      });
 //    duration = Duration(seconds: episodeObject.episodeObject['duration']);
 //    print(duration.toString());
     SizeConfig().init(context);
@@ -812,58 +824,79 @@ WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
                             SizedBox(
                               height: 10,
                             ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap:
-                                    () {
-                              Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
-                              );
-                              },
+                            SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                            //       GestureDetector(
+                            //         onTap:
+                            //       () {
+                            // Navigator.push(
+                            // context,
+                            // MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
+                            // );
+                            // },
+                            //
+                            //
+                            //           child
+                            //             : Container(
+                            //             height: 50,
+                            //             width: 50,
+                            //             color: Colors.white,
+                            //         ),
+                            //       ),
+                              IconButton(
+                              icon: Icon(Icons.looks_4_rounded),
+                              onPressed: () => itemScrollController.scrollTo(
+                                  index: 5, duration: Duration(seconds: 1)),
+                            ),
 
-
-                                        child
-                                          : Container(
-                                          height: 50,
-                                          width: 50,
-                                          color: Colors.white,
+                                  Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(10),
+                                        // color: Colors.red,
+                                        //  color: Colors.white
                                       ),
-                                    ),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          // color: Colors.red,
-                                          //  color: Colors.white
-                                        ),
-                                        width: double.infinity,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                        padding: EdgeInsets.all(20.0),
-                                        child: ListView(
-                                          controller: _controller,
-                                          children: <Widget>[
-                                            for(var v in transcript)
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                                child: Card(
-                                                    color: Colors.transparent,
-                                                    child: Container(
-                                                        color: Colors.transparent,
-                                                        child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
-                                                    ))),
-                                              ),
-                                          ],
-                                        )),
-                                  ],
-                                ),
+                                      width: double.infinity,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      padding: EdgeInsets.all(20.0),
+                                      child:
+                                      ScrollablePositionedList.builder(
+                                          itemCount:transcript.length ,
+                                          initialScrollIndex: 10,
+                                          itemScrollController: itemScrollController,
+                                          itemBuilder: (context, index) {
+                                            return Center(
+                                              heightFactor: 1.2,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child:  Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)))
+                                            );
+                                          }
+                                          ),
+                                      // child: ListView(
+                                      //   controller: _controller,
+                                      //   children: <Widget>[
+                                      //     for(var v in transcript)
+                                      //       Padding(
+                                      //         padding: const EdgeInsets.symmetric(vertical: 5),
+                                      //         child: Card(
+                                      //             color: Colors.transparent,
+                                      //             child: Container(
+                                      //                 color: Colors.transparent,
+                                      //                 child: Padding(
+                                      //               padding: const EdgeInsets.all(8.0),
+                                      //               child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
+                                      //             ))),
+                                      //       ),
+                                      //   ],
+                                      // )),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
