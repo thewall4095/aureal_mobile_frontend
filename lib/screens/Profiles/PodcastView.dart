@@ -1044,7 +1044,7 @@ class _PodcastViewState extends State<PodcastView> {
                               children: [
                                 episodeList[index - 1]['summary'] == null
                                     ? SizedBox(
-                                        height: 0,
+                                        height: 20,
                                       )
                                     : Padding(
                                         padding: const EdgeInsets.symmetric(

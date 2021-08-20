@@ -736,7 +736,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         (context) {
                                                                       return Container(
                                                                         child:
-                                                                            Player(),
+                                                                            Player(
+                                                                            ),
                                                                       );
                                                                     });
                                                               }
