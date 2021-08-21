@@ -432,8 +432,8 @@ class _EpisodeViewState extends State<EpisodeView>
                           )
                         ],
                         expandedHeight: episodeContent['permlink'] == null
-                            ? MediaQuery.of(context).size.height / 1.47
-                            : MediaQuery.of(context).size.height / 1.2,
+                            ? MediaQuery.of(context).size.height / 1.1
+                            : MediaQuery.of(context).size.height / 1.4,
                         flexibleSpace: FlexibleSpaceBar(
                           background: Stack(
                             children: [

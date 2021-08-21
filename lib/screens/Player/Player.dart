@@ -25,6 +25,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -78,6 +79,8 @@ class _PlayerState extends State<Player> {
   var episodeContent;
   var episodeObject;
   List transcript;
+  final picker = ImagePicker();
+  File _image;
   bool isUpvoteLoading = false;
 
   int currentIndex = 0;
@@ -191,7 +194,7 @@ class _PlayerState extends State<Player> {
   }
 
   int counter = 0;
-
+String copyclip;
   String hiveUsername;
 
   final List<StreamSubscription> _subscriptions = [];
@@ -258,7 +261,7 @@ class _PlayerState extends State<Player> {
             itemScrollController.scrollTo(
                 index: count,
                 curve: Curves.easeInCirc,
-                duration: Duration(seconds: 1));
+                duration: Duration(seconds:1));
           }}
       }});
 
@@ -301,15 +304,25 @@ class _PlayerState extends State<Player> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
+  void share({var episodeObject}) async {
+    // String sharableLink;
 
-  FileType _pickingType = FileType.image;
-  final picker = ImagePicker();
-  File _image;
+    await FlutterShare.share(
+        title: '${episodeObject['podcast_name']}',
+        text:
+        "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeObject['id']}");
+  }
+
+
   //
   // _scrollToBottom(){
   //   _controller.jumpTo(_controller.position.maxScrollExtent);
   // }
 
+
+  String _fileName;
+  String _path;
+  Map<String, String> _paths;
   @override
   Widget build(BuildContext context) {
 // WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
@@ -903,7 +916,141 @@ class _PlayerState extends State<Player> {
                                               heightFactor: 1.2,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
-                                                child:  Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)))
+                                                child:  GestureDetector(
+                                                    onLongPress: (){
+                                                      showModalBottomSheet(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return Column(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: <Widget>[
+                                                              Card(
+                                                                child: Container(
+                                                                  height: MediaQuery.of(context).size.height/5,
+                                                                  width: double.infinity,
+                                                                  child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      SizedBox(height: 10,),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.all(8.0),
+                                                                        child: Container(
+                                                                          height: MediaQuery.of(context).size.height/10,
+                                                                          width:double.infinity,
+                                                                          decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(10),border: Border.all()
+                                                                          ),
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.all(8.0),
+                                                                            child: Text("${transcript[index]["msg"]}",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                                                                        children: [
+                                                                      Container(
+                                                                      width:MediaQuery.of(context).size.width/10,
+                                                                  height:MediaQuery.of(context).size.height/15,
+                                                                  decoration: new BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    shape: BoxShape.circle,
+                                                                  ),
+                                                                            child: IconButton(
+                                                                              onPressed: () async {
+                                                                                PickedFile  pickedFile = await picker.getImage(source: ImageSource.gallery
+                                                                                );
+                                                                                SocialShare.shareInstagramStory(
+                                                                                  pickedFile.path,
+                                                                                  backgroundTopColor: "#ffffff",
+                                                                                  backgroundBottomColor: "#000000",
+                                                                                  attributionURL: "https://deep-link-url",
+                                                                                ).then((data) {
+                                                                                  print(data);
+                                                                                });
+                                                                              },
+                                                                              icon: Icon(FontAwesomeIcons.instagram,color: Colors.black,),
+                                                                            ),
+                                                                          ),
+                                                                Container(
+                                                                  width:MediaQuery.of(context).size.width/10,
+                                                                  height:MediaQuery.of(context).size.height/15,
+                                                                  decoration: new BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    shape: BoxShape.circle,
+                                                                  ),
+                                                                            child: IconButton(
+                                                                              onPressed: () async {
+                                                                                SocialShare.shareTwitter(
+                                                                                  "${transcript[index]["msg"]}",
+                                                                                  hashtags: ["AurealOne", "Hive", "foo", "bar"],
+                                                                                  url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
+                                                                                  trailingText: "\nhello",
+                                                                                ).then((data) {
+                                                                                  print(data);
+                                                                                });
+                                                                              },
+                                                                              icon: Icon(FontAwesomeIcons.twitter,color: Colors.black,),
+                                                                            ),
+                                                                          ),
+                                                                Container(
+                                                                  width:MediaQuery.of(context).size.width/10,
+                                                                  height:MediaQuery.of(context).size.height/15,
+                                                                  decoration: new BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    shape: BoxShape.circle,
+                                                                  ),
+                                                                            child: IconButton(
+                                                                              onPressed: () async {
+                                                                                SocialShare.copyToClipboard(
+                                                                                  "${transcript[index]["msg"]}",
+                                                                                ).then((data) {
+                                                                                  print(data);
+                                                                                });
+                                                                              },
+                                                                              icon: Icon(FontAwesomeIcons.clipboard,color: Colors.black,),
+                                                                            ),
+                                                                          ),
+                                                                Container(
+                                                                  width:MediaQuery.of(context).size.width/10,
+                                                                  height:MediaQuery.of(context).size.height/15,
+                                                                  decoration: new BoxDecoration(
+                                                                    color: Colors.white,
+                                                                    shape: BoxShape.circle,
+                                                                  ),
+                                                                            child: IconButton(
+
+                                                                                onPressed: () async {
+                                                                                    await FlutterShare.share(
+                                                                                    title: "${episodeObject.episodeName}",
+                                                                                    text:
+                                                                                        "${transcript[index]["msg"]} \n \nhere's the link for you https://aureal.one/episode/${episodeObject.episodeObject['id']}");
+                                                                                    },
+
+
+                                                                              icon: Icon(Icons.more_horiz,color: Colors.black,),
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              )
+                                                              ],
+                                                            );
+                                                          });
+                                                      Clipboard.setData(
+                                                        ClipboardData(text: "${transcript[index]["msg"]}"),
+                                                      );
+                                                    },
+                                                    child: Card(
+                                                      color: Colors.transparent,
+                                                      child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)),
+                                                    ))))
                                             );
                                           }
                                           ),
