@@ -42,8 +42,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'PlayerElements/Seekbar.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:screenshot/screenshot.dart';
+
 enum PlayerState { stopped, playing, paused }
 
 extension Pipe<T> on T {
@@ -86,17 +86,19 @@ class _PlayerState extends State<Player> {
   int currentIndex = 0;
 
   final ItemScrollController itemScrollController = ItemScrollController();
+
   void Transcription(episode_id) async {
-    String url ="https://api.aureal.one/public/getTranscription?episode_id=${episode_id}";
+    String url =
+        "https://api.aureal.one/public/getTranscription?episode_id=${episode_id}";
     SharedPreferences prefs = await SharedPreferences.getInstance();
-        print("sfjkab");
-        print(url);
+    print("sfjkab");
+    print(url);
     try {
       http.Response response = await http.get(Uri.parse(url));
       print(response.body);
       if (response.statusCode == 200) {
         setState(() {
-         transcript = jsonDecode(response.body)['data']['transcription'];
+          transcript = jsonDecode(response.body)['data']['transcription'];
         });
         print(transcript);
       }
@@ -104,7 +106,6 @@ class _PlayerState extends State<Player> {
       print(e);
     }
   }
-
 
   void getInitialComments(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -194,7 +195,7 @@ class _PlayerState extends State<Player> {
   }
 
   int counter = 0;
-String copyclip;
+  String copyclip;
   String hiveUsername;
 
   final List<StreamSubscription> _subscriptions = [];
@@ -242,8 +243,8 @@ String copyclip;
     print(episodeObject.id);
     Transcription(episodeObject.id);
     episodeObject.audioPlayer.currentPosition.listen((event) {
-      var currentPositionSeconds = event.inMilliseconds/1000;
-      if(transcript!=null && transcript.length > 0) {
+      var currentPositionSeconds = event.inMilliseconds / 1000;
+      if (transcript != null && transcript.length > 0) {
         // List<String> filteredTranscript  = transcript.where((item) {
         //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
         // });
@@ -253,7 +254,7 @@ String copyclip;
         // setState(() {
         if (transcript != null && transcript.length > 0) {
           var count = (transcript.indexWhere((element) =>
-          element['start_time'] < currentPositionSeconds &&
+              element['start_time'] < currentPositionSeconds &&
               element['end_time'] > currentPositionSeconds));
           if (count >= 0) {
             print(count);
@@ -261,10 +262,11 @@ String copyclip;
             itemScrollController.scrollTo(
                 index: count,
                 curve: Curves.easeInCirc,
-                duration: Duration(seconds:1));
-          }}
-      }});
-
+                duration: Duration(seconds: 1));
+          }
+        }
+      }
+    });
 
     getColor(episodeObject.episodeObject['image'] == null
         ? episodeObject.episodeObject['podcast_image']
@@ -304,45 +306,45 @@ String copyclip;
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   }
+
   void share({var episodeObject}) async {
     // String sharableLink;
 
     await FlutterShare.share(
         title: '${episodeObject['podcast_name']}',
         text:
-        "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeObject['id']}");
+            "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeObject['id']}");
   }
-
 
   //
   // _scrollToBottom(){
   //   _controller.jumpTo(_controller.position.maxScrollExtent);
   // }
 
-
   String _fileName;
   String _path;
   Map<String, String> _paths;
+
   @override
   Widget build(BuildContext context) {
 // WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     var episodeObject = Provider.of<PlayerChange>(context);
-      // episodeObject.audioPlayer.currentPosition.listen((event) {
-      //   var currentPositionSeconds = event.inMilliseconds/1000;
-      //   if(transcript!=null && transcript.length > 0){
-      //     // List<String> filteredTranscript  = transcript.where((item) {
-      //     //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
-      //     // });
-      //     print('hre');
-      //     print(event.inMilliseconds/1000);
-      //     print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-      //         // setState(() {
-      //         //   itemScrollController.scrollTo(
-      //         //       index: transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds), duration: Duration(seconds: 1));
-      //         // });
-      //     // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-      //   }
-      // });
+    // episodeObject.audioPlayer.currentPosition.listen((event) {
+    //   var currentPositionSeconds = event.inMilliseconds/1000;
+    //   if(transcript!=null && transcript.length > 0){
+    //     // List<String> filteredTranscript  = transcript.where((item) {
+    //     //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
+    //     // });
+    //     print('hre');
+    //     print(event.inMilliseconds/1000);
+    //     print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+    //         // setState(() {
+    //         //   itemScrollController.scrollTo(
+    //         //       index: transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds), duration: Duration(seconds: 1));
+    //         // });
+    //     // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+    //   }
+    // });
 //    duration = Duration(seconds: episodeObject.episodeObject['duration']);
 //    print(duration.toString());
     SizeConfig().init(context);
@@ -357,1158 +359,1260 @@ String copyclip;
             child: Stack(
               children: [
                 transcript != null
-                ?
-            TabBarView(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                    ? TabBarView(
                         children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 15.5,
-                          ),
-                          CachedNetworkImage(
-                            imageUrl: episodeObject.episodeObject['image'] ==
-                                    null
-                                ? episodeObject.episodeObject['podcast_image']
-                                : episodeObject.episodeObject['image'],
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover)),
-                                width: MediaQuery.of(context).size.width / 2,
-                                height: MediaQuery.of(context).size.width / 2,
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 48,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return EpisodeView(
-                                      episodeId:
-                                          episodeObject.episodeObject['id']);
-                                }));
-                              },
-                              child: Text(
-                                '${episodeObject.episodeName}',
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                textScaleFactor: 1.0,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.blockSizeHorizontal * 4,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Text(
-                              '${episodeObject.episodeObject['author']}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 50,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                IconButton(
-                                  icon: Icon(FontAwesomeIcons.fighterJet),
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: kSecondaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              height: 380,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15,
-                                                        vertical: 10),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "0.25X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(0.5);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "0.5X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(0.75);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "0.75X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(1.0);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "Normal",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(1.25);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "1.25X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(1.5);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "1.5X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        episodeObject
-                                                            .audioPlayer
-                                                            .setPlaySpeed(2.0);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            "2X",
-                                                            textScaleFactor:
-                                                                0.75,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withOpacity(
-                                                                        0.7)),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        });
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 15.5,
+                                ),
+                                CachedNetworkImage(
+                                  imageUrl: episodeObject
+                                              .episodeObject['image'] ==
+                                          null
+                                      ? episodeObject
+                                          .episodeObject['podcast_image']
+                                      : episodeObject.episodeObject['image'],
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover)),
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      height:
+                                          MediaQuery.of(context).size.width / 2,
+                                    );
                                   },
                                 ),
-                                episodeObject.episodeObject['permlink'] == null
-                                    ? SizedBox(
-                                        width: 50,
-                                      )
-                                    : Container(
-                                        child: Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () async {
-                                                if (hiveUsername != null) {
-                                                  setState(() {
-                                                    isUpvoteLoading = true;
-                                                  });
-                                                  double _value = 50.0;
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return Dialog(
-                                                            backgroundColor: Colors
-                                                                .transparent,
-                                                            child: UpvoteEpisode(
-                                                                permlink: episodeObject
-                                                                        .episodeObject[
-                                                                    'permlink'],
-                                                                episode_id:
-                                                                    episodeObject
-                                                                            .episodeObject[
-                                                                        'id']));
-                                                      }).then((value) async {
-                                                    print(value);
-                                                  });
-                                                  setState(() {
-                                                    if (episodeObject.ifVoted !=
-                                                        true) {
-                                                      episodeObject.ifVoted =
-                                                          true;
-                                                    }
-                                                  });
-                                                  setState(() {
-                                                    isUpvoteLoading = false;
-                                                  });
-                                                } else {
-                                                  showBarModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return HiveDetails();
-                                                      });
-                                                }
-                                              },
-                                              child: Container(
-                                                decoration: episodeObject
-                                                            .ifVoted ==
-                                                        true
-                                                    ? BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                                colors: [
-                                                              Color(0xff5bc3ef),
-                                                              Color(0xff5d5da8)
-                                                            ]),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30))
-                                                    : BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                kSecondaryColor),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(30)),
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 10),
-                                                  child: Row(
-                                                    children: [
-                                                      isUpvoteLoading == true
-                                                          ? Container(
-                                                              height: 17,
-                                                              width: 18,
-                                                              child:
-                                                                  SpinKitPulse(
-                                                                color:
-                                                                    Colors.blue,
-                                                              ),
-                                                            )
-                                                          : Icon(
-                                                              FontAwesomeIcons
-                                                                  .chevronCircleUp,
-                                                              size: 15,
-                                                              // color:
-                                                              //     Color(0xffe8e8e8),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 48,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return EpisodeView(
+                                            episodeId: episodeObject
+                                                .episodeObject['id']);
+                                      }));
+                                    },
+                                    child: Text(
+                                      '${episodeObject.episodeName}',
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      textScaleFactor: 1.0,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.blockSizeHorizontal *
+                                                  4,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    '${episodeObject.episodeObject['author']}',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 50,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(FontAwesomeIcons.fighterJet),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                  ),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: kSecondaryColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    height: 380,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 15,
+                                                          vertical: 10),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "0.25X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
                                                             ),
-                                                      Padding(
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      0.5);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "0.5X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      0.75);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "0.75X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      1.0);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "Normal",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      1.25);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "1.25X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      1.5);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "1.5X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          FlatButton(
+                                                            onPressed: () {
+                                                              episodeObject
+                                                                  .audioPlayer
+                                                                  .setPlaySpeed(
+                                                                      2.0);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  "2X",
+                                                                  textScaleFactor:
+                                                                      0.75,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                      ),
+                                      episodeObject.episodeObject['permlink'] ==
+                                              null
+                                          ? SizedBox(
+                                              width: 50,
+                                            )
+                                          : Container(
+                                              child: Row(
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () async {
+                                                      if (hiveUsername !=
+                                                          null) {
+                                                        setState(() {
+                                                          isUpvoteLoading =
+                                                              true;
+                                                        });
+                                                        double _value = 50.0;
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return Dialog(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  child: UpvoteEpisode(
+                                                                      permlink:
+                                                                          episodeObject.episodeObject[
+                                                                              'permlink'],
+                                                                      episode_id:
+                                                                          episodeObject
+                                                                              .episodeObject['id']));
+                                                            }).then((value) async {
+                                                          print(value);
+                                                        });
+                                                        setState(() {
+                                                          if (episodeObject
+                                                                  .ifVoted !=
+                                                              true) {
+                                                            episodeObject
+                                                                .ifVoted = true;
+                                                          }
+                                                        });
+                                                        setState(() {
+                                                          isUpvoteLoading =
+                                                              false;
+                                                        });
+                                                      } else {
+                                                        showBarModalBottomSheet(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return HiveDetails();
+                                                            });
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: episodeObject
+                                                                  .ifVoted ==
+                                                              true
+                                                          ? BoxDecoration(
+                                                              gradient:
+                                                                  LinearGradient(
+                                                                      colors: [
+                                                                    Color(
+                                                                        0xff5bc3ef),
+                                                                    Color(
+                                                                        0xff5d5da8)
+                                                                  ]),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                      30))
+                                                          : BoxDecoration(
+                                                              border: Border.all(
+                                                                  color:
+                                                                      kSecondaryColor),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          30)),
+                                                      child: Padding(
                                                         padding:
                                                             const EdgeInsets
                                                                     .symmetric(
-                                                                horizontal: 8),
-                                                        child: Text(
-                                                          episodeObject
-                                                              .episodeObject[
-                                                                  'votes']
-                                                              .toString(),
-                                                          textScaleFactor: 1.0,
-                                                          style: TextStyle(
-                                                              fontSize: 15
-                                                              // color:
-                                                              //     Color(0xffe8e8e8)
+                                                                vertical: 5,
+                                                                horizontal: 10),
+                                                        child: Row(
+                                                          children: [
+                                                            isUpvoteLoading ==
+                                                                    true
+                                                                ? Container(
+                                                                    height: 17,
+                                                                    width: 18,
+                                                                    child:
+                                                                        SpinKitPulse(
+                                                                      color: Colors
+                                                                          .blue,
+                                                                    ),
+                                                                  )
+                                                                : Icon(
+                                                                    FontAwesomeIcons
+                                                                        .chevronCircleUp,
+                                                                    size: 15,
+                                                                    // color:
+                                                                    //     Color(0xffe8e8e8),
+                                                                  ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      8),
+                                                              child: Text(
+                                                                episodeObject
+                                                                    .episodeObject[
+                                                                        'votes']
+                                                                    .toString(),
+                                                                textScaleFactor:
+                                                                    1.0,
+                                                                style: TextStyle(
+                                                                    fontSize: 15
+                                                                    // color:
+                                                                    //     Color(0xffe8e8e8)
+                                                                    ),
                                                               ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 15,
-                                                        width: 10,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          border: Border(
-                                                              left: BorderSide(
-                                                            color: themeProvider
-                                                                        .isLightTheme ==
-                                                                    false
-                                                                ? Colors.white
-                                                                : kPrimaryColor,
-                                                          )),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(right: 4),
-                                                        child: Text(
-                                                          '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
-                                                          textScaleFactor: 1.0,
-                                                          style: TextStyle(
-                                                            fontSize: 15,
+                                                            ),
+                                                            Container(
+                                                              height: 15,
+                                                              width: 10,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border(
+                                                                    left:
+                                                                        BorderSide(
+                                                                  color: themeProvider
+                                                                              .isLightTheme ==
+                                                                          false
+                                                                      ? Colors
+                                                                          .white
+                                                                      : kPrimaryColor,
+                                                                )),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right: 4),
+                                                              child: Text(
+                                                                '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
+                                                                textScaleFactor:
+                                                                    1.0,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 15,
 
-                                                            // color:
-                                                            //     Color(0xffe8e8e8)
-                                                          ),
+                                                                  // color:
+                                                                  //     Color(0xffe8e8e8)
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
-                                                      )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                      IconButton(
+                                        onPressed: () {
+                                          share(
+                                              episodeObject:
+                                                  episodeObject.episodeObject);
+                                        },
+                                        icon: Icon(FontAwesomeIcons.share),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            // width: MediaQuery.of(context).size.width,
+                            // height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                  Colors.black,
+                                  Color(dominantColor)
+                                ])),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: episodeObject
+                                                      .episodeObject['image'] ==
+                                                  null
+                                              ? episodeObject.episodeObject[
+                                                  'podcast_image']
+                                              : episodeObject
+                                                  .episodeObject['image'],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover)),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  8,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  8,
+                                            );
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  '${episodeObject.episodeName}',
+                                                  textAlign: TextAlign.start,
+                                                  maxLines: 2,
+                                                  textScaleFactor: 1.0,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          3,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(
+                                                  height: 2,
+                                                ),
+                                                Text(
+                                                  '${episodeObject.episodeObject['author']}',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        //       GestureDetector(
+                                        //         onTap:
+                                        //       () {
+                                        // Navigator.push(
+                                        // context,
+                                        // MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
+                                        // );
+                                        // },
+                                        //
+                                        //
+                                        //           child
+                                        //             : Container(
+                                        //             height: 50,
+                                        //             width: 50,
+                                        //             color: Colors.white,
+                                        //         ),
+                                        //       ),
+                                        //   IconButton(
+                                        //   icon: Icon(Icons.looks_4_rounded),
+                                        //   onPressed: () => itemScrollController.scrollTo(
+                                        //       index: 5, duration: Duration(seconds: 1)),
+                                        // ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            // color: Colors.red,
+                                            //  color: Colors.white
+                                          ),
+                                          width: double.infinity,
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          padding: EdgeInsets.all(20.0),
+                                          child:
+                                              ScrollablePositionedList.builder(
+                                                  itemCount: transcript.length,
+                                                  initialScrollIndex: 0,
+                                                  itemScrollController:
+                                                      itemScrollController,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Center(
+                                                        heightFactor: 1.2,
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child:
+                                                                GestureDetector(
+                                                                    onLongPress:
+                                                                        () {
+                                                                      showModalBottomSheet(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (context) {
+                                                                            return Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: <Widget>[
+                                                                                Card(
+                                                                                  child: Container(
+                                                                                    height: MediaQuery.of(context).size.height / 4,
+                                                                                    width: double.infinity,
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        SizedBox(
+                                                                                          height: 10,
+                                                                                        ),
+                                                                                        Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Card(
+                                                                                            color: Colors.black,
+                                                                                            child: Container(
+                                                                                              height: MediaQuery.of(context).size.height / 10,
+                                                                                              width: double.infinity,
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                                child: Text(
+                                                                                                  "${transcript[index]["msg"]}",
+                                                                                                  style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),
+                                                                                                  // Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                                                          children: [
+                                                                                            Container(
+                                                                                              width: MediaQuery.of(context).size.width / 10,
+                                                                                              height: MediaQuery.of(context).size.height / 15,
+                                                                                              decoration: new BoxDecoration(
+                                                                                                color: Colors.white,
+                                                                                                shape: BoxShape.circle,
+                                                                                              ),
+                                                                                              child: IconButton(
+                                                                                                onPressed: () async {
+                                                                                                   PickedFile pickedFile = await picker.getImage(source:  episodeObject.episodeObject["image"],);
+                                                                                                  SocialShare.shareInstagramStory(
+                                                                                                    episodeObject.episodeObject["image"],
+                                                                                                    backgroundTopColor: "#ffffff",
+                                                                                                    backgroundBottomColor: "#000000",
+                                                                                                    attributionURL: "https://deep-link-url",
+                                                                                                  ).then((data) {
+                                                                                                    print(data);
+                                                                                                  });
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  FontAwesomeIcons.instagram,
+                                                                                                  color: Colors.black,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Container(
+                                                                                              width: MediaQuery.of(context).size.width / 10,
+                                                                                              height: MediaQuery.of(context).size.height / 15,
+                                                                                              decoration: new BoxDecoration(
+                                                                                                color: Colors.white,
+                                                                                                shape: BoxShape.circle,
+                                                                                              ),
+                                                                                              child: IconButton(
+                                                                                                onPressed: () async {
+                                                                                                  SocialShare.shareTwitter(
+                                                                                                    "${transcript[index]["msg"]}",
+                                                                                                    hashtags: [
+                                                                                                      "AurealOne",
+                                                                                                      "Hive",
+                                                                                                      "foo",
+                                                                                                      "bar"
+                                                                                                    ],
+                                                                                                    url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
+                                                                                                    trailingText: "\nhello",
+                                                                                                  ).then((data) {
+                                                                                                    print(data);
+                                                                                                  });
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  FontAwesomeIcons.twitter,
+                                                                                                  color: Colors.black,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Container(
+                                                                                              width: MediaQuery.of(context).size.width / 10,
+                                                                                              height: MediaQuery.of(context).size.height / 15,
+                                                                                              decoration: new BoxDecoration(
+                                                                                                color: Colors.white,
+                                                                                                shape: BoxShape.circle,
+                                                                                              ),
+                                                                                              child: IconButton(
+                                                                                                onPressed: () async {
+                                                                                                  SocialShare.copyToClipboard(
+                                                                                                    "${transcript[index]["msg"]}",
+                                                                                                  ).then((data) {
+                                                                                                    print(data);
+                                                                                                  });
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  FontAwesomeIcons.clipboard,
+                                                                                                  color: Colors.black,
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Container(
+                                                                                              width: MediaQuery.of(context).size.width / 10,
+                                                                                              height: MediaQuery.of(context).size.height / 15,
+                                                                                              decoration: new BoxDecoration(
+                                                                                                color: Colors.white,
+                                                                                                shape: BoxShape.circle,
+                                                                                              ),
+                                                                                              child: IconButton(
+                                                                                                onPressed: () async {
+                                                                                                  await FlutterShare.share(
+                                                                                                      linkUrl: episodeObject.episodeObject["image"],
+                                                                                                      title: "${episodeObject.episodeName}", text: "${transcript[index]["msg"]} \n \nhere's the link for you https://aureal.one/episode/${episodeObject.episodeObject['id']}");
+                                                                                                },
+                                                                                                icon: Icon(
+                                                                                                  Icons.more_horiz,
+                                                                                                  color: Colors.black,
+                                                                                                ),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            );
+                                                                          });
+                                                                      Clipboard
+                                                                          .setData(
+                                                                        ClipboardData(
+                                                                            text:
+                                                                                "${transcript[index]["msg"]}"),
+                                                                      );
+                                                                    },
+                                                                    child: Card(
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child: Text(
+                                                                              "${transcript[index]["msg"]},",
+                                                                              style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)),
+                                                                        )))));
+                                                  }),
+                                          // child: ListView(
+                                          //   controller: _controller,
+                                          //   children: <Widget>[
+                                          //     for(var v in transcript)
+                                          //       Padding(
+                                          //         padding: const EdgeInsets.symmetric(vertical: 5),
+                                          //         child: Card(
+                                          //             color: Colors.transparent,
+                                          //             child: Container(
+                                          //                 color: Colors.transparent,
+                                          //                 child: Padding(
+                                          //               padding: const EdgeInsets.all(8.0),
+                                          //               child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
+                                          //             ))),
+                                          //       ),
+                                          //   ],
+                                          // )),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 15.5,
+                            ),
+                            CachedNetworkImage(
+                              imageUrl: episodeObject.episodeObject['image'] ==
+                                      null
+                                  ? episodeObject.episodeObject['podcast_image']
+                                  : episodeObject.episodeObject['image'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  height: MediaQuery.of(context).size.width / 2,
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 48,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) {
+                                    return EpisodeView(
+                                        episodeId:
+                                            episodeObject.episodeObject['id']);
+                                  }));
+                                },
+                                child: Text(
+                                  '${episodeObject.episodeName}',
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  textScaleFactor: 1.0,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.blockSizeHorizontal * 4,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Text(
+                                '${episodeObject.episodeObject['author']}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 50,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(FontAwesomeIcons.fighterJet),
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                              ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: kSecondaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                height: 380,
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 15,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "0.25X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  0.5);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "0.5X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  0.75);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "0.75X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  1.0);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Normal",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  1.25);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "1.25X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  1.5);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "1.5X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          episodeObject
+                                                              .audioPlayer
+                                                              .setPlaySpeed(
+                                                                  2.0);
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "2X",
+                                                              textScaleFactor:
+                                                                  0.75,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                IconButton(
-                                  onPressed: () {
-                                    share(
-                                        episodeObject:
-                                            episodeObject.episodeObject);
-                                  },
-                                  icon: Icon(FontAwesomeIcons.share),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      // width: MediaQuery.of(context).size.width,
-                      // height: MediaQuery.of(context).size.height,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [Colors.black, Color(dominantColor)])),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: episodeObject
-                                                .episodeObject['image'] ==
-                                            null
-                                        ? episodeObject
-                                            .episodeObject['podcast_image']
-                                        : episodeObject.episodeObject['image'],
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover)),
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                8,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                8,
-                                      );
+                                            );
+                                          });
                                     },
                                   ),
-                                  Expanded(
-
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${episodeObject.episodeName}',
-                                            textAlign: TextAlign.start,
-                                            maxLines: 2,
-                                            textScaleFactor: 1.0,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontSize: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    3,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Text(
-                                            '${episodeObject.episodeObject['author']}',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                         SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                            //       GestureDetector(
-                            //         onTap:
-                            //       () {
-                            // Navigator.push(
-                            // context,
-                            // MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
-                            // );
-                            // },
-                            //
-                            //
-                            //           child
-                            //             : Container(
-                            //             height: 50,
-                            //             width: 50,
-                            //             color: Colors.white,
-                            //         ),
-                            //       ),
-                            //   IconButton(
-                            //   icon: Icon(Icons.looks_4_rounded),
-                            //   onPressed: () => itemScrollController.scrollTo(
-                            //       index: 5, duration: Duration(seconds: 1)),
-                            // ),
-                                  Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
-                                        // color: Colors.red,
-                                        //  color: Colors.white
-                                      ),
-                                      width: double.infinity,
-                                      height:
-                                          MediaQuery.of(context).size.height,
-                                      padding: EdgeInsets.all(20.0),
-                                      child:
-                                      ScrollablePositionedList.builder(
-                                          itemCount:transcript.length ,
-                                          initialScrollIndex: 0,
-                                          itemScrollController: itemScrollController,
-                                          itemBuilder: (context, index) {
-                                            return Center(
-                                              heightFactor: 1.2,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child:  GestureDetector(
-                                                    onLongPress: (){
-                                                      showModalBottomSheet(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return Column(
-                                                              mainAxisSize: MainAxisSize.min,
-                                                              children: <Widget>[
-                                                              Card(
-                                                                child: Container(
-                                                                  height: MediaQuery.of(context).size.height/5,
-                                                                  width: double.infinity,
-                                                                  child: Column(
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    children: [
-                                                                      SizedBox(height: 10,),
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.all(8.0),
-                                                                        child: Container(
-                                                                          height: MediaQuery.of(context).size.height/10,
-                                                                          width:double.infinity,
-                                                                          decoration: BoxDecoration(
-                                                                            borderRadius: BorderRadius.circular(10),border: Border.all()
-                                                                          ),
-                                                                          child: Padding(
-                                                                            padding: const EdgeInsets.all(8.0),
-                                                                            child: Text("${transcript[index]["msg"]}",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),)
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-                                                                        children: [
-                                                                      Container(
-                                                                      width:MediaQuery.of(context).size.width/10,
-                                                                  height:MediaQuery.of(context).size.height/15,
-                                                                  decoration: new BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    shape: BoxShape.circle,
-                                                                  ),
-                                                                            child: IconButton(
-                                                                              onPressed: () async {
-                                                                                PickedFile  pickedFile = await picker.getImage(source: ImageSource.gallery
-                                                                                );
-                                                                                SocialShare.shareInstagramStory(
-                                                                                  pickedFile.path,
-                                                                                  backgroundTopColor: "#ffffff",
-                                                                                  backgroundBottomColor: "#000000",
-                                                                                  attributionURL: "https://deep-link-url",
-                                                                                ).then((data) {
-                                                                                  print(data);
-                                                                                });
-                                                                              },
-                                                                              icon: Icon(FontAwesomeIcons.instagram,color: Colors.black,),
-                                                                            ),
-                                                                          ),
-                                                                Container(
-                                                                  width:MediaQuery.of(context).size.width/10,
-                                                                  height:MediaQuery.of(context).size.height/15,
-                                                                  decoration: new BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    shape: BoxShape.circle,
-                                                                  ),
-                                                                            child: IconButton(
-                                                                              onPressed: () async {
-                                                                                SocialShare.shareTwitter(
-                                                                                  "${transcript[index]["msg"]}",
-                                                                                  hashtags: ["AurealOne", "Hive", "foo", "bar"],
-                                                                                  url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
-                                                                                  trailingText: "\nhello",
-                                                                                ).then((data) {
-                                                                                  print(data);
-                                                                                });
-                                                                              },
-                                                                              icon: Icon(FontAwesomeIcons.twitter,color: Colors.black,),
-                                                                            ),
-                                                                          ),
-                                                                Container(
-                                                                  width:MediaQuery.of(context).size.width/10,
-                                                                  height:MediaQuery.of(context).size.height/15,
-                                                                  decoration: new BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    shape: BoxShape.circle,
-                                                                  ),
-                                                                            child: IconButton(
-                                                                              onPressed: () async {
-                                                                                SocialShare.copyToClipboard(
-                                                                                  "${transcript[index]["msg"]}",
-                                                                                ).then((data) {
-                                                                                  print(data);
-                                                                                });
-                                                                              },
-                                                                              icon: Icon(FontAwesomeIcons.clipboard,color: Colors.black,),
-                                                                            ),
-                                                                          ),
-                                                                Container(
-                                                                  width:MediaQuery.of(context).size.width/10,
-                                                                  height:MediaQuery.of(context).size.height/15,
-                                                                  decoration: new BoxDecoration(
-                                                                    color: Colors.white,
-                                                                    shape: BoxShape.circle,
-                                                                  ),
-                                                                            child: IconButton(
-
-                                                                                onPressed: () async {
-                                                                                    await FlutterShare.share(
-                                                                                    title: "${episodeObject.episodeName}",
-                                                                                    text:
-                                                                                        "${transcript[index]["msg"]} \n \nhere's the link for you https://aureal.one/episode/${episodeObject.episodeObject['id']}");
-                                                                                    },
-
-
-                                                                              icon: Icon(Icons.more_horiz,color: Colors.black,),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
+                                  episodeObject.episodeObject['permlink'] ==
+                                          null
+                                      ? SizedBox(
+                                          width: 50,
+                                        )
+                                      : Container(
+                                          child: Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () async {
+                                                  if (hiveUsername != null) {
+                                                    setState(() {
+                                                      isUpvoteLoading = true;
+                                                    });
+                                                    double _value = 50.0;
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                              backgroundColor: Colors
+                                                                  .transparent,
+                                                              child: UpvoteEpisode(
+                                                                  permlink: episodeObject
+                                                                          .episodeObject[
+                                                                      'permlink'],
+                                                                  episode_id:
+                                                                      episodeObject
+                                                                              .episodeObject[
+                                                                          'id']));
+                                                        }).then((value) async {
+                                                      print(value);
+                                                    });
+                                                    setState(() {
+                                                      if (episodeObject
+                                                              .ifVoted !=
+                                                          true) {
+                                                        episodeObject.ifVoted =
+                                                            true;
+                                                      }
+                                                    });
+                                                    setState(() {
+                                                      isUpvoteLoading = false;
+                                                    });
+                                                  } else {
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return HiveDetails();
+                                                        });
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: episodeObject
+                                                              .ifVoted ==
+                                                          true
+                                                      ? BoxDecoration(
+                                                          gradient: LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                    0xff5bc3ef),
+                                                                Color(
+                                                                    0xff5d5da8)
+                                                              ]),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(30))
+                                                      : BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  kSecondaryColor),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      30)),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        isUpvoteLoading == true
+                                                            ? Container(
+                                                                height: 17,
+                                                                width: 18,
+                                                                child:
+                                                                    SpinKitPulse(
+                                                                  color: Colors
+                                                                      .blue,
                                                                 ),
                                                               )
-                                                              ],
-                                                            );
-                                                          });
-                                                      Clipboard.setData(
-                                                        ClipboardData(text: "${transcript[index]["msg"]}"),
-                                                      );
-                                                    },
-                                                    child: Card(
-                                                      color: Colors.transparent,
-                                                      child: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)),
-                                                    ))))
-                                            );
-                                          }
+                                                            : Icon(
+                                                                FontAwesomeIcons
+                                                                    .chevronCircleUp,
+                                                                size: 15,
+                                                                // color:
+                                                                //     Color(0xffe8e8e8),
+                                                              ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      8),
+                                                          child: Text(
+                                                            episodeObject
+                                                                .episodeObject[
+                                                                    'votes']
+                                                                .toString(),
+                                                            textScaleFactor:
+                                                                1.0,
+                                                            style: TextStyle(
+                                                                fontSize: 15
+                                                                // color:
+                                                                //     Color(0xffe8e8e8)
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height: 15,
+                                                          width: 10,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            border: Border(
+                                                                left:
+                                                                    BorderSide(
+                                                              color: themeProvider
+                                                                          .isLightTheme ==
+                                                                      false
+                                                                  ? Colors.white
+                                                                  : kPrimaryColor,
+                                                            )),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 4),
+                                                          child: Text(
+                                                            '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
+                                                            textScaleFactor:
+                                                                1.0,
+                                                            style: TextStyle(
+                                                              fontSize: 15,
+
+                                                              // color:
+                                                              //     Color(0xffe8e8e8)
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                      // child: ListView(
-                                      //   controller: _controller,
-                                      //   children: <Widget>[
-                                      //     for(var v in transcript)
-                                      //       Padding(
-                                      //         padding: const EdgeInsets.symmetric(vertical: 5),
-                                      //         child: Card(
-                                      //             color: Colors.transparent,
-                                      //             child: Container(
-                                      //                 color: Colors.transparent,
-                                      //                 child: Padding(
-                                      //               padding: const EdgeInsets.all(8.0),
-                                      //               child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
-                                      //             ))),
-                                      //       ),
-                                      //   ],
-                                      // )),
-                                  ),
+                                        ),
+                                  IconButton(
+                                    onPressed: () {
+                                      share(
+                                          episodeObject:
+                                              episodeObject.episodeObject);
+                                    },
+                                    icon: Icon(FontAwesomeIcons.share),
+                                  )
                                 ],
                               ),
                             )
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                )
-    :Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 15.5,
-              ),
-              CachedNetworkImage(
-                imageUrl: episodeObject.episodeObject['image'] ==
-                    null
-                    ? episodeObject.episodeObject['podcast_image']
-                    : episodeObject.episodeObject['image'],
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover)),
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.width / 2,
-                  );
-                },
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 48,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                          return EpisodeView(
-                              episodeId:
-                              episodeObject.episodeObject['id']);
-                        }));
-                  },
-                  child: Text(
-                    '${episodeObject.episodeName}',
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    textScaleFactor: 1.0,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize:
-                        SizeConfig.blockSizeHorizontal * 4,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  '${episodeObject.episodeObject['author']}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 50,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(FontAwesomeIcons.fighterJet),
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(30),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor,
-                                    borderRadius:
-                                    BorderRadius.circular(10),
-                                  ),
-                                  height: 380,
-                                  child: Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 15,
-                                        vertical: 10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "0.25X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(0.5);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "0.5X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(0.75);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "0.75X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(1.0);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "Normal",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(1.25);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "1.25X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(1.5);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "1.5X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            episodeObject
-                                                .audioPlayer
-                                                .setPlaySpeed(2.0);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "2X",
-                                                textScaleFactor:
-                                                0.75,
-                                                style: TextStyle(
-                                                    color: Colors
-                                                        .white
-                                                        .withOpacity(
-                                                        0.7)),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                      },
-                    ),
-                    episodeObject.episodeObject['permlink'] == null
-                        ? SizedBox(
-                      width: 50,
-                    )
-                        : Container(
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              if (hiveUsername != null) {
-                                setState(() {
-                                  isUpvoteLoading = true;
-                                });
-                                double _value = 50.0;
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                          backgroundColor: Colors
-                                              .transparent,
-                                          child: UpvoteEpisode(
-                                              permlink: episodeObject
-                                                  .episodeObject[
-                                              'permlink'],
-                                              episode_id:
-                                              episodeObject
-                                                  .episodeObject[
-                                              'id']));
-                                    }).then((value) async {
-                                  print(value);
-                                });
-                                setState(() {
-                                  if (episodeObject.ifVoted !=
-                                      true) {
-                                    episodeObject.ifVoted =
-                                    true;
-                                  }
-                                });
-                                setState(() {
-                                  isUpvoteLoading = false;
-                                });
-                              } else {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return HiveDetails();
-                                    });
-                              }
-                            },
-                            child: Container(
-                              decoration: episodeObject
-                                  .ifVoted ==
-                                  true
-                                  ? BoxDecoration(
-                                  gradient:
-                                  LinearGradient(
-                                      colors: [
-                                        Color(0xff5bc3ef),
-                                        Color(0xff5d5da8)
-                                      ]),
-                                  borderRadius:
-                                  BorderRadius
-                                      .circular(30))
-                                  : BoxDecoration(
-                                  border: Border.all(
-                                      color:
-                                      kSecondaryColor),
-                                  borderRadius:
-                                  BorderRadius
-                                      .circular(30)),
-                              child: Padding(
-                                padding: const EdgeInsets
-                                    .symmetric(
-                                    vertical: 5,
-                                    horizontal: 10),
-                                child: Row(
-                                  children: [
-                                    isUpvoteLoading == true
-                                        ? Container(
-                                      height: 17,
-                                      width: 18,
-                                      child:
-                                      SpinKitPulse(
-                                        color:
-                                        Colors.blue,
-                                      ),
-                                    )
-                                        : Icon(
-                                      FontAwesomeIcons
-                                          .chevronCircleUp,
-                                      size: 15,
-                                      // color:
-                                      //     Color(0xffe8e8e8),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets
-                                          .symmetric(
-                                          horizontal: 8),
-                                      child: Text(
-                                        episodeObject
-                                            .episodeObject[
-                                        'votes']
-                                            .toString(),
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize: 15
-                                          // color:
-                                          //     Color(0xffe8e8e8)
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 15,
-                                      width: 10,
-                                      decoration:
-                                      BoxDecoration(
-                                        border: Border(
-                                            left: BorderSide(
-                                              color: themeProvider
-                                                  .isLightTheme ==
-                                                  false
-                                                  ? Colors.white
-                                                  : kPrimaryColor,
-                                            )),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets
-                                          .only(right: 4),
-                                      child: Text(
-                                        '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                          fontSize: 15,
-
-                                          // color:
-                                          //     Color(0xffe8e8e8)
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
-                    ),
-
-                    IconButton(
-                      onPressed: () {
-                        share(
-                            episodeObject:
-                            episodeObject.episodeObject);
-                      },
-                      icon: Icon(FontAwesomeIcons.share),
-                    )
-                  ],
-                ),
-              )
-
-            ],
-          ),
-        ),
                 DraggableScrollableSheet(
                     initialChildSize: 0.32,
                     minChildSize: 0.32,
@@ -3326,12 +3430,14 @@ class MClipper extends CustomClipper<Rect> {
     return true;
   }
 }
+
 const numberOfItems = 5001;
 const minItemHeight = 20.0;
 const maxItemHeight = 150.0;
 const scrollDuration = Duration(seconds: 2);
 
 const randomMax = 1 << 32;
+
 class ScrollablePositionedListPage extends StatefulWidget {
   const ScrollablePositionedListPage({Key key}) : super(key: key);
 
@@ -3347,58 +3453,55 @@ class _ScrollablePositionedListPageState
 
   /// Listener that reports the position of items when the list is scrolled.
   final ItemPositionsListener itemPositionsListener =
-  ItemPositionsListener.create();
+      ItemPositionsListener.create();
   List<double> itemHeights;
   List<Color> itemColors;
   bool reversed = false;
 
   /// The alignment to be used next time the user scrolls or jumps to an item.
   double alignment = 0;
-
   @override
   void initState() {
     super.initState();
     final heightGenerator = Random(328902348);
     final colorGenerator = Random(42490823);
+
     itemHeights = List<double>.generate(
         numberOfItems,
-            (int _) =>
-        heightGenerator.nextDouble() * (maxItemHeight - minItemHeight) +
+        (int _) =>
+            heightGenerator.nextDouble() * (maxItemHeight - minItemHeight) +
             minItemHeight);
     itemColors = List<Color>.generate(numberOfItems,
-            (int _) => Color(colorGenerator.nextInt(randomMax)).withOpacity(1));
+        (int _) => Color(colorGenerator.nextInt(randomMax)).withOpacity(1));
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Material(
+  Widget build(BuildContext context) => Material(
         child: OrientationBuilder(
-          builder: (context, orientation) =>
-              Column(
-                children: <Widget>[
-                  Expanded(
-                    child: list(orientation),
-                  ),
-                  positionsView,
-                  Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          scrollControlButtons,
-                          const SizedBox(height: 10),
-                          jumpControlButtons,
-                          alignmentControl,
-                        ],
-                      ),
-                    ],
-                  )
-                ],
+          builder: (context, orientation) => Column(
+            children: <Widget>[
+              Expanded(
+                child: list(orientation),
               ),
+              positionsView,
+              Row(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      scrollControlButtons,
+                      const SizedBox(height: 10),
+                      jumpControlButtons,
+                      alignmentControl,
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       );
 
-  Widget get alignmentControl =>
-      Row(
+  Widget get alignmentControl => Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           const Text('Alignment: '),
@@ -3418,8 +3521,7 @@ class _ScrollablePositionedListPageState
         ],
       );
 
-  Widget list(Orientation orientation) =>
-      ScrollablePositionedList.builder(
+  Widget list(Orientation orientation) => ScrollablePositionedList.builder(
         itemCount: numberOfItems,
         itemBuilder: (context, index) => item(index, orientation),
         itemScrollController: itemScrollController,
@@ -3430,8 +3532,7 @@ class _ScrollablePositionedListPageState
             : Axis.horizontal,
       );
 
-  Widget get positionsView =>
-      ValueListenableBuilder<Iterable<ItemPosition>>(
+  Widget get positionsView => ValueListenableBuilder<Iterable<ItemPosition>>(
         valueListenable: itemPositionsListener.itemPositions,
         builder: (context, positions, child) {
           int min;
@@ -3443,9 +3544,9 @@ class _ScrollablePositionedListPageState
             min = positions
                 .where((ItemPosition position) => position.itemTrailingEdge > 0)
                 .reduce((ItemPosition min, ItemPosition position) =>
-            position.itemTrailingEdge < min.itemTrailingEdge
-                ? position
-                : min)
+                    position.itemTrailingEdge < min.itemTrailingEdge
+                        ? position
+                        : min)
                 .index;
             // Determine the last visible item by finding the item with the
             // greatest leading edge that is less than 1.  i.e. the last
@@ -3453,9 +3554,9 @@ class _ScrollablePositionedListPageState
             max = positions
                 .where((ItemPosition position) => position.itemLeadingEdge < 1)
                 .reduce((ItemPosition max, ItemPosition position) =>
-            position.itemLeadingEdge > max.itemLeadingEdge
-                ? position
-                : max)
+                    position.itemLeadingEdge > max.itemLeadingEdge
+                        ? position
+                        : max)
                 .index;
           }
           return Row(
@@ -3465,8 +3566,7 @@ class _ScrollablePositionedListPageState
               const Text('Reversed: '),
               Checkbox(
                   value: reversed,
-                  onChanged: (bool value) =>
-                      setState(() {
+                  onChanged: (bool value) => setState(() {
                         reversed = value;
                       }))
             ],
@@ -3474,8 +3574,7 @@ class _ScrollablePositionedListPageState
         },
       );
 
-  Widget get scrollControlButtons =>
-      Row(
+  Widget get scrollControlButtons => Row(
         children: <Widget>[
           const Text('scroll to'),
           scrollButton(0),
@@ -3487,8 +3586,7 @@ class _ScrollablePositionedListPageState
         ],
       );
 
-  Widget get jumpControlButtons =>
-      Row(
+  Widget get jumpControlButtons => Row(
         children: <Widget>[
           const Text('jump to'),
           jumpButton(0),
@@ -3508,28 +3606,25 @@ class _ScrollablePositionedListPageState
     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
   );
 
-  Widget scrollButton(int value) =>
-      TextButton(
+  Widget scrollButton(int value) => TextButton(
         key: ValueKey<String>('Scroll$value'),
         onPressed: () => scrollTo(value),
         child: Text('$value'),
         style: _scrollButtonStyle,
       );
 
-  Widget jumpButton(int value) =>
-      TextButton(
+  Widget jumpButton(int value) => TextButton(
         key: ValueKey<String>('Jump$value'),
         onPressed: () => jumpTo(value),
         child: Text('$value'),
         style: _scrollButtonStyle,
       );
 
-  void scrollTo(int index) =>
-      itemScrollController.scrollTo(
-          index: index,
-          duration: scrollDuration,
-          curve: Curves.easeInOutCubic,
-          alignment: alignment);
+  void scrollTo(int index) => itemScrollController.scrollTo(
+      index: index,
+      duration: scrollDuration,
+      curve: Curves.easeInOutCubic,
+      alignment: alignment);
 
   void jumpTo(int index) =>
       itemScrollController.jumpTo(index: index, alignment: alignment);

@@ -10,6 +10,7 @@ void share({var episodeObject}) async {
   // String sharableLink;
 
   await FlutterShare.share(
+    linkUrl: episodeObject["image"],
       title: '${episodeObject['podcast_name']}',
       text:
           "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeObject['id']}");

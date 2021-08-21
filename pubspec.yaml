@@ -48,6 +48,7 @@ dependencies:
   shimmer: ^1.1.1
   shared_preferences: ^0.5.7+3
   firebase_messaging: ^10.0.0
+  flutter_share_file: ^1.2.1+6
   modal_bottom_sheet: ^2.0.0
   progress_dialog: ^1.2.4
   carousel_slider: ^3.0.0
