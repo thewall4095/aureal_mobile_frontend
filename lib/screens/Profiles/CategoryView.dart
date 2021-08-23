@@ -270,324 +270,324 @@ class _CategoryViewState extends State<CategoryView>
     var categories = Provider.of<CategoriesProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     SizeConfig().init(context);
-    return Scaffold(
-          body: SafeArea(
-            child: CustomScrollView(
-             controller: controller,
-              slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  floating: true,
-                  expandedHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height / 3.8,
-                  flexibleSpace: Container(
-                    child: FlexibleSpaceBar(
-                      background: Container(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [ Color(dominantColor), Colors.transparent],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 80),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    '${widget.categoryObject['name']}',
-                                    textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1)
-                                        .toDouble(),
-                                    style: TextStyle(
-                                        fontSize: SizeConfig.safeBlockHorizontal *
-                                            8,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+    return Stack(
+      children:[  Scaffold(
+        body: SafeArea(
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                floating: true,
+                expandedHeight: MediaQuery
+                    .of(context)
+                    .size
+                    .height / 3.8,
+                flexibleSpace: Container(
+                  child: FlexibleSpaceBar(
+                    background: Container(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [ Color(dominantColor), Colors.transparent],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter),
                       ),
-                    ),
-                  ),
-
-                ),
-                SliverToBoxAdapter(
-                  child:
-                    Column(
-                      children: [
-                        Text(
-                          "Top Podcasts",
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(height: 20,),
-                        Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 3,
-                          //width: MediaQuery.of(context).size.width/5,
-                          child: ListView.builder(
-                            controller: _explorePodcastScroller,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: explorePodcasts.length + 1,
-                            itemBuilder: (context, index) {
-                              if( index == explorePodcasts.length){
-                                return   Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Shimmer.fromColors(
-                                      baseColor: themeProvider.isLightTheme == false
-                                          ? kPrimaryColor
-                                          : Colors.white,
-                                      highlightColor: themeProvider.isLightTheme == false
-                                          ? Color(0xff3a3a3a)
-                                          : Colors.white,
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Container(
-                                              decoration:
-                                              BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
-                                                color: kSecondaryColor,),
-
-                                              height:
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height / 8,
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width / 4,
-                                            ),
-                                          ),
-                                  SizedBox(width: 30),
-                                 Column(
-                                   children: [
-                                     Container(
-                                       color: kPrimaryColor,
-                                        height:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height /50,
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width / 4,),
-                                     SizedBox(height: 5,),
-                                     Container(
-                                       color: kPrimaryColor,
-                                       height:
-                                       MediaQuery
-                                           .of(context)
-                                           .size
-                                           .height / 50,
-                                       width: MediaQuery
-                                           .of(context)
-                                           .size
-                                           .width / 4,),
-                                   ],
-                                 )
-                                        ],
-                                      ),
-                                  ));
-                              }
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
-                                        return PodcastView(
-                                            explorePodcasts[index]['id']);
-                                      }));
-                                },
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Container(
-                                        height:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height / 8,
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width / 4,
-                                        child:  Container(
-                                          child:   CachedNetworkImage(
-                                            imageBuilder:
-                                                (context,
-                                                imageProvider) {
-                                              return Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(
-                                                      10),
-                                                  image: DecorationImage(
-                                                      image:
-                                                      imageProvider,
-                                                      fit: BoxFit
-                                                          .cover),
-                                                ),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                    4,
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                    4,
-                                              );
-                                            },
-                                            imageUrl:
-                                            explorePodcasts[index]['image'],
-                                            memCacheWidth:
-                                            (MediaQuery.of(context)
-                                                .size
-                                                .width)
-                                                .floor(),
-                                            memCacheHeight:
-                                            (MediaQuery.of(context)
-                                                .size
-                                                .width)
-                                                .floor(),
-                                            placeholder:
-                                                (context,
-                                                url) =>
-                                                Container(
-                                                  width: MediaQuery.of(
-                                                      context)
-                                                      .size
-                                                      .width /
-                                                      4,
-                                                  height: MediaQuery.of(
-                                                      context)
-                                                      .size
-                                                      .width /
-                                                      4,
-                                                  child: Image
-                                                      .asset(
-                                                      'assets/images/Thumbnail.png'),
-                                                ),
-                                            errorWidget: (context,
-                                                url,
-                                                error) =>
-                                                Icon(Icons
-                                                    .error),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 30),
-                                    Expanded(
-                                      child: Container(
-                                        height:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height / 8,
-                                        width: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .width / 4,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "${explorePodcasts[index]['name']}",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                // color: Colors.white,
-                                                  fontSize:
-                                                  SizeConfig.safeBlockHorizontal *
-                                                      3.5,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              explorePodcasts[index]['author'],
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 0.8)
-                                                  .toDouble(),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                //  color: Colors.grey,
-                                                  fontSize:
-                                                  SizeConfig.safeBlockHorizontal *
-                                                      3),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 80),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  '${widget.categoryObject['name']}',
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 1)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                      fontSize: SizeConfig.safeBlockHorizontal *
+                                          8,
+                                      fontWeight: FontWeight.w700),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
 
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                      Center(
-                        child: Text(
-                          'New Podcasts',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500),
+                              ],
+                            )
+                          ],
                         ),
                       ),
-                      SizedBox(height: 20,)
-                    ]
-                    )),
-                // Text("Greed"),
-                SliverGrid(
-                  gridDelegate:SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 205.0,
-                    mainAxisSpacing: 40.0,
-                    crossAxisSpacing: 10.0,
-                    childAspectRatio: 0.8,
+                    ),
                   ),
-                  delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index){
+                ),
+
+              ),
+              SliverToBoxAdapter(
+                child:
+                Column(
+                  children: [
+                    Text(
+                      "Top Podcasts",
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(height: 20,),
+                    Container(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 3,
+                      //width: MediaQuery.of(context).size.width/5,
+                      child: ListView.builder(
+                        controller: _explorePodcastScroller,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: explorePodcasts.length + 1,
+                        itemBuilder: (context, index) {
+                          if( index == explorePodcasts.length){
+                            return   Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Shimmer.fromColors(
+                                  baseColor: themeProvider.isLightTheme == false
+                                      ? kPrimaryColor
+                                      : Colors.white,
+                                  highlightColor: themeProvider.isLightTheme == false
+                                      ? Color(0xff3a3a3a)
+                                      : Colors.white,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Container(
+                                          decoration:
+                                          BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                10),
+                                            color: kSecondaryColor,),
+
+                                          height:
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height / 8,
+                                          width: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width / 4,
+                                        ),
+                                      ),
+                                      SizedBox(width: 30),
+                                      Column(
+                                        children: [
+                                          Container(
+                                            color: kPrimaryColor,
+                                            height:
+                                            MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height /50,
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width / 4,),
+                                          SizedBox(height: 5,),
+                                          Container(
+                                            color: kPrimaryColor,
+                                            height:
+                                            MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height / 50,
+                                            width: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .width / 4,),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ));
+                          }
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return PodcastView(
+                                        explorePodcasts[index]['id']);
+                                  }));
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Container(
+                                    height:
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height / 8,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 4,
+                                    child:  Container(
+                                      child:   CachedNetworkImage(
+                                        imageBuilder:
+                                            (context,
+                                            imageProvider) {
+                                          return Container(
+                                            decoration:
+                                            BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  10),
+                                              image: DecorationImage(
+                                                  image:
+                                                  imageProvider,
+                                                  fit: BoxFit
+                                                      .cover),
+                                            ),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                4,
+                                          );
+                                        },
+                                        imageUrl:
+                                        explorePodcasts[index]['image'],
+                                        memCacheWidth:
+                                        (MediaQuery.of(context)
+                                            .size
+                                            .width)
+                                            .floor(),
+                                        memCacheHeight:
+                                        (MediaQuery.of(context)
+                                            .size
+                                            .width)
+                                            .floor(),
+                                        placeholder:
+                                            (context,
+                                            url) =>
+                                            Container(
+                                              width: MediaQuery.of(
+                                                  context)
+                                                  .size
+                                                  .width /
+                                                  4,
+                                              height: MediaQuery.of(
+                                                  context)
+                                                  .size
+                                                  .width /
+                                                  4,
+                                              child: Image
+                                                  .asset(
+                                                  'assets/images/Thumbnail.png'),
+                                            ),
+                                        errorWidget: (context,
+                                            url,
+                                            error) =>
+                                            Icon(Icons
+                                                .error),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 30),
+                                Expanded(
+                                  child: Container(
+                                    height:
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height / 8,
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width / 4,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          "${explorePodcasts[index]['name']}",
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1)
+                                              .toDouble(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            // color: Colors.white,
+                                              fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3.5,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          explorePodcasts[index]['author'],
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 0.8)
+                                              .toDouble(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            //  color: Colors.grey,
+                                              fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                    Center(
+                      child: Text(
+                        'New Podcasts',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    SizedBox(height: 20,)
+                  ]
+                  )),
+              // Text("Greed"),
+              SliverGrid(
+                gridDelegate:SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 205.0,
+                  mainAxisSpacing: 40.0,
+                  crossAxisSpacing: 10.0,
+                  childAspectRatio: 0.8,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index){
                     if (index == newPodcasts.length ){
                       return  Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -652,156 +652,158 @@ class _CategoryViewState extends State<CategoryView>
                             ),
                           ));
                     } return GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                                return PodcastView(newPodcasts[index]['id']);
-                              }));
-                        },
-                        child:
-                          Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height /6,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 2.8,
-                                  child:  CachedNetworkImage(
-                                    imageBuilder:
-                                        (context,
-                                        imageProvider) {
-                                      return Container(
-                                        decoration:
-                                        BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(
-                                              10),
-                                          image: DecorationImage(
-                                              image:
-                                              imageProvider,
-                                              fit: BoxFit
-                                                  .cover),
-                                        ),
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            4,
-                                        height: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            4,
-                                      );
-                                    },
-                                    imageUrl:
-                                    newPodcasts[index]['image'],
-                                    memCacheWidth:
-                                    (MediaQuery.of(context)
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                              return PodcastView(newPodcasts[index]['id']);
+                            }));
+                      },
+                      child:
+                      Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Container(
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height /6,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width / 2.8,
+                              child:  CachedNetworkImage(
+                                imageBuilder:
+                                    (context,
+                                    imageProvider) {
+                                  return Container(
+                                    decoration:
+                                    BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                          10),
+                                      image: DecorationImage(
+                                          image:
+                                          imageProvider,
+                                          fit: BoxFit
+                                              .cover),
+                                    ),
+                                    width: MediaQuery.of(context)
                                         .size
-                                        .width)
-                                        .floor(),
-                                    memCacheHeight:
-                                    (MediaQuery.of(context)
+                                        .width /
+                                        4,
+                                    height: MediaQuery.of(context)
                                         .size
-                                        .width)
-                                        .floor(),
-                                    placeholder:
-                                        (context,
-                                        url) =>
-                                        Container(
-                                          width: MediaQuery.of(
-                                              context)
-                                              .size
-                                              .width /
-                                              4,
-                                          height: MediaQuery.of(
-                                              context)
-                                              .size
-                                              .width /
-                                              4,
-                                          child: Image
-                                              .asset(
-                                              'assets/images/Thumbnail.png'),
-                                        ),
-                                    errorWidget: (context,
-                                        url,
-                                        error) =>
-                                        Icon(Icons
-                                            .error),
-                                  ),
-                                ),
+                                        .width /
+                                        4,
+                                  );
+                                },
+                                imageUrl:
+                                newPodcasts[index]['image'],
+                                memCacheWidth:
+                                (MediaQuery.of(context)
+                                    .size
+                                    .width)
+                                    .floor(),
+                                memCacheHeight:
+                                (MediaQuery.of(context)
+                                    .size
+                                    .width)
+                                    .floor(),
+                                placeholder:
+                                    (context,
+                                    url) =>
+                                    Container(
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          4,
+                                      height: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          4,
+                                      child: Image
+                                          .asset(
+                                          'assets/images/Thumbnail.png'),
+                                    ),
+                                errorWidget: (context,
+                                    url,
+                                    error) =>
+                                    Icon(Icons
+                                        .error),
                               ),
-                              SizedBox(width: 30),
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height / 7,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width / 3,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        "${newPodcasts[index]['name']}",
-                                        textScaleFactor: mediaQueryData
-                                            .textScaleFactor
-                                            .clamp(0.5, 1)
-                                            .toDouble(),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          // color: Colors.white,
-                                            fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3.5,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      SizedBox(
-                                        height: 4,
-                                      ),
-                                      Text(
-                                        newPodcasts[index]['author'],
-                                        textScaleFactor: mediaQueryData
-                                            .textScaleFactor
-                                            .clamp(0.5, 0.9)
-                                            .toDouble(),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          //  color: Colors.grey,
-                                            fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3),
-                                      ),
-
-                                    ],
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          Expanded(
+                            child: Container(
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height / 7,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width / 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "${newPodcasts[index]['name']}",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 1)
+                                        .toDouble(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      // color: Colors.white,
+                                        fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.5,
+                                        fontWeight: FontWeight.w400),
                                   ),
-                                ),
-                              ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    newPodcasts[index]['author'],
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 0.9)
+                                        .toDouble(),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      //  color: Colors.grey,
+                                        fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3),
+                                  ),
 
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
 
-                      );
+                        ],
+                      ),
 
-                    },
+                    );
 
-                    childCount: newPodcasts.length + 1,
+                  },
 
-                  ),
+                  childCount: newPodcasts.length + 1,
+
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
+        ),
+      ),]
+
+    );
   }
 }
 // class SearchCategorys extends StatefulWidget {

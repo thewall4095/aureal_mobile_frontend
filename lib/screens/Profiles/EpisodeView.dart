@@ -421,19 +421,19 @@ class _EpisodeViewState extends State<EpisodeView>
                             width: 0,
                           ),
 
-                          IconButton(
-                            onPressed: () {
-                              share(episodeObject: episodeObject.episodeObject);
+                        IconButton(
+                        onPressed: () {
+                        share(
+                        episodeObject:
+                        episodeObject.episodeObject);
+                        },
+                        icon: Icon(Icons.share),
 
-                            },
-                            icon: Icon(
-                              Icons.share,
-                            ),
                           )
                         ],
                         expandedHeight: episodeContent['permlink'] == null
-                            ? MediaQuery.of(context).size.height / 1.1
-                            : MediaQuery.of(context).size.height / 1.4,
+                            ? MediaQuery.of(context).size.height / 1.6
+                            : MediaQuery.of(context).size.height / 1.1,
                         flexibleSpace: FlexibleSpaceBar(
                           background: Stack(
                             children: [

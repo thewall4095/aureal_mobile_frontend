@@ -142,16 +142,25 @@
         <service
             android:name="live.exit.musicplayer.MusicPlayerService"
             android:enabled="true" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 <!--        <provider-->
 <!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.provider"-->
+<!--            android:authorities="${applicationId}.com.shekarmudaliyar.social_share"-->
 <!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
+<!--            android:grantUriPermissions="true"-->
+<!--            tools:replace="android:authorities">-->
 <!--            <meta-data-->
 <!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/provider_paths"/>-->
+<!--                android:resource="@xml/filepaths" />-->
 <!--        </provider>-->
-
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
             android:authorities="${applicationId}.flutter_downloader.provider"
@@ -160,16 +169,6 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
-        </provider>
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.com.shekarmudaliyar.social_share"
-            android:exported="false"
-            android:grantUriPermissions="true">
-<!--            tools:replace="android:authorities">-->
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
         </provider>
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
