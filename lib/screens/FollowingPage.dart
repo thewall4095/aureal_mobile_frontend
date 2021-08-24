@@ -264,7 +264,7 @@ class _FollowingPageState extends State<FollowingPage>
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
-        body: isFollowingPageLoading == false
+        body: isFollowingPageLoading == true
             ? Padding(
             padding:
             const EdgeInsets.symmetric(horizontal: 10),

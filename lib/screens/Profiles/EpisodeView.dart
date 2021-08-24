@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -95,7 +96,13 @@ class _EpisodeViewState extends State<EpisodeView>
       print(e);
     }
   }
-
+  void share1({var episodeObject}) async {
+    // String sharableLink;
+    await FlutterShare.share(
+        title: '${episodeContent['podcast_name']}',
+        text:
+        "Hey There, I'm listening to ${episodeContent['name']} from ${episodeContent['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeContent['id']}");
+  }
   void getEpisode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -423,7 +430,7 @@ class _EpisodeViewState extends State<EpisodeView>
 
                         IconButton(
                         onPressed: () {
-                        share(
+                        share1(
                         episodeObject:
                         episodeObject.episodeObject);
                         },
@@ -432,8 +439,8 @@ class _EpisodeViewState extends State<EpisodeView>
                           )
                         ],
                         expandedHeight: episodeContent['permlink'] == null
-                            ? MediaQuery.of(context).size.height / 1.6
-                            : MediaQuery.of(context).size.height / 1.1,
+                            ? MediaQuery.of(context).size.height / 1.5
+                            : MediaQuery.of(context).size.height / 1.4,
                         flexibleSpace: FlexibleSpaceBar(
                           background: Stack(
                             children: [

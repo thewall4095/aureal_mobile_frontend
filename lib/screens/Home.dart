@@ -606,9 +606,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                   onDismissed: (direction){
                     setState(() {
                       episodeObject.pause();
-                      episodeObject.removeListener(() { });
                     });
-                    episodeObject.removeListener(() { });
                   },
                 child: Container(
                   height: SizeConfig.safeBlockVertical * 6,

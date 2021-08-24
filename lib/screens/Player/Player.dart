@@ -261,7 +261,7 @@ class _PlayerState extends State<Player> {
             print('tererere');
             itemScrollController.scrollTo(
                 index: count,
-                curve: Curves.easeInCirc,
+                // curve: Curves.easeInCirc,
                 duration: Duration(seconds: 1));
           }
         }
