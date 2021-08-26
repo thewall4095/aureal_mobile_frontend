@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_media_notification/flutter_media_notification.dart';
+// import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
@@ -604,10 +604,10 @@ class _OfflineBottomPlayerState extends State<OfflineBottomPlayer> {
   }
 
   void pause() async {
-    MediaNotification.showNotification(
-        title: widget.episodeObject['name'],
-        author: widget.episodeObject['podcast_name'],
-        isPlaying: false);
+    // MediaNotification.showNotification(
+    //     title: widget.episodeObject['name'],
+    //     author: widget.episodeObject['podcast_name'],
+    //     isPlaying: false);
     state = PlayerState.paused;
     audioPlayer.pause();
   }

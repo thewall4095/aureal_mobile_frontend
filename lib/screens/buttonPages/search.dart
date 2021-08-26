@@ -217,18 +217,18 @@ class SearchFunctionality extends SearchDelegate {
             themeProvider.isLightTheme != true ? Colors.white : kPrimaryColor,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle: Theme.of(context).textTheme.title.copyWith(
-              color: themeProvider.isLightTheme != true
-                  ? Colors.white
-                  : kPrimaryColor,
-            ),
+        // hintStyle: Theme.of(context).textTheme.title.copyWith(
+        //       color: themeProvider.isLightTheme != true
+        //           ? Colors.white
+        //           : kPrimaryColor,
+        //     ),
       ),
       textTheme: TextTheme(
-        title: TextStyle(
-          color:
-              themeProvider.isLightTheme != true ? Colors.white : kPrimaryColor,
-          fontSize: 18,
-        ),
+        // title: TextStyle(
+        //   color:
+        //       themeProvider.isLightTheme != true ? Colors.white : kPrimaryColor,
+        //   fontSize: 18,
+        // ),
       ),
     );
   }

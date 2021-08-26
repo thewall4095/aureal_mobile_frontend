@@ -36,7 +36,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_share/social_share.dart';
+// import 'package:social_share/social_share.dart';
 import 'dart:math' as math;
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -1026,14 +1026,14 @@ class _PlayerState extends State<Player> {
                                                                                               child: IconButton(
                                                                                                 onPressed: () async {
                                                                                                    PickedFile pickedFile = await picker.getImage(source:  episodeObject.episodeObject["image"],);
-                                                                                                  SocialShare.shareInstagramStory(
-                                                                                                    episodeObject.episodeObject["image"],
-                                                                                                    backgroundTopColor: "#ffffff",
-                                                                                                    backgroundBottomColor: "#000000",
-                                                                                                    attributionURL: "https://deep-link-url",
-                                                                                                  ).then((data) {
-                                                                                                    print(data);
-                                                                                                  });
+                                                                                                  // SocialShare.shareInstagramStory(
+                                                                                                  //   episodeObject.episodeObject["image"],
+                                                                                                  //   backgroundTopColor: "#ffffff",
+                                                                                                  //   backgroundBottomColor: "#000000",
+                                                                                                  //   attributionURL: "https://deep-link-url",
+                                                                                                  // ).then((data) {
+                                                                                                  //   print(data);
+                                                                                                  // });
                                                                                                 },
                                                                                                 icon: Icon(
                                                                                                   FontAwesomeIcons.instagram,
@@ -1050,19 +1050,19 @@ class _PlayerState extends State<Player> {
                                                                                               ),
                                                                                               child: IconButton(
                                                                                                 onPressed: () async {
-                                                                                                  SocialShare.shareTwitter(
-                                                                                                    "${transcript[index]["msg"]}",
-                                                                                                    hashtags: [
-                                                                                                      "AurealOne",
-                                                                                                      "Hive",
-                                                                                                      "foo",
-                                                                                                      "bar"
-                                                                                                    ],
-                                                                                                    url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
-                                                                                                    trailingText: "\nhello",
-                                                                                                  ).then((data) {
-                                                                                                    print(data);
-                                                                                                  });
+                                                                                                  // SocialShare.shareTwitter(
+                                                                                                  //   "${transcript[index]["msg"]}",
+                                                                                                  //   hashtags: [
+                                                                                                  //     "AurealOne",
+                                                                                                  //     "Hive",
+                                                                                                  //     "foo",
+                                                                                                  //     "bar"
+                                                                                                  //   ],
+                                                                                                  //   url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
+                                                                                                  //   trailingText: "\nhello",
+                                                                                                  // ).then((data) {
+                                                                                                  //   print(data);
+                                                                                                  // });
                                                                                                 },
                                                                                                 icon: Icon(
                                                                                                   FontAwesomeIcons.twitter,
@@ -1079,11 +1079,11 @@ class _PlayerState extends State<Player> {
                                                                                               ),
                                                                                               child: IconButton(
                                                                                                 onPressed: () async {
-                                                                                                  SocialShare.copyToClipboard(
-                                                                                                    "${transcript[index]["msg"]}",
-                                                                                                  ).then((data) {
-                                                                                                    print(data);
-                                                                                                  });
+                                                                                                  // SocialShare.copyToClipboard(
+                                                                                                  //   "${transcript[index]["msg"]}",
+                                                                                                  // ).then((data) {
+                                                                                                  //   print(data);
+                                                                                                  // });
                                                                                                 },
                                                                                                 icon: Icon(
                                                                                                   FontAwesomeIcons.clipboard,

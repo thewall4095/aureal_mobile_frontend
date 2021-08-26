@@ -660,7 +660,6 @@ class _EpisodeViewState extends State<EpisodeView>
                                               ? (episodeObject
                                                           .audioPlayer
                                                           .realtimePlayingInfos
-                                                          .valueWrapper
                                                           .value
                                                           .isPlaying ==
                                                       true
@@ -1199,10 +1198,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                           backgroundImage:
                                               CachedNetworkImageProvider(
                                                   episodeContent[
-                                                      'author_image'],
-                                                  imageRenderMethodForWeb:
-                                                      ImageRenderMethodForWeb
-                                                          .HtmlImage),
+                                                      'author_image']),
                                         ),
                                         title:
                                             Text("${episodeContent['author']}"),

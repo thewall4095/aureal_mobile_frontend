@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'Home.dart';
 import 'Player/RoomsPlayer.dart';
@@ -165,11 +166,17 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     getRooms();
   }
 
+  void getPermissions() async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
     Launcher launcher = Launcher();
+    getPermissions();
 
     Future<void> _pullRefresh() async {
       print('proceed');

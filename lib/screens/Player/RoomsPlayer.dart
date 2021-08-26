@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RoomsPlayer extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
         useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
+        mediaPlaybackRequiresUserGesture: true,
       ),
       android: AndroidInAppWebViewOptions(
         useHybridComposition: true,
@@ -32,8 +33,14 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
   double progress = 0;
   final urlController = TextEditingController();
 
+  void getPermissions() async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+  }
+
   @override
   void initState() {
+    getPermissions();
     contextMenu = ContextMenu(
         menuItems: [
           ContextMenuItem(
@@ -139,10 +146,8 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
               urlController.text = this.url;
             });
           },
-          androidOnPermissionRequest: (controller, origin, resources) async {
-            return PermissionRequestResponse(
-                resources: resources,
-                action: PermissionRequestResponseAction.GRANT);
+          androidOnPermissionRequest: (InAppWebViewController controller, String origin, List<String> resources) async {
+            return PermissionRequestResponse(resources: resources, action: PermissionRequestResponseAction.GRANT);
           },
           shouldOverrideUrlLoading: (controller, navigationAction) async {
             var uri = navigationAction.request.url;
