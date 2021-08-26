@@ -2,23 +2,32 @@ import 'dart:convert';
 
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
+import 'Player/RoomsPlayer.dart';
 
 class RoomsPage extends StatefulWidget {
   @override
   _RoomsPageState createState() => _RoomsPageState();
 }
 
-class _RoomsPageState extends State<RoomsPage> {
-  void getUserRooms() async {
+class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
+  int pageNumber = 0;
+  bool upDirection = true;
+  ScrollController _controller;
+
+  void getRooms() async {
     print("Rooms getting called");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/getUserRooms?userid=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/getRooms?page=$pageNumber&pageSize=14';
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -26,6 +35,7 @@ class _RoomsPageState extends State<RoomsPage> {
         setState(() {
           rooms = jsonDecode(response.body)['data'];
         });
+        print(response.body);
       } else {
         print(response.statusCode);
       }
@@ -34,14 +44,125 @@ class _RoomsPageState extends State<RoomsPage> {
     }
   }
 
+  TabController _tabController;
+
   var rooms;
+
+  bool isAudioOnly = true;
+  bool isAudioMuted = true;
+  bool isVideoMuted = true;
+
+  _onAudioOnlyChanged(bool value) {
+    setState(() {
+      isAudioOnly = value;
+    });
+  }
+
+  _onAudioMutedChanged(bool value) {
+    setState(() {
+      isAudioMuted = value;
+    });
+  }
+
+  _onVideoMutedChanged(bool value) {
+    setState(() {
+      isVideoMuted = value;
+    });
+  }
+
+  // _joinMeeting() async {
+  //   String serverUrl = serverText.text.trim().isEmpty ? null : serverText.text;
+  //
+  //   // Enable or disable any feature flag here
+  //   // If feature flag are not provided, default values will be used
+  //   // Full list of feature flags (and defaults) available in the README
+  //   Map<FeatureFlagEnum, bool> featureFlags = {
+  //     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+  //   };
+  //   if (!kIsWeb) {
+  //     // Here is an example, disabling features for each platform
+  //     if (Platform.isAndroid) {
+  //       // Disable ConnectionService usage on Android to avoid issues (see README)
+  //       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+  //     } else if (Platform.isIOS) {
+  //       // Disable PIP on iOS as it looks weird
+  //       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+  //     }
+  //   }
+  //   // Define meetings options here
+  //
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //
+  //   var options = JitsiMeetingOptions(room: roomText.text)
+  //     ..serverURL = 'https://sessions.aureal.one'
+  //     ..subject = subjectText.text
+  //     ..userDisplayName = nameText.text
+  //     ..userEmail = emailText.text
+  //     ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+  //     ..audioOnly = true
+  //     ..audioMuted = isAudioMuted
+  //     ..videoMuted = isVideoMuted
+  //     ..featureFlags.addAll(featureFlags)
+  //     ..webOptions = {
+  //       "roomName": roomText.text,
+  //       "width": "100%",
+  //       "height": "100%",
+  //       "enableWelcomePage": false,
+  //       "chromeExtensionBanner": null,
+  //       "userInfo": {
+  //         "displayName": nameText.text,
+  //         'avatarUrl': prefs.getString('displayPicture')
+  //       }
+  //     };
+  //
+  //   debugPrint("JitsiMeetingOptions: $options");
+  //   await JitsiMeet.joinMeeting(
+  //     options,
+  //     listener: JitsiMeetingListener(
+  //         onConferenceWillJoin: (message) {
+  //           debugPrint("${options.room} will join with message: $message");
+  //         },
+  //         onConferenceJoined: (message) {
+  //           debugPrint("${options.room} joined with message: $message");
+  //         },
+  //         onConferenceTerminated: (message) {
+  //           debugPrint("${options.room} terminated with message: $message");
+  //         },
+  //         genericListeners: [
+  //           JitsiGenericListener(
+  //               eventName: 'readyToClose',
+  //               callback: (dynamic message) {
+  //                 debugPrint("readyToClose callback");
+  //               }),
+  //         ]),
+  //   );
+  // }
+
+  void _onConferenceWillJoin(message) {
+    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
+  }
+
+  void _onConferenceJoined(message) {
+    debugPrint("_onConferenceJoined broadcasted with message: $message");
+  }
+
+  void _onConferenceTerminated(message) {
+    debugPrint("_onConferenceTerminated broadcasted with message: $message");
+  }
+
+  _onError(error) {
+    debugPrint("_onError broadcasted: $error");
+  }
 
   @override
   void initState() {
     // TODO: implement initState
 
     super.initState();
-    getUserRooms();
+    _controller = ScrollController();
+
+    _tabController = TabController(length: 2, vsync: this);
+    getRooms();
   }
 
   @override
@@ -51,7 +172,7 @@ class _RoomsPageState extends State<RoomsPage> {
     Launcher launcher = Launcher();
 
     Future<void> _pullRefresh() async {
-      print('proceedd');
+      print('proceed');
     }
 
     Future<bool> _onBackPressed() async {
@@ -60,30 +181,199 @@ class _RoomsPageState extends State<RoomsPage> {
       return false; // return true if the route to be popped
     }
 
-    return WillPopScope(
-      onWillPop: _onBackPressed,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return WillPopScope(
-            onWillPop: _onBackPressed,
-            child: Scaffold(
-              body: Container(
-                child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        childAspectRatio: 3 / 2,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20),
-                    itemCount: rooms.length,
-                    itemBuilder: (context, int index) {
-                      return Container(
-                        color: Colors.blue,
-                      );
-                    }),
-              ),
-            ),
-          );
-        },
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        if (_controller.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          setState(() {
+            upDirection = false;
+          });
+        } else if (_controller.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            upDirection = true;
+          });
+        }
+        return true;
+      },
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: null,
+          label: Text('Create Room'),
+          icon: Icon(Icons.add),
+          isExtended: !upDirection,
+        ),
+        appBar: AppBar(
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            title: TabBar(
+              isScrollable: true,
+              automaticIndicatorColorAdjustment: true,
+              indicatorSize: TabBarIndicatorSize.label,
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: 'All',
+                ),
+                Tab(
+                  text: 'My Groups',
+                )
+              ],
+            )),
+        backgroundColor: Colors.transparent,
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            ListView.builder(
+                controller: _controller,
+                itemCount: rooms.length,
+                itemBuilder: (context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 7.5),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Color(0xff222222),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: kPrimaryColor,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.stream,
+                                            size:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3.5,
+                                            color: Colors.blue,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text('LIVE'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            rooms[index]['roomParticipants'] == null
+                                ? SizedBox()
+                                : Container(
+                                    height: (MediaQuery.of(context).size.width /
+                                            9) *
+                                        2.1,
+                                    child: GridView(
+                                      scrollDirection: Axis.horizontal,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              mainAxisSpacing: 10,
+                                              crossAxisSpacing: 5,
+                                              childAspectRatio: 1 / 1),
+                                      children: [
+                                        for (var v in rooms[index]
+                                            ['roomParticipants'])
+                                          CachedNetworkImage(
+                                            imageUrl: v['user_image'],
+                                            memCacheHeight:
+                                                (MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        2)
+                                                    .ceil(),
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    10,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    10,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                "${rooms[index]['title']}",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 5,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                            ),
+                            Text(
+                              "Unkle Bonehead & 377 people are here",
+                              textScaleFactor: 1.0,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Color(0xffe8e8e8).withOpacity(0.5),
+                                  fontSize: SizeConfig.safeBlockHorizontal * 3),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return RoomsPlayer();
+                                }));
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Color(0xff191919),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 15),
+                                  child: Text("join room"),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+            Container(),
+          ],
+        ),
       ),
     );
   }
