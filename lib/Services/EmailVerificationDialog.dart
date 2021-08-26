@@ -40,7 +40,7 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
   String authorName;
 
   String kRSSMail = '';
-
+String error ;
   void sendOTP() async {
     setState(() {
       isLoading = true;
@@ -58,12 +58,9 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
     var response = await intercept.postRequest(formData, url);
     print(response.runtimeType);
     print(jsonDecode(response.toString()));
-
     setState(() {
       kRSSMail = jsonDecode(response.toString())['email'];
     });
-
-
     if (jsonDecode(response.toString())['msg'] != null) {
       showInSnackBar('${jsonDecode(response.toString())['msg']}');
     } else {
@@ -137,7 +134,6 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
         return _importPodcastIntro();
     }
   }
-
   TextEditingController _RSSController = TextEditingController();
   TextEditingController _OTPController = TextEditingController();
 
@@ -195,7 +191,8 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                           ? kSecondaryColor
                           : Colors.white,
                       borderRadius: BorderRadius.circular(30)),
-                  child: TextField(
+                  child: TextFormField(
+                    keyboardType: TextInputType.url,
                     style: TextStyle(
                         color: themeProvider.isLightTheme != true
                             ? Colors.black
@@ -207,19 +204,20 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
                               ? kSecondaryColor
                               : Colors.white.withOpacity(0.5),
                         ),
+
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 15)),
                     controller: _RSSController,
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: InkWell(
                     onTap: () async {
                       if (_RSSController.text != null ||
                           _RSSController.text != '') {
-                        await sendOTP();
-                      }
+                      await sendOTP();}
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -262,7 +260,6 @@ class _EmailVerificationDialogState extends State<EmailVerificationDialog> {
   }
 
   Widget _VerifyOTP() {
-    var themeProvider = Provider.of<ThemeProvider>(context);
     return Expanded(
       child: Container(
         width: double.infinity,

@@ -12,6 +12,7 @@ import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
+import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -648,7 +649,7 @@ class _PodcastViewState extends State<PodcastView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         podcastData == null
-                            ? Container()
+                            ? SizedBox()
                             : htmlMatch.hasMatch(podcastData['description']) ==
                                     true
                                 ? Text(
@@ -722,33 +723,275 @@ class _PodcastViewState extends State<PodcastView> {
                           ),
                         ])
                       ]));
+
             } else {
               if (index == episodeList.length + 1) {
                 return isLoading == false
                     ? (_controller.position.pixels !=
                             _controller.position.maxScrollExtent
-                        ? SizedBox()
+                        ?  Padding(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor:
+                      themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                      SizeConfig.screenWidth / 28),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            2,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: kSecondaryColor,
+                                      ),
+                                      height: 25,
+                                      width:
+                                      MediaQuery.of(context).size.width/8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                              // Column(
+                              //   mainAxisAlignment:
+                              //   MainAxisAlignment.start,
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ))
                         : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Shimmer.fromColors(
-                              baseColor: themeProvider.isLightTheme == false
-                                  ? kPrimaryColor
-                                  : Colors.white,
-                              highlightColor:
-                                  themeProvider.isLightTheme == false
-                                      ? Color(0xff3a3a3a)
-                                      : Colors.white,
-                            )))
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Shimmer.fromColors(
-                          baseColor: themeProvider.isLightTheme == false
-                              ? kPrimaryColor
-                              : Colors.white,
-                          highlightColor: themeProvider.isLightTheme == false
-                              ? Color(0xff3a3a3a)
-                              : Colors.white,
-                        ));
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 10),
+                    child: Shimmer.fromColors(
+                      baseColor: themeProvider.isLightTheme == false
+                          ? kPrimaryColor
+                          : Colors.white,
+                      highlightColor:
+                      themeProvider.isLightTheme == false
+                          ? Color(0xff3a3a3a)
+                          : Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          border: Border.all(color: kSecondaryColor,),
+
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                      SizeConfig.screenWidth / 28),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            2,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        color: kSecondaryColor,
+                                        height: 10,
+                                        width: MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                             Row(
+                                 children: [
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                   Padding(
+                                     padding: const EdgeInsets.all(15),
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(10),
+                                         color: kSecondaryColor,
+                                       ),
+                                       height: 25,
+                                       width:
+                                       MediaQuery.of(context).size.width/8,
+                                       //    color: kSecondaryColor,
+                                     ),
+                                   ),
+                                 ],
+                             )
+                              // Column(
+                              //   mainAxisAlignment:
+                              //   MainAxisAlignment.start,
+                              //   children: [
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: const EdgeInsets.symmetric(
+                              //           horizontal: 15, vertical: 5),
+                              //       child: Container(
+                              //         height: 5,
+                              //         width: MediaQuery.of(context)
+                              //             .size
+                              //             .width,
+                              //         color: kSecondaryColor,
+                              //       ),
+                              //     ),
+                              //   ],
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )))
+                    :SizedBox();
               }
               return Padding(
                 padding:
@@ -801,7 +1044,7 @@ class _PodcastViewState extends State<PodcastView> {
                               children: [
                                 episodeList[index - 1]['summary'] == null
                                     ? SizedBox(
-                                        height: 0,
+                                        height: 20,
                                       )
                                     : Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -1380,13 +1623,6 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   FollowState followState;
   bool follows;
 
-  void podcastShare() async {
-    await FlutterShare.share(
-        title: '${podcastData['name']}',
-        text:
-            "Hey There, I'm listening to ${podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${podcastData['id']}");
-  }
-
   void follow() async {
     print("Follow function started");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1411,7 +1647,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
   double _maxImageSize = 180;
   double _minImageSize = 80;
   double _maxTitleSize = 20;
-  double _maxSubTitleSize = 15;
+  double _maxSubTitleSize = 12;
   double _minTitleSize = 15;
   double _minSubTitleSize = 10;
   double _maxFollowButton = 0;
@@ -1421,7 +1657,7 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
     _minExtent = MediaQuery.of(context).size.height / 5.5;
     _maxImageSize = MediaQuery.of(context).size.width * 0.42;
     _minImageSize = (MediaQuery.of(context).size.width * 0.42) / 2;
-    _maxTitleSize = ((MediaQuery.of(context).size.width * 0.42) / 2) / 4;
+    _maxTitleSize = ((MediaQuery.of(context).size.width * 0.35) / 2) / 4;
     _maxFollowButton = MediaQuery.of(context).size.width * 0.2;
   }
 
@@ -1531,7 +1767,20 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
               children: [
                 SafeArea(
                   child: Row(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      currentImageSize != _maxImageSize
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 80),
+                              child: IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                  )),
+                            )
+                          : SizedBox(),
                       Padding(
                         padding: const EdgeInsets.all(15),
                         child: CachedNetworkImage(
@@ -1559,9 +1808,15 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
                                 "${podcastData['name']}",
                                 style: TextStyle(fontSize: TitleSize),
                               ),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height / 100,
+                              ),
                               Text(
                                 "${podcastData['author']}",
-                                style: TextStyle(fontSize: SubSize),
+                                style: TextStyle(
+                                    fontSize: SubSize,
+                                    fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: MediaQuery.of(context).size.height / 40,
@@ -1594,6 +1849,157 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
       true;
 }
 
+class FollowButton extends StatefulWidget {
+  FollowState followState;
+  bool follows;
+  var podcastData;
+
+  FollowButton(
+      {@required this.podcastData,
+      @required this.follows,
+      @required this.followState});
+
+  @override
+  _FollowButtonState createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<FollowButton> {
+  FollowState followState;
+  bool follows;
+
+  Dio dio = Dio();
+
+  void podcastShare() async {
+    await FlutterShare.share(
+        title: '${widget.podcastData['name']}',
+        text:
+            "Hey There, I'm listening to ${widget.podcastData['name']} on Aureal, here's the link for you https://aureal.one/podcast/${widget.podcastData['id']}");
+  }
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = widget.podcastData['id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      followState = widget.followState;
+      follows = widget.follows;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
+    return Row(
+      children: [
+        followState == FollowState.following
+            ? InkWell(
+                onTap: () {
+                  follow();
+                  setState(() {
+                    if (followState == FollowState.follow) {
+                      followState = FollowState.following;
+                    } else {
+                      followState = FollowState.follow;
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: kSecondaryColor
+                          //    color: Color(0xffe8e8e8),
+                          ,
+                          width: 0.5)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Text(
+                      'Unsubscribe',
+                      textScaleFactor: mediaQueryData.textScaleFactor
+                          .clamp(0.5, 1)
+                          .toDouble(),
+                      style: TextStyle(
+                          //      color: Color(0xffe8e8e8)
+                          ),
+                    ),
+                  ),
+                ))
+            : InkWell(
+                onTap: () async {
+                  follow();
+                  setState(() {
+                    if (followState == FollowState.follow) {
+                      followState = FollowState.following;
+                    } else {
+                      followState = FollowState.follow;
+                    }
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: kSecondaryColor,
+                          //    color: Color(0xffe8e8e8),
+                          width: 0.5)
+                      //color: Color(0xffe8e8e8)
+                      ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    child: Text(
+                      'Subscribe',
+                      textScaleFactor: mediaQueryData.textScaleFactor
+                          .clamp(0.5, 1)
+                          .toDouble(),
+                      style: TextStyle(
+                          // color: Color(0xff3a3a3a)
+                          ),
+                    ),
+                  ),
+                ),
+              ),
+        GestureDetector(
+          onTap:  podcastShare,
+          child: Column(
+            children: <Widget>[
+              IconButton(
+                onPressed: () {
+                  podcastShare();
+                },
+                icon: Icon(
+                  FontAwesomeIcons.shareAlt,
+                  //    color: Colors.grey,
+                  size: 18,
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
 // class AddToCommunity extends StatefulWidget {
 //   var episodeObject;
 //
@@ -2099,125 +2505,3 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 //     );
 //   }
 // }
-
-class FollowButton extends StatefulWidget {
-  FollowState followState;
-  bool follows;
-  var podcastData;
-
-  FollowButton(
-      {@required this.podcastData,
-      @required this.follows,
-      @required this.followState});
-
-  @override
-  _FollowButtonState createState() => _FollowButtonState();
-}
-
-class _FollowButtonState extends State<FollowButton> {
-  FollowState followState;
-  bool follows;
-
-  Dio dio = Dio();
-
-  void follow() async {
-    print("Follow function started");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = 'https://api.aureal.one/public/follow';
-    var map = Map<String, dynamic>();
-
-    map['user_id'] = prefs.getString('userId');
-    map['podcast_id'] = widget.podcastData['id'];
-
-    FormData formData = FormData.fromMap(map);
-
-    try {
-      var response = await dio.post(url, data: formData);
-      print(response.toString());
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    setState(() {
-      followState = widget.followState;
-      follows = widget.follows;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return followState == FollowState.following
-        ? InkWell(
-            onTap: () {
-              follow();
-              setState(() {
-                if (followState == FollowState.follow) {
-                  followState = FollowState.following;
-                } else {
-                  followState = FollowState.follow;
-                }
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: kSecondaryColor
-                      //    color: Color(0xffe8e8e8),
-                      ,
-                      width: 0.5)),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text(
-                  'Unsubscribe',
-                  textScaleFactor:
-                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                  style: TextStyle(
-                      //      color: Color(0xffe8e8e8)
-                      ),
-                ),
-              ),
-            ))
-        : InkWell(
-            onTap: () async {
-              follow();
-              setState(() {
-                if (followState == FollowState.follow) {
-                  followState = FollowState.following;
-                } else {
-                  followState = FollowState.follow;
-                }
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: kSecondaryColor,
-                      //    color: Color(0xffe8e8e8),
-                      width: 0.5)
-                  //color: Color(0xffe8e8e8)
-                  ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                child: Text(
-                  'Subscribe',
-                  textScaleFactor:
-                      mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-                  style: TextStyle(
-                      // color: Color(0xff3a3a3a)
-                      ),
-                ),
-              ),
-            ),
-          );
-  }
-}

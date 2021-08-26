@@ -41,7 +41,6 @@ class _BioState extends State<Bio> {
   bool isLoading = false;
   bool isImageLoading = false;
   final picker = ImagePicker();
-  var bioObject;
   File _image;
 
   Dio dio = Dio();
@@ -373,9 +372,9 @@ class _BioState extends State<Bio> {
                       decoration: displayUrl == null
                           ? BoxDecoration(
                               image: DecorationImage(
-                                image: widget.displayPicture != null
+                                image: displayPicture != null
                                     ? CachedNetworkImageProvider(
-                                        widget.displayPicture)
+                                        displayPicture)
                                     // ? NetworkImage(widget.displayPicture)
                                     : AssetImage('assets/images/person.png'),
                               ),
@@ -456,12 +455,12 @@ class _BioState extends State<Bio> {
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
               child: TextFormField(
                 decoration: InputDecoration(  hintText: data['bio'] != null
-        ? data['bio']
-        : 'Bio', labelText: 'Bio'),
-                controller: bioTextEditingControler,
+                      ? data['bio']
+                      : 'Bio', labelText: 'Bio'),
+         //       controller: bioTextEditingControler,
                 autofocus: true,
                 maxLines: null,
-                initialValue: widget.bio,
+                initialValue: data['bio'],
                 onChanged: (value) {
                   setState(() {
 
@@ -501,7 +500,9 @@ class _BioState extends State<Bio> {
               padding: const EdgeInsets.all(15),
               child: Column(
                 children: [
-                  TextField(
+                  TextFormField(
+                    keyboardType: TextInputType.url,
+                    initialValue: data['instagram'],
                     onChanged: (value) {
                       setState(() {
                         instagram = value;
@@ -513,7 +514,9 @@ class _BioState extends State<Bio> {
                             ? data['instagram']
                             : 'https://instagram.com/john_snow'),
                   ),
-                  TextField(
+                  TextFormField(
+                    keyboardType: TextInputType.url,
+                    initialValue: data['twitter'],
                     onChanged: (value) {
                       setState(() {
                         twitter = value;
@@ -524,7 +527,9 @@ class _BioState extends State<Bio> {
                         hintText:
                             '${data['twitter'] == null ? 'https://twitter.com/@john_snow' : data['twitter']} '),
                   ),
-                  TextField(
+                  TextFormField(
+
+                    initialValue: data['linkedin'] ,
                     onChanged: (value) {
                       setState(() {
                         linkedin = value;
@@ -535,7 +540,9 @@ class _BioState extends State<Bio> {
                         hintText:
                             '${data['linkedin'] != null ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
                   ),
-                  TextField(
+                  TextFormField(
+                    keyboardType: TextInputType.url,
+                    initialValue:  data['website'],
                     onChanged: (value) {
                       setState(() {
                         website = value;

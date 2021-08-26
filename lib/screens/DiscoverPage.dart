@@ -651,7 +651,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                   height: MediaQuery.of(context)
                                                           .size
                                                           .height /
-                                                      3,
+                                                      2.8,
                                                   child: GridView(
                                                     scrollDirection:
                                                         Axis.horizontal,
@@ -736,7 +736,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         (context) {
                                                                       return Container(
                                                                         child:
-                                                                            Player(),
+                                                                            Player(
+                                                                            ),
                                                                       );
                                                                     });
                                                               }
@@ -1140,7 +1141,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       width: double.infinity,
                                                       height: SizeConfig
                                                               .blockSizeVertical *
-                                                          23,
+                                                          25,
                                                       constraints: BoxConstraints(
                                                           minHeight:
                                                               MediaQuery.of(
@@ -1216,7 +1217,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           ),
                                                                           SizedBox(
                                                                             height:
-                                                                                10,
+                                                                                MediaQuery.of(context).size.height/120,
                                                                           ),
                                                                           Flexible(
                                                                             child:
@@ -1280,3 +1281,4 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 }
+

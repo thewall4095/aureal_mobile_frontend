@@ -109,6 +109,7 @@ class _SeekbarState extends State<Seekbar> {
               //  thumbShape: SliderComponentShape
               // thumbShape: RoundSliderThumbShape(
               //     pressedElevation: 1.0,
+              //     pressedElevation: 1.0,
               //     enabledThumbRadius: 8,
               //     disabledThumbRadius: 5),
               ),

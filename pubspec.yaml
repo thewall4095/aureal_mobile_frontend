@@ -48,6 +48,7 @@ dependencies:
   shimmer: ^1.1.1
   shared_preferences: ^0.5.7+3
   firebase_messaging: ^10.0.0
+#  flutter_share_file: ^1.2.1+6
   modal_bottom_sheet: ^2.0.0
   progress_dialog: ^1.2.4
   carousel_slider: ^3.0.0
@@ -63,11 +64,11 @@ dependencies:
 #  flutter_ffmpeg: ^0.4.0
   image_picker: any
   image_cropper: any
-  focused_menu: ^1.0.0
-  speech_to_text: any
-  highlight_text: any
-  avatar_glow: any
-  google_speech: any
+  screenshot: any
+  social_share: any
+  share:  any
+  scrollable_positioned_list: any
+  animated_text_kit: ^4.2.1
 
 
 

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
 import 'package:auditory/PlayerState.dart';
@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -95,7 +96,13 @@ class _EpisodeViewState extends State<EpisodeView>
       print(e);
     }
   }
-
+  void share1({var episodeObject}) async {
+    // String sharableLink;
+    await FlutterShare.share(
+        title: '${episodeContent['podcast_name']}',
+        text:
+        "Hey There, I'm listening to ${episodeContent['name']} from ${episodeContent['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeContent['id']}");
+  }
   void getEpisode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -350,7 +357,6 @@ class _EpisodeViewState extends State<EpisodeView>
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
-
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     SizeConfig().init(context);
@@ -422,19 +428,19 @@ class _EpisodeViewState extends State<EpisodeView>
                             width: 0,
                           ),
 
-                          IconButton(
-                            onPressed: () {
+                        IconButton(
+                        onPressed: () {
+                        share1(
+                        episodeObject:
+                        episodeObject.episodeObject);
+                        },
+                        icon: Icon(Icons.share),
 
-                            },
-                            icon: Icon(
-                              Icons.share,
-                            ),
                           )
                         ],
                         expandedHeight: episodeContent['permlink'] == null
-                            ? MediaQuery.of(context).size.height / 1.47
-                            : MediaQuery.of(context).size.height / 1.2,
-
+                            ? MediaQuery.of(context).size.height / 1.5
+                            : MediaQuery.of(context).size.height / 1.4,
                         flexibleSpace: FlexibleSpaceBar(
                           background: Stack(
                             children: [
@@ -491,7 +497,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                       SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height /
-                                                40,
+                                                80,
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),

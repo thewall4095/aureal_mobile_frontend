@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
+import "package:badges/badges.dart";
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/recorderApp/Transcription.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import "package:badges/badges.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -28,13 +31,13 @@ import 'package:uni_links/uni_links.dart';
 import '../NotificationProvider.dart';
 import '../PlayerState.dart';
 import '../models/message.dart';
+import 'CommunityPage.dart';
 import 'DiscoverPage.dart';
 import 'FollowingPage.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
-import 'RoomsPage.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
 import 'buttonPages/HiveWallet.dart';
@@ -155,7 +158,7 @@ class _HomeState extends State<Home> {
   Widget _createPage(BuildContext context, int index) {
     switch (index) {
       case 0:
-        return RoomsPage();
+        return CommunityPage();
         break;
 
       case 1:
@@ -397,7 +400,8 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).push(SlideRightRoute(widget: Profile()));
+              Navigator.of(context).push(   SlideRightRoute(widget:
+              Profile()));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -595,17 +599,15 @@ class _BottomPlayerState extends State<BottomPlayer> {
                         ],
                       );
                     });
-                // Navigator.pushNamed(context, Player.id);
+                 // Navigator.pushNamed(context, Player.id);
               },
               child: Dismissible(
-                key: UniqueKey(),
-                onDismissed: (direction) {
-                  setState(() {
-                    episodeObject.pause();
-                    episodeObject.removeListener(() {});
-                  });
-                  episodeObject.removeListener(() {});
-                },
+                  key: UniqueKey(),
+                  onDismissed: (direction){
+                    setState(() {
+                      episodeObject.pause();
+                    });
+                  },
                 child: Container(
                   height: SizeConfig.safeBlockVertical * 6,
                   width: double.infinity,
@@ -667,8 +669,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                         context: context,
                                         builder: (context) {
                                           return Dialog(
-                                              backgroundColor:
-                                                  Colors.transparent,
+                                              backgroundColor: Colors.transparent,
                                               child: UpvoteEpisode(
                                                   episode_id: episodeObject.id,
                                                   permlink:
@@ -679,8 +680,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                     Fluttertoast.showToast(msg: 'Upvote done');
                                   } else {
                                     Fluttertoast.showToast(
-                                        msg:
-                                            'Please connect your Hive Account');
+                                        msg: 'Please connect your Hive Account');
                                     showBarModalBottomSheet(
                                         context: context,
                                         builder: (context) {
@@ -723,7 +723,9 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 }
                               },
                             ),
+
                           ),
+
                           Container(
                             height: 40,
                             width: MediaQuery.of(context).size.width / 1.5,
@@ -732,11 +734,11 @@ class _BottomPlayerState extends State<BottomPlayer> {
                               text: ' ${episodeObject.episodeName} ',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3.2),
+                                  fontSize: SizeConfig.safeBlockHorizontal * 3.2),
                               blankSpace: 100,
                             ),
                           ),
+
                           SizedBox(
                             width: 10,
                           ),

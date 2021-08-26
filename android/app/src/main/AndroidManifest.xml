@@ -11,14 +11,14 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-<!--    <user-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <!--    <user-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>-->
-<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>-->
+    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>-->
+    <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>-->
 
     <application
         android:name=".Application"
@@ -28,12 +28,12 @@
         android:icon="@mipmap/ic_launcher"
         >
 
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_icon"-->
-<!--            android:resource="@drawable/notification_icon.png" />-->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_color"-->
-<!--            android:resource="@color/colorPrimary" />-->
+        <!--        <meta-data-->
+        <!--            android:name="com.google.firebase.messaging.default_notification_icon"-->
+        <!--            android:resource="@drawable/notification_icon.png" />-->
+        <!--        <meta-data-->
+        <!--            android:name="com.google.firebase.messaging.default_notification_color"-->
+        <!--            android:resource="@color/colorPrimary" />-->
 
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
@@ -59,7 +59,7 @@
                 android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
                 android:value="5" />
         </provider>
-<!--        <uses-permission android:name="android.permission.INTERNET"/>-->
+        <!--        <uses-permission android:name="android.permission.INTERNET"/>-->
 
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -98,9 +98,9 @@
 
 
 
-<!--            <meta-data-->
-<!--                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"-->
-<!--                android:value="true" />-->
+            <!--            <meta-data-->
+            <!--                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"-->
+            <!--                android:value="true" />-->
             <!-- Specify that the launch screen should continue being displayed -->
             <!-- until Flutter renders its first frame. -->
             <meta-data
@@ -143,38 +143,47 @@
         <service
             android:name="live.exit.musicplayer.MusicPlayerService"
             android:enabled="true" />
-            <provider
-                android:name="androidx.core.content.FileProvider"
-                android:authorities="${applicationId}.provider"
-                android:exported="false"
-                android:grantUriPermissions="true">
-                <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/provider_paths"/>
-            </provider>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+<!--        <provider-->
+<!--            android:name="androidx.core.content.FileProvider"-->
+<!--            android:authorities="${applicationId}.com.shekarmudaliyar.social_share"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true"-->
+<!--            tools:replace="android:authorities">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/filepaths" />-->
+<!--        </provider>-->
+        <provider
+            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+            android:authorities="${applicationId}.flutter_downloader.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
 
-            <provider
-                android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
-                android:authorities="${applicationId}.flutter_downloader.provider"
-                android:exported="false"
-                android:grantUriPermissions="true">
-                <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/provider_paths"/>
-            </provider>
-            <provider
-                android:name="androidx.work.impl.WorkManagerInitializer"
-                android:authorities="${applicationId}.workmanager-init"
-                tools:node="remove" />
-
-            <provider
-                android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
-                android:authorities="${applicationId}.flutter-downloader-init"
-                android:exported="false">
+        <provider
+            android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+            android:authorities="${applicationId}.flutter-downloader-init"
+            android:exported="false">
             <!-- changes this number to configure the maximum number of concurrent tasks -->
-                <meta-data
-                    android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
-                    android:value="5" />
-            </provider>
+            <meta-data
+                android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+                android:value="5" />
+        </provider>
     </application>
 </manifest>
