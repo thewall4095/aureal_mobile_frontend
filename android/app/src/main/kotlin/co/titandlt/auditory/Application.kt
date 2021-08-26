@@ -12,4 +12,6 @@ class Application() : FlutterApplication(), PluginRegistry.PluginRegistrantCallb
             FlutterFirebaseMessagingPlugin.registerWith(registry?.registrarFor("io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingPlugin"));
         }
     }
+
+
 }

@@ -93,6 +93,7 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
       body: SafeArea(
         child: InAppWebView(
           key: webViewKey,
+
           initialData: InAppWebViewInitialData(
               data: ''' <html xmlns="http://www.w3.org/1999/html">
 <head>
@@ -110,8 +111,11 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
                 roomName: "JitsiMeetAPIExample",
       
                 parentNode: document.querySelector('#aureal-iframe'),
+                
                 configOverwrite: {
-                disableDeepLinking: true},
+                disableDeepLinking: true
+                
+            },
 
             }
             var api = new JitsiMeetExternalAPI(domain, options);
@@ -125,6 +129,7 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
           initialUserScripts: UnmodifiableListView<UserScript>([]),
           initialOptions: options,
           pullToRefreshController: pullToRefreshController,
+
           onWebViewCreated: (controller) {
             webViewController = controller;
           },
