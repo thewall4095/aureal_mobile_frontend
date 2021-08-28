@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RoomsPlayer extends StatefulWidget {
@@ -12,6 +13,11 @@ class RoomsPlayer extends StatefulWidget {
 
 class _RoomsPlayerState extends State<RoomsPlayer> {
   final GlobalKey webViewKey = GlobalKey();
+
+  void getPermissions() async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+  }
 
   InAppWebViewController webViewController;
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
@@ -34,6 +40,7 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
 
   @override
   void initState() {
+    getPermissions();
     contextMenu = ContextMenu(
         menuItems: [
           ContextMenuItem(
@@ -102,7 +109,9 @@ class _RoomsPlayerState extends State<RoomsPlayer> {
     <meta http-equiv="content-type" content="text/html;charset=utf-8">
 </head>
 <body>
-<div id="aureal-iframe" style="width:100%;height:100%;border:none !important;"></div>
+<div id="aureal-iframe" style="width:100%;height:100%;border:none !important;">
+  <iframe allow="camera;microphone"></iframe>
+</div>
 <script src="https://sessions.aureal.one/external_api.js"></script>
 
 <script>

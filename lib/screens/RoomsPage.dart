@@ -1,17 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
-import 'Player/RoomsPlayer.dart';
 
 class RoomsPage extends StatefulWidget {
   @override
@@ -70,73 +72,71 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     });
   }
 
-  // _joinMeeting() async {
-  //   String serverUrl = serverText.text.trim().isEmpty ? null : serverText.text;
-  //
-  //   // Enable or disable any feature flag here
-  //   // If feature flag are not provided, default values will be used
-  //   // Full list of feature flags (and defaults) available in the README
-  //   Map<FeatureFlagEnum, bool> featureFlags = {
-  //     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-  //   };
-  //   if (!kIsWeb) {
-  //     // Here is an example, disabling features for each platform
-  //     if (Platform.isAndroid) {
-  //       // Disable ConnectionService usage on Android to avoid issues (see README)
-  //       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-  //     } else if (Platform.isIOS) {
-  //       // Disable PIP on iOS as it looks weird
-  //       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-  //     }
-  //   }
-  //   // Define meetings options here
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   var options = JitsiMeetingOptions(room: roomText.text)
-  //     ..serverURL = 'https://sessions.aureal.one'
-  //     ..subject = subjectText.text
-  //     ..userDisplayName = nameText.text
-  //     ..userEmail = emailText.text
-  //     ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-  //     ..audioOnly = true
-  //     ..audioMuted = isAudioMuted
-  //     ..videoMuted = isVideoMuted
-  //     ..featureFlags.addAll(featureFlags)
-  //     ..webOptions = {
-  //       "roomName": roomText.text,
-  //       "width": "100%",
-  //       "height": "100%",
-  //       "enableWelcomePage": false,
-  //       "chromeExtensionBanner": null,
-  //       "userInfo": {
-  //         "displayName": nameText.text,
-  //         'avatarUrl': prefs.getString('displayPicture')
-  //       }
-  //     };
-  //
-  //   debugPrint("JitsiMeetingOptions: $options");
-  //   await JitsiMeet.joinMeeting(
-  //     options,
-  //     listener: JitsiMeetingListener(
-  //         onConferenceWillJoin: (message) {
-  //           debugPrint("${options.room} will join with message: $message");
-  //         },
-  //         onConferenceJoined: (message) {
-  //           debugPrint("${options.room} joined with message: $message");
-  //         },
-  //         onConferenceTerminated: (message) {
-  //           debugPrint("${options.room} terminated with message: $message");
-  //         },
-  //         genericListeners: [
-  //           JitsiGenericListener(
-  //               eventName: 'readyToClose',
-  //               callback: (dynamic message) {
-  //                 debugPrint("readyToClose callback");
-  //               }),
-  //         ]),
-  //   );
-  // }
+  _joinMeeting({String roomId, String roomName, String displayName}) async {
+    // Enable or disable any feature flag here
+    // If feature flag are not provided, default values will be used
+    // Full list of feature flags (and defaults) available in the README
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      FeatureFlagEnum.CHAT_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var options = JitsiMeetingOptions(room: roomId)
+      ..serverURL = 'https://sessions.aureal.one'
+      ..subject = roomName
+      ..userDisplayName = displayName
+      ..userEmail = 'emailText.text'
+      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+      ..audioOnly = true
+      ..audioMuted = isAudioMuted
+      ..videoMuted = isVideoMuted
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": roomName,
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {
+          "displayName": 'Shubham',
+          'avatarUrl': prefs.getString('displayPicture')
+        }
+      };
+
+    debugPrint("JitsiMeetingOptions: $options");
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'readyToClose',
+                callback: (dynamic message) {
+                  debugPrint("readyToClose callback");
+                }),
+          ]),
+    );
+  }
 
   void _onConferenceWillJoin(message) {
     debugPrint("_onConferenceWillJoin broadcasted with message: $message");
@@ -347,11 +347,13 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                               height: 15,
                             ),
                             InkWell(
-                              onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return RoomsPlayer();
-                                }));
+                              onTap: () async {
+                                await _joinMeeting(
+                                  roomId: rooms[index]['roomid'],
+                                  roomName: rooms[index]['title'],
+                                );
+                                print(
+                                    'https://sessions.aureal.one/${rooms[index]['roomid']}');
                               },
                               child: Container(
                                 decoration: BoxDecoration(
