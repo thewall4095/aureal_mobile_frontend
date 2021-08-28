@@ -48,7 +48,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
 
   TabController _tabController;
 
-  var rooms;
+  List rooms = [];
 
   bool isAudioOnly = true;
   bool isAudioMuted = true;
@@ -110,7 +110,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
         "enableWelcomePage": false,
         "chromeExtensionBanner": null,
         "userInfo": {
-          "displayName": 'Shubham',
+          "displayName": prefs.getString('userName'),
           'avatarUrl': prefs.getString('displayPicture')
         }
       };
@@ -224,155 +224,281 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
         body: TabBarView(
           controller: _tabController,
           children: [
-            ListView.builder(
-                controller: _controller,
-                itemCount: rooms.length,
-                itemBuilder: (context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 7.5),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Color(0xff222222),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+            rooms.length == 0
+                ? ListView.builder(
+                    controller: _controller,
+                    itemCount: 50,
+                    itemBuilder: (context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 7.5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Color(0xff222222),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: kPrimaryColor,
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.stream,
-                                            size:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    3.5,
-                                            color: Colors.blue,
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text('LIVE'),
-                                        ],
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: Color(0xff161616)),
+                                        height: 15,
+                                        width: 60,
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        height: 15,
+                                        width: 60,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: Color(0xff161616)),
+                                      ),
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            rooms[index]['roomParticipants'] == null
-                                ? SizedBox()
-                                : Container(
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Container(
                                     height: (MediaQuery.of(context).size.width /
                                             9) *
                                         2.1,
-                                    child: GridView(
+                                    child: GridView.builder(
                                       scrollDirection: Axis.horizontal,
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              mainAxisSpacing: 10,
-                                              crossAxisSpacing: 5,
-                                              childAspectRatio: 1 / 1),
-                                      children: [
-                                        for (var v in rooms[index]
-                                            ['roomParticipants'])
-                                          CachedNetworkImage(
-                                            imageUrl: v['user_image'],
-                                            memCacheHeight:
-                                                (MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        2)
-                                                    .ceil(),
-                                            imageBuilder:
-                                                (context, imageProvider) {
-                                              return Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    10,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    10,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                      ],
+                                        crossAxisCount: MediaQuery.of(context)
+                                                    .orientation ==
+                                                Orientation.landscape
+                                            ? 3
+                                            : 2,
+                                        crossAxisSpacing: 5,
+                                        mainAxisSpacing: 5,
+                                        childAspectRatio: (1 / 1),
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        return CircleAvatar(
+                                          backgroundColor: Color(0xff161616),
+                                        );
+                                      },
+                                      itemCount: 10,
                                     ),
                                   ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              child: Text(
-                                "${rooms[index]['title']}",
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 5,
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                            Text(
-                              "Unkle Bonehead & 377 people are here",
-                              textScaleFactor: 1.0,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Color(0xffe8e8e8).withOpacity(0.5),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 3),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            InkWell(
-                              onTap: () async {
-                                await _joinMeeting(
-                                  roomId: rooms[index]['roomid'],
-                                  roomName: rooms[index]['title'],
-                                );
-                                print(
-                                    'https://sessions.aureal.one/${rooms[index]['roomid']}');
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xff191919),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 15),
-                                  child: Text("join room"),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Container(
+                                    height: 15,
+                                    width:
+                                        MediaQuery.of(context).size.width / 5,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Color(0xff161616)),
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: Container(
+                                    height: 50,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Color(0xff161616)),
+                                  ),
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Color(0xff161616)),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 5,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Color(0xff161616)),
+                                )
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }),
+                      );
+                    })
+                : ListView.builder(
+                    controller: _controller,
+                    itemCount: rooms.length,
+                    itemBuilder: (context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 7.5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Color(0xff222222),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.stream,
+                                                size: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3.5,
+                                                color: Colors.blue,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text('LIVE'),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                rooms[index]['roomParticipants'] == null
+                                    ? SizedBox()
+                                    : Container(
+                                        height:
+                                            (MediaQuery.of(context).size.width /
+                                                    9) *
+                                                2.1,
+                                        child: GridView(
+                                          scrollDirection: Axis.horizontal,
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 2,
+                                                  mainAxisSpacing: 10,
+                                                  crossAxisSpacing: 5,
+                                                  childAspectRatio: 1 / 1),
+                                          children: [
+                                            for (var v in rooms[index]
+                                                ['roomParticipants'])
+                                              CachedNetworkImage(
+                                                imageUrl: v['user_image'],
+                                                memCacheHeight:
+                                                    (MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2)
+                                                        .ceil(),
+                                                imageBuilder:
+                                                    (context, imageProvider) {
+                                                  return Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            10,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            10,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    "${rooms[index]['title']}",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 5,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                                Text(
+                                  "Unkle Bonehead & 377 people are here",
+                                  textScaleFactor: 1.0,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: Color(0xffe8e8e8).withOpacity(0.5),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    await _joinMeeting(
+                                      roomId: rooms[index]['roomid'],
+                                      roomName: rooms[index]['title'],
+                                    );
+                                    print(
+                                        'https://sessions.aureal.one/${rooms[index]['roomid']}');
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: Color(0xff191919),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 15),
+                                      child: Text("join room"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
             Container(),
           ],
         ),
