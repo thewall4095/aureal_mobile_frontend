@@ -12,7 +12,6 @@ import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
-import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -723,275 +722,157 @@ class _PodcastViewState extends State<PodcastView> {
                           ),
                         ])
                       ]));
-
             } else {
               if (index == episodeList.length + 1) {
-                return isLoading == false
-                    ? (_controller.position.pixels !=
-                            _controller.position.maxScrollExtent
-                        ?  Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10),
-                    child: Shimmer.fromColors(
-                      baseColor: themeProvider.isLightTheme == false
-                          ? kPrimaryColor
-                          : Colors.white,
-                      highlightColor:
-                      themeProvider.isLightTheme == false
-                          ? Color(0xff3a3a3a)
-                          : Colors.white,
+                if (isLoading == false) {
+                  for (int i = 0; i < 2; i++) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 8),
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.circular(10),
-                          border: Border.all(color: kSecondaryColor,),
-
-                        ),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xff222222)),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(20),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width:
-                                      SizeConfig.screenWidth / 28),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        color: kSecondaryColor,
-                                        height: 10,
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        color: kSecondaryColor,
-                                        height: 10,
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            4,
-                                      )
-                                    ],
-                                  )
-                                ],
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.start,
+                              //   children: [
+                              //     Container(
+                              //       width:
+                              //           MediaQuery.of(context).size.width / 7,
+                              //       height:
+                              //           MediaQuery.of(context).size.width / 7,
+                              //       decoration: BoxDecoration(
+                              //           color: Color(0xff161616),
+                              //           borderRadius:
+                              //               BorderRadius.circular(10)),
+                              //     ),
+                              //     SizedBox(width: 10),
+                              //     Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         Container(
+                              //           decoration: BoxDecoration(
+                              //               color: Color(0xff161616)),
+                              //           height: 16,
+                              //           width:
+                              //               MediaQuery.of(context).size.width /
+                              //                   3,
+                              //         ),
+                              //         SizedBox(
+                              //           height: 5,
+                              //         ),
+                              //         Container(
+                              //           decoration: BoxDecoration(
+                              //               color: Color(0xff161616)),
+                              //           height: 8,
+                              //           width:
+                              //               MediaQuery.of(context).size.width /
+                              //                   4,
+                              //         )
+                              //       ],
+                              //     )
+                              //   ],
+                              // ),
+                              SizedBox(
+                                height: 10,
                               ),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Container(
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Color(0xff161616),
+                                    height: 10,
+                                    width: MediaQuery.of(context).size.width),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Color(0xff161616),
+                                    height: 10,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Color(0xff161616),
+                                    height: 6,
+                                    width: MediaQuery.of(context).size.width),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Color(0xff161616),
+                                    height: 6,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.75),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: kSecondaryColor,
+                                        color: Color(0xff161616),
                                       ),
                                       height: 25,
                                       width:
-                                      MediaQuery.of(context).size.width/8,
+                                          MediaQuery.of(context).size.width / 8,
                                       //    color: kSecondaryColor,
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: kSecondaryColor,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Color(0xff161616),
+                                        ),
+                                        height: 25,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                8,
+                                        //    color: kSecondaryColor,
                                       ),
-                                      height: 25,
-                                      width:
-                                      MediaQuery.of(context).size.width/8,
-                                      //    color: kSecondaryColor,
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: kSecondaryColor,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Color(0xff161616),
+                                        ),
+                                        height: 20,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                8,
+                                        //    color: kSecondaryColor,
                                       ),
-                                      height: 25,
-                                      width:
-                                      MediaQuery.of(context).size.width/8,
-                                      //    color: kSecondaryColor,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
-                              // Column(
-                              //   mainAxisAlignment:
-                              //   MainAxisAlignment.start,
-                              //   children: [
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           horizontal: 15, vertical: 5),
-                              //       child: Container(
-                              //         height: 5,
-                              //         width: MediaQuery.of(context)
-                              //             .size
-                              //             .width,
-                              //         color: kSecondaryColor,
-                              //       ),
-                              //     ),
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           horizontal: 15, vertical: 5),
-                              //       child: Container(
-                              //         height: 5,
-                              //         width: MediaQuery.of(context)
-                              //             .size
-                              //             .width,
-                              //         color: kSecondaryColor,
-                              //       ),
-                              //     ),
-                              //   ],
-                              // )
                             ],
                           ),
                         ),
                       ),
-                    ))
-                        : Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 10),
-                    child: Shimmer.fromColors(
-                      baseColor: themeProvider.isLightTheme == false
-                          ? kPrimaryColor
-                          : Colors.white,
-                      highlightColor:
-                      themeProvider.isLightTheme == false
-                          ? Color(0xff3a3a3a)
-                          : Colors.white,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius:
-                          BorderRadius.circular(10),
-                          border: Border.all(color: kSecondaryColor,),
-
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                      width:
-                                      SizeConfig.screenWidth / 28),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        color: kSecondaryColor,
-                                        height: 10,
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            2,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        color: kSecondaryColor,
-                                        height: 10,
-                                        width: MediaQuery.of(context)
-                                            .size
-                                            .width /
-                                            4,
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                             Row(
-                                 children: [
-                                   Padding(
-                                     padding: const EdgeInsets.all(15),
-                                     child: Container(
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(10),
-                                         color: kSecondaryColor,
-                                       ),
-                                       height: 25,
-                                       width:
-                                       MediaQuery.of(context).size.width/8,
-                                       //    color: kSecondaryColor,
-                                     ),
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(15),
-                                     child: Container(
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(10),
-                                         color: kSecondaryColor,
-                                       ),
-                                       height: 25,
-                                       width:
-                                       MediaQuery.of(context).size.width/8,
-                                       //    color: kSecondaryColor,
-                                     ),
-                                   ),
-                                   Padding(
-                                     padding: const EdgeInsets.all(15),
-                                     child: Container(
-                                       decoration: BoxDecoration(
-                                         borderRadius: BorderRadius.circular(10),
-                                         color: kSecondaryColor,
-                                       ),
-                                       height: 25,
-                                       width:
-                                       MediaQuery.of(context).size.width/8,
-                                       //    color: kSecondaryColor,
-                                     ),
-                                   ),
-                                 ],
-                             )
-                              // Column(
-                              //   mainAxisAlignment:
-                              //   MainAxisAlignment.start,
-                              //   children: [
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           horizontal: 15, vertical: 5),
-                              //       child: Container(
-                              //         height: 5,
-                              //         width: MediaQuery.of(context)
-                              //             .size
-                              //             .width,
-                              //         color: kSecondaryColor,
-                              //       ),
-                              //     ),
-                              //     Padding(
-                              //       padding: const EdgeInsets.symmetric(
-                              //           horizontal: 15, vertical: 5),
-                              //       child: Container(
-                              //         height: 5,
-                              //         width: MediaQuery.of(context)
-                              //             .size
-                              //             .width,
-                              //         color: kSecondaryColor,
-                              //       ),
-                              //     ),
-                              //   ],
-                              // )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )))
-                    :SizedBox();
+                    );
+                  }
+                } else {
+                  return SizedBox();
+                }
               }
               return Padding(
                 padding:
@@ -1980,7 +1861,7 @@ class _FollowButtonState extends State<FollowButton> {
                 ),
               ),
         GestureDetector(
-          onTap:  podcastShare,
+          onTap: podcastShare,
           child: Column(
             children: <Widget>[
               IconButton(
