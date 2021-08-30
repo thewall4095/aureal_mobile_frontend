@@ -530,6 +530,7 @@ class _CreateRoomState extends State<CreateRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Color(0xff161616),
       appBar: AppBar(
         elevation: 0,
@@ -791,6 +792,31 @@ class _CommunitySelectorState extends State<CommunitySelector>
     }
   }
 
+  void searchForCommunity(String query) async {
+    if (_tabController.index == 0) {
+      // for (var v in _followedCommunities) {
+      //   if (v[1].toString().toLowerCase().contains(query.toLowerCase()) ==
+      //       true) {
+      //     setState(() {
+      //       searchResults.;
+      //     });
+      //   }
+      //   print(searchResults.toSet().toList());
+      // }
+
+    }
+    if (_tabController.index == 1) {
+      for (var v in _allCommunities) {
+        if (v['title'].toString().contains(query) == true) {
+          setState(() {
+            searchResults.add(v);
+          });
+          print(searchResults.toSet().toList());
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     getHiveCommunities();
@@ -892,13 +918,19 @@ class _CommunitySelectorState extends State<CommunitySelector>
                               color: Color(0xff222222),
                               borderRadius: BorderRadius.circular(8)),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            padding: const EdgeInsets.only(right: 15),
                             child: TextField(
-                              decoration:
-                                  InputDecoration(border: InputBorder.none),
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(top: 15),
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(Icons.search)),
                               onChanged: (value) {
-                                if (value.length > 3) {
-                                  getHiveCommunities();
+                                if (value.length > 2) {
+                                  searchForCommunity(value);
+                                } else {
+                                  setState(() {
+                                    searchResults = [];
+                                  });
                                 }
                               },
                             ),
