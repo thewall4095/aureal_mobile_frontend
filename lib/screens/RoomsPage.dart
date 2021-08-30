@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
@@ -198,7 +199,13 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
       },
       child: Scaffold(
         floatingActionButton: FloatingActionButton.extended(
-          onPressed: null,
+          onPressed: () {
+            showBarModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return CreateRoom();
+                });
+          },
           label: Text('Create Room'),
           icon: Icon(Icons.add),
           isExtended: !upDirection,
@@ -503,6 +510,541 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CreateRoom extends StatefulWidget {
+  @override
+  _CreateRoomState createState() => _CreateRoomState();
+}
+
+class _CreateRoomState extends State<CreateRoom> {
+  var navigatorValue;
+  var selectedCommunity = Map<String, dynamic>();
+
+  void getHiveCommunities(String query) async {
+    String url = 'https://api.aureal.one/public/getHiveCommunities?word=$query';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xff161616),
+      appBar: AppBar(
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Name of Room",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff222222),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: TextField(
+                            decoration:
+                                InputDecoration(border: InputBorder.none),
+                          ),
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'What do you want to talk about',
+                      style:
+                          TextStyle(color: Color(0xffe8e8e8).withOpacity(0.5)),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Name of the show or podcast",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff222222),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: TextField(
+                            decoration:
+                                InputDecoration(border: InputBorder.none),
+                          ),
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Leave it empty of you don't have one",
+                      style:
+                          TextStyle(color: Color(0xffe8e8e8).withOpacity(0.5)),
+                    )
+                  ],
+                ),
+              ),
+              ListTile(
+                onTap: () {
+                  showBarModalBottomSheet(
+                      enableDrag: true,
+                      context: context,
+                      builder: (context) {
+                        return CommunitySelector();
+                      }).then((value) {
+                    setState(() {
+                      navigatorValue = value;
+                      if (navigatorValue[1] == true) {
+                        selectedCommunity['title'] = navigatorValue[0][1];
+                        selectedCommunity['id'] = navigatorValue[0][0];
+                        print(selectedCommunity);
+                      } else {
+                        selectedCommunity = navigatorValue[0];
+                        print(selectedCommunity);
+                      }
+                    });
+                  });
+                },
+                contentPadding: EdgeInsets.zero,
+                title: Text("Select a community"),
+                subtitle: Text("Choose an audience for this room"),
+                trailing: selectedCommunity.containsKey('title') == false
+                    ? IconButton(
+                        icon: Icon(Icons.arrow_forward_ios),
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Color(0xff222222),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.group,
+                                      size: 14,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text("${selectedCommunity['title']}"),
+                                  ],
+                                ),
+                              )),
+                          Icon(Icons.arrow_forward_ios)
+                        ],
+                      ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text("Enable Recording"),
+                subtitle:
+                    Text("You can use this recording to add to your shows"),
+                trailing: Switch(
+                  value: true,
+                  activeColor: Colors.blue,
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text("Publish on Hive"),
+                subtitle:
+                    Text("You can use this recording to add to your shows"),
+                trailing: Switch(
+                  value: true,
+                  activeColor: Colors.blue,
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 35, vertical: 12),
+                    child: Text(
+                      "Go Live",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CommunitySelector extends StatefulWidget {
+  @override
+  _CommunitySelectorState createState() => _CommunitySelectorState();
+}
+
+class _CommunitySelectorState extends State<CommunitySelector>
+    with TickerProviderStateMixin {
+  var selectedCommunity;
+
+  bool isLoading = false;
+
+  TabController _tabController;
+
+  List searchResults = [];
+
+  List _allCommunities = [];
+
+  List _followedCommunities = [];
+
+  void getFollowedCommunities() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/getFollowedCommunities?hive_username=${prefs.getString('HiveUserName')}';
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          _followedCommunities =
+              jsonDecode(response.body)['followed_hive_communities'];
+          print(_followedCommunities);
+          for (var v in _followedCommunities) {
+            v[3] = false;
+          }
+        });
+        print(response.body);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getHiveCommunities() async {
+    setState(() {
+      isLoading = true;
+    });
+    String url = 'https://api.aureal.one/public/getHiveCommunities';
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(response.body);
+        setState(() {
+          _allCommunities = jsonDecode(response.body)['hive_communities'];
+          for (var v in _allCommunities) {
+            v['isSelected'] = false;
+          }
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    getHiveCommunities();
+    getFollowedCommunities();
+    // TODO: implement initState
+    _tabController = TabController(vsync: this, length: 2);
+    super.initState();
+  }
+
+  bool value = false;
+  bool isFollowed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   title: Text(
+      //     "Select a Hive Community",
+      //     textScaleFactor: 1.0,
+      //     style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+      //   ),
+      // ),
+      // body: Container(
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(15),
+      //     child: Column(
+      //       children: [
+      //         Container(
+      //           decoration: BoxDecoration(
+      //               color: Color(0xff222222),
+      //               borderRadius: BorderRadius.circular(8)),
+      //           child: Padding(
+      //             padding: const EdgeInsets.symmetric(horizontal: 15),
+      //             child: TextField(
+      //               decoration: InputDecoration(border: InputBorder.none),
+      //               onChanged: (value) {
+      //                 if (value.length > 3) {
+      //                   getHiveCommunities(value);
+      //                 }
+      //               },
+      //             ),
+      //           ),
+      //         ),
+      //         Column(
+      //           children: [
+      //             for (var v in searchResults)
+      //               ListTile(
+      //                 title: Text("${v['title']}"),
+      //               )
+      //           ],
+      //         )
+      //       ],
+      //     ),
+      //   ),
+      // ),
+      body: NestedScrollView(
+        physics: BouncingScrollPhysics(),
+        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              pinned: true,
+              leading: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              centerTitle: true,
+              title: Text(
+                "Select a group",
+                textScaleFactor: 1.0,
+                style:
+                    TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+              ),
+              // expandedHeight: MediaQuery.of(context).size.height / 4,
+              bottom: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.height / 5),
+                child: Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Select an audience for this room"),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xff222222),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: TextField(
+                              decoration:
+                                  InputDecoration(border: InputBorder.none),
+                              onChanged: (value) {
+                                if (value.length > 3) {
+                                  getHiveCommunities();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: TabBar(
+                            indicatorSize: TabBarIndicatorSize.label,
+                            isScrollable: true,
+                            controller: _tabController,
+                            tabs: [
+                              Tab(
+                                text: 'My Groups',
+                              ),
+                              Tab(
+                                text: 'All Groups',
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ];
+        },
+        body: Container(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              Container(
+                child: ListView(
+                  children: [
+                    for (var v in _followedCommunities)
+                      ListTile(
+                        leading: CircleAvatar(
+                          child: Icon(Icons.group),
+                        ),
+                        title: Text("${v[1]}"),
+                        trailing: Radio(
+                            activeColor: Colors.blue,
+                            value: v[3],
+                            groupValue: true,
+                            onChanged: (value) {
+                              setState(() {
+                                v[3] = true;
+                                selectedCommunity = v;
+                                isFollowed = true;
+                              });
+                              Navigator.pop(context, [selectedCommunity, true]);
+                            }),
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                child: ListView(
+                  children: [
+                    for (var v in _allCommunities)
+                      ListTile(
+                        leading: CircleAvatar(
+                          child: Icon(Icons.group),
+                        ),
+                        title: Text("${v['title']}"),
+                        trailing: Radio(
+                            activeColor: Colors.blue,
+                            value: v['isSelected'],
+                            groupValue: true,
+                            onChanged: (value) {
+                              setState(() {
+                                v['isSelected'] = true;
+                                selectedCommunity = v;
+                              });
+                              Navigator.pop(
+                                  context, [selectedCommunity, false]);
+                            }),
+                      ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      // body: CustomScrollView(
+      //   slivers: [
+      //     SliverAppBar(
+      //       leading: IconButton(
+      //         icon: Icon(Icons.close),
+      //         onPressed: () {
+      //           Navigator.pop(context);
+      //         },
+      //       ),
+      //       centerTitle: true,
+      //       title: Text(
+      //         "Select a community",
+      //         textScaleFactor: 1.0,
+      //         style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+      //       ),
+      //       expandedHeight: MediaQuery.of(context).size.height / 5,
+      //       flexibleSpace: FlexibleSpaceBar(
+      //         background: Container(
+      //
+      //           child: Padding(
+      //             padding: const EdgeInsets.all(15),
+      //             child: Column(
+      //               mainAxisAlignment: MainAxisAlignment.end,
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: [
+      //                 Padding(
+      //                   padding: const EdgeInsets.all(8.0),
+      //                   child: Text("Select an audience for this room"),
+      //                 ),
+      //                 SizedBox(
+      //                   height: 10,
+      //                 ),
+      //                 Container(
+      //                   decoration: BoxDecoration(
+      //                       color: Color(0xff222222),
+      //                       borderRadius: BorderRadius.circular(8)),
+      //                   child: Padding(
+      //                     padding: const EdgeInsets.symmetric(horizontal: 15),
+      //                     child: TextField(
+      //                       decoration:
+      //                           InputDecoration(border: InputBorder.none),
+      //                       onChanged: (value) {
+      //                         if (value.length > 3) {
+      //                           getHiveCommunities(value);
+      //                         }
+      //                       },
+      //                     ),
+      //                   ),
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     )
+      //   ],
+      // ),
     );
   }
 }
