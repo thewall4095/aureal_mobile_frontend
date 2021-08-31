@@ -794,20 +794,20 @@ class _CommunitySelectorState extends State<CommunitySelector>
 
   void searchForCommunity(String query) async {
     if (_tabController.index == 0) {
-      // for (var v in _followedCommunities) {
-      //   if (v[1].toString().toLowerCase().contains(query.toLowerCase()) ==
-      //       true) {
-      //     setState(() {
-      //       searchResults.;
-      //     });
-      //   }
-      //   print(searchResults.toSet().toList());
-      // }
-
+      for (var v in _followedCommunities) {
+        if (v[1].toString().toLowerCase().contains(query.toLowerCase()) ==
+            true) {
+          setState(() {
+            searchResults.add(v);
+          });
+        }
+        print(searchResults.toSet().toList());
+      }
     }
     if (_tabController.index == 1) {
       for (var v in _allCommunities) {
-        if (v['title'].toString().contains(query) == true) {
+        if (v['title'].toString().toLowerCase().contains(query.toLowerCase()) ==
+            true) {
           setState(() {
             searchResults.add(v);
           });
@@ -815,7 +815,14 @@ class _CommunitySelectorState extends State<CommunitySelector>
         }
       }
     }
+    if (_tabController.indexIsChanging == true) {
+      setState(() {
+        searchResults = [];
+      });
+    }
   }
+
+  String queryValue;
 
   @override
   void initState() {
@@ -925,6 +932,9 @@ class _CommunitySelectorState extends State<CommunitySelector>
                                   border: InputBorder.none,
                                   prefixIcon: Icon(Icons.search)),
                               onChanged: (value) {
+                                setState(() {
+                                  queryValue = value;
+                                });
                                 if (value.length > 2) {
                                   searchForCommunity(value);
                                 } else {
@@ -967,54 +977,106 @@ class _CommunitySelectorState extends State<CommunitySelector>
             controller: _tabController,
             children: [
               Container(
-                child: ListView(
-                  children: [
-                    for (var v in _followedCommunities)
-                      ListTile(
-                        leading: CircleAvatar(
-                          child: Icon(Icons.group),
-                        ),
-                        title: Text("${v[1]}"),
-                        trailing: Radio(
-                            activeColor: Colors.blue,
-                            value: v[3],
-                            groupValue: true,
-                            onChanged: (value) {
-                              setState(() {
-                                v[3] = true;
-                                selectedCommunity = v;
-                                isFollowed = true;
-                              });
-                              Navigator.pop(context, [selectedCommunity, true]);
-                            }),
+                child: queryValue != null &&
+                        queryValue != '' &&
+                        _tabController.index == 0
+                    ? ListView(children: [
+                        for (var v in searchResults.toSet().toList())
+                          ListTile(
+                            leading: CircleAvatar(
+                              child: Icon(Icons.group),
+                            ),
+                            title: Text("${v[1]}"),
+                            trailing: Radio(
+                                activeColor: Colors.blue,
+                                value: v[3],
+                                groupValue: true,
+                                onChanged: (value) {
+                                  setState(() {
+                                    v[3] = true;
+                                    selectedCommunity = v;
+                                    isFollowed = true;
+                                  });
+                                  Navigator.pop(
+                                      context, [selectedCommunity, true]);
+                                }),
+                          ),
+                      ])
+                    : ListView(
+                        children: [
+                          for (var v in _followedCommunities)
+                            ListTile(
+                              leading: CircleAvatar(
+                                child: Icon(Icons.group),
+                              ),
+                              title: Text("${v[1]}"),
+                              trailing: Radio(
+                                  activeColor: Colors.blue,
+                                  value: v[3],
+                                  groupValue: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      v[3] = true;
+                                      selectedCommunity = v;
+                                      isFollowed = true;
+                                    });
+                                    Navigator.pop(
+                                        context, [selectedCommunity, true]);
+                                  }),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
               ),
               Container(
-                child: ListView(
-                  children: [
-                    for (var v in _allCommunities)
-                      ListTile(
-                        leading: CircleAvatar(
-                          child: Icon(Icons.group),
-                        ),
-                        title: Text("${v['title']}"),
-                        trailing: Radio(
-                            activeColor: Colors.blue,
-                            value: v['isSelected'],
-                            groupValue: true,
-                            onChanged: (value) {
-                              setState(() {
-                                v['isSelected'] = true;
-                                selectedCommunity = v;
-                              });
-                              Navigator.pop(
-                                  context, [selectedCommunity, false]);
-                            }),
+                child: queryValue != null &&
+                        queryValue != '' &&
+                        _tabController.index == 1
+                    ? ListView(
+                        children: [
+                          for (var v in searchResults.toSet().toList())
+                            ListTile(
+                              leading: CircleAvatar(
+                                child: Icon(Icons.group),
+                              ),
+                              title: Text("${v['title']}"),
+                              trailing: Radio(
+                                  activeColor: Colors.blue,
+                                  value: v['isSelected'],
+                                  groupValue: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      v['isSelected'] = true;
+                                      selectedCommunity = v;
+                                    });
+                                    Navigator.pop(
+                                        context, [selectedCommunity, false]);
+                                  }),
+                            ),
+                        ],
+                      )
+                    : ListView(
+                        children: [
+                          for (var v in _allCommunities)
+                            ListTile(
+                              leading: CircleAvatar(
+                                child: Icon(Icons.group),
+                              ),
+                              title: Text("${v['title']}"),
+                              trailing: Radio(
+                                  activeColor: Colors.blue,
+                                  value: v['isSelected'],
+                                  groupValue: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      v['isSelected'] = true;
+                                      selectedCommunity = v;
+                                    });
+                                    Navigator.pop(
+                                        context, [selectedCommunity, false]);
+                                  }),
+                            ),
+                        ],
                       ),
-                  ],
-                ),
               )
             ],
           ),
