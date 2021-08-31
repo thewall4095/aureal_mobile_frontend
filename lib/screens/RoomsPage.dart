@@ -521,11 +521,24 @@ class CreateRoom extends StatefulWidget {
 
 class _CreateRoomState extends State<CreateRoom> {
   var navigatorValue;
-  var selectedCommunity = Map<String, dynamic>();
 
-  void getHiveCommunities(String query) async {
-    String url = 'https://api.aureal.one/public/getHiveCommunities?word=$query';
+  void startTheLiveStream() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/';
+    //TODO
+    //community_id
+    //to_hive
+    //to_recording
+    //scheduleAt
+    //Create a page with getRoomDetails -----> Room Screen
   }
+
+  String _roomName;
+  String _nameOfPodcast;
+  bool enableRecording = false;
+  bool publishToHive = false;
+
+  var selectedCommunity = Map<String, dynamic>();
 
   @override
   Widget build(BuildContext context) {
@@ -683,7 +696,12 @@ class _CreateRoomState extends State<CreateRoom> {
                 subtitle:
                     Text("You can use this recording to add to your shows"),
                 trailing: Switch(
-                  value: true,
+                  value: enableRecording,
+                  onChanged: (value) {
+                    setState(() {
+                      enableRecording = value;
+                    });
+                  },
                   activeColor: Colors.blue,
                 ),
               ),
@@ -693,7 +711,13 @@ class _CreateRoomState extends State<CreateRoom> {
                 subtitle:
                     Text("You can use this recording to add to your shows"),
                 trailing: Switch(
-                  value: true,
+                  value: publishToHive,
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      publishToHive = value;
+                    });
+                  },
                   activeColor: Colors.blue,
                 ),
               ),
