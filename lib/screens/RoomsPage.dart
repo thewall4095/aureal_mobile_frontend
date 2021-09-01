@@ -5,6 +5,7 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -523,6 +524,8 @@ class CreateRoom extends StatefulWidget {
 class _CreateRoomState extends State<CreateRoom> {
   var navigatorValue;
 
+  Dio dio = Dio();
+
   void startTheLiveStream() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/addNewRoom';
@@ -533,11 +536,22 @@ class _CreateRoomState extends State<CreateRoom> {
       map['community_id'] = selectedCommunity['id'];
     }
 
-    map['to_hive'] = publishToHive;
+    map['toHive'] = publishToHive;
     map['to_recording'] = enableRecording;
     map['description'] = _nameOfPodcast;
     map['hostuserid'] = prefs.getString('userId');
     map['title'] = _roomName;
+    if (pickedSchedule != null) {
+      map['scheduledtime'] = pickedSchedule;
+    }
+
+    FormData formData = FormData.fromMap(map);
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.data);
+    } catch (e) {
+      print(e);
+    }
 
     //TODO
     //community_id
@@ -600,6 +614,11 @@ class _CreateRoomState extends State<CreateRoom> {
                           child: TextField(
                             decoration:
                                 InputDecoration(border: InputBorder.none),
+                            onChanged: (value) {
+                              setState(() {
+                                _roomName = value;
+                              });
+                            },
                           ),
                         )),
                     SizedBox(
@@ -637,6 +656,11 @@ class _CreateRoomState extends State<CreateRoom> {
                           child: TextField(
                             decoration:
                                 InputDecoration(border: InputBorder.none),
+                            onChanged: (value) {
+                              setState(() {
+                                _nameOfPodcast = value;
+                              });
+                            },
                           ),
                         )),
                     SizedBox(
@@ -792,18 +816,23 @@ class _CreateRoomState extends State<CreateRoom> {
                 height: 30,
               ),
               Center(
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 35, vertical: 12),
-                    child: Text(
-                      pickedSchedule == null ? "Go Live" : "Schedule",
-                      textScaleFactor: 1.0,
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 3),
+                child: InkWell(
+                  onTap: () {
+                    startTheLiveStream();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 35, vertical: 12),
+                      child: Text(
+                        pickedSchedule == null ? "Go Live" : "Schedule",
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3),
+                      ),
                     ),
                   ),
                 ),
