@@ -104,6 +104,7 @@ dependencies:
 
 #  just_audio: ^0.8.0
   firebase_auth: ^1.2.0
+
   firebase_core: ^1.2.0
   flutter_signin_button: ^2.0.0
   flutter_downloader: ^1.5.2

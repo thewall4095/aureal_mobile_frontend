@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -524,7 +525,20 @@ class _CreateRoomState extends State<CreateRoom> {
 
   void startTheLiveStream() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = 'https://api.aureal.one/';
+    String url = 'https://api.aureal.one/public/addNewRoom';
+
+    var map = Map<String, dynamic>();
+
+    if (selectedCommunity.toString().toLowerCase().contains('title') == true) {
+      map['community_id'] = selectedCommunity['id'];
+    }
+
+    map['to_hive'] = publishToHive;
+    map['to_recording'] = enableRecording;
+    map['description'] = _nameOfPodcast;
+    map['hostuserid'] = prefs.getString('userId');
+    map['title'] = _roomName;
+
     //TODO
     //community_id
     //to_hive
@@ -539,6 +553,8 @@ class _CreateRoomState extends State<CreateRoom> {
   bool publishToHive = false;
 
   var selectedCommunity = Map<String, dynamic>();
+
+  var pickedSchedule;
 
   @override
   Widget build(BuildContext context) {
@@ -721,6 +737,57 @@ class _CreateRoomState extends State<CreateRoom> {
                   activeColor: Colors.blue,
                 ),
               ),
+              ListTile(
+                onTap: () async {
+                  DateTime pickedDate;
+                  TimeOfDay pickedTime;
+                  pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2030));
+                  pickedTime = await showTimePicker(
+                      context: context, initialTime: TimeOfDay.now());
+                  print(pickedDate.toString());
+                  print(pickedTime.toString());
+                  print(pickedTime
+                      .toString()
+                      .split('(')[1]
+                      .toString()
+                      .split(')')[0]);
+                  setState(() {
+                    pickedSchedule =
+                        "${DateFormat('EE MMM d yyyy').format(pickedDate)} ${pickedTime.hour}:${pickedTime.minute}:00 GMT+${DateTime.now().timeZoneOffset.toString().split(':')[0]}${DateTime.now().timeZoneOffset.toString().split(':')[1]}";
+                  });
+                  print(pickedSchedule);
+                  print(DateTime.now().timeZoneOffset);
+                  print("${pickedDate.weekday}");
+                  print(pickedSchedule);
+                },
+                contentPadding: EdgeInsets.zero,
+                title: Text("Schedule you room"),
+                subtitle: Text(
+                  pickedSchedule == null
+                      ? "Leave it empty if you want to start immediately"
+                      : "Your room is Scheduled at $pickedSchedule",
+                  style: TextStyle(
+                      color: pickedSchedule == null
+                          ? Color(0xffe8e8e8)
+                          : Colors.blue),
+                ),
+                trailing: pickedSchedule == null
+                    ? IconButton(
+                        icon: Icon(Icons.schedule_outlined),
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            pickedSchedule = null;
+                          });
+                        },
+                      ),
+              ),
               SizedBox(
                 height: 30,
               ),
@@ -733,14 +800,14 @@ class _CreateRoomState extends State<CreateRoom> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 35, vertical: 12),
                     child: Text(
-                      "Go Live",
+                      pickedSchedule == null ? "Go Live" : "Schedule",
                       textScaleFactor: 1.0,
                       style: TextStyle(
                           fontSize: SizeConfig.safeBlockHorizontal * 3),
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
