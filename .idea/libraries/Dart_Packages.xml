@@ -2,6 +2,13 @@
   <library name="Dart Packages" type="DartPackagesLibraryType">
     <properties>
       <option name="packageNameToDirsMap">
+        <entry key="add_2_calendar">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="animated_text_kit">
           <value>
             <list>
@@ -1216,6 +1223,7 @@
       </option>
     </properties>
     <CLASSES>
+      <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/archive-3.1.2/lib" />
       <root url="file://$USER_HOME$/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/args-2.0.0/lib" />

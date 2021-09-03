@@ -21,6 +21,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
+	<key>NSCalendarsUsageDescription</key>
+    <string>To Schedule any preplanned Live Rooms</string>
+
 	<array>
 		<dict>
 			<key>CFBundleTypeRole</key>

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -10,6 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
@@ -526,7 +531,7 @@ class _CreateRoomState extends State<CreateRoom> {
 
   Dio dio = Dio();
 
-  void startTheLiveStream() async {
+  Future<dynamic> startTheLiveStream() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/addNewRoom';
 
@@ -549,6 +554,14 @@ class _CreateRoomState extends State<CreateRoom> {
     try {
       var response = await dio.post(url, data: formData);
       print(response.data);
+      // if (response.data['success'] == true) {
+      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //     return RoomPageInit(
+      //       roomObject: response.data['data'],
+      //     );
+      //   }));
+      // }
+      return response.data['data'];
     } catch (e) {
       print(e);
     }
@@ -817,8 +830,14 @@ class _CreateRoomState extends State<CreateRoom> {
               ),
               Center(
                 child: InkWell(
-                  onTap: () {
-                    startTheLiveStream();
+                  onTap: () async {
+                    final roomData = await startTheLiveStream();
+                    showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                              child: RoomPageInit(roomObject: roomData));
+                        });
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -1259,6 +1278,328 @@ class _CommunitySelectorState extends State<CommunitySelector>
       //     )
       //   ],
       // ),
+    );
+  }
+}
+
+class RoomPageInit extends StatefulWidget {
+  var roomObject;
+
+  RoomPageInit({@required this.roomObject});
+
+  @override
+  _RoomPageInitState createState() => _RoomPageInitState();
+}
+
+class _RoomPageInitState extends State<RoomPageInit> {
+  void share() async {
+    await FlutterShare.share(
+        text: "Join me Live on Aureal Rooms",
+        title: 'Join me on Aureal Live',
+        chooserTitle: "Join me Live on Aureal Rooms",
+        linkUrl:
+            'https://aureal.one/rooms-live/${widget.roomObject['roomid']}');
+  }
+
+  Event buildEvent({Recurrence recurrence}) {
+    return Event(
+      title: widget.roomObject['title'],
+      description: widget.roomObject['description'],
+      // location: 'Flutter app',
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(Duration(minutes: 30)),
+      allDay: false,
+      iosParams: IOSParams(
+        reminder: Duration(minutes: 40),
+      ),
+      androidParams: AndroidParams(),
+      recurrence: recurrence,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print(widget.roomObject);
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Container(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "TODAY 6:00 PM",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        "${widget.roomObject['title']}",
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 6,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Text("From Community"),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        for (int i = 0; i < 4; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: CircleAvatar(
+                              radius: 22,
+                            ),
+                          ),
+                      ],
+                    )
+                  ],
+                )),
+          ),
+          // Padding(
+          //   padding:
+          //   const EdgeInsets.symmetric(horizontal: 15, vertical: 7.5),
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(15),
+          //       color: Color(0xff222222),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(15),
+          //       child: Column(
+          //         crossAxisAlignment: CrossAxisAlignment.start,
+          //         children: [
+          //           Padding(
+          //             padding: const EdgeInsets.symmetric(vertical: 5),
+          //             child: Row(
+          //               children: [
+          //                 Container(
+          //                   decoration: BoxDecoration(
+          //                       borderRadius: BorderRadius.circular(8),
+          //                       color: Color(0xff161616)),
+          //                   width: 60,
+          //                   child: Padding(
+          //                     padding: const EdgeInsets.symmetric(
+          //                         horizontal: 5.0, vertical: 5),
+          //                     child: Row(
+          //                       mainAxisSize: MainAxisSize.min,
+          //                       children: [
+          //                         Icon(
+          //                           Icons.stream,
+          //                           size: 15,
+          //                         ),
+          //                         SizedBox(
+          //                           width: 5,
+          //                         ),
+          //                         Text("Live"),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 SizedBox(
+          //                   width: 10,
+          //                 ),
+          //                 Container(
+          //                   decoration: BoxDecoration(
+          //                       borderRadius: BorderRadius.circular(8),
+          //                       color: Color(0xff161616)),
+          //                   width: 60,
+          //                   child: Padding(
+          //                     padding: const EdgeInsets.symmetric(
+          //                         horizontal: 5.0, vertical: 5),
+          //                     child: Row(
+          //                       mainAxisSize: MainAxisSize.min,
+          //                       children: [
+          //                         Icon(
+          //                           Icons.stream,
+          //                           size: 15,
+          //                         ),
+          //                         SizedBox(
+          //                           width: 5,
+          //                         ),
+          //                         Text("Live"),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: const EdgeInsets.symmetric(vertical: 15),
+          //             child: Container(
+          //               height: (MediaQuery.of(context).size.width / 9) * 2.1,
+          //               child: GridView.builder(
+          //                 scrollDirection: Axis.horizontal,
+          //                 gridDelegate:
+          //                 SliverGridDelegateWithFixedCrossAxisCount(
+          //                   crossAxisCount:
+          //                   MediaQuery.of(context).orientation ==
+          //                       Orientation.landscape
+          //                       ? 3
+          //                       : 2,
+          //                   crossAxisSpacing: 5,
+          //                   mainAxisSpacing: 5,
+          //                   childAspectRatio: (1 / 1),
+          //                 ),
+          //                 itemBuilder: (context, index) {
+          //                   return Container(
+          //                     decoration: BoxDecoration(
+          //                         shape: BoxShape.circle,
+          //                         gradient: LinearGradient(colors: [
+          //                           Color(0xff5d5da8),
+          //                           Color(0xff5bc3ef)
+          //                         ])),
+          //                   );
+          //                 },
+          //                 itemCount: 10,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: const EdgeInsets.only(bottom: 10),
+          //             child: Container(
+          //               child: Text(
+          //                 "${widget.roomObject['description']}",
+          //                 textScaleFactor: 1.0,
+          //                 style: TextStyle(
+          //                     color: Colors.blue,
+          //                     fontSize: SizeConfig.safeBlockHorizontal * 3),
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: const EdgeInsets.only(bottom: 20),
+          //             child: Container(
+          //               height: 50,
+          //               decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(8),
+          //               ),
+          //               child: Text(
+          //                 "${widget.roomObject['title']}",
+          //                 textScaleFactor: 1.0,
+          //                 style: TextStyle(
+          //                     fontSize: SizeConfig.safeBlockHorizontal * 5,
+          //                     fontWeight: FontWeight.w600),
+          //               ),
+          //             ),
+          //           ),
+          //           Container(
+          //             decoration: BoxDecoration(
+          //               borderRadius: BorderRadius.circular(8),
+          //             ),
+          //             width: MediaQuery.of(context).size.width * 0.6,
+          //             height: 10,
+          //           ),
+          //           SizedBox(
+          //             height: 10,
+          //           ),
+          //           Container(
+          //             height: 40,
+          //             decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(15),
+          //                 color: Color(0xff161616)),
+          //             child: Center(child: Text("Start Room")),
+          //           )
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // InkWell(
+                    //   child: Column(
+                    //     children: [
+                    //       Icon(FontAwesomeIcons.twitter),
+                    //       SizedBox(
+                    //         height: 8,
+                    //       ),
+                    //       Text("Tweet")
+                    //     ],
+                    //   ),
+                    // ),
+                    InkWell(
+                      onTap: () {
+                        share();
+                      },
+                      child: Column(
+                        children: [
+                          Icon(FontAwesomeIcons.share),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Share")
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        await Clipboard.setData(ClipboardData(
+                            text:
+                                'https://aureal.one/rooms-live/${widget.roomObject['roomid']}'));
+                        Fluttertoast.showToast(msg: 'Room Url Copied');
+                      },
+                      child: Column(
+                        children: [
+                          Icon(FontAwesomeIcons.clipboard),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Copy link")
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Add2Calendar.addEvent2Cal(
+                          buildEvent(),
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          Icon(FontAwesomeIcons.calendar),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Add to Cal")
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.blue,
+                    ),
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Center(child: Text("Go Live")),
+                    )),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

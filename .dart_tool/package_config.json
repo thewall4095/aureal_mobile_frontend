@@ -2,6 +2,12 @@
   "configVersion": 2,
   "packages": [
     {
+      "name": "add_2_calendar",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "animated_text_kit",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1",
       "packageUri": "lib/",
@@ -1046,7 +1052,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-09-01T13:13:26.121090Z",
+  "generated": "2021-09-03T10:58:31.292841Z",
   "generator": "pub",
   "generatorVersion": "2.13.3"
 }
