@@ -218,22 +218,29 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           isExtended: !upDirection,
         ),
         appBar: AppBar(
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            title: TabBar(
-              isScrollable: true,
-              automaticIndicatorColorAdjustment: true,
-              indicatorSize: TabBarIndicatorSize.label,
-              controller: _tabController,
-              tabs: [
-                Tab(
-                  text: 'All',
-                ),
-                Tab(
-                  text: 'My Groups',
-                )
-              ],
-            )),
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: TabBar(
+            isScrollable: true,
+            automaticIndicatorColorAdjustment: true,
+            indicatorSize: TabBarIndicatorSize.label,
+            controller: _tabController,
+            tabs: [
+              Tab(
+                text: 'All',
+              ),
+              Tab(
+                text: 'My Groups',
+              )
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.calendar_today),
+              onPressed: () {},
+            )
+          ],
+        ),
         backgroundColor: Colors.transparent,
         body: TabBarView(
           controller: _tabController,
@@ -583,6 +590,110 @@ class _CreateRoomState extends State<CreateRoom> {
 
   var pickedSchedule;
 
+  bool isAudioOnly = true;
+  bool isAudioMuted = true;
+  bool isVideoMuted = true;
+
+  _onAudioOnlyChanged(bool value) {
+    setState(() {
+      isAudioOnly = value;
+    });
+  }
+
+  _onAudioMutedChanged(bool value) {
+    setState(() {
+      isAudioMuted = value;
+    });
+  }
+
+  _onVideoMutedChanged(bool value) {
+    setState(() {
+      isVideoMuted = value;
+    });
+  }
+
+  _joinMeeting({String roomId, String roomName}) async {
+    // Enable or disable any feature flag here
+    // If feature flag are not provided, default values will be used
+    // Full list of feature flags (and defaults) available in the README
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      FeatureFlagEnum.CHAT_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var options = JitsiMeetingOptions(room: roomId)
+      ..serverURL = 'https://sessions.aureal.one'
+      ..subject = roomName
+      ..userDisplayName = prefs.getString('userName')
+      ..userEmail = 'emailText.text'
+      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+      ..audioOnly = true
+      ..audioMuted = isAudioMuted
+      ..videoMuted = isVideoMuted
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": roomName,
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {
+          "displayName": prefs.getString('userName'),
+          'avatarUrl': prefs.getString('displayPicture')
+        }
+      };
+
+    debugPrint("JitsiMeetingOptions: $options");
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'readyToClose',
+                callback: (dynamic message) {
+                  debugPrint("readyToClose callback");
+                }),
+          ]),
+    );
+  }
+
+  void _onConferenceWillJoin(message) {
+    debugPrint("_onConferenceWillJoin broadcasted with message: $message");
+  }
+
+  void _onConferenceJoined(message) {
+    debugPrint("_onConferenceJoined broadcasted with message: $message");
+  }
+
+  void _onConferenceTerminated(message) {
+    debugPrint("_onConferenceTerminated broadcasted with message: $message");
+  }
+
+  _onError(error) {
+    debugPrint("_onError broadcasted: $error");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -832,12 +943,19 @@ class _CreateRoomState extends State<CreateRoom> {
                 child: InkWell(
                   onTap: () async {
                     final roomData = await startTheLiveStream();
-                    showBarModalBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                              child: RoomPageInit(roomObject: roomData));
-                        });
+                    if (roomData['scheduledtime'] == null) {
+                      _joinMeeting(
+                        roomId: roomData['roomid'],
+                        roomName: roomData['title'],
+                      );
+                    } else {
+                      showBarModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                                child: RoomPageInit(roomObject: roomData));
+                          });
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -1221,63 +1339,6 @@ class _CommunitySelectorState extends State<CommunitySelector>
           ),
         ),
       ),
-      // body: CustomScrollView(
-      //   slivers: [
-      //     SliverAppBar(
-      //       leading: IconButton(
-      //         icon: Icon(Icons.close),
-      //         onPressed: () {
-      //           Navigator.pop(context);
-      //         },
-      //       ),
-      //       centerTitle: true,
-      //       title: Text(
-      //         "Select a community",
-      //         textScaleFactor: 1.0,
-      //         style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-      //       ),
-      //       expandedHeight: MediaQuery.of(context).size.height / 5,
-      //       flexibleSpace: FlexibleSpaceBar(
-      //         background: Container(
-      //
-      //           child: Padding(
-      //             padding: const EdgeInsets.all(15),
-      //             child: Column(
-      //               mainAxisAlignment: MainAxisAlignment.end,
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 Padding(
-      //                   padding: const EdgeInsets.all(8.0),
-      //                   child: Text("Select an audience for this room"),
-      //                 ),
-      //                 SizedBox(
-      //                   height: 10,
-      //                 ),
-      //                 Container(
-      //                   decoration: BoxDecoration(
-      //                       color: Color(0xff222222),
-      //                       borderRadius: BorderRadius.circular(8)),
-      //                   child: Padding(
-      //                     padding: const EdgeInsets.symmetric(horizontal: 15),
-      //                     child: TextField(
-      //                       decoration:
-      //                           InputDecoration(border: InputBorder.none),
-      //                       onChanged: (value) {
-      //                         if (value.length > 3) {
-      //                           getHiveCommunities(value);
-      //                         }
-      //                       },
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     )
-      //   ],
-      // ),
     );
   }
 }
@@ -1319,7 +1380,6 @@ class _RoomPageInitState extends State<RoomPageInit> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.roomObject);
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1333,7 +1393,7 @@ class _RoomPageInitState extends State<RoomPageInit> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "TODAY 6:00 PM",
+                      "${widget.roomObject['scheduledtime']}",
                       textScaleFactor: 1.0,
                       style: TextStyle(
                           fontSize: SizeConfig.safeBlockHorizontal * 3),
@@ -1347,7 +1407,15 @@ class _RoomPageInitState extends State<RoomPageInit> {
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Text("From Community"),
+                    widget.roomObject['community'] == null
+                        ? SizedBox()
+                        : Text("From ${widget.roomObject['community']}"),
+                    Text(
+                      "${widget.roomObject['description']}",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.blockSizeHorizontal * 3),
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -1365,7 +1433,6 @@ class _RoomPageInitState extends State<RoomPageInit> {
                   ],
                 )),
           ),
-          
           Column(
             children: [
               Padding(
