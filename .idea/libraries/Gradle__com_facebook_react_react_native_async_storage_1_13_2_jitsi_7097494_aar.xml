@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.react:react-native-async-storage:1.13.2-jitsi-7097494@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28b886af5ca102c26b601e3333211346/jetified-react-native-async-storage-1.13.2-jitsi-7097494/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28b886af5ca102c26b601e3333211346/jetified-react-native-async-storage-1.13.2-jitsi-7097494/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

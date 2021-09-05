@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.react:react-native-splash-screen:3.2.0-jitsi-7097494@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac2d731a6497d76b40c26a7c12dcf9f3/jetified-react-native-splash-screen-3.2.0-jitsi-7097494/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac2d731a6497d76b40c26a7c12dcf9f3/jetified-react-native-splash-screen-3.2.0-jitsi-7097494/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

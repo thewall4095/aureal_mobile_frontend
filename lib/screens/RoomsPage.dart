@@ -33,6 +33,50 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
   bool upDirection = true;
   ScrollController _controller;
 
+  Dio dio = Dio();
+
+  var _followedCommunities;
+
+  void getFollowedCommunities() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/getFollowedCommunities?hive_username=${prefs.getString('HiveUserName')}';
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          _followedCommunities =
+              jsonDecode(response.body)['followed_hive_communities'];
+          print(_followedCommunities);
+          for (var v in _followedCommunities) {
+            v[3] = false;
+          }
+        });
+        print(response.body);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void addRoomParticipant({String roomid}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/addRoomParticipant';
+
+    var map = Map<String, dynamic>();
+    map['roomid'] = roomid;
+    map['userid'] = prefs.getString('userId');
+
+    FormData formData = FormData.fromMap(map);
+    try {
+      var response = await dio.post(url, data: formData);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void getRooms() async {
     print("Rooms getting called");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -234,12 +278,16 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
               )
             ],
           ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.calendar_today),
-              onPressed: () {},
-            )
-          ],
+          // actions: [
+          //   IconButton(
+          //     icon: Icon(Icons.calendar_today),
+          //     onPressed: () {
+          //       Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //         return ScheduledRooms();
+          //       }));
+          //     },
+          //   )
+          // ],
         ),
         backgroundColor: Colors.transparent,
         body: TabBarView(
@@ -255,7 +303,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                             horizontal: 15, vertical: 7.5),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(10),
                             color: Color(0xff222222),
                           ),
                           child: Padding(
@@ -374,7 +422,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                             horizontal: 15, vertical: 7.5),
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             color: Color(0xff222222),
                           ),
                           child: Padding(
@@ -387,7 +435,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
+                                          vertical: 10),
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color: kPrimaryColor,
@@ -403,13 +451,63 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                 Icons.stream,
                                                 size: SizeConfig
                                                         .safeBlockHorizontal *
-                                                    3.5,
+                                                    3,
                                                 color: Colors.blue,
                                               ),
                                               SizedBox(
                                                 width: 5,
                                               ),
-                                              Text('LIVE'),
+                                              Text(
+                                                'LIVE',
+                                                textScaleFactor: 1.0,
+                                                style: TextStyle(
+                                                    fontSize: SizeConfig
+                                                            .blockSizeHorizontal *
+                                                        2.5),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(5)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.group,
+                                                size: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3,
+                                                color: Colors.blue,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                rooms[index]['communities'] !=
+                                                        null
+                                                    ? "community"
+                                                    : 'general',
+                                                textScaleFactor: 1.0,
+                                                style: TextStyle(
+                                                    fontSize: SizeConfig
+                                                            .blockSizeHorizontal *
+                                                        2.5),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -418,7 +516,9 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                   ],
                                 ),
                                 rooms[index]['roomParticipants'] == null
-                                    ? SizedBox()
+                                    ? SizedBox(
+                                        height: 10,
+                                      )
                                     : Container(
                                         height:
                                             (MediaQuery.of(context).size.width /
@@ -468,39 +568,60 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                           ],
                                         ),
                                       ),
+                                rooms[index]['description'] == null
+                                    ? SizedBox()
+                                    : Text(
+                                        "${rooms[index]['description']}",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    2.8),
+                                      ),
                                 Padding(
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   child: Text(
                                     "${rooms[index]['title']}",
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal * 5,
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w800),
                                   ),
                                 ),
-                                Text(
-                                  "Unkle Bonehead & 377 people are here",
-                                  textScaleFactor: 1.0,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      color: Color(0xffe8e8e8).withOpacity(0.5),
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(
+                                    "Unkle Bonehead & 377 people are here",
+                                    textScaleFactor: 1.0,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color:
+                                            Color(0xffe8e8e8).withOpacity(0.5),
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 3),
+                                  ),
                                 ),
                                 SizedBox(
                                   height: 15,
                                 ),
                                 InkWell(
                                   onTap: () async {
+                                    SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    if (rooms[index]['hostuserid'] !=
+                                        prefs.getString('userId')) {
+                                      addRoomParticipant(
+                                          roomid: rooms[index]['roomid']);
+                                    }
                                     await _joinMeeting(
                                       roomId: rooms[index]['roomid'],
                                       roomName: rooms[index]['title'],
                                     );
-                                    print(
-                                        'https://sessions.aureal.one/${rooms[index]['roomid']}');
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -885,57 +1006,57 @@ class _CreateRoomState extends State<CreateRoom> {
                   activeColor: Colors.blue,
                 ),
               ),
-              ListTile(
-                onTap: () async {
-                  DateTime pickedDate;
-                  TimeOfDay pickedTime;
-                  pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2030));
-                  pickedTime = await showTimePicker(
-                      context: context, initialTime: TimeOfDay.now());
-                  print(pickedDate.toString());
-                  print(pickedTime.toString());
-                  print(pickedTime
-                      .toString()
-                      .split('(')[1]
-                      .toString()
-                      .split(')')[0]);
-                  setState(() {
-                    pickedSchedule =
-                        "${DateFormat('EE MMM d yyyy').format(pickedDate)} ${pickedTime.hour}:${pickedTime.minute}:00 GMT+${DateTime.now().timeZoneOffset.toString().split(':')[0]}${DateTime.now().timeZoneOffset.toString().split(':')[1]}";
-                  });
-                  print(pickedSchedule);
-                  print(DateTime.now().timeZoneOffset);
-                  print("${pickedDate.weekday}");
-                  print(pickedSchedule);
-                },
-                contentPadding: EdgeInsets.zero,
-                title: Text("Schedule you room"),
-                subtitle: Text(
-                  pickedSchedule == null
-                      ? "Leave it empty if you want to start immediately"
-                      : "Your room is Scheduled at $pickedSchedule",
-                  style: TextStyle(
-                      color: pickedSchedule == null
-                          ? Color(0xffe8e8e8)
-                          : Colors.blue),
-                ),
-                trailing: pickedSchedule == null
-                    ? IconButton(
-                        icon: Icon(Icons.schedule_outlined),
-                      )
-                    : IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          setState(() {
-                            pickedSchedule = null;
-                          });
-                        },
-                      ),
-              ),
+              // ListTile(
+              //   onTap: () async {
+              //     DateTime pickedDate;
+              //     TimeOfDay pickedTime;
+              //     pickedDate = await showDatePicker(
+              //         context: context,
+              //         initialDate: DateTime.now(),
+              //         firstDate: DateTime.now(),
+              //         lastDate: DateTime(2030));
+              //     pickedTime = await showTimePicker(
+              //         context: context, initialTime: TimeOfDay.now());
+              //     print(pickedDate.toString());
+              //     print(pickedTime.toString());
+              //     print(pickedTime
+              //         .toString()
+              //         .split('(')[1]
+              //         .toString()
+              //         .split(')')[0]);
+              //     setState(() {
+              //       pickedSchedule =
+              //           "${DateFormat('EE MMM d yyyy').format(pickedDate)} ${pickedTime.hour}:${pickedTime.minute}:00 GMT+${DateTime.now().timeZoneOffset.toString().split(':')[0]}${DateTime.now().timeZoneOffset.toString().split(':')[1]}";
+              //     });
+              //     print(pickedSchedule);
+              //     print(DateTime.now().timeZoneOffset);
+              //     print("${pickedDate.weekday}");
+              //     print(pickedSchedule);
+              //   },
+              //   contentPadding: EdgeInsets.zero,
+              //   title: Text("Schedule you room"),
+              //   subtitle: Text(
+              //     pickedSchedule == null
+              //         ? "Leave it empty if you want to start immediately"
+              //         : "Your room is Scheduled at $pickedSchedule",
+              //     style: TextStyle(
+              //         color: pickedSchedule == null
+              //             ? Color(0xffe8e8e8)
+              //             : Colors.blue),
+              //   ),
+              //   trailing: pickedSchedule == null
+              //       ? IconButton(
+              //           icon: Icon(Icons.schedule_outlined),
+              //         )
+              //       : IconButton(
+              //           icon: Icon(Icons.close),
+              //           onPressed: () {
+              //             setState(() {
+              //               pickedSchedule = null;
+              //             });
+              //           },
+              //         ),
+              // ),
               SizedBox(
                 height: 30,
               ),
@@ -1517,6 +1638,177 @@ class _RoomPageInitState extends State<RoomPageInit> {
             ],
           )
         ],
+      ),
+    );
+  }
+}
+
+class ScheduledRooms extends StatefulWidget {
+  @override
+  _ScheduledRoomsState createState() => _ScheduledRoomsState();
+}
+
+class _ScheduledRoomsState extends State<ScheduledRooms>
+    with TickerProviderStateMixin {
+  int pageNumber = 0;
+  var rooms = [];
+
+  void getScheduledRooms() async {
+    print("Rooms getting called");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/getRooms?page=$pageNumber&pageSize=14';
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          rooms = jsonDecode(response.body)['data'];
+        });
+        print(response.body);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    // TODO: implement initState
+    super.initState();
+    getScheduledRooms();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: TabBar(
+            isScrollable: true,
+            controller: _tabController,
+            tabs: [
+              Tab(
+                text: 'UPCOMING FOR YOU',
+              ),
+              Tab(
+                text: 'MY EVENTS',
+              )
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                print("Added to Calender");
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ScheduleEvent();
+                }));
+              },
+            )
+          ],
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            ListView(
+              children: [
+                for (var v in rooms)
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            "${v['scheduledtime']}",
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: Text(
+                                  "${v['title']}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.blockSizeHorizontal * 4,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Text("From ${v['communities']}"),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            constraints: BoxConstraints.loose(Size.fromHeight(
+                                MediaQuery.of(context).size.width / 9)),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (int i = 0; i < 10; i++)
+                                  CircleAvatar(
+                                    radius: 25,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+              ],
+            ),
+            ListView()
+          ],
+        ));
+  }
+}
+
+class ScheduleEvent extends StatefulWidget {
+  @override
+  _ScheduleEventState createState() => _ScheduleEventState();
+}
+
+class _ScheduleEventState extends State<ScheduleEvent> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "NEW EVENT",
+          textScaleFactor: 1.0,
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Color(0xff222222)),
+              child: Column(
+                children: [
+                  TextField(),
+                  TextField(),
+                  TextField(),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
