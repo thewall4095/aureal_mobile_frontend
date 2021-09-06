@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
 import 'package:auditory/PlayerState.dart';
@@ -353,6 +353,8 @@ class _EpisodeViewState extends State<EpisodeView>
   }
 
   ScrollController _controller = ScrollController();
+
+  // RegExp htmlMatch = RegExp(r'(\w+)');
 
   Widget bodyContent(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -1315,14 +1317,16 @@ class _EpisodeViewState extends State<EpisodeView>
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     SizeConfig().init(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "${episodeContent['name']}",
-          textScaleFactor: 1.0,
-          style: TextStyle(fontSize: SizeConfig.blockSizeHorizontal * 3),
-        ),
-        backgroundColor: Color(dominantColor),
+        // title: Text(
+        //   "${episodeContent['name'] == null ? "" : episodeContent['name']}",
+        //   textScaleFactor: 1.0,
+        //   style: TextStyle(fontSize: SizeConfig.blockSizeHorizontal * 3),
+        // ),
+        backgroundColor:
+            dominantColor == null ? Colors.transparent : Color(dominantColor),
         elevation: 0,
         leading: IconButton(
           onPressed: () {
@@ -1371,181 +1375,166 @@ class _EpisodeViewState extends State<EpisodeView>
           )
         ],
       ),
-      body: ListView(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Color(dominantColor), Colors.transparent],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter)),
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Container(
+      body: ModalProgressHUD(
+        color: Colors.black,
+        inAsyncCall: isLoading,
+        child: isLoading == true
+            ? Container(
+                height: double.infinity,
                 width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CachedNetworkImage(
-                      imageUrl: episodeContent['image'] == null
-                          ? episodeContent['podcast_image']
-                          : episodeContent['image'],
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          height: MediaQuery.of(context).size.width / 2,
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover)),
-                        );
-                      },
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height / 80,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '${episodeContent['name']}',
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 4,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xffe8e8e8)),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '${episodeContent['podcast_name']}',
-                        textAlign: TextAlign.center,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 3,
-                            color: Color(0xffe8e8e8).withOpacity(0.5)),
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '${DurationCalculator(episodeContent['duration'])}',
-                          textAlign: TextAlign.center,
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockHorizontal * 3,
-                              color: Color(0xffe8e8e8).withOpacity(0.5)),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    episodeObject.episodeObject == null
-                        ? GestureDetector(
-                            onTap: () {
-                              print(episodeContent['url']
-                                  .toString()
-                                  .contains('.mp4'));
-                              if (episodeContent['url']
-                                          .toString()
-                                          .contains('.mp4') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.m4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.flv') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.f4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.ogv') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.ogx') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.wmv') ==
-                                      true ||
-                                  episodeContent['url']
-                                          .toString()
-                                          .contains('.webm') ==
-                                      true) {
-                                episodeObject.stop();
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return PodcastVideoPlayer(
-                                    episodeObject: episodeContent,
-                                  );
-                                }));
-                              } else {
-                                if (episodeContent['url']
-                                        .toString()
-                                        .contains('.pdf') ==
-                                    true) {
-                                  // Navigator.push(context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) {
-                                  //   return PDFviewer(
-                                  //     episodeObject:
-                                  //         widget.episodeObject,
-                                  //   );
-                                  // }));
-                                } else {
-                                  episodeObject.stop();
-                                  episodeObject.episodeObject = episodeContent;
-                                  print(episodeObject.episodeObject.toString());
-                                  episodeObject.play();
-                                  showBarModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return Player();
-                                      });
-                                }
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff5d5da8),
-                                      Color(0xff5bc3ef)
-                                    ],
-                                  )),
-                              width: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.all(7.0),
-                                  child: Text("GET STARTED"),
-                                )),
+                color: Colors.black,
+              )
+            : ListView(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(dominantColor), Colors.transparent],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Container(
+                        width: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: episodeContent['image'] == null
+                                  ? episodeContent['podcast_image']
+                                  : episodeContent['image'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.width / 2,
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 80,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${episodeContent['name']}',
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xffe8e8e8)),
                               ),
                             ),
-                          )
-                        : (episodeObject.episodeObject['id'] == null ||
-                                episodeObject.episodeObject['id'] ==
-                                    episodeContent['id']
-                            ? (episodeObject.audioPlayer.realtimePlayingInfos
-                                        .valueWrapper.value.isPlaying ==
-                                    true
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${episodeContent['podcast_name']}',
+                                textAlign: TextAlign.center,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3,
+                                    color: Color(0xffe8e8e8).withOpacity(0.5)),
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${DurationCalculator(episodeContent['duration'])}',
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3,
+                                      color:
+                                          Color(0xffe8e8e8).withOpacity(0.5)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            episodeObject.episodeObject == null
                                 ? GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        episodeObject.pause();
-                                      });
+                                      print(episodeContent['url']
+                                          .toString()
+                                          .contains('.mp4'));
+                                      if (episodeContent['url']
+                                                  .toString()
+                                                  .contains('.mp4') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.m4v') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.flv') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.f4v') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.ogv') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.ogx') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.wmv') ==
+                                              true ||
+                                          episodeContent['url']
+                                                  .toString()
+                                                  .contains('.webm') ==
+                                              true) {
+                                        episodeObject.stop();
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return PodcastVideoPlayer(
+                                            episodeObject: episodeContent,
+                                          );
+                                        }));
+                                      } else {
+                                        if (episodeContent['url']
+                                                .toString()
+                                                .contains('.pdf') ==
+                                            true) {
+                                          // Navigator.push(context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) {
+                                          //   return PDFviewer(
+                                          //     episodeObject:
+                                          //         widget.episodeObject,
+                                          //   );
+                                          // }));
+                                        } else {
+                                          episodeObject.stop();
+                                          episodeObject.episodeObject =
+                                              episodeContent;
+                                          print(episodeObject.episodeObject
+                                              .toString());
+                                          episodeObject.play();
+                                          showBarModalBottomSheet(
+                                              context: context,
+                                              builder: (context) {
+                                                return Player();
+                                              });
+                                        }
+                                      }
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -1563,716 +1552,796 @@ class _EpisodeViewState extends State<EpisodeView>
                                         child: Center(
                                             child: Padding(
                                           padding: const EdgeInsets.all(7.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              // Padding(
-                                              //   padding: const EdgeInsets
-                                              //           .symmetric(
-                                              //       horizontal:
-                                              //           5),
-                                              //   child: Icon(
-                                              //       Icons
-                                              //           .pause),
-                                              // ),
-                                              Text("PAUSE"),
-                                            ],
-                                          ),
+                                          child: Text("GET STARTED"),
                                         )),
                                       ),
                                     ),
                                   )
-                                : GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        episodeObject.resume();
-                                      });
+                                : (episodeObject.episodeObject['id'] == null ||
+                                        episodeObject.episodeObject['id'] ==
+                                            episodeContent['id']
+                                    ? (episodeObject
+                                                .audioPlayer
+                                                .realtimePlayingInfos
+                                                .valueWrapper
+                                                .value
+                                                .isPlaying ==
+                                            true
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                episodeObject.pause();
+                                              });
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff5d5da8),
+                                                      Color(0xff5bc3ef)
+                                                    ],
+                                                  )),
+                                              width: double.infinity,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Center(
+                                                    child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(7.0),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      // Padding(
+                                                      //   padding: const EdgeInsets
+                                                      //           .symmetric(
+                                                      //       horizontal:
+                                                      //           5),
+                                                      //   child: Icon(
+                                                      //       Icons
+                                                      //           .pause),
+                                                      // ),
+                                                      Text("PAUSE"),
+                                                    ],
+                                                  ),
+                                                )),
+                                              ),
+                                            ),
+                                          )
+                                        : GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                episodeObject.resume();
+                                              });
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff5d5da8),
+                                                      Color(0xff5bc3ef)
+                                                    ],
+                                                  )),
+                                              width: double.infinity,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Center(
+                                                    child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(7.0),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      // Padding(
+                                                      //   padding: const EdgeInsets
+                                                      //           .symmetric(
+                                                      //       horizontal:
+                                                      //           5),
+                                                      //   child: Icon(Icons
+                                                      //       .play_arrow_rounded),
+                                                      // ),
+                                                      Text("RESUME"),
+                                                    ],
+                                                  ),
+                                                )),
+                                              ),
+                                            ),
+                                          ))
+                                    : GestureDetector(
+                                        onTap: () {
+                                          print(episodeContent['url']
+                                              .toString()
+                                              .contains('.mp4'));
+                                          if (episodeContent['url']
+                                                      .toString()
+                                                      .contains('.mp4') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.m4v') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.flv') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.f4v') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.ogv') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.ogx') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.wmv') ==
+                                                  true ||
+                                              episodeContent['url']
+                                                      .toString()
+                                                      .contains('.webm') ==
+                                                  true) {
+                                            episodeObject.stop();
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (context) {
+                                              return PodcastVideoPlayer(
+                                                episodeObject: episodeContent,
+                                              );
+                                            }));
+                                          } else {
+                                            if (episodeContent['url']
+                                                    .toString()
+                                                    .contains('.pdf') ==
+                                                true) {
+                                              // Navigator.push(context,
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) {
+                                              //   return PDFviewer(
+                                              //     episodeObject:
+                                              //         widget.episodeObject,
+                                              //   );
+                                              // }));
+                                            } else {
+                                              episodeObject.stop();
+                                              episodeObject.episodeObject =
+                                                  episodeContent;
+                                              print(episodeObject.episodeObject
+                                                  .toString());
+                                              episodeObject.play();
+                                              showBarModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Player();
+                                                  });
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Color(0xff5d5da8),
+                                                  Color(0xff5bc3ef)
+                                                ],
+                                              )),
+                                          width: double.infinity,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(7.0),
+                                              child: Text("GET STARTED"),
+                                            )),
+                                          ),
+                                        ),
+                                      )),
+                            // episodeContent['permlink'] == null
+                            //     ? SizedBox()
+                            //     : Padding(
+                            //         padding:
+                            //             const EdgeInsets.symmetric(
+                            //                 vertical: 30),
+                            //         child: UpvoteEpisode(
+                            //           episode_id:
+                            //               episodeContent['id'],
+                            //           permlink:
+                            //               episodeContent['permlink'],
+                            //         ),
+                            //       ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height / 30,
+                            ),
+                            episodeContent['permlink'] == null
+                                ? SizedBox()
+                                : InkWell(
+                                    onTap: () async {
+                                      if (prefs.getString('HiveUserName') !=
+                                          null) {
+                                        setState(() {
+                                          isUpvoteButtonLoading = true;
+                                        });
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Dialog(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: UpvoteEpisode(
+                                                      permlink: episodeContent[
+                                                          'permlink'],
+                                                      episode_id:
+                                                          episodeContent[
+                                                              'id']));
+                                            }).then((value) async {
+                                          print(value);
+                                        });
+                                        await upvoteEpisode(
+                                            permlink:
+                                                episodeContent['permlink'],
+                                            episode_id: episodeContent['id']);
+                                        setState(() {
+                                          episodeContent['ifVoted'] =
+                                              !episodeContent['ifVoted'];
+                                          isUpvoteButtonLoading = false;
+                                        });
+                                      } else {
+                                        showBarModalBottomSheet(
+                                            context: context,
+                                            builder: (context) {
+                                              return HiveDetails();
+                                            });
+                                      }
                                     },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              Color(0xff5d5da8),
-                                              Color(0xff5bc3ef)
-                                            ],
-                                          )),
-                                      width: double.infinity,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(
-                                            child: Padding(
-                                          padding: const EdgeInsets.all(7.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 5),
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: episodeContent['ifVoted'] ==
+                                                true
+                                            ? BoxDecoration(
+                                                gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(dominantColor),
+                                                      Color(0xff5d5da8)
+                                                    ]),
+                                                borderRadius:
+                                                    BorderRadius.circular(8))
+                                            : BoxDecoration(
+                                                border: Border.all(
+                                                    color: kSecondaryColor),
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(14),
                                           child: Row(
-                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              // Padding(
-                                              //   padding: const EdgeInsets
-                                              //           .symmetric(
-                                              //       horizontal:
-                                              //           5),
-                                              //   child: Icon(Icons
-                                              //       .play_arrow_rounded),
-                                              // ),
-                                              Text("RESUME"),
+                                              isUpvoteButtonLoading == true
+                                                  ? Container(
+                                                      height: 18,
+                                                      width: 18,
+                                                      child: SpinKitPulse(
+                                                        color: Colors.blue,
+                                                      ),
+                                                    )
+                                                  : Icon(
+                                                      FontAwesomeIcons
+                                                          .chevronCircleUp,
+                                                      size: 15,
+                                                    ),
+                                              episodeContent['ifVoted'] == false
+                                                  ? Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 10),
+                                                      child: Text("UPVOTE"),
+                                                    )
+                                                  : Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      8),
+                                                          child: Text(
+                                                            '${episodeContent['votes']}',
+                                                            textScaleFactor:
+                                                                1.0,
+                                                            style: TextStyle(
+                                                                //        color: Color(
+                                                                // 0xffe8e8e8)
+                                                                ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 4),
+                                                          child: Text(
+                                                            '\$${episodeContent['payout_value'].toString().split(' ')[0]}',
+                                                            textScaleFactor:
+                                                                1.0,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
                                             ],
                                           ),
-                                        )),
+                                        ),
                                       ),
                                     ),
-                                  ))
-                            : GestureDetector(
-                                onTap: () {
-                                  print(episodeContent['url']
-                                      .toString()
-                                      .contains('.mp4'));
-                                  if (episodeContent['url']
-                                              .toString()
-                                              .contains('.mp4') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.m4v') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.flv') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.f4v') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.ogv') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.ogx') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.wmv') ==
-                                          true ||
-                                      episodeContent['url']
-                                              .toString()
-                                              .contains('.webm') ==
-                                          true) {
-                                    episodeObject.stop();
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                      return PodcastVideoPlayer(
-                                        episodeObject: episodeContent,
-                                      );
-                                    }));
-                                  } else {
-                                    if (episodeContent['url']
-                                            .toString()
-                                            .contains('.pdf') ==
-                                        true) {
-                                      // Navigator.push(context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) {
-                                      //   return PDFviewer(
-                                      //     episodeObject:
-                                      //         widget.episodeObject,
-                                      //   );
-                                      // }));
-                                    } else {
-                                      episodeObject.stop();
-                                      episodeObject.episodeObject =
-                                          episodeContent;
-                                      print(episodeObject.episodeObject
-                                          .toString());
-                                      episodeObject.play();
-                                      showBarModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Player();
-                                          });
-                                    }
-                                  }
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color(0xff5d5da8),
-                                          Color(0xff5bc3ef)
-                                        ],
-                                      )),
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Center(
-                                        child: Padding(
-                                      padding: const EdgeInsets.all(7.0),
-                                      child: Text("GET STARTED"),
-                                    )),
-                                  ),
-                                ),
-                              )),
-                    // episodeContent['permlink'] == null
-                    //     ? SizedBox()
-                    //     : Padding(
-                    //         padding:
-                    //             const EdgeInsets.symmetric(
-                    //                 vertical: 30),
-                    //         child: UpvoteEpisode(
-                    //           episode_id:
-                    //               episodeContent['id'],
-                    //           permlink:
-                    //               episodeContent['permlink'],
-                    //         ),
-                    //       ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height / 30,
-                    ),
-                    episodeContent['permlink'] == null
-                        ? SizedBox()
-                        : InkWell(
-                            onTap: () async {
-                              if (prefs.getString('HiveUserName') != null) {
-                                setState(() {
-                                  isUpvoteButtonLoading = true;
-                                });
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                          backgroundColor: Colors.transparent,
-                                          child: UpvoteEpisode(
-                                              permlink:
-                                                  episodeContent['permlink'],
-                                              episode_id:
-                                                  episodeContent['id']));
-                                    }).then((value) async {
-                                  print(value);
-                                });
-                                await upvoteEpisode(
-                                    permlink: episodeContent['permlink'],
-                                    episode_id: episodeContent['id']);
-                                setState(() {
-                                  episodeContent['ifVoted'] =
-                                      !episodeContent['ifVoted'];
-                                  isUpvoteButtonLoading = false;
-                                });
-                              } else {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return HiveDetails();
-                                    });
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: episodeContent['ifVoted'] == true
-                                    ? BoxDecoration(
-                                        gradient: LinearGradient(colors: [
-                                          Color(dominantColor),
-                                          Color(0xff5d5da8)
-                                        ]),
-                                        borderRadius: BorderRadius.circular(8))
-                                    : BoxDecoration(
-                                        border:
-                                            Border.all(color: kSecondaryColor),
-                                        borderRadius: BorderRadius.circular(8)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(14),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      isUpvoteButtonLoading == true
-                                          ? Container(
-                                              height: 18,
-                                              width: 18,
-                                              child: SpinKitPulse(
-                                                color: Colors.blue,
-                                              ),
-                                            )
-                                          : Icon(
-                                              FontAwesomeIcons.chevronCircleUp,
-                                              size: 15,
-                                            ),
-                                      episodeContent['ifVoted'] == false
-                                          ? Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Text("UPVOTE"),
-                                            )
-                                          : Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(horizontal: 8),
-                                                  child: Text(
-                                                    '${episodeContent['votes']}',
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        //        color: Color(
-                                                        // 0xffe8e8e8)
-                                                        ),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 4),
-                                                  child: Text(
-                                                    '\$${episodeContent['payout_value'].toString().split(' ')[0]}',
-                                                    textScaleFactor: 1.0,
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // PreferredSize(
-          //   preferredSize: Size.fromHeight(32),
-          //   child: Container(
-          //     color: kPrimaryColor,
-          //     child: Padding(
-          //       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-          //       child: Container(
-          //         decoration: BoxDecoration(
-          //           borderRadius: BorderRadius.circular(8),
-          //           color: Color(0xff222222),
-          //         ),
-          //         // width: 300,
-          //         //  color: kPrimaryColor,
-          //         child: Padding(
-          //           padding: const EdgeInsets.all(5),
-          //           child: TabBar(
-          //             // isScrollable: true,
-          //             controller: _tabController,
-          //
-          //             // give the indicator a decoration (color and border radius)
-          //             indicator: BoxDecoration(
-          //               boxShadow: [
-          //                 new BoxShadow(
-          //                   color: Colors.black54.withOpacity(0.2),
-          //                   blurRadius: 5.0,
-          //                 ),
-          //               ],
-          //               color: themeProvider.isLightTheme == true
-          //                   ? Colors.white
-          //                   : kPrimaryColor,
-          //               borderRadius: BorderRadius.circular(8),
-          //             ),
-          //             labelColor: Colors.white,
-          //
-          //             tabs: [
-          //               // first tab [you can add an icon using the icon property]
-          //               Tab(
-          //                 text: 'Overview',
-          //               ),
-          //
-          //               // second tab [you can add an icon using the icon property]
-          //               Tab(
-          //                 text: 'Similar',
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // TabBarView(
-          //   controller: _tabController,
-          //   children: [
-          //     Container(
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(15),
-          //         child: Container(
-          //           child: Column(
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //               episodeContent['permlink'] == null
-          //                   ? SizedBox()
-          //                   : Column(
-          //                       crossAxisAlignment: CrossAxisAlignment.start,
-          //                       mainAxisSize: MainAxisSize.min,
-          //                       children: [
-          //                         Text(
-          //                           "Community",
-          //                           textScaleFactor: 1.0,
-          //                           style: TextStyle(
-          //                               fontSize:
-          //                                   SizeConfig.safeBlockHorizontal * 4,
-          //                               fontWeight: FontWeight.bold),
-          //                         ),
-          //                         Padding(
-          //                           padding: const EdgeInsets.symmetric(
-          //                               vertical: 15),
-          //                           child: Container(
-          //                             decoration: BoxDecoration(
-          //                                 color: Color(0xff222222),
-          //                                 borderRadius:
-          //                                     BorderRadius.circular(10)),
-          //                             child: Padding(
-          //                               padding: const EdgeInsets.symmetric(
-          //                                   vertical: 8),
-          //                               child: ListTile(
-          //                                 onTap: () {
-          //                                   Navigator.push(context,
-          //                                       MaterialPageRoute(
-          //                                           builder: (context) {
-          //                                     return Comments(
-          //                                       episodeObject: episodeContent,
-          //                                     );
-          //                                   }));
-          //                                 },
-          //                                 title: Text("Join the conversation"),
-          //                                 trailing:
-          //                                     Icon(Icons.arrow_forward_ios),
-          //                               ),
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ],
-          //                     ),
-          //               episodeContent['summary'] == null
-          //                   ? SizedBox()
-          //                   : ListTile(
-          //                       contentPadding: EdgeInsets.zero,
-          //                       title: Text(
-          //                         "About",
-          //                         textScaleFactor: 1.0,
-          //                         style: TextStyle(
-          //                             fontSize:
-          //                                 SizeConfig.safeBlockHorizontal * 4,
-          //                             fontWeight: FontWeight.bold),
-          //                       ),
-          //                       subtitle: Padding(
-          //                         padding:
-          //                             const EdgeInsets.symmetric(vertical: 15),
-          //                         child: Text(
-          //                             '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
-          //                       ),
-          //                     ),
-          //               Padding(
-          //                 padding: const EdgeInsets.symmetric(vertical: 15),
-          //                 child: ListTile(
-          //                   contentPadding: EdgeInsets.zero,
-          //                   leading: CircleAvatar(
-          //                     backgroundImage: CachedNetworkImageProvider(
-          //                         episodeContent['author_image'],
-          //                         imageRenderMethodForWeb:
-          //                             ImageRenderMethodForWeb.HtmlImage),
-          //                   ),
-          //                   title: Text("${episodeContent['author']}"),
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     Container(
-          //       width: double.infinity,
-          //       child: Container(
-          //         height: 200,
-          //         child: Padding(
-          //           padding: const EdgeInsets.only(top: 15),
-          //           child: Column(
-          //             children: [
-          //               for (var v in recommendations)
-          //                 Padding(
-          //                   padding: const EdgeInsets.all(15),
-          //                   child: InkWell(
-          //                     onTap: () {
-          //                       Navigator.push(context,
-          //                           MaterialPageRoute(builder: (context) {
-          //                         return PodcastView(v['id']);
-          //                       }));
-          //                     },
-          //                     child: Column(
-          //                       crossAxisAlignment: CrossAxisAlignment.start,
-          //                       mainAxisAlignment: MainAxisAlignment.start,
-          //                       children: [
-          //                         CachedNetworkImage(
-          //                           imageBuilder: (context, imageProvider) {
-          //                             return Container(
-          //                               decoration: BoxDecoration(
-          //                                 borderRadius:
-          //                                     BorderRadius.circular(10),
-          //                                 image: DecorationImage(
-          //                                     image: imageProvider,
-          //                                     fit: BoxFit.cover),
-          //                               ),
-          //                               width:
-          //                                   MediaQuery.of(context).size.width /
-          //                                       4,
-          //                               height:
-          //                                   MediaQuery.of(context).size.width /
-          //                                       4,
-          //                             );
-          //                           },
-          //                           imageUrl: v['image'],
-          //                           memCacheWidth:
-          //                               (MediaQuery.of(context).size.width)
-          //                                   .floor(),
-          //                           memCacheHeight:
-          //                               (MediaQuery.of(context).size.width)
-          //                                   .floor(),
-          //                           placeholder: (context, url) => Container(
-          //                             width:
-          //                                 MediaQuery.of(context).size.width / 4,
-          //                             height:
-          //                                 MediaQuery.of(context).size.width / 4,
-          //                             child: Image.asset(
-          //                                 'assets/images/Thumbnail.png'),
-          //                           ),
-          //                           errorWidget: (context, url, error) =>
-          //                               Icon(Icons.error),
-          //                         ),
-          //                         Padding(
-          //                           padding: const EdgeInsets.symmetric(
-          //                               vertical: 10),
-          //                           child: Container(
-          //                             width:
-          //                                 MediaQuery.of(context).size.width / 4,
-          //                             child: Column(
-          //                               crossAxisAlignment:
-          //                                   CrossAxisAlignment.start,
-          //                               children: [
-          //                                 Text(
-          //                                   v['name'],
-          //                                   textScaleFactor: 1.0,
-          //                                   overflow: TextOverflow.ellipsis,
-          //                                   textAlign: TextAlign.center,
-          //                                   style: TextStyle(
-          //                                     // color: Colors.white,
-          //                                     fontSize: SizeConfig
-          //                                             .safeBlockHorizontal *
-          //                                         4,
-          //                                   ),
-          //                                 ),
-          //                                 SizedBox(
-          //                                   height: 5,
-          //                                 ),
-          //                                 Text(
-          //                                   v['author'],
-          //                                   textAlign: TextAlign.center,
-          //                                   textScaleFactor: 1.0,
-          //                                   maxLines: 2,
-          //                                   style: TextStyle(
-          //                                       color: Color(0xffe8e8e8)
-          //                                           .withOpacity(0.5),
-          //                                       fontSize: SizeConfig
-          //                                               .safeBlockHorizontal *
-          //                                           3),
-          //                                 )
-          //                               ],
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ],
-          //                     ),
-          //                   ),
-          //                 )
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // TabBarView(
-          //   children: [
-          //     Container(
-          //       child: Padding(
-          //         padding: const EdgeInsets.all(15),
-          //         child: Container(
-          //           child: Column(
-          //             crossAxisAlignment: CrossAxisAlignment.start,
-          //             children: [
-          //               episodeContent['permlink'] == null
-          //                   ? SizedBox()
-          //                   : Column(
-          //                       crossAxisAlignment: CrossAxisAlignment.start,
-          //                       mainAxisSize: MainAxisSize.min,
-          //                       children: [
-          //                         Text(
-          //                           "Community",
-          //                           textScaleFactor: 1.0,
-          //                           style: TextStyle(
-          //                               fontSize:
-          //                                   SizeConfig.safeBlockHorizontal * 4,
-          //                               fontWeight: FontWeight.bold),
-          //                         ),
-          //                         Padding(
-          //                           padding: const EdgeInsets.symmetric(
-          //                               vertical: 15),
-          //                           child: Container(
-          //                             decoration: BoxDecoration(
-          //                                 color: Color(0xff222222),
-          //                                 borderRadius:
-          //                                     BorderRadius.circular(10)),
-          //                             child: Padding(
-          //                               padding: const EdgeInsets.symmetric(
-          //                                   vertical: 8),
-          //                               child: ListTile(
-          //                                 onTap: () {
-          //                                   Navigator.push(context,
-          //                                       MaterialPageRoute(
-          //                                           builder: (context) {
-          //                                     return Comments(
-          //                                       episodeObject: episodeContent,
-          //                                     );
-          //                                   }));
-          //                                 },
-          //                                 title: Text("Join the conversation"),
-          //                                 trailing:
-          //                                     Icon(Icons.arrow_forward_ios),
-          //                               ),
-          //                             ),
-          //                           ),
-          //                         ),
-          //                       ],
-          //                     ),
-          //               episodeContent['summary'] == null
-          //                   ? SizedBox()
-          //                   : ListTile(
-          //                       contentPadding: EdgeInsets.zero,
-          //                       title: Text(
-          //                         "About",
-          //                         textScaleFactor: 1.0,
-          //                         style: TextStyle(
-          //                             fontSize:
-          //                                 SizeConfig.safeBlockHorizontal * 4,
-          //                             fontWeight: FontWeight.bold),
-          //                       ),
-          //                       subtitle: Padding(
-          //                         padding:
-          //                             const EdgeInsets.symmetric(vertical: 15),
-          //                         child: Text(
-          //                             '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
-          //                       ),
-          //                     ),
-          //               Padding(
-          //                 padding: const EdgeInsets.symmetric(vertical: 15),
-          //                 child: ListTile(
-          //                   contentPadding: EdgeInsets.zero,
-          //                   leading: CircleAvatar(
-          //                     backgroundImage: CachedNetworkImageProvider(
-          //                         episodeContent['author_image'],
-          //                         imageRenderMethodForWeb:
-          //                             ImageRenderMethodForWeb.HtmlImage),
-          //                   ),
-          //                   title: Text("${episodeContent['author']}"),
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     Container()
-          //   ],
-          // ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    episodeContent['permlink'] == null
-                        ? SizedBox()
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Community",
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 4,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xff222222),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: ListTile(
-                                      onTap: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return Comments(
-                                            episodeObject: episodeContent,
-                                          );
-                                        }));
-                                      },
-                                      title: Text("Join the conversation"),
-                                      trailing: Icon(Icons.arrow_forward_ios),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                    episodeContent['summary'] == null
-                        ? SizedBox()
-                        : ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(
-                              "About",
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              child: Text(
-                                  '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
-                            ),
-                          ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                              episodeContent['author_image'],
-                              imageRenderMethodForWeb:
-                                  ImageRenderMethodForWeb.HtmlImage),
+                                  )
+                          ],
                         ),
-                        title: Text("${episodeContent['author']}"),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  // PreferredSize(
+                  //   preferredSize: Size.fromHeight(32),
+                  //   child: Container(
+                  //     color: kPrimaryColor,
+                  //     child: Padding(
+                  //       padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                  //       child: Container(
+                  //         decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(8),
+                  //           color: Color(0xff222222),
+                  //         ),
+                  //         // width: 300,
+                  //         //  color: kPrimaryColor,
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.all(5),
+                  //           child: TabBar(
+                  //             // isScrollable: true,
+                  //             controller: _tabController,
+                  //
+                  //             // give the indicator a decoration (color and border radius)
+                  //             indicator: BoxDecoration(
+                  //               boxShadow: [
+                  //                 new BoxShadow(
+                  //                   color: Colors.black54.withOpacity(0.2),
+                  //                   blurRadius: 5.0,
+                  //                 ),
+                  //               ],
+                  //               color: themeProvider.isLightTheme == true
+                  //                   ? Colors.white
+                  //                   : kPrimaryColor,
+                  //               borderRadius: BorderRadius.circular(8),
+                  //             ),
+                  //             labelColor: Colors.white,
+                  //
+                  //             tabs: [
+                  //               // first tab [you can add an icon using the icon property]
+                  //               Tab(
+                  //                 text: 'Overview',
+                  //               ),
+                  //
+                  //               // second tab [you can add an icon using the icon property]
+                  //               Tab(
+                  //                 text: 'Similar',
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // TabBarView(
+                  //   controller: _tabController,
+                  //   children: [
+                  //     Container(
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.all(15),
+                  //         child: Container(
+                  //           child: Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: [
+                  //               episodeContent['permlink'] == null
+                  //                   ? SizedBox()
+                  //                   : Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment.start,
+                  //                       mainAxisSize: MainAxisSize.min,
+                  //                       children: [
+                  //                         Text(
+                  //                           "Community",
+                  //                           textScaleFactor: 1.0,
+                  //                           style: TextStyle(
+                  //                               fontSize:
+                  //                                   SizeConfig.safeBlockHorizontal * 4,
+                  //                               fontWeight: FontWeight.bold),
+                  //                         ),
+                  //                         Padding(
+                  //                           padding: const EdgeInsets.symmetric(
+                  //                               vertical: 15),
+                  //                           child: Container(
+                  //                             decoration: BoxDecoration(
+                  //                                 color: Color(0xff222222),
+                  //                                 borderRadius:
+                  //                                     BorderRadius.circular(10)),
+                  //                             child: Padding(
+                  //                               padding: const EdgeInsets.symmetric(
+                  //                                   vertical: 8),
+                  //                               child: ListTile(
+                  //                                 onTap: () {
+                  //                                   Navigator.push(context,
+                  //                                       MaterialPageRoute(
+                  //                                           builder: (context) {
+                  //                                     return Comments(
+                  //                                       episodeObject: episodeContent,
+                  //                                     );
+                  //                                   }));
+                  //                                 },
+                  //                                 title: Text("Join the conversation"),
+                  //                                 trailing:
+                  //                                     Icon(Icons.arrow_forward_ios),
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //               episodeContent['summary'] == null
+                  //                   ? SizedBox()
+                  //                   : ListTile(
+                  //                       contentPadding: EdgeInsets.zero,
+                  //                       title: Text(
+                  //                         "About",
+                  //                         textScaleFactor: 1.0,
+                  //                         style: TextStyle(
+                  //                             fontSize:
+                  //                                 SizeConfig.safeBlockHorizontal * 4,
+                  //                             fontWeight: FontWeight.bold),
+                  //                       ),
+                  //                       subtitle: Padding(
+                  //                         padding:
+                  //                             const EdgeInsets.symmetric(vertical: 15),
+                  //                         child: Text(
+                  //                             '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                  //                       ),
+                  //                     ),
+                  //               Padding(
+                  //                 padding: const EdgeInsets.symmetric(vertical: 15),
+                  //                 child: ListTile(
+                  //                   contentPadding: EdgeInsets.zero,
+                  //                   leading: CircleAvatar(
+                  //                     backgroundImage: CachedNetworkImageProvider(
+                  //                         episodeContent['author_image'],
+                  //                         imageRenderMethodForWeb:
+                  //                             ImageRenderMethodForWeb.HtmlImage),
+                  //                   ),
+                  //                   title: Text("${episodeContent['author']}"),
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Container(
+                  //       width: double.infinity,
+                  //       child: Container(
+                  //         height: 200,
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.only(top: 15),
+                  //           child: Column(
+                  //             children: [
+                  //               for (var v in recommendations)
+                  //                 Padding(
+                  //                   padding: const EdgeInsets.all(15),
+                  //                   child: InkWell(
+                  //                     onTap: () {
+                  //                       Navigator.push(context,
+                  //                           MaterialPageRoute(builder: (context) {
+                  //                         return PodcastView(v['id']);
+                  //                       }));
+                  //                     },
+                  //                     child: Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment.start,
+                  //                       mainAxisAlignment: MainAxisAlignment.start,
+                  //                       children: [
+                  //                         CachedNetworkImage(
+                  //                           imageBuilder: (context, imageProvider) {
+                  //                             return Container(
+                  //                               decoration: BoxDecoration(
+                  //                                 borderRadius:
+                  //                                     BorderRadius.circular(10),
+                  //                                 image: DecorationImage(
+                  //                                     image: imageProvider,
+                  //                                     fit: BoxFit.cover),
+                  //                               ),
+                  //                               width:
+                  //                                   MediaQuery.of(context).size.width /
+                  //                                       4,
+                  //                               height:
+                  //                                   MediaQuery.of(context).size.width /
+                  //                                       4,
+                  //                             );
+                  //                           },
+                  //                           imageUrl: v['image'],
+                  //                           memCacheWidth:
+                  //                               (MediaQuery.of(context).size.width)
+                  //                                   .floor(),
+                  //                           memCacheHeight:
+                  //                               (MediaQuery.of(context).size.width)
+                  //                                   .floor(),
+                  //                           placeholder: (context, url) => Container(
+                  //                             width:
+                  //                                 MediaQuery.of(context).size.width / 4,
+                  //                             height:
+                  //                                 MediaQuery.of(context).size.width / 4,
+                  //                             child: Image.asset(
+                  //                                 'assets/images/Thumbnail.png'),
+                  //                           ),
+                  //                           errorWidget: (context, url, error) =>
+                  //                               Icon(Icons.error),
+                  //                         ),
+                  //                         Padding(
+                  //                           padding: const EdgeInsets.symmetric(
+                  //                               vertical: 10),
+                  //                           child: Container(
+                  //                             width:
+                  //                                 MediaQuery.of(context).size.width / 4,
+                  //                             child: Column(
+                  //                               crossAxisAlignment:
+                  //                                   CrossAxisAlignment.start,
+                  //                               children: [
+                  //                                 Text(
+                  //                                   v['name'],
+                  //                                   textScaleFactor: 1.0,
+                  //                                   overflow: TextOverflow.ellipsis,
+                  //                                   textAlign: TextAlign.center,
+                  //                                   style: TextStyle(
+                  //                                     // color: Colors.white,
+                  //                                     fontSize: SizeConfig
+                  //                                             .safeBlockHorizontal *
+                  //                                         4,
+                  //                                   ),
+                  //                                 ),
+                  //                                 SizedBox(
+                  //                                   height: 5,
+                  //                                 ),
+                  //                                 Text(
+                  //                                   v['author'],
+                  //                                   textAlign: TextAlign.center,
+                  //                                   textScaleFactor: 1.0,
+                  //                                   maxLines: 2,
+                  //                                   style: TextStyle(
+                  //                                       color: Color(0xffe8e8e8)
+                  //                                           .withOpacity(0.5),
+                  //                                       fontSize: SizeConfig
+                  //                                               .safeBlockHorizontal *
+                  //                                           3),
+                  //                                 )
+                  //                               ],
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                 )
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // TabBarView(
+                  //   children: [
+                  //     Container(
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.all(15),
+                  //         child: Container(
+                  //           child: Column(
+                  //             crossAxisAlignment: CrossAxisAlignment.start,
+                  //             children: [
+                  //               episodeContent['permlink'] == null
+                  //                   ? SizedBox()
+                  //                   : Column(
+                  //                       crossAxisAlignment: CrossAxisAlignment.start,
+                  //                       mainAxisSize: MainAxisSize.min,
+                  //                       children: [
+                  //                         Text(
+                  //                           "Community",
+                  //                           textScaleFactor: 1.0,
+                  //                           style: TextStyle(
+                  //                               fontSize:
+                  //                                   SizeConfig.safeBlockHorizontal * 4,
+                  //                               fontWeight: FontWeight.bold),
+                  //                         ),
+                  //                         Padding(
+                  //                           padding: const EdgeInsets.symmetric(
+                  //                               vertical: 15),
+                  //                           child: Container(
+                  //                             decoration: BoxDecoration(
+                  //                                 color: Color(0xff222222),
+                  //                                 borderRadius:
+                  //                                     BorderRadius.circular(10)),
+                  //                             child: Padding(
+                  //                               padding: const EdgeInsets.symmetric(
+                  //                                   vertical: 8),
+                  //                               child: ListTile(
+                  //                                 onTap: () {
+                  //                                   Navigator.push(context,
+                  //                                       MaterialPageRoute(
+                  //                                           builder: (context) {
+                  //                                     return Comments(
+                  //                                       episodeObject: episodeContent,
+                  //                                     );
+                  //                                   }));
+                  //                                 },
+                  //                                 title: Text("Join the conversation"),
+                  //                                 trailing:
+                  //                                     Icon(Icons.arrow_forward_ios),
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //               episodeContent['summary'] == null
+                  //                   ? SizedBox()
+                  //                   : ListTile(
+                  //                       contentPadding: EdgeInsets.zero,
+                  //                       title: Text(
+                  //                         "About",
+                  //                         textScaleFactor: 1.0,
+                  //                         style: TextStyle(
+                  //                             fontSize:
+                  //                                 SizeConfig.safeBlockHorizontal * 4,
+                  //                             fontWeight: FontWeight.bold),
+                  //                       ),
+                  //                       subtitle: Padding(
+                  //                         padding:
+                  //                             const EdgeInsets.symmetric(vertical: 15),
+                  //                         child: Text(
+                  //                             '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                  //                       ),
+                  //                     ),
+                  //               Padding(
+                  //                 padding: const EdgeInsets.symmetric(vertical: 15),
+                  //                 child: ListTile(
+                  //                   contentPadding: EdgeInsets.zero,
+                  //                   leading: CircleAvatar(
+                  //                     backgroundImage: CachedNetworkImageProvider(
+                  //                         episodeContent['author_image'],
+                  //                         imageRenderMethodForWeb:
+                  //                             ImageRenderMethodForWeb.HtmlImage),
+                  //                   ),
+                  //                   title: Text("${episodeContent['author']}"),
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Container()
+                  //   ],
+                  // ),
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            episodeContent['permlink'] == null
+                                ? SizedBox()
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Community",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    4,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Color(0xff222222),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: ListTile(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return Comments(
+                                                    episodeObject:
+                                                        episodeContent,
+                                                  );
+                                                }));
+                                              },
+                                              title:
+                                                  Text("Join the conversation"),
+                                              trailing:
+                                                  Icon(Icons.arrow_forward_ios),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                            episodeContent['summary'] == null
+                                ? SizedBox()
+                                : ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text(
+                                      "About",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 15),
+                                      child: htmlMatch.hasMatch(
+                                                  episodeContent['summary']) ==
+                                              true
+                                          ? Text(
+                                              (parse(episodeContent['summary'])
+                                                  .body
+                                                  .text))
+                                          : Text(
+                                              '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                                    ),
+                                  ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              child: ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      episodeContent['author_image'],
+                                      imageRenderMethodForWeb:
+                                          ImageRenderMethodForWeb.HtmlImage),
+                                ),
+                                title: Text("${episodeContent['author']}"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ),
-        ],
       ),
     );
   }
