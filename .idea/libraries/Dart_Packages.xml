@@ -639,6 +639,13 @@
             </list>
           </value>
         </entry>
+        <entry key="linkable">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/linkable-3.0.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="loading_animations">
           <value>
             <list>
@@ -1090,7 +1097,7 @@
         <entry key="url_launcher">
           <value>
             <list>
-              <option value="$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.5/lib" />
+              <option value="$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.10/lib" />
             </list>
           </value>
         </entry>
@@ -1311,6 +1318,7 @@
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_platform_interface-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_web_plugin-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.3/lib" />
+      <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/linkable-3.0.1/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/loading_animations-2.2.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/loading_indicator-2.0.1/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/logging-1.0.1/lib" />
@@ -1374,7 +1382,7 @@
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/uni_links-0.5.1/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/uni_links_platform_interface-1.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/uni_links_web-0.1.0/lib" />
-      <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.5/lib" />
+      <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.10/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_platform_interface-2.0.3/lib" />

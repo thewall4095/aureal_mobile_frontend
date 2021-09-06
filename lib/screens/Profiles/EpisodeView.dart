@@ -30,6 +30,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:linkable/linkable.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:path_provider/path_provider.dart';
@@ -2311,15 +2312,40 @@ class _EpisodeViewState extends State<EpisodeView>
                                     subtitle: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 15),
+                                      // child: htmlMatch.hasMatch(
+                                      //             episodeContent['summary']) ==
+                                      //         true
+                                      //     ? Text(
+                                      //         (parse(episodeContent['summary'])
+                                      //             .body
+                                      //             .text))
+                                      //     : Text(
+                                      //         '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
                                       child: htmlMatch.hasMatch(
                                                   episodeContent['summary']) ==
                                               true
-                                          ? Text(
-                                              (parse(episodeContent['summary'])
-                                                  .body
-                                                  .text))
-                                          : Text(
-                                              '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                                          ? Linkable(
+                                              text:
+                                                  '${(parse(episodeContent['summary']).body.text)}',
+                                              textScaleFactor: 1.0,
+                                              textColor: Color(0xffe8e8e8),
+                                              style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    3,
+                                              ),
+                                            )
+                                          : Linkable(
+                                              text:
+                                                  "${episodeContent['summary']}",
+                                              textScaleFactor: 1.0,
+                                              textColor: Color(0xffe8e8e8),
+                                              style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    3,
+                                              ),
+                                            ),
                                     ),
                                   ),
                             Padding(
