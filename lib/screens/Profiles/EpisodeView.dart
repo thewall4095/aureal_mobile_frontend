@@ -1386,6 +1386,7 @@ class _EpisodeViewState extends State<EpisodeView>
                 color: Colors.black,
               )
             : ListView(
+                physics: BouncingScrollPhysics(),
                 children: [
                   Container(
                     decoration: BoxDecoration(

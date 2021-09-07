@@ -407,6 +407,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                 : ListView.builder(
                     controller: _controller,
                     itemCount: rooms.length,
+                    physics: BouncingScrollPhysics(),
                     itemBuilder: (context, int index) {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
@@ -1250,7 +1251,7 @@ class _CommunitySelectorState extends State<CommunitySelector>
                 child: queryValue != null &&
                         queryValue != '' &&
                         _tabController.index == 0
-                    ? ListView(children: [
+                    ? ListView(physics: BouncingScrollPhysics(), children: [
                         for (var v in searchResults.toSet().toList())
                           ListTile(
                             leading: CircleAvatar(
@@ -1273,6 +1274,7 @@ class _CommunitySelectorState extends State<CommunitySelector>
                           ),
                       ])
                     : ListView(
+                        physics: BouncingScrollPhysics(),
                         children: [
                           for (var v in _followedCommunities)
                             ListTile(
