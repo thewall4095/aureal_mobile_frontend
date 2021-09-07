@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'Home.dart';
 
 class RoomsPage extends StatefulWidget {
@@ -72,6 +72,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     FormData formData = FormData.fromMap(map);
     try {
       var response = await dio.post(url, data: formData);
+      print(response.data);
     } catch (e) {
       print(e);
     }
@@ -278,16 +279,6 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
               )
             ],
           ),
-          // actions: [
-          //   IconButton(
-          //     icon: Icon(Icons.calendar_today),
-          //     onPressed: () {
-          //       Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //         return ScheduledRooms();
-          //       }));
-          //     },
-          //   )
-          // ],
         ),
         backgroundColor: Colors.transparent,
         body: TabBarView(
@@ -431,89 +422,43 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Padding(
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: kPrimaryColor,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.stream,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
+                                          horizontal: 10, vertical: 4),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.group,
+                                            size:
+                                                SizeConfig.safeBlockHorizontal *
                                                     3,
-                                                color: Colors.blue,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                'LIVE',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
-                                              ),
-                                            ],
+                                            color: Colors.blue,
                                           ),
-                                        ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            rooms[index]['communities'] != null
+                                                ? "community"
+                                                : 'general',
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    2.5),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.group,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                color: Colors.blue,
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                rooms[index]['communities'] !=
-                                                        null
-                                                    ? "community"
-                                                    : 'general',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
+                                  ),
                                 ),
                                 rooms[index]['roomParticipants'] == null
                                     ? SizedBox(
@@ -594,16 +539,37 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
-                                  child: Text(
-                                    "Unkle Bonehead & 377 people are here",
-                                    textScaleFactor: 1.0,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color:
-                                            Color(0xffe8e8e8).withOpacity(0.5),
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: kPrimaryColor,
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.stream,
+                                            size:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3,
+                                            color: Colors.blue,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            'LIVE',
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    2.5),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -815,6 +781,22 @@ class _CreateRoomState extends State<CreateRoom> {
     debugPrint("_onError broadcasted: $error");
   }
 
+  void hostJoined(String roomid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    postreq.Interceptor intercept = postreq.Interceptor();
+    String url = 'https://api.aureal.one/private/hostJoined';
+    var map = Map<String, dynamic>();
+    map['userid'] = prefs.getString('userId');
+    map['roomid'] = roomid;
+    FormData formData = FormData.fromMap(map);
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1006,57 +988,6 @@ class _CreateRoomState extends State<CreateRoom> {
                   activeColor: Colors.blue,
                 ),
               ),
-              // ListTile(
-              //   onTap: () async {
-              //     DateTime pickedDate;
-              //     TimeOfDay pickedTime;
-              //     pickedDate = await showDatePicker(
-              //         context: context,
-              //         initialDate: DateTime.now(),
-              //         firstDate: DateTime.now(),
-              //         lastDate: DateTime(2030));
-              //     pickedTime = await showTimePicker(
-              //         context: context, initialTime: TimeOfDay.now());
-              //     print(pickedDate.toString());
-              //     print(pickedTime.toString());
-              //     print(pickedTime
-              //         .toString()
-              //         .split('(')[1]
-              //         .toString()
-              //         .split(')')[0]);
-              //     setState(() {
-              //       pickedSchedule =
-              //           "${DateFormat('EE MMM d yyyy').format(pickedDate)} ${pickedTime.hour}:${pickedTime.minute}:00 GMT+${DateTime.now().timeZoneOffset.toString().split(':')[0]}${DateTime.now().timeZoneOffset.toString().split(':')[1]}";
-              //     });
-              //     print(pickedSchedule);
-              //     print(DateTime.now().timeZoneOffset);
-              //     print("${pickedDate.weekday}");
-              //     print(pickedSchedule);
-              //   },
-              //   contentPadding: EdgeInsets.zero,
-              //   title: Text("Schedule you room"),
-              //   subtitle: Text(
-              //     pickedSchedule == null
-              //         ? "Leave it empty if you want to start immediately"
-              //         : "Your room is Scheduled at $pickedSchedule",
-              //     style: TextStyle(
-              //         color: pickedSchedule == null
-              //             ? Color(0xffe8e8e8)
-              //             : Colors.blue),
-              //   ),
-              //   trailing: pickedSchedule == null
-              //       ? IconButton(
-              //           icon: Icon(Icons.schedule_outlined),
-              //         )
-              //       : IconButton(
-              //           icon: Icon(Icons.close),
-              //           onPressed: () {
-              //             setState(() {
-              //               pickedSchedule = null;
-              //             });
-              //           },
-              //         ),
-              // ),
               SizedBox(
                 height: 30,
               ),
@@ -1064,7 +995,9 @@ class _CreateRoomState extends State<CreateRoom> {
                 child: InkWell(
                   onTap: () async {
                     final roomData = await startTheLiveStream();
+
                     if (roomData['scheduledtime'] == null) {
+                      await hostJoined(roomData['roomid']);
                       _joinMeeting(
                         roomId: roomData['roomid'],
                         roomName: roomData['title'],
@@ -1217,47 +1150,6 @@ class _CommunitySelectorState extends State<CommunitySelector>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   title: Text(
-      //     "Select a Hive Community",
-      //     textScaleFactor: 1.0,
-      //     style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-      //   ),
-      // ),
-      // body: Container(
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(15),
-      //     child: Column(
-      //       children: [
-      //         Container(
-      //           decoration: BoxDecoration(
-      //               color: Color(0xff222222),
-      //               borderRadius: BorderRadius.circular(8)),
-      //           child: Padding(
-      //             padding: const EdgeInsets.symmetric(horizontal: 15),
-      //             child: TextField(
-      //               decoration: InputDecoration(border: InputBorder.none),
-      //               onChanged: (value) {
-      //                 if (value.length > 3) {
-      //                   getHiveCommunities(value);
-      //                 }
-      //               },
-      //             ),
-      //           ),
-      //         ),
-      //         Column(
-      //           children: [
-      //             for (var v in searchResults)
-      //               ListTile(
-      //                 title: Text("${v['title']}"),
-      //               )
-      //           ],
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // ),
       body: NestedScrollView(
         physics: BouncingScrollPhysics(),
         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
