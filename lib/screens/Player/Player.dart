@@ -276,10 +276,10 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
               currentIndex = count;
             });
 
-            itemScrollController.scrollTo(
-                index: count,
-                // curve: Curves.easeInCirc,
-                duration: Duration(seconds: 1));
+            itemScrollController.jumpTo(
+              index: count,
+              // curve: Curves.easeInCirc,
+            );
           }
         }
       }
@@ -940,24 +940,31 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                       : Color(dominantColor)),
                               height: 300,
                               width: double.infinity,
-                              child: ScrollablePositionedList.builder(
-                                itemCount: transcript.length,
-                                itemBuilder: (context, index) {
-                                  print(itemPositionsListener
-                                      .itemPositions.value
-                                      .toString());
-                                  if (index == currentIndex) {
-                                    return Text(
-                                      '${transcript[index].toString()}',
-                                      style: TextStyle(color: Colors.blue),
-                                    );
-                                  } else {
-                                    return Text(
-                                        '${transcript[index].toString()}');
-                                  }
-                                },
-                                itemScrollController: itemScrollController,
-                                itemPositionsListener: itemPositionsListener,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ScrollablePositionedList.builder(
+                                  itemCount: transcript.length,
+                                  itemBuilder: (context, index) {
+                                    print(itemPositionsListener
+                                        .itemPositions.value
+                                        .toString());
+                                    if (index == currentIndex) {
+                                      return Text(
+                                        '${transcript[index].toString()}',
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    5),
+                                      );
+                                    } else {
+                                      return Text(
+                                          '${transcript[index].toString()}');
+                                    }
+                                  },
+                                  itemScrollController: itemScrollController,
+                                  itemPositionsListener: itemPositionsListener,
+                                ),
                               ),
                             ),
                           )
