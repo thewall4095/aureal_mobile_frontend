@@ -1197,22 +1197,26 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                 itemBuilder: (context, index) {
                   // print(itemPositionsListener.itemPositions.value.toString());
                   if (index <= currentIndex) {
-                    return Text(
-                      '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
-                      style: TextStyle(
-                          height: 1.8,
-                          fontSize: SizeConfig.safeBlockHorizontal * 7,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
+                    return GestureDetector(
+                      child: Text(
+                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                        style: TextStyle(
+                            height: 1.8,
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                      ),
                     );
                   } else {
-                    return Text(
-                      '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 7,
-                          fontWeight: FontWeight.w600,
-                          height: 1.8,
-                          color: Colors.white.withOpacity(0.5)),
+                    return GestureDetector(
+                      child: Text(
+                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
+                            fontWeight: FontWeight.w600,
+                            height: 1.8,
+                            color: Colors.white.withOpacity(0.5)),
+                      ),
                     );
                   }
                 },
