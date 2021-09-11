@@ -1268,13 +1268,12 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             .toString());
                                                                         currentlyPlaying
                                                                             .play();
-                                                                        showBarModalBottomSheet(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder:
                                                                                 (context) {
-                                                                              return Player();
-                                                                            });
+                                                                          return Player();
+                                                                        }));
                                                                       }
                                                                     }
                                                                   },

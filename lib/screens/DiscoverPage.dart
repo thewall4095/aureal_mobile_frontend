@@ -729,17 +729,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     .toString());
                                                                 currentlyPlaying
                                                                     .play();
-                                                                showBarModalBottomSheet(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return Container(
-                                                                        child:
-                                                                            Player(
-                                                                            ),
-                                                                      );
-                                                                    });
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) {
+                                                                  return Player();
+                                                                }));
                                                               }
                                                             }
                                                           },
@@ -1217,7 +1213,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           ),
                                                                           SizedBox(
                                                                             height:
-                                                                                MediaQuery.of(context).size.height/120,
+                                                                                MediaQuery.of(context).size.height / 120,
                                                                           ),
                                                                           Flexible(
                                                                             child:
@@ -1281,4 +1277,3 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 }
-

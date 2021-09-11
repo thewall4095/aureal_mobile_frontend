@@ -1530,11 +1530,11 @@ class _EpisodeViewState extends State<EpisodeView>
                                           print(episodeObject.episodeObject
                                               .toString());
                                           episodeObject.play();
-                                          showBarModalBottomSheet(
-                                              context: context,
-                                              builder: (context) {
-                                                return Player();
-                                              });
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return Player();
+                                          }));
                                         }
                                       }
                                     },
