@@ -1183,7 +1183,10 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.close),
+            icon: Icon(Icons.close_rounded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           )
         ],
       ),
