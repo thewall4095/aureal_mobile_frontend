@@ -187,28 +187,29 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       if (response.statusCode == 200) {
         print(response.body);
         setState(() {
-          data = jsonDecode(response.body)['users'];
-          fullName = jsonDecode(response.body)['users']['fullname'];
-          prefs.setString(
-              'FullName', jsonDecode(response.body)['users']['fullname']);
-          userName = jsonDecode(response.body)['users']['username'];
+          data = (jsonDecode(response.body)['users'] == null ? "": jsonDecode(response.body)['users']);
+          fullName = jsonDecode(response.body)['users']['fullname'] == null ? "": jsonDecode(response.body)['users']['fullname'];
+          // prefs.setString(
+          //     'FullName', jsonDecode(response.body)['users']['fullname']);
+          userName = (jsonDecode(response.body)['users']['username'] == null ? "":jsonDecode(response.body)['users']['username']);
           prefs.setString(
               'userName', jsonDecode(response.body)['users']['username']);
           prefs.setString('HiveUserName',
               jsonDecode(response.body)['users']['hive_username']);
-          // displayPicture = jsonDecode(response.body)['users']['img'];
+          displayPicture = jsonDecode(response.body)['users']['img'];
           status = jsonDecode(response.body)['users']['settings']['Account']
               ['Presence'];
           bio =
-              jsonDecode(response.body)['users']['settings']['Account']['Bio'];
+              (jsonDecode(response.body)['users']['settings']['Account']['Bio'] == null ? "":jsonDecode(response.body)['users']['settings']['Account']['Bio']);
           hiveUserName = prefs.getString('HiveUserName');
-          email = jsonDecode(response.body)['users']['email'];
+          email = (jsonDecode(response.body)['users']['email'] == null  ? "" : jsonDecode(response.body)['users']['email']);
+        });
+        setState(() {
+          isLoading = false;
+          isProfileLoading = false;
         });
       }
-      setState(() {
-        isLoading = false;
-        isProfileLoading = false;
-      });
+
     } catch (e) {
       print(e);
     }
