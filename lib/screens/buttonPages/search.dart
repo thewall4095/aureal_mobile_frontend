@@ -206,30 +206,50 @@ class SearchFunctionality extends SearchDelegate {
     );
   }
 
+   MaterialColor primaryBlack = MaterialColor(
+    0XFF000000,
+    <int, Color>{
+      50: Color(0xFF000000),
+      100: Color(0xFF000000),
+      200: Color(0xFF000000),
+      300: Color(0xFF000000),
+      400: Color(0xFF000000),
+      500: Color(0XFF000000),
+      600: Color(0xFF000000),
+      700: Color(0xFF000000),
+      800: Color(0xFF000000),
+      900: Color(0xFF000000),
+    },
+  );
+
+
   @override
   ThemeData appBarTheme(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    // final themeProvider = Provider.of<ThemeProvider>(context);
     return ThemeData(
       primaryColor:
-          themeProvider.isLightTheme == true ? Colors.white : kPrimaryColor,
+           Color(0xff161616),
+      primarySwatch: primaryBlack,
       primaryIconTheme: IconThemeData(
         color:
-            themeProvider.isLightTheme != true ? Colors.white : kPrimaryColor,
+            Colors.white ,
+
       ),
       inputDecorationTheme: InputDecorationTheme(
-        // hintStyle: Theme.of(context).textTheme.title.copyWith(
-        //       color: themeProvider.isLightTheme != true
-        //           ? Colors.white
-        //           : kPrimaryColor,
-        //     ),
+        hintStyle: Theme.of(context).textTheme.bodyText1.copyWith(
+              color:
+                  Colors.white
+
+            ),
       ),
       textTheme: TextTheme(
-        // title: TextStyle(
-        //   color:
-        //       themeProvider.isLightTheme != true ? Colors.white : kPrimaryColor,
-        //   fontSize: 18,
-        // ),
+        headline6: TextStyle(
+          color:
+               Colors.white,
+          fontSize: 18,
+        ),
       ),
+
     );
   }
 

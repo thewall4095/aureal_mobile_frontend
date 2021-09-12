@@ -41,6 +41,7 @@ import 'dart:math' as math;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import '../Home.dart';
 import 'PlayerElements/Seekbar.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -57,7 +58,11 @@ class Player extends StatefulWidget {
   _PlayerState createState() => _PlayerState();
 }
 
-class _PlayerState extends State<Player> {
+class _PlayerState extends State<Player> with TickerProviderStateMixin {
+  //Global Key For ScrollController for transcription
+
+  final dataKey = new GlobalKey();
+
   PlayerState playerState = PlayerState.playing;
   final _episodeBloc = EpisodeBloc();
   final _mp = EpisodesProvider.getInstance();
@@ -85,7 +90,9 @@ class _PlayerState extends State<Player> {
 
   int currentIndex = 0;
 
-  final ItemScrollController itemScrollController = ItemScrollController();
+  ItemScrollController itemScrollController;
+
+  TabController _tabController;
 
   void Transcription(episode_id) async {
     String url =
@@ -101,11 +108,14 @@ class _PlayerState extends State<Player> {
           transcript = jsonDecode(response.body)['data']['transcription'];
         });
         print(transcript);
+        print(transcript.runtimeType);
       }
     } catch (e) {
       print(e);
     }
   }
+
+  ItemPositionsListener itemPositionsListener;
 
   void getInitialComments(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -236,7 +246,12 @@ class _PlayerState extends State<Player> {
   @override
   void initState() {
     // TODO: implement initState
+
+    itemScrollController = ItemScrollController();
+    itemPositionsListener = ItemPositionsListener.create();
+
     super.initState();
+    _tabController = TabController(vsync: this, length: 2);
 
     var episodeObject = Provider.of<PlayerChange>(context, listen: false);
     print('abc');
@@ -245,11 +260,7 @@ class _PlayerState extends State<Player> {
     episodeObject.audioPlayer.currentPosition.listen((event) {
       var currentPositionSeconds = event.inMilliseconds / 1000;
       if (transcript != null && transcript.length > 0) {
-        // List<String> filteredTranscript  = transcript.where((item) {
-        //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
-        // });
-        print('hre');
-        print(event.inMilliseconds / 1000);
+        // print(event.inMilliseconds / 1000);
         // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
         // setState(() {
         if (transcript != null && transcript.length > 0) {
@@ -258,11 +269,15 @@ class _PlayerState extends State<Player> {
               element['end_time'] > currentPositionSeconds));
           if (count >= 0) {
             print(count);
-            print('tererere');
-            itemScrollController.scrollTo(
-                index: count,
-                // curve: Curves.easeInCirc,
-                duration: Duration(seconds: 1));
+
+            setState(() {
+              currentIndex = count;
+            });
+
+            itemScrollController.jumpTo(
+              index: count,
+              // curve: Curves.easeInCirc,
+            );
           }
         }
       }
@@ -296,15 +311,9 @@ class _PlayerState extends State<Player> {
     super.dispose();
     // TODO: implement dispose
     print('Dispose Called//////////////////////////////////////////////');
-    // var episodeObject = Provider.of<PlayerChange>(context);
-    // episodeObject.dursaver.addToDatabase(
-    //     episodeObject.episodeObject['id'],
-    //     episodeObject.audioPlayer.currentPosition.valueWrapper.value,
-    //     episodeObject
-    //         .audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
 
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+        SystemUiOverlayStyle(statusBarColor: Color(0xff161616)));
   }
 
   void share({var episodeObject}) async {
@@ -350,826 +359,22 @@ class _PlayerState extends State<Player> {
     SizeConfig().init(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     // print(episodeObject.episodeObject.toString());
-    return Stack(
-      children: [
-        DefaultTabController(
-          length: 2,
-          child: Container(
-            width: double.infinity,
-            child: Stack(
-              children: [
-                transcript != null
-                    ? TabBarView(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 15.5,
-                                ),
-                                CachedNetworkImage(
-                                  imageUrl: episodeObject
-                                              .episodeObject['image'] ==
-                                          null
-                                      ? episodeObject
-                                          .episodeObject['podcast_image']
-                                      : episodeObject.episodeObject['image'],
-                                  imageBuilder: (context, imageProvider) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover)),
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      height:
-                                          MediaQuery.of(context).size.width / 2,
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 48,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return EpisodeView(
-                                            episodeId: episodeObject
-                                                .episodeObject['id']);
-                                      }));
-                                    },
-                                    child: Text(
-                                      '${episodeObject.episodeName}',
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      textScaleFactor: 1.0,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize:
-                                              SizeConfig.blockSizeHorizontal *
-                                                  4,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Text(
-                                    '${episodeObject.episodeObject['author']}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 50,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(FontAwesomeIcons.fighterJet),
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                  ),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: kSecondaryColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                    ),
-                                                    height: 380,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 15,
-                                                          vertical: 10),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "0.25X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      0.5);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "0.5X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      0.75);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "0.75X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      1.0);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "Normal",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      1.25);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "1.25X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      1.5);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "1.5X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              episodeObject
-                                                                  .audioPlayer
-                                                                  .setPlaySpeed(
-                                                                      2.0);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Row(
-                                                              children: [
-                                                                Text(
-                                                                  "2X",
-                                                                  textScaleFactor:
-                                                                      0.75,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withOpacity(
-                                                                              0.7)),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                      ),
-                                      episodeObject.episodeObject['permlink'] ==
-                                              null
-                                          ? SizedBox(
-                                              width: 50,
-                                            )
-                                          : Container(
-                                              child: Row(
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () async {
-                                                      if (hiveUsername !=
-                                                          null) {
-                                                        setState(() {
-                                                          isUpvoteLoading =
-                                                              true;
-                                                        });
-                                                        double _value = 50.0;
-                                                        showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return Dialog(
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  child: UpvoteEpisode(
-                                                                      permlink:
-                                                                          episodeObject.episodeObject[
-                                                                              'permlink'],
-                                                                      episode_id:
-                                                                          episodeObject
-                                                                              .episodeObject['id']));
-                                                            }).then((value) async {
-                                                          print(value);
-                                                        });
-                                                        setState(() {
-                                                          if (episodeObject
-                                                                  .ifVoted !=
-                                                              true) {
-                                                            episodeObject
-                                                                .ifVoted = true;
-                                                          }
-                                                        });
-                                                        setState(() {
-                                                          isUpvoteLoading =
-                                                              false;
-                                                        });
-                                                      } else {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return HiveDetails();
-                                                            });
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      decoration: episodeObject
-                                                                  .ifVoted ==
-                                                              true
-                                                          ? BoxDecoration(
-                                                              gradient:
-                                                                  LinearGradient(
-                                                                      colors: [
-                                                                    Color(
-                                                                        0xff5bc3ef),
-                                                                    Color(
-                                                                        0xff5d5da8)
-                                                                  ]),
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                      30))
-                                                          : BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                      kSecondaryColor),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          30)),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                vertical: 5,
-                                                                horizontal: 10),
-                                                        child: Row(
-                                                          children: [
-                                                            isUpvoteLoading ==
-                                                                    true
-                                                                ? Container(
-                                                                    height: 17,
-                                                                    width: 18,
-                                                                    child:
-                                                                        SpinKitPulse(
-                                                                      color: Colors
-                                                                          .blue,
-                                                                    ),
-                                                                  )
-                                                                : Icon(
-                                                                    FontAwesomeIcons
-                                                                        .chevronCircleUp,
-                                                                    size: 15,
-                                                                    // color:
-                                                                    //     Color(0xffe8e8e8),
-                                                                  ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                              child: Text(
-                                                                episodeObject
-                                                                    .episodeObject[
-                                                                        'votes']
-                                                                    .toString(),
-                                                                textScaleFactor:
-                                                                    1.0,
-                                                                style: TextStyle(
-                                                                    fontSize: 15
-                                                                    // color:
-                                                                    //     Color(0xffe8e8e8)
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              height: 15,
-                                                              width: 10,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                border: Border(
-                                                                    left:
-                                                                        BorderSide(
-                                                                  color: themeProvider
-                                                                              .isLightTheme ==
-                                                                          false
-                                                                      ? Colors
-                                                                          .white
-                                                                      : kPrimaryColor,
-                                                                )),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right: 4),
-                                                              child: Text(
-                                                                '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
-                                                                textScaleFactor:
-                                                                    1.0,
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize: 15,
-
-                                                                  // color:
-                                                                  //     Color(0xffe8e8e8)
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                      IconButton(
-                                        onPressed: () {
-                                          share(
-                                              episodeObject:
-                                                  episodeObject.episodeObject);
-                                        },
-                                        icon: Icon(FontAwesomeIcons.share),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            // width: MediaQuery.of(context).size.width,
-                            // height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                  Colors.black,
-                                  Color(dominantColor)
-                                ])),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl: episodeObject
-                                                      .episodeObject['image'] ==
-                                                  null
-                                              ? episodeObject.episodeObject[
-                                                  'podcast_image']
-                                              : episodeObject
-                                                  .episodeObject['image'],
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover)),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  8,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  8,
-                                            );
-                                          },
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${episodeObject.episodeName}',
-                                                  textAlign: TextAlign.start,
-                                                  maxLines: 2,
-                                                  textScaleFactor: 1.0,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: SizeConfig
-                                                              .blockSizeHorizontal *
-                                                          3,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                SizedBox(
-                                                  height: 2,
-                                                ),
-                                                Text(
-                                                  '${episodeObject.episodeObject['author']}',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        //       GestureDetector(
-                                        //         onTap:
-                                        //       () {
-                                        // Navigator.push(
-                                        // context,
-                                        // MaterialPageRoute(builder: (context) => ScrollablePositionedListPage()),
-                                        // );
-                                        // },
-                                        //
-                                        //
-                                        //           child
-                                        //             : Container(
-                                        //             height: 50,
-                                        //             width: 50,
-                                        //             color: Colors.white,
-                                        //         ),
-                                        //       ),
-                                        //   IconButton(
-                                        //   icon: Icon(Icons.looks_4_rounded),
-                                        //   onPressed: () => itemScrollController.scrollTo(
-                                        //       index: 5, duration: Duration(seconds: 1)),
-                                        // ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            // color: Colors.red,
-                                            //  color: Colors.white
-                                          ),
-                                          width: double.infinity,
-                                          height: MediaQuery.of(context)
-                                              .size
-                                              .height,
-                                          padding: EdgeInsets.all(20.0),
-                                          child:
-                                              ScrollablePositionedList.builder(
-                                                  itemCount: transcript.length,
-                                                  initialScrollIndex: 0,
-                                                  itemScrollController:
-                                                      itemScrollController,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Center(
-                                                        heightFactor: 1.2,
-                                                        child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(8.0),
-                                                            child:
-                                                                GestureDetector(
-                                                                    onLongPress:
-                                                                        () {
-                                                                      showModalBottomSheet(
-                                                                          context:
-                                                                              context,
-                                                                          builder:
-                                                                              (context) {
-                                                                            return Column(
-                                                                              mainAxisSize: MainAxisSize.min,
-                                                                              children: <Widget>[
-                                                                                Card(
-                                                                                  child: Container(
-                                                                                    height: MediaQuery.of(context).size.height / 4,
-                                                                                    width: double.infinity,
-                                                                                    child: Column(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        SizedBox(
-                                                                                          height: 10,
-                                                                                        ),
-                                                                                        Padding(
-                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                          child: Card(
-                                                                                            color: Colors.black,
-                                                                                            child: Container(
-                                                                                              height: MediaQuery.of(context).size.height / 10,
-                                                                                              width: double.infinity,
-                                                                                              child: Padding(
-                                                                                                padding: const EdgeInsets.all(8.0),
-                                                                                                child: Text(
-                                                                                                  "${transcript[index]["msg"]}",
-                                                                                                  style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),
-                                                                                                  // Text("${transcript[index]["msg"]},",style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                        ),
-                                                                                        Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                                          children: [
-                                                                                            Container(
-                                                                                              width: MediaQuery.of(context).size.width / 10,
-                                                                                              height: MediaQuery.of(context).size.height / 15,
-                                                                                              decoration: new BoxDecoration(
-                                                                                                color: Colors.white,
-                                                                                                shape: BoxShape.circle,
-                                                                                              ),
-                                                                                              child: IconButton(
-                                                                                                onPressed: () async {
-                                                                                                   PickedFile pickedFile = await picker.getImage(source:  episodeObject.episodeObject["image"],);
-                                                                                                  // SocialShare.shareInstagramStory(
-                                                                                                  //   episodeObject.episodeObject["image"],
-                                                                                                  //   backgroundTopColor: "#ffffff",
-                                                                                                  //   backgroundBottomColor: "#000000",
-                                                                                                  //   attributionURL: "https://deep-link-url",
-                                                                                                  // ).then((data) {
-                                                                                                  //   print(data);
-                                                                                                  // });
-                                                                                                },
-                                                                                                icon: Icon(
-                                                                                                  FontAwesomeIcons.instagram,
-                                                                                                  color: Colors.black,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                            Container(
-                                                                                              width: MediaQuery.of(context).size.width / 10,
-                                                                                              height: MediaQuery.of(context).size.height / 15,
-                                                                                              decoration: new BoxDecoration(
-                                                                                                color: Colors.white,
-                                                                                                shape: BoxShape.circle,
-                                                                                              ),
-                                                                                              child: IconButton(
-                                                                                                onPressed: () async {
-                                                                                                  // SocialShare.shareTwitter(
-                                                                                                  //   "${transcript[index]["msg"]}",
-                                                                                                  //   hashtags: [
-                                                                                                  //     "AurealOne",
-                                                                                                  //     "Hive",
-                                                                                                  //     "foo",
-                                                                                                  //     "bar"
-                                                                                                  //   ],
-                                                                                                  //   url: "https://aureal.one/episode/${episodeObject.episodeObject['id']}",
-                                                                                                  //   trailingText: "\nhello",
-                                                                                                  // ).then((data) {
-                                                                                                  //   print(data);
-                                                                                                  // });
-                                                                                                },
-                                                                                                icon: Icon(
-                                                                                                  FontAwesomeIcons.twitter,
-                                                                                                  color: Colors.black,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                            Container(
-                                                                                              width: MediaQuery.of(context).size.width / 10,
-                                                                                              height: MediaQuery.of(context).size.height / 15,
-                                                                                              decoration: new BoxDecoration(
-                                                                                                color: Colors.white,
-                                                                                                shape: BoxShape.circle,
-                                                                                              ),
-                                                                                              child: IconButton(
-                                                                                                onPressed: () async {
-                                                                                                  // SocialShare.copyToClipboard(
-                                                                                                  //   "${transcript[index]["msg"]}",
-                                                                                                  // ).then((data) {
-                                                                                                  //   print(data);
-                                                                                                  // });
-                                                                                                },
-                                                                                                icon: Icon(
-                                                                                                  FontAwesomeIcons.clipboard,
-                                                                                                  color: Colors.black,
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                            Container(
-                                                                                              width: MediaQuery.of(context).size.width / 10,
-                                                                                              height: MediaQuery.of(context).size.height / 15,
-                                                                                              decoration: new BoxDecoration(
-                                                                                                color: Colors.white,
-                                                                                                shape: BoxShape.circle,
-                                                                                              ),
-                                                                                              child: IconButton(
-                                                                                                onPressed: () async {
-                                                                                                  await FlutterShare.share(
-                                                                                                      linkUrl: episodeObject.episodeObject["image"],
-                                                                                                      title: "${episodeObject.episodeName}", text: "${transcript[index]["msg"]} \n \nhere's the link for you https://aureal.one/episode/${episodeObject.episodeObject['id']}");
-                                                                                                },
-                                                                                                icon: Icon(
-                                                                                                  Icons.more_horiz,
-                                                                                                  color: Colors.black,
-                                                                                                ),
-                                                                                              ),
-                                                                                            )
-                                                                                          ],
-                                                                                        )
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            );
-                                                                          });
-                                                                      Clipboard
-                                                                          .setData(
-                                                                        ClipboardData(
-                                                                            text:
-                                                                                "${transcript[index]["msg"]}"),
-                                                                      );
-                                                                    },
-                                                                    child: Card(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
-                                                                          child: Text(
-                                                                              "${transcript[index]["msg"]},",
-                                                                              style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5)),
-                                                                        )))));
-                                                  }),
-                                          // child: ListView(
-                                          //   controller: _controller,
-                                          //   children: <Widget>[
-                                          //     for(var v in transcript)
-                                          //       Padding(
-                                          //         padding: const EdgeInsets.symmetric(vertical: 5),
-                                          //         child: Card(
-                                          //             color: Colors.transparent,
-                                          //             child: Container(
-                                          //                 color: Colors.transparent,
-                                          //                 child: Padding(
-                                          //               padding: const EdgeInsets.all(8.0),
-                                          //               child: Text(v['msg'], style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5),),
-                                          //             ))),
-                                          //       ),
-                                          //   ],
-                                          // )),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+    return Scaffold(
+      body: SafeArea(
+        child: CustomScrollView(
+          shrinkWrap: true,
+          slivers: [
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
                           children: [
                             SizedBox(
                               height: MediaQuery.of(context).size.height / 15.5,
@@ -1609,1790 +814,213 @@ class _PlayerState extends State<Player> {
                                   )
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                DraggableScrollableSheet(
-                    initialChildSize: 0.32,
-                    minChildSize: 0.32,
-                    maxChildSize: 0.32,
-                    builder: (context, controller) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            new BoxShadow(
-                              color: Colors.black54.withOpacity(0.2),
-                              blurRadius: 10.0,
                             ),
                           ],
-                          color: themeProvider.isLightTheme == true
-                              ? Colors.white
-                              : Color(0xff222222),
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: ListView(
-                          physics: BouncingScrollPhysics(),
-                          controller: controller,
-                          children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: episodeObject.audioPlayer
-                                      .builderRealtimePlayingInfos(
-                                          builder: (context, infos) {
-                                    if (infos == null) {
-                                      return SizedBox(
-                                        height: 0,
-                                      );
-                                    } else {
-                                      return Seekbar(
-                                        dominantColor: dominantColor,
-                                        currentPosition: infos.currentPosition,
-                                        duration: infos.duration,
-                                        episodeName: episodeObject.episodeName,
-                                        seekTo: (to) {
-                                          episodeObject.audioPlayer.seek(to);
-                                        },
-                                      );
-                                    }
-                                  }),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.replay_10,
-                                          //  color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          episodeObject.audioPlayer
-                                              .seekBy(Duration(seconds: -10));
-                                        },
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              new BoxShadow(
+                                color: Colors.black54.withOpacity(0.2),
+                                blurRadius: 10.0,
+                              ),
+                            ],
+                            color: Color(0xff222222),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: episodeObject.audioPlayer
+                                    .builderRealtimePlayingInfos(
+                                        builder: (context, infos) {
+                                  if (infos == null) {
+                                    return SizedBox(
+                                      height: 0,
+                                    );
+                                  } else {
+                                    return Seekbar(
+                                      dominantColor: dominantColor,
+                                      currentPosition: infos.currentPosition,
+                                      duration: infos.duration,
+                                      episodeName: episodeObject.episodeName,
+                                      seekTo: (to) {
+                                        episodeObject.audioPlayer.seek(to);
+                                      },
+                                    );
+                                  }
+                                }),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.replay_10,
+                                        //  color: Colors.white,
+                                        size: 40,
                                       ),
-                                      episodeObject.audioPlayer
-                                          .builderRealtimePlayingInfos(
-                                              builder: (context, infos) {
-                                        if (infos == null) {
-                                          return SpinKitPulse(
+                                      onPressed: () {
+                                        episodeObject.audioPlayer
+                                            .seekBy(Duration(seconds: -10));
+                                      },
+                                    ),
+                                    episodeObject.audioPlayer
+                                        .builderRealtimePlayingInfos(
+                                            builder: (context, infos) {
+                                      if (infos == null) {
+                                        return SpinKitPulse(
+                                          color: Colors.white,
+                                        );
+                                      } else {
+                                        if (infos.isBuffering == true) {
+                                          return SpinKitCircle(
+                                            size: 15,
                                             color: Colors.white,
                                           );
                                         } else {
-                                          if (infos.isBuffering == true) {
-                                            return SpinKitCircle(
-                                              size: 15,
-                                              color: Colors.white,
-                                            );
-                                          } else {
-                                            if (infos.isPlaying == true) {
-                                              // return IconButton(
-                                              //   highlightColor: Colors.blue,
-                                              //   icon: Icon(
-                                              //     Icons.pause,
-                                              //     size: 40,
-                                              //     color: themeProvider.isLightTheme == false
-                                              //         ? Colors.white
-                                              //         : kPrimaryColor,
-                                              //     // color:
-                                              //     //     Colors.black,
-                                              //   ),
-                                              //   onPressed: () {
-                                              //     episodeObject.pause();
-                                              //     setState(() {
-                                              //       playerState = PlayerState.paused;
-                                              //     });
-                                              //   },
-                                              // );
-                                              return FloatingActionButton(
-                                                  child: Icon(Icons.pause),
-                                                  backgroundColor: Color(
-                                                              dominantColor) ==
-                                                          null
-                                                      ? Colors.blue
-                                                      : Color(dominantColor),
-                                                  onPressed: () {
-                                                    episodeObject.pause();
-                                                    setState(() {
-                                                      playerState =
-                                                          PlayerState.paused;
-                                                    });
-                                                  });
-                                            } else {
-                                              return FloatingActionButton(
-                                                  backgroundColor: Color(
-                                                              dominantColor) ==
-                                                          null
-                                                      ? Colors.blue
-                                                      : Color(dominantColor),
-                                                  child: Icon(
-                                                      Icons.play_arrow_rounded),
-                                                  onPressed: () {
-                                                    // play(url);
-                                                    episodeObject.resume();
-                                                    setState(() {
-                                                      playerState =
-                                                          PlayerState.playing;
-                                                    });
-                                                  });
-                                              return IconButton(
-                                                icon: Icon(
-                                                  Icons.play_arrow,
-                                                  size: 40, // color:
-                                                  color: themeProvider
-                                                              .isLightTheme ==
-                                                          false
-                                                      ? Colors.white
-                                                      : kPrimaryColor,
-                                                  //     Colors.black,
-                                                ),
+                                          if (infos.isPlaying == true) {
+                                            return FloatingActionButton(
+                                                child: Icon(Icons.pause),
+                                                backgroundColor:
+                                                    Color(dominantColor) == null
+                                                        ? Colors.blue
+                                                        : Color(dominantColor),
                                                 onPressed: () {
-//                                    play(url);
+                                                  episodeObject.pause();
+                                                  setState(() {
+                                                    playerState =
+                                                        PlayerState.paused;
+                                                  });
+                                                });
+                                          } else {
+                                            return FloatingActionButton(
+                                                backgroundColor:
+                                                    Color(dominantColor) == null
+                                                        ? Colors.blue
+                                                        : Color(dominantColor),
+                                                child: Icon(
+                                                    Icons.play_arrow_rounded),
+                                                onPressed: () {
+                                                  // play(url);
                                                   episodeObject.resume();
                                                   setState(() {
                                                     playerState =
                                                         PlayerState.playing;
                                                   });
-                                                },
-                                              );
-                                            }
+                                                });
                                           }
                                         }
-                                      }),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.forward_10,
-                                          //  color: Colors.white,
-                                          size: 40,
-                                        ),
-                                        onPressed: () {
-                                          episodeObject.audioPlayer.seekBy(
-                                            Duration(seconds: 10),
-                                          );
-                                        },
+                                      }
+                                    }),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.forward_10,
+                                        //  color: Colors.white,
+                                        size: 40,
                                       ),
-                                    ],
-                                  ),
+                                      onPressed: () {
+                                        episodeObject.audioPlayer.seekBy(
+                                          Duration(seconds: 10),
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-              ],
-            ),
-          ),
+                              ),
+                              transcript == null
+                                  ? SizedBox()
+                                  : Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            print(transcript);
+                                            print(transcript.runtimeType);
+                                            return TrancriptionPlayer(
+                                              transcript: transcript,
+                                            );
+                                          }));
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: Color(0xff161616),
+                                          ),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              4,
+                                          width: double.infinity,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
+                                                    textScaleFactor: 1.0,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            4),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
+                                                    textScaleFactor: 1.0,
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            4,
+                                                        color: Colors.white
+                                                            .withOpacity(0.5)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                              SizedBox(
+                                height: 50,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ])),
+          ],
         ),
-      ],
+      ),
     );
-    // return Scaffold(
-    //     backgroundColor: Colors.transparent,
-    //     body: Stack(
-    //       children: [
-    //         Center(
-    //           child: ClipRect(
-    //             child: BackdropFilter(
-    //               filter: ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0),
-    //               child: Container(
-    //                 width: double.infinity,
-    //                 height: double.infinity,
-    //                 decoration: new BoxDecoration(
-    //                     color: Colors.black54.withOpacity(0.5)),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //         Container(
-    //           width: double.infinity,
-    //           child: Column(
-    //             crossAxisAlignment: CrossAxisAlignment.center,
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: [
-    //               CachedNetworkImage(
-    //                 imageUrl: episodeObject.episodeObject['image'] == null
-    //                     ? episodeObject.episodeObject['podcast_image']
-    //                     : episodeObject.episodeObject['image'],
-    //                 imageBuilder: (context, imageProvider) {
-    //                   return Container(
-    //                     decoration: BoxDecoration(
-    //                         borderRadius: BorderRadius.circular(10),
-    //                         image: DecorationImage(
-    //                             image: imageProvider, fit: BoxFit.cover)),
-    //                     width: MediaQuery.of(context).size.width / 2,
-    //                     height: MediaQuery.of(context).size.width / 2,
-    //                   );
-    //                 },
-    //               ),
-    //             ],
-    //           ),
-    //         )
-    //       ],
-    //     ));
-
-//     The latest Player UI
-//
-//     return Scaffold(
-//       body: Stack(children: [
-//         Container(
-//           height: MediaQuery.of(context).size.height,
-//           decoration: BoxDecoration(
-//               // color:  Color(dominantColor == null ? 0xff3a3a3a : dominantColor), ),
-//               gradient: LinearGradient(colors: [
-//             Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
-//             Colors.transparent
-//           ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-//           child: episodeObject == null
-//               ? Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 10),
-//                   child: Shimmer.fromColors(
-//                     baseColor: themeProvider.isLightTheme == false
-//                         ? kPrimaryColor
-//                         : Colors.white,
-//                     highlightColor: themeProvider.isLightTheme == false
-//                         ? Color(0xff3a3a3a)
-//                         : Colors.white,
-//                   ))
-//               : Column(
-//                   children: [
-//                     Padding(
-//                       padding: EdgeInsets.fromLTRB(25, 40, 25, 30),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.start,
-//                         children: [
-//                           SizedBox(height: 15),
-//                           GestureDetector(
-//                             onTap: () {
-//                               print(episodeObject.id);
-//                               print(
-//                                   episodeObject.episodeObject['podcast_image']);
-//                               if (episodeObject.id != null)
-//                                 Navigator.push(context,
-//                                     MaterialPageRoute(builder: (context) {
-//                                   return EpisodeView(
-//                                     episodeId: episodeObject.id,
-//                                   );
-//                                 }));
-//                             },
-//                             child: Container(
-//                                 margin: EdgeInsets.only(bottom: 30),
-//                                 width: 200,
-//                                 height: 200,
-//                                 child: CachedNetworkImage(
-//                                   imageBuilder: (context, imageProvider) {
-//                                     return Container(
-//                                       decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(10),
-//                                         image: DecorationImage(
-//                                             image: imageProvider,
-//                                             fit: BoxFit.cover),
-//                                       ),
-//                                       height: MediaQuery.of(context).size.width,
-//                                       width: MediaQuery.of(context).size.width,
-//                                     );
-//                                   },
-//                                   imageUrl: episodeObject
-//                                               .episodeObject['image'] ==
-//                                           null
-//                                       ? episodeObject
-//                                           .episodeObject['podcast_image']
-//                                       : episodeObject.episodeObject['image'],
-//                                   memCacheHeight: MediaQuery.of(context)
-//                                       .size
-//                                       .height
-//                                       .floor(),
-//                                   errorWidget: (context, url, error) =>
-//                                       Icon(Icons.error),
-//                                 )),
-//                           ),
-//                           SizedBox(height: 1),
-//                           Padding(
-//                             padding: const EdgeInsets.all(8.0),
-//                             child: Text(
-//                               '${episodeObject.episodeName}',
-//                               textAlign: TextAlign.center,
-//                               maxLines: 2,
-//                               overflow: TextOverflow.ellipsis,
-//                               style: TextStyle(
-//                                 fontSize: 16,
-//                               ),
-//                             ),
-//                           ),
-//                           Padding(
-//                             padding: const EdgeInsets.all(8.0),
-//                             child: Text(
-//                               '${episodeObject.author}',
-//                               textAlign: TextAlign.center,
-//                               style: TextStyle(
-//                                 fontSize: 16,
-//                               ),
-//                             ),
-//                           ),
-//                           SizedBox(height: 10),
-//                           Padding(
-//                             padding: const EdgeInsets.symmetric(vertical: 5),
-//                             child: episodeObject.audioPlayer
-//                                 .builderRealtimePlayingInfos(
-//                               builder: (context, infos) {
-//                                 if (infos == null) {
-//                                   return SizedBox(
-//                                     height: 0,
-//                                   );
-//                                 } else {
-//                                   return Seekbar(
-//                                     currentPosition: infos.currentPosition,
-//                                     duration: infos.duration,
-//                                     episodeName: episodeObject.episodeName,
-//                                     seekTo: (to) {
-//                                       episodeObject.audioPlayer.seek(to);
-//                                     },
-//                                   );
-//                                 }
-//                               },
-//                             ),
-//                           ),
-//                           SizedBox(height: 5),
-//                           Padding(
-//                             padding: const EdgeInsets.symmetric(vertical: 5),
-//                             child: Row(
-//                               crossAxisAlignment: CrossAxisAlignment.center,
-//                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                               children: <Widget>[
-//                                 IconButton(
-//                                   icon: Icon(
-//                                     Icons.replay_10,
-//                                     //  color: Colors.white,
-//                                     size: 40,
-//                                   ),
-//                                   onPressed: () {
-//                                     episodeObject.audioPlayer
-//                                         .seekBy(Duration(seconds: -10));
-//                                   },
-//                                 ),
-//                                 CircleAvatar(
-//                                   radius: 40,
-//                                   // foregroundColor: Colors.white,
-//                                   // backgroundColor: kSecondaryColor,
-//                                   backgroundColor: Colors.transparent,
-//                                   child: episodeObject.audioPlayer
-//                                       .builderRealtimePlayingInfos(
-//                                           builder: (context, infos) {
-//                                     if (infos == null) {
-//                                       return SpinKitPulse(
-//                                         color: Colors.white,
-//                                       );
-//                                     } else {
-//                                       if (infos.isBuffering == true) {
-//                                         return SpinKitCircle(
-//                                           size: 15,
-//                                           color: Colors.white,
-//                                         );
-//                                       } else {
-//                                         if (infos.isPlaying == true) {
-//                                           return IconButton(
-//                                             icon: Icon(
-//                                               Icons.pause,
-//                                               size: 40,
-//                                               color:
-//                                                   themeProvider.isLightTheme ==
-//                                                           false
-//                                                       ? Colors.white
-//                                                       : kPrimaryColor,
-//                                               // color:
-//                                               //     Colors.black,
-//                                             ),
-//                                             onPressed: () {
-//                                               episodeObject.pause();
-//                                               setState(() {
-//                                                 playerState =
-//                                                     PlayerState.paused;
-//                                               });
-//                                             },
-//                                           );
-//                                         } else {
-//                                           return IconButton(
-//                                             icon: Icon(
-//                                               Icons.play_arrow,
-//                                               size: 40, // color:
-//                                               color:
-//                                                   themeProvider.isLightTheme ==
-//                                                           false
-//                                                       ? Colors.white
-//                                                       : kPrimaryColor,
-//                                               //     Colors.black,
-//                                             ),
-//                                             onPressed: () {
-// //                                    play(url);
-//                                               episodeObject.resume();
-//                                               setState(() {
-//                                                 playerState =
-//                                                     PlayerState.playing;
-//                                               });
-//                                             },
-//                                           );
-//                                         }
-//                                       }
-//                                     }
-//                                   }),
-//                                 ),
-//                                 IconButton(
-//                                   icon: Icon(
-//                                     Icons.forward_10,
-//                                     //  color: Colors.white,
-//                                     size: 40,
-//                                   ),
-//                                   onPressed: () {
-//                                     episodeObject.audioPlayer.seekBy(
-//                                       Duration(seconds: 10),
-//                                     );
-//                                   },
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                           SizedBox(height: 30),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Container(
-//                                 width: 35,
-//                                 height: 35,
-//                                 decoration: new BoxDecoration(
-//                                   // color: Colors.white,
-//                                   border: Border.all(
-//                                     color: themeProvider.isLightTheme == false
-//                                         ? Colors.white
-//                                         : kPrimaryColor,
-//                                   ),
-//                                   shape: BoxShape.circle,
-//                                 ),
-//                                 child: IconButton(
-//                                   iconSize: 18,
-//                                   icon: Icon(
-//                                     Icons.bolt,
-//                                     //     color: Colors.white,
-//                                   ),
-//                                   onPressed: () {
-//                                     showDialog(
-//                                         context: context,
-//                                         builder: (context) {
-//                                           return Dialog(
-//                                             shape: RoundedRectangleBorder(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(30),
-//                                             ),
-//                                             child: Container(
-//                                               decoration: BoxDecoration(
-//                                                 color: kSecondaryColor,
-//                                                 borderRadius:
-//                                                     BorderRadius.circular(10),
-//                                               ),
-//                                               height: 260,
-//                                               child: Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.symmetric(
-//                                                         horizontal: 15,
-//                                                         vertical: 10),
-//                                                 child: Column(
-//                                                   mainAxisAlignment:
-//                                                       MainAxisAlignment
-//                                                           .spaceBetween,
-//                                                   crossAxisAlignment:
-//                                                       CrossAxisAlignment.start,
-//                                                   children: [
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "0.25X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(0.5);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "0.5X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(1.0);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "1X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(1.5);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "1.5X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(2.0);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "2X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                   ],
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                           );
-//                                         });
-//                                   },
-//                                 ),
-//                               ),
-//                               episodeObject.episodeObject['permlink'] == null
-//                                   ? SizedBox(
-//                                       width: 50,
-//                                     )
-//                                   : Container(
-//                                       child: Row(
-//                                         children: [
-//                                           InkWell(
-//                                             onTap: () async {
-//                                               if (prefs.getString(
-//                                                       'HiveUserName') !=
-//                                                   null) {
-//                                                 setState(() {
-//                                                   episodeObject.episodeObject[
-//                                                       'isLoading'] = true;
-//                                                 });
-//                                                 double _value = 50.0;
-//                                                 showDialog(
-//                                                     context: context,
-//                                                     builder: (context) {
-//                                                       return Dialog(
-//                                                           backgroundColor: Colors
-//                                                               .transparent,
-//                                                           child: UpvoteEpisode(
-//                                                               permlink: episodeObject
-//                                                                       .episodeObject[
-//                                                                   'permlink'],
-//                                                               episode_id:
-//                                                                   episodeObject
-//                                                                           .episodeObject[
-//                                                                       'id']));
-//                                                     }).then((value) async {
-//                                                   print(value);
-//                                                 });
-//                                                 setState(() {
-//                                                   episodeObject.episodeObject[
-//                                                           'ifVoted'] =
-//                                                       !episodeObject
-//                                                               .episodeObject[
-//                                                           'ifVoted'];
-//                                                 });
-//                                                 setState(() {
-//                                                   episodeObject.episodeObject[
-//                                                       'isLoading'] = false;
-//                                                 });
-//                                               } else {
-//                                                 showBarModalBottomSheet(
-//                                                     context: context,
-//                                                     builder: (context) {
-//                                                       return HiveDetails();
-//                                                     });
-//                                               }
-//                                             },
-//                                             child: Container(
-//                                               decoration: episodeObject
-//                                                               .episodeObject[
-//                                                           'ifVoted'] ==
-//                                                       true
-//                                                   ? BoxDecoration(
-//                                                       gradient: LinearGradient(
-//                                                           colors: [
-//                                                             Color(0xff5bc3ef),
-//                                                             Color(0xff5d5da8)
-//                                                           ]),
-//                                                       borderRadius:
-//                                                           BorderRadius.circular(
-//                                                               30))
-//                                                   : BoxDecoration(
-//                                                       border: Border.all(
-//                                                           color:
-//                                                               kSecondaryColor),
-//                                                       borderRadius:
-//                                                           BorderRadius.circular(
-//                                                               30)),
-//                                               child: Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.symmetric(
-//                                                         vertical: 5,
-//                                                         horizontal: 5),
-//                                                 child: Row(
-//                                                   children: [
-//                                                     episodeObject.episodeObject[
-//                                                                 'isLoading'] ==
-//                                                             true
-//                                                         ? Container(
-//                                                             height: 17,
-//                                                             width: 18,
-//                                                             child: SpinKitPulse(
-//                                                               color:
-//                                                                   Colors.blue,
-//                                                             ),
-//                                                           )
-//                                                         : Icon(
-//                                                             FontAwesomeIcons
-//                                                                 .chevronCircleUp,
-//                                                             size: 15,
-//                                                             // color:
-//                                                             //     Color(0xffe8e8e8),
-//                                                           ),
-//                                                     Padding(
-//                                                       padding: const EdgeInsets
-//                                                               .symmetric(
-//                                                           horizontal: 8),
-//                                                       child: Text(
-//                                                         episodeObject
-//                                                             .episodeObject[
-//                                                                 'votes']
-//                                                             .toString(),
-//                                                         textScaleFactor: 1.0,
-//                                                         style: TextStyle(
-//                                                             fontSize: 15
-//                                                             // color:
-//                                                             //     Color(0xffe8e8e8)
-//                                                             ),
-//                                                       ),
-//                                                     ),
-//                                                     Container(
-//                                                       height: 15,
-//                                                       width: 10,
-//                                                       decoration: BoxDecoration(
-//                                                         border: Border(
-//                                                             left: BorderSide(
-//                                                           color: themeProvider
-//                                                                       .isLightTheme ==
-//                                                                   false
-//                                                               ? Colors.white
-//                                                               : kPrimaryColor,
-//                                                         )),
-//                                                       ),
-//                                                     ),
-//                                                     Padding(
-//                                                       padding:
-//                                                           const EdgeInsets.only(
-//                                                               right: 4),
-//                                                       child: Text(
-//                                                         '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
-//                                                         textScaleFactor: 1.0,
-//                                                         style: TextStyle(
-//                                                           fontSize: 15,
-//
-//                                                           // color:
-//                                                           //     Color(0xffe8e8e8)
-//                                                         ),
-//                                                       ),
-//                                                     )
-//                                                   ],
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                           ),
-//                                         ],
-//                                       ),
-//                                     ),
-//                               // GestureDetector(
-//                               //   onTap: () {
-//                               //     startDownload();
-//                               //     setState(() {
-//                               //       _loading = !_loading;
-//                               //       _updateProgress();
-//                               //     });
-//                               //   },
-//                               //   child: Container(
-//                               //       padding:
-//                               //       EdgeInsets.all(15.0),
-//                               //       child: _loading
-//                               //           ? Column(
-//                               //         mainAxisAlignment:
-//                               //         MainAxisAlignment
-//                               //             .center,
-//                               //         children: <Widget>[
-//                               //           CircularProgressIndicator(
-//                               //             value:
-//                               //             _progressValue,
-//                               //           ),
-//                               //           Text(
-//                               //               '${(_progressValue * 100).round()}%'),
-//                               //         ],
-//                               //       )
-//                               //           : Icon(
-//                               //           Icons
-//                               //               .arrow_circle_down,
-//                               //           color: isDownloading ==
-//                               //               true
-//                               //               ? Color(
-//                               //               0xff5d5da8)
-//                               //               : Color(
-//                               //               0xff5bc3ef))),
-//                               // )
-//                               Container(
-//                                 width: 35,
-//                                 height: 35,
-//                                 decoration: new BoxDecoration(
-//                                   // color: Colors.white,
-//                                   border: Border.all(
-//                                     color: themeProvider.isLightTheme == false
-//                                         ? Colors.white
-//                                         : kPrimaryColor,
-//                                   ),
-//                                   shape: BoxShape.circle,
-//                                 ),
-//                                 child: IconButton(
-//                                   iconSize: 18,
-//                                   icon: Icon(
-//                                     Icons.bolt,
-//                                     //     color: Colors.white,
-//                                   ),
-//                                   onPressed: () {
-//                                     showDialog(
-//                                         context: context,
-//                                         builder: (context) {
-//                                           return Dialog(
-//                                             shape: RoundedRectangleBorder(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(30),
-//                                             ),
-//                                             child: Container(
-//                                               decoration: BoxDecoration(
-//                                                 color: kSecondaryColor,
-//                                                 borderRadius:
-//                                                     BorderRadius.circular(10),
-//                                               ),
-//                                               height: 260,
-//                                               child: Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.symmetric(
-//                                                         horizontal: 15,
-//                                                         vertical: 10),
-//                                                 child: Column(
-//                                                   mainAxisAlignment:
-//                                                       MainAxisAlignment
-//                                                           .spaceBetween,
-//                                                   crossAxisAlignment:
-//                                                       CrossAxisAlignment.start,
-//                                                   children: [
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "0.25X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(0.5);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "0.5X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(1.0);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "1X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(1.5);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "1.5X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                     FlatButton(
-//                                                       onPressed: () {
-//                                                         // episodeObject
-//                                                         //     .audioPlayer
-//                                                         //     .setPlaySpeed(2.0);
-//                                                         Navigator.pop(context);
-//                                                       },
-//                                                       child: Row(
-//                                                         children: [
-//                                                           Text(
-//                                                             "2X",
-//                                                             textScaleFactor:
-//                                                                 0.75,
-//                                                             style: TextStyle(
-//                                                                 color: Colors
-//                                                                     .white
-//                                                                     .withOpacity(
-//                                                                         0.7)),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                   ],
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                           );
-//                                         });
-//                                   },
-//                                 ),
-//                               ),
-//                             ],
-//                           )
-//                         ],
-//                       ),
-//                     ),
-//                     // for (var v in comments)
-//                   ],
-//                 ),
-//         ),
-//       ]),
-//       // bottomSheet: GestureDetector(
-//       //   onTap: () async {
-//       //     print(episodeObject.episodeObject['comments']);
-//       //     // if (pref.getString('HiveUserName') = null) {
-//       //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-//       //       return Comments(
-//       //         episodeObject: episodeObject.episodeObject,
-//       //       );
-//       //     }));
-//       //   },
-//         child: Container(
-//           decoration: BoxDecoration(
-//               // color: Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
-//               ), //color: Colors.white,
-//           child: Padding(
-//             padding: const EdgeInsets.all(5.0),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               // mainAxisAlignment: MainAxisAlignment.start,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 Row(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Padding(
-//                       padding: const EdgeInsets.only(left: 50),
-//                       child: Icon(
-//                         Icons.mode_comment_outlined,
-//                         size: 30,
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       width: 5,
-//                     ),
-//                     Text(
-//                       '${episodeObject.episodeObject['comments_count'].toString()}',
-//                       textScaleFactor: 1.0,
-//                     ),
-//                   ],
-//                 ),
-//       //           Padding(
-//       //               padding: const EdgeInsets.only(right: 50, bottom: 20),
-//       //               child: IconButton(
-//       //                 icon: Icon(
-//       //                   Icons.keyboard_arrow_up_outlined,
-//       //                   size: 50,
-//       //                   //     color: Colors.white,
-//       //                 ),
-//       //                 onPressed: () {},
-//       //               ))
-//       //         ],
-//       //       ),
-//       //     ),
-//       //   ),
-//       // ),
-//     );
   }
 }
-
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           GestureDetector(
-//             onTap: (){
-//               print(episodeObject.id);
-//               if( episodeObject.id!= null)
-//                 Navigator.push(context,
-//                     MaterialPageRoute(builder: (context) {
-//                       return EpisodeView(
-//                         episodeId: episodeObject.id,
-//                       );
-//                     }));
-//
-//             },
-//             child: Container(
-//               child: Column(
-//                 children: [
-//                   Expanded(
-//                   child:  CachedNetworkImage(
-//                   imageBuilder:
-//                   (context, imageProvider) {
-//             return Container(
-//             decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(10),
-//             image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-//             ),
-//             height: MediaQuery.of(context).size.width,
-//             width: MediaQuery.of(context).size.width,
-//             );
-//             },
-//               imageUrl: episodeObject.episodeObject['image'] == null
-//                   ? episodeObject.episodeObject['podcast_image']
-//                   : episodeObject.episodeObject['image'],
-//
-//
-//               memCacheHeight: MediaQuery.of(context)
-//                   .size
-//                   .height
-//                   .floor(),
-//
-//               errorWidget: (context, url, error) =>
-//                   Icon(Icons.error),
-//             ),),
-//
-//
-//
-//                   Expanded(
-//                     child: Container(),
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//           SafeArea(
-//             child: DraggableScrollableSheet(
-//                 initialChildSize: 0.5,
-//                 minChildSize: 0.5,
-//                 maxChildSize: 1.0,
-//                 builder: (BuildContext context, ScrollController controller) {
-//                   return Container(
-//                     child: Scaffold(
-//                       resizeToAvoidBottomInset: true,
-//                       body: Stack(
-//                         children: [
-//                           Padding(
-//                             padding: const EdgeInsets.only(top: 20),
-//                             child: ListView(
-//                               controller: controller,
-//                               children: [
-//                                 SizedBox(
-//                                   height: SizeConfig.screenHeight / 5.5,
-//                                 ),
-//                                 ListTile(
-//                                   onTap: () {
-//                                     showModalBottomSheet(
-//                                         //   backgroundColor: kSecondaryColor,
-//                                         context: context,
-//                                         builder: (context) {
-//                                           return Comments(
-//                                             episodeObject:
-//                                                 episodeObject.episodeObject,
-//                                           );
-//                                         });
-//                                   },
-//                                   leading: CircleAvatar(
-//                                     backgroundImage: CachedNetworkImageProvider(
-//                                         prefs.getString('displayPicture') ==
-//                                                 null
-//                                             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-//                                             : prefs
-//                                                 .getString('displayPicture')),
-//                                   ),
-//                                   title: Text(
-//                                     "Add a public comment",
-//                                     textScaleFactor: 0.75,
-//                                     style: TextStyle(),
-//                                   ),
-//                                 ),
-//                                 for (var v in comments)
-//                                   Column(
-//                                     children: [
-//                                       ListTile(
-//                                         leading: CircleAvatar(
-//                                           backgroundImage:
-//                                               CachedNetworkImageProvider(v[
-//                                                           'user_image'] ==
-//                                                       null
-//                                                   ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-//                                                   : v['user_image']),
-//                                         ),
-//                                         title: Text(
-//                                           '${v['author']}',
-//                                           textScaleFactor: 0.75,
-//                                         ),
-//                                         subtitle: Column(
-//                                           crossAxisAlignment:
-//                                               CrossAxisAlignment.start,
-//                                           children: [
-//                                             Padding(
-//                                               padding: const EdgeInsets.only(
-//                                                   bottom: 5),
-//                                               child: Text(
-//                                                 "${v['text']}",
-//                                                 textScaleFactor: 0.75,
-//                                               ),
-//                                             ),
-//                                             Row(
-//                                               children: [
-//                                                 GestureDetector(
-//                                                   onTap: () {
-//                                                     showModalBottomSheet(
-//                                                         context: context,
-//                                                         builder: (context) {
-//                                                           return ListTile(
-//                                                             leading: InkWell(
-//                                                               onTap: () {
-//                                                                 Navigator.pop(
-//                                                                     context);
-//                                                               },
-//                                                               child: Icon(
-//                                                                 Icons.close,
-//                                                               ),
-//                                                             ),
-//                                                             title: Column(
-//                                                               mainAxisAlignment:
-//                                                                   MainAxisAlignment
-//                                                                       .start,
-//                                                               children: [
-//                                                                 TextField(
-//                                                                     controller:
-//                                                                         _replyController,
-//                                                                     autofocus:
-//                                                                         true,
-//                                                                     maxLines:
-//                                                                         10,
-//                                                                     minLines:
-//                                                                         1),
-//                                                               ],
-//                                                             ),
-//                                                             trailing: InkWell(
-//                                                               onTap: () {
-//                                                                 postReply(
-//                                                                     v['id'],
-//                                                                     _replyController
-//                                                                         .text,
-//                                                                     episodeObject
-//                                                                         .episodeObject);
-//                                                                 _commentsController
-//                                                                     .clear();
-//                                                               },
-//                                                               child: Icon(
-//                                                                 Icons.send,
-//                                                               ),
-//                                                             ),
-//                                                           );
-//                                                         });
-//                                                   },
-//                                                   child: Text(
-//                                                     "Reply",
-//                                                     textScaleFactor: 0.75,
-// // style:TextStyle(color:Colors.blue)
-//                                                   ),
-//                                                 )
-//                                               ],
-//                                             )
-//                                           ],
-//                                         ),
-//                                         trailing: IconButton(
-//                                           onPressed: () {
-//                                             showDialog(
-//                                                 context: context,
-//                                                 builder: (context) {
-//                                                   return Dialog(
-//                                                       backgroundColor:
-//                                                           Colors.transparent,
-//                                                       child: UpvoteComment(
-//                                                         comment_id:
-//                                                             v['id'].toString(),
-//                                                       ));
-//                                                 }).then((value) async {
-//                                               print(value);
-//                                             });
-//                                           },
-//                                           icon: Icon(
-//                                             FontAwesomeIcons.chevronCircleUp,
-//                                           ),
-//                                         ),
-//                                         isThreeLine: true,
-//                                       ),
-//                                       v['comments'] == null
-//                                           ? SizedBox(
-//                                               height: 0,
-//                                             )
-//                                           : ExpansionTile(
-//                                               // backgroundColor: Colors.transparent,
-//                                               trailing: SizedBox(
-//                                                 width: 0,
-//                                               ),
-//                                               title: Align(
-//                                                 alignment: Alignment.centerLeft,
-//                                                 child: Text(
-//                                                   "View replies",
-//                                                   textScaleFactor: 0.75,
-//                                                   style: TextStyle(
-//                                                     fontSize: SizeConfig
-//                                                             .safeBlockHorizontal *
-//                                                         3,
-//                                                     // color: Colors.grey,
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                               children: <Widget>[
-//                                                 for (var c in v['comments'])
-//                                                   Align(
-//                                                     alignment:
-//                                                         Alignment.centerLeft,
-//                                                     child: Padding(
-//                                                       padding:
-//                                                           const EdgeInsets.only(
-//                                                               bottom: 10),
-//                                                       child: Container(
-//                                                         child: Row(
-//                                                           children: <Widget>[
-//                                                             CircleAvatar(
-//                                                               radius: 20,
-//                                                               backgroundImage: v[
-//                                                                           'user_image'] ==
-//                                                                       null
-//                                                                   ? AssetImage(
-//                                                                       'assets/images/person.png')
-//                                                                   : NetworkImage(
-//                                                                       v['user_image']),
-//                                                             ),
-//                                                             SizedBox(width: 10),
-//                                                             Expanded(
-//                                                               child: Row(
-//                                                                 mainAxisAlignment:
-//                                                                     MainAxisAlignment
-//                                                                         .spaceBetween,
-//                                                                 children: [
-//                                                                   Column(
-//                                                                     crossAxisAlignment:
-//                                                                         CrossAxisAlignment
-//                                                                             .start,
-//                                                                     children: <
-//                                                                         Widget>[
-//                                                                       Text(
-//                                                                         '${c['author']}',
-//                                                                         textScaleFactor:
-//                                                                             1.0,
-//                                                                         style: TextStyle(
-//                                                                             fontWeight:
-//                                                                                 FontWeight.w600),
-//                                                                       ),
-//                                                                       Text(
-//                                                                         '${c['text']}',
-//                                                                         textScaleFactor:
-//                                                                             1.0,
-//                                                                         style: TextStyle(
-//                                                                             fontWeight:
-//                                                                                 FontWeight.normal),
-//                                                                       ),
-//                                                                       Row(
-//                                                                         children: <
-//                                                                             Widget>[
-//                                                                           GestureDetector(
-//                                                                             onTap:
-//                                                                                 () {
-//                                                                               showModalBottomSheet(
-//                                                                                   context: context,
-//                                                                                   builder: (context) {
-//                                                                                     return ListTile(
-//                                                                                       leading: InkWell(
-//                                                                                         onTap: () {
-//                                                                                           Navigator.pop(context);
-//                                                                                         },
-//                                                                                         child: Icon(
-//                                                                                           Icons.close,
-//                                                                                         ),
-//                                                                                       ),
-//                                                                                       title: Column(
-//                                                                                         mainAxisAlignment: MainAxisAlignment.start,
-//                                                                                         children: [
-//                                                                                           TextField(controller: _replyController, autofocus: true, maxLines: 10, minLines: 1),
-//                                                                                         ],
-//                                                                                       ),
-//                                                                                       trailing: InkWell(
-//                                                                                         onTap: () {
-//                                                                                           postReply(c['id'], _replyController.text, episodeObject.episodeObject);
-//                                                                                           _commentsController.clear();
-//                                                                                           //  postComment;
-//                                                                                         },
-//                                                                                         child: Icon(
-//                                                                                           Icons.send,
-//                                                                                         ),
-//                                                                                       ),
-//                                                                                     );
-//                                                                                   });
-//                                                                             },
-//                                                                             child:
-//                                                                                 Text(
-//                                                                               "Reply",
-//                                                                               textScaleFactor: 1.0,
-//                                                                             ),
-//                                                                           )
-//                                                                         ],
-//                                                                       )
-//                                                                     ],
-//                                                                   ),
-//                                                                   IconButton(
-//                                                                     onPressed:
-//                                                                         () {
-//                                                                       showDialog(
-//                                                                           context:
-//                                                                               context,
-//                                                                           builder:
-//                                                                               (context) {
-//                                                                             return Dialog(
-//                                                                                 backgroundColor: Colors.transparent,
-//                                                                                 child: UpvoteComment(
-//                                                                                   comment_id: v['id'].toString(),
-//                                                                                 ));
-//                                                                           }).then((value) async {
-//                                                                         print(
-//                                                                             value);
-//                                                                       });
-//                                                                     },
-//                                                                     icon: Icon(
-//                                                                       FontAwesomeIcons
-//                                                                           .chevronCircleUp,
-//                                                                     ),
-//                                                                   )
-//                                                                 ],
-//                                                               ),
-//                                                             ),
-//                                                           ],
-//                                                         ),
-//                                                       ),
-//                                                     ),
-//                                                   )
-//                                               ],
-//                                             )
-//                                     ],
-//                                   )
-//                               ],
-//                             ),
-//                           ),
-//                           Padding(
-//                             padding: const EdgeInsets.all(8.0),
-//                             child: Column(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Container(
-//                                   height: SizeConfig.screenHeight / 5,
-//                                   width: double.infinity,
-//                                   //color: Colors.white,
-//                                   child: Container(
-//                                     // color: kSecondaryColor,
-//                                     child: Column(
-//                                         mainAxisAlignment:
-//                                             MainAxisAlignment.start,
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         children: <Widget>[
-//                                           Padding(
-//                                             padding: const EdgeInsets.symmetric(
-//                                                 vertical: 5),
-//                                             child: episodeObject.audioPlayer
-//                                                 .builderRealtimePlayingInfos(
-//                                               builder: (context, infos) {
-//                                                 if (infos == null) {
-//                                                   return SizedBox(
-//                                                     height: 0,
-//                                                   );
-//                                                 } else {
-//                                                   return Seekbar(
-//                                                     currentPosition:
-//                                                         infos.currentPosition,
-//                                                     duration: infos.duration,
-//                                                     episodeName: episodeObject
-//                                                         .episodeName,
-//                                                     seekTo: (to) {
-//                                                       episodeObject.audioPlayer
-//                                                           .seek(to);
-//                                                     },
-//                                                   );
-//                                                 }
-//                                               },
-//                                             ),
-//                                           ),
-//                                           Padding(
-//                                             padding: const EdgeInsets.symmetric(
-//                                                 vertical: 5),
-//                                             child: Row(
-//                                               crossAxisAlignment:
-//                                                   CrossAxisAlignment.center,
-//                                               mainAxisAlignment:
-//                                                   MainAxisAlignment.spaceEvenly,
-//                                               children: <Widget>[
-//                                                 CircleAvatar(
-//                                                   radius: 20,
-//                                                   foregroundColor: Colors.white,
-//                                                   backgroundColor:
-//                                                       kSecondaryColor,
-//                                                   //      backgroundColor: Colors.white,
-//                                                   child: IconButton(
-//                                                     icon: Icon(
-//                                                       FontAwesomeIcons.bolt,
-//                                                       size: 16,
-//                                                       //  color: Colors.black,
-//                                                     ),
-//                                                     onPressed: () {
-//                                                       showDialog(
-//                                                           context: context,
-//                                                           builder: (context) {
-//                                                             return Dialog(
-//                                                               shape:
-//                                                                   RoundedRectangleBorder(
-//                                                                 borderRadius:
-//                                                                     BorderRadius
-//                                                                         .circular(
-//                                                                             30),
-//                                                               ),
-//                                                               child: Container(
-//                                                                 decoration:
-//                                                                     BoxDecoration(
-//                                                                   color:
-//                                                                       kSecondaryColor,
-//                                                                   borderRadius:
-//                                                                       BorderRadius
-//                                                                           .circular(
-//                                                                               10),
-//                                                                 ),
-//                                                                 height: 260,
-//                                                                 child: Padding(
-//                                                                   padding: const EdgeInsets
-//                                                                           .symmetric(
-//                                                                       horizontal:
-//                                                                           15,
-//                                                                       vertical:
-//                                                                           10),
-//                                                                   child: Column(
-//                                                                     mainAxisAlignment:
-//                                                                         MainAxisAlignment
-//                                                                             .spaceBetween,
-//                                                                     crossAxisAlignment:
-//                                                                         CrossAxisAlignment
-//                                                                             .start,
-//                                                                     children: [
-//                                                                       FlatButton(
-//                                                                         onPressed:
-//                                                                             () {
-//                                                                           // episodeObject
-//                                                                           //     .audioPlayer
-//                                                                           //     .setPlaySpeed(0.25);
-//                                                                           Navigator.pop(
-//                                                                               context);
-//                                                                         },
-//                                                                         child:
-//                                                                             Row(
-//                                                                           children: [
-//                                                                             Text(
-//                                                                               "0.25X",
-//                                                                               textScaleFactor: 0.75,
-//                                                                               style: TextStyle(color: Colors.white.withOpacity(0.7)),
-//                                                                             )
-//                                                                           ],
-//                                                                         ),
-//                                                                       ),
-//                                                                       FlatButton(
-//                                                                         onPressed:
-//                                                                             () {
-//                                                                           // episodeObject
-//                                                                           //     .audioPlayer
-//                                                                           //     .setPlaySpeed(0.5);
-//                                                                           Navigator.pop(
-//                                                                               context);
-//                                                                         },
-//                                                                         child:
-//                                                                             Row(
-//                                                                           children: [
-//                                                                             Text(
-//                                                                               "0.5X",
-//                                                                               textScaleFactor: 0.75,
-//                                                                               style: TextStyle(color: Colors.white.withOpacity(0.7)),
-//                                                                             )
-//                                                                           ],
-//                                                                         ),
-//                                                                       ),
-//                                                                       FlatButton(
-//                                                                         onPressed:
-//                                                                             () {
-//                                                                           // episodeObject
-//                                                                           //     .audioPlayer
-//                                                                           //     .setPlaySpeed(1.0);
-//                                                                           Navigator.pop(
-//                                                                               context);
-//                                                                         },
-//                                                                         child:
-//                                                                             Row(
-//                                                                           children: [
-//                                                                             Text(
-//                                                                               "1X",
-//                                                                               textScaleFactor: 0.75,
-//                                                                               style: TextStyle(color: Colors.white.withOpacity(0.7)),
-//                                                                             )
-//                                                                           ],
-//                                                                         ),
-//                                                                       ),
-//                                                                       FlatButton(
-//                                                                         onPressed:
-//                                                                             () {
-//                                                                           // episodeObject
-//                                                                           //     .audioPlayer
-//                                                                           //     .setPlaySpeed(1.5);
-//                                                                           Navigator.pop(
-//                                                                               context);
-//                                                                         },
-//                                                                         child:
-//                                                                             Row(
-//                                                                           children: [
-//                                                                             Text(
-//                                                                               "1.5X",
-//                                                                               textScaleFactor: 0.75,
-//                                                                               style: TextStyle(color: Colors.white.withOpacity(0.7)),
-//                                                                             )
-//                                                                           ],
-//                                                                         ),
-//                                                                       ),
-//                                                                       FlatButton(
-//                                                                         onPressed:
-//                                                                             () {
-//                                                                           // episodeObject
-//                                                                           //     .audioPlayer
-//                                                                           //     .setPlaySpeed(2.0);
-//                                                                           Navigator.pop(
-//                                                                               context);
-//                                                                         },
-//                                                                         child:
-//                                                                             Row(
-//                                                                           children: [
-//                                                                             Text(
-//                                                                               "2X",
-//                                                                               textScaleFactor: 0.75,
-//                                                                               style: TextStyle(color: Colors.white.withOpacity(0.7)),
-//                                                                             )
-//                                                                           ],
-//                                                                         ),
-//                                                                       ),
-//                                                                     ],
-//                                                                   ),
-//                                                                 ),
-//                                                               ),
-//                                                             );
-//                                                           });
-//                                                     },
-//                                                   ),
-//                                                 ),
-//                                                 IconButton(
-//                                                   icon: Icon(
-//                                                     Icons.replay_10,
-//                                                     //  color: Colors.white,
-//                                                     size: 20,
-//                                                   ),
-//                                                   onPressed: () {
-//                                                     episodeObject.audioPlayer
-//                                                         .seekBy(Duration(
-//                                                             seconds: -10));
-//                                                   },
-//                                                 ),
-//                                                 CircleAvatar(
-//                                                   radius: 20,
-//                                                   foregroundColor: Colors.white,
-//                                                   backgroundColor:
-//                                                       kSecondaryColor,
-//                                                   //   backgroundColor: Colors.white,
-//                                                   child: episodeObject
-//                                                       .audioPlayer
-//                                                       .builderRealtimePlayingInfos(
-//                                                           builder:
-//                                                               (context, infos) {
-//                                                     if (infos == null) {
-//                                                       return SpinKitPulse(
-//                                                         color: Colors.white,
-//                                                       );
-//                                                     } else {
-//                                                       if (infos.isBuffering ==
-//                                                           true) {
-//                                                         return SpinKitCircle(
-//                                                           size: 16,
-//                                                           color: Colors.white,
-//                                                         );
-//                                                       } else {
-//                                                         if (infos.isPlaying ==
-//                                                             true) {
-//                                                           return IconButton(
-//                                                             icon: Icon(
-//                                                               Icons.pause,
-//                                                               // color:
-//                                                               //     Colors.black,
-//                                                             ),
-//                                                             onPressed: () {
-//                                                               episodeObject
-//                                                                   .pause();
-//                                                               setState(() {
-//                                                                 playerState =
-//                                                                     PlayerState
-//                                                                         .paused;
-//                                                               });
-//                                                             },
-//                                                           );
-//                                                         } else {
-//                                                           return IconButton(
-//                                                             icon: Icon(
-//                                                               Icons.play_arrow,
-//                                                               // color:
-//                                                               //     Colors.black,
-//                                                             ),
-//                                                             onPressed: () {
-// //                                    play(url);
-//                                                               episodeObject
-//                                                                   .resume();
-//                                                               setState(() {
-//                                                                 playerState =
-//                                                                     PlayerState
-//                                                                         .playing;
-//                                                               });
-//                                                             },
-//                                                           );
-//                                                         }
-//                                                       }
-//                                                     }
-//                                                   }),
-//                                                 ),
-//                                                 IconButton(
-//                                                   icon: Icon(
-//                                                     Icons.forward_10,
-//                                                     //  color: Colors.white,
-//                                                     size: 20,
-//                                                   ),
-//                                                   onPressed: () {
-//                                                     episodeObject.audioPlayer
-//                                                         .seekBy(
-//                                                       Duration(seconds: 10),
-//                                                     );
-//                                                   },
-//                                                 ),
-//                                                 // hiveToken == null
-//                                                 //     ? SizedBox(
-//                                                 //         width: 50,
-//                                                 //       )
-//                                                 //     :
-//                                                 CircleAvatar(
-//                                                   radius: 20,
-//                                                   foregroundColor: Colors.white,
-//                                                   backgroundColor:
-//                                                       kSecondaryColor,
-//                                                   // backgroundColor:
-//                                                   //     Color(0xff37a1f7),
-//                                                   child: IconButton(
-//                                                     icon: Center(
-//                                                       child: Icon(
-//                                                         FontAwesomeIcons
-//                                                             .chevronCircleUp,
-//                                                         size: 16,
-//                                                         //     color: Colors.black,
-//                                                       ),
-//                                                     ),
-//                                                     onPressed: () {
-//                                                       Fluttertoast.showToast(
-//                                                           msg: 'Upvote done');
-//                                                       if (episodeObject
-//                                                               .permlink ==
-//                                                           null) {
-//                                                       } else {
-//                                                         showDialog(
-//                                                             context: context,
-//                                                             builder: (context) {
-//                                                               return Dialog(
-//                                                                   backgroundColor:
-//                                                                       Colors
-//                                                                           .transparent,
-//                                                                   child: UpvoteEpisode(
-//                                                                       episode_id:
-//                                                                           episodeObject
-//                                                                               .id,
-//                                                                       permlink:
-//                                                                           episodeObject
-//                                                                               .permlink));
-//                                                             }).then((value) async {
-//                                                           print(value);
-//                                                         });
-//
-//                                                         // upvoteEpisode(
-//                                                         //     episode_id:
-//                                                         //         episodeObject
-//                                                         //             .id,
-//                                                         //     permlink:
-//                                                         //         episodeObject
-//                                                         //             .permlink);
-//                                                       }
-//                                                     },
-//                                                   ),
-//                                                 ),
-//                                               ],
-//                                             ),
-//                                           ),
-//                                         ]),
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   );
-//                 }),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 Widget buildSheet({
   @required num headerHeight,
@@ -3416,228 +1044,271 @@ Widget buildSheet({
   );
 }
 
-class MClipper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    return Rect.fromCircle(
-        center: Offset(size.width / 2, size.height / 2),
-        radius: min(size.width, size.height) / 2);
-  }
+class TrancriptionPlayer extends StatefulWidget {
+  var transcript;
+
+  TrancriptionPlayer({@required this.transcript});
 
   @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) {
-    // TODO: implement shouldReclip
-    return true;
-  }
+  _TrancriptionPlayerState createState() => _TrancriptionPlayerState();
 }
 
-const numberOfItems = 5001;
-const minItemHeight = 20.0;
-const maxItemHeight = 150.0;
-const scrollDuration = Duration(seconds: 2);
+class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
+  // void getTranscription(episode_id) async {
+  //   String url =
+  //       "https://api.aureal.one/public/getTranscription?episode_id=${episode_id}";
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //
+  //   print(url);
+  //   try {
+  //     http.Response response = await http.get(Uri.parse(url));
+  //     print(response.body);
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         transcript = jsonDecode(response.body)['data']['transcription'];
+  //       });
+  //       print(transcript);
+  //       print(transcript.runtimeType);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
-const randomMax = 1 << 32;
+  int currentIndex = 0;
 
-class ScrollablePositionedListPage extends StatefulWidget {
-  const ScrollablePositionedListPage({Key key}) : super(key: key);
+  ItemScrollController itemScrollController;
+  ItemPositionsListener itemPositionsListener;
 
-  @override
-  _ScrollablePositionedListPageState createState() =>
-      _ScrollablePositionedListPageState();
-}
+  PlayerState playerState = PlayerState.playing;
 
-class _ScrollablePositionedListPageState
-    extends State<ScrollablePositionedListPage> {
-  /// Controller to scroll or jump to a particular item.
-  final ItemScrollController itemScrollController = ItemScrollController();
-
-  /// Listener that reports the position of items when the list is scrolled.
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
-  List<double> itemHeights;
-  List<Color> itemColors;
-  bool reversed = false;
-
-  /// The alignment to be used next time the user scrolls or jumps to an item.
-  double alignment = 0;
   @override
   void initState() {
-    super.initState();
-    final heightGenerator = Random(328902348);
-    final colorGenerator = Random(42490823);
+    // getTranscription(widget.episode_id);
+    // TODO: implement initState
 
-    itemHeights = List<double>.generate(
-        numberOfItems,
-        (int _) =>
-            heightGenerator.nextDouble() * (maxItemHeight - minItemHeight) +
-            minItemHeight);
-    itemColors = List<Color>.generate(numberOfItems,
-        (int _) => Color(colorGenerator.nextInt(randomMax)).withOpacity(1));
+    super.initState();
+
+    itemScrollController = ItemScrollController();
+    itemPositionsListener = ItemPositionsListener.create();
+
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+
+    episodeObject.audioPlayer.currentPosition.listen((event) {
+      var currentPositionSeconds = event.inMilliseconds / 1000;
+      if (widget.transcript != null && widget.transcript.length > 0) {
+        // print(event.inMilliseconds / 1000);
+        // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+        // setState(() {
+        if (widget.transcript != null && widget.transcript.length > 0) {
+          var count = (widget.transcript.indexWhere((element) =>
+              element['start_time'] < currentPositionSeconds &&
+              element['end_time'] > currentPositionSeconds));
+          if (count >= 0) {
+            print(count);
+
+            setState(() {
+              currentIndex = count;
+            });
+
+            itemScrollController.scrollTo(
+                index: count,
+                alignment: count < 10 ? 0.0 : 0.3,
+                duration: Duration(milliseconds: 100)
+                // curve: Curves.easeInCirc,
+                );
+          }
+        }
+      }
+    });
   }
 
+  int dominantColor = 0xff222222;
+
   @override
-  Widget build(BuildContext context) => Material(
-        child: OrientationBuilder(
-          builder: (context, orientation) => Column(
-            children: <Widget>[
-              Expanded(
-                child: list(orientation),
-              ),
-              positionsView,
-              Row(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      scrollControlButtons,
-                      const SizedBox(height: 10),
-                      jumpControlButtons,
-                      alignmentControl,
-                    ],
-                  ),
-                ],
-              )
-            ],
+  Widget build(BuildContext context) {
+    print(widget.transcript);
+    var episodeObject = Provider.of<PlayerChange>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        shadowColor: Color(0xff161616),
+        toolbarHeight: MediaQuery.of(context).size.height / 10,
+
+        automaticallyImplyLeading: false,
+        // leading: CachedNetworkImage(
+        //   imageUrl: episodeObject.episodeObject['image'] == null
+        //       ? episodeObject.episodeObject['podcast_image']
+        //       : episodeObject.episodeObject['image'],
+        //   imageBuilder: (context, imageProvider) {
+        //     return Container(
+        //       decoration: BoxDecoration(
+        //           borderRadius: BorderRadius.circular(10),
+        //           image:
+        //               DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+        //       width: MediaQuery.of(context).size.width / 2,
+        //       height: MediaQuery.of(context).size.width / 2,
+        //     );
+        //   },
+        // ),
+        title: ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: CachedNetworkImage(
+            imageUrl: episodeObject.episodeObject['image'] == null
+                ? episodeObject.episodeObject['podcast_image']
+                : episodeObject.episodeObject['image'],
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover)),
+                width: MediaQuery.of(context).size.width / 10,
+                height: MediaQuery.of(context).size.width / 10,
+              );
+            },
+          ),
+          title: Text(
+            '${episodeObject.episodeName}',
+            maxLines: 2,
+            textScaleFactor: 1.0,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+                fontSize: SizeConfig.blockSizeHorizontal * 3,
+                fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            "${episodeObject.episodeObject['podcast_name']}",
           ),
         ),
-      );
-
-  Widget get alignmentControl => Row(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          const Text('Alignment: '),
-          SizedBox(
-            width: 200,
-            child: SliderTheme(
-              data: SliderThemeData(
-                showValueIndicator: ShowValueIndicator.always,
-              ),
-              child: Slider(
-                value: alignment,
-                label: alignment.toStringAsFixed(2),
-                onChanged: (double value) => setState(() => alignment = value),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.close_rounded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ScrollablePositionedList.builder(
+                itemCount: widget.transcript.length,
+                itemBuilder: (context, index) {
+                  // print(itemPositionsListener.itemPositions.value.toString());
+                  if (index <= currentIndex) {
+                    return GestureDetector(
+                      child: Text(
+                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                        style: TextStyle(
+                            height: 1.8,
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                      ),
+                    );
+                  } else {
+                    return GestureDetector(
+                      child: Text(
+                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 7,
+                            fontWeight: FontWeight.w600,
+                            height: 1.8,
+                            color: Colors.white.withOpacity(0.5)),
+                      ),
+                    );
+                  }
+                },
+                itemScrollController: itemScrollController,
+                itemPositionsListener: itemPositionsListener,
               ),
             ),
-          ),
-        ],
-      );
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xff161616),
+                  ),
 
-  Widget list(Orientation orientation) => ScrollablePositionedList.builder(
-        itemCount: numberOfItems,
-        itemBuilder: (context, index) => item(index, orientation),
-        itemScrollController: itemScrollController,
-        itemPositionsListener: itemPositionsListener,
-        reverse: reversed,
-        scrollDirection: orientation == Orientation.portrait
-            ? Axis.vertical
-            : Axis.horizontal,
-      );
-
-  Widget get positionsView => ValueListenableBuilder<Iterable<ItemPosition>>(
-        valueListenable: itemPositionsListener.itemPositions,
-        builder: (context, positions, child) {
-          int min;
-          int max;
-          if (positions.isNotEmpty) {
-            // Determine the first visible item by finding the item with the
-            // smallest trailing edge that is greater than 0.  i.e. the first
-            // item whose trailing edge in visible in the viewport.
-            min = positions
-                .where((ItemPosition position) => position.itemTrailingEdge > 0)
-                .reduce((ItemPosition min, ItemPosition position) =>
-                    position.itemTrailingEdge < min.itemTrailingEdge
-                        ? position
-                        : min)
-                .index;
-            // Determine the last visible item by finding the item with the
-            // greatest leading edge that is less than 1.  i.e. the last
-            // item whose leading edge in visible in the viewport.
-            max = positions
-                .where((ItemPosition position) => position.itemLeadingEdge < 1)
-                .reduce((ItemPosition max, ItemPosition position) =>
-                    position.itemLeadingEdge > max.itemLeadingEdge
-                        ? position
-                        : max)
-                .index;
-          }
-          return Row(
-            children: <Widget>[
-              Expanded(child: Text('First Item: ${min ?? ''}')),
-              Expanded(child: Text('Last Item: ${max ?? ''}')),
-              const Text('Reversed: '),
-              Checkbox(
-                  value: reversed,
-                  onChanged: (bool value) => setState(() {
-                        reversed = value;
-                      }))
-            ],
-          );
-        },
-      );
-
-  Widget get scrollControlButtons => Row(
-        children: <Widget>[
-          const Text('scroll to'),
-          scrollButton(0),
-          scrollButton(5),
-          scrollButton(10),
-          scrollButton(100),
-          scrollButton(1000),
-          scrollButton(5000),
-        ],
-      );
-
-  Widget get jumpControlButtons => Row(
-        children: <Widget>[
-          const Text('jump to'),
-          jumpButton(0),
-          jumpButton(5),
-          jumpButton(10),
-          jumpButton(100),
-          jumpButton(1000),
-          jumpButton(5000),
-        ],
-      );
-
-  final _scrollButtonStyle = ButtonStyle(
-    padding: MaterialStateProperty.all(
-      const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-    ),
-    minimumSize: MaterialStateProperty.all(Size.zero),
-    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-  );
-
-  Widget scrollButton(int value) => TextButton(
-        key: ValueKey<String>('Scroll$value'),
-        onPressed: () => scrollTo(value),
-        child: Text('$value'),
-        style: _scrollButtonStyle,
-      );
-
-  Widget jumpButton(int value) => TextButton(
-        key: ValueKey<String>('Jump$value'),
-        onPressed: () => jumpTo(value),
-        child: Text('$value'),
-        style: _scrollButtonStyle,
-      );
-
-  void scrollTo(int index) => itemScrollController.scrollTo(
-      index: index,
-      duration: scrollDuration,
-      curve: Curves.easeInOutCubic,
-      alignment: alignment);
-
-  void jumpTo(int index) =>
-      itemScrollController.jumpTo(index: index, alignment: alignment);
-
-  /// Generate item number [i].
-  Widget item(int i, Orientation orientation) {
-    return SizedBox(
-      height: orientation == Orientation.portrait ? itemHeights[i] : null,
-      width: orientation == Orientation.landscape ? itemHeights[i] : null,
-      child: Container(
-        color: itemColors[i],
-        child: Center(
-          child: Text('Item $i'),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 40,
+                      ),
+                      episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                          builder: (context, infos) {
+                        if (infos == null) {
+                          return SizedBox(
+                            height: 0,
+                          );
+                        } else {
+                          return Seekbar(
+                            dominantColor: dominantColor,
+                            currentPosition: infos.currentPosition,
+                            duration: infos.duration,
+                            episodeName: episodeObject.episodeName,
+                            seekTo: (to) {
+                              episodeObject.audioPlayer.seek(to);
+                            },
+                          );
+                        }
+                      }),
+                      episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                          builder: (context, infos) {
+                        if (infos == null) {
+                          return SpinKitPulse(
+                            color: Colors.white,
+                          );
+                        } else {
+                          if (infos.isBuffering == true) {
+                            return SpinKitCircle(
+                              size: 15,
+                              color: Colors.white,
+                            );
+                          } else {
+                            if (infos.isPlaying == true) {
+                              return FloatingActionButton(
+                                  child: Icon(Icons.pause),
+                                  backgroundColor: Colors.blue,
+                                  onPressed: () {
+                                    episodeObject.pause();
+                                    setState(() {
+                                      playerState = PlayerState.paused;
+                                    });
+                                  });
+                            } else {
+                              return FloatingActionButton(
+                                  backgroundColor: Colors.blue,
+                                  child: Icon(Icons.play_arrow_rounded),
+                                  onPressed: () {
+                                    // play(url);
+                                    episodeObject.resume();
+                                    setState(() {
+                                      playerState = PlayerState.playing;
+                                    });
+                                  });
+                            }
+                          }
+                        }
+                      }),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
+                  // color: Colors.blue,
+                )
+              ],
+            )
+          ],
         ),
       ),
     );

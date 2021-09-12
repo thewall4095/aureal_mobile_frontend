@@ -1329,13 +1329,11 @@ class _PodcastViewState extends State<PodcastView> {
                                                       .toString());
                                                   currentlyPlaying.play();
                                                   // _pullRefreshEpisodes();
-                                                  showBarModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return Container(
-                                                          child: Player(),
-                                                        );
-                                                      });
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return Player();
+                                                  }));
                                                 }
                                               }
                                             },

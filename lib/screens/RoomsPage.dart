@@ -263,24 +263,28 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           isExtended: !upDirection,
         ),
         appBar: AppBar(
+          backgroundColor: Color(0xff161616),
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: TabBar(
-            isScrollable: true,
-            automaticIndicatorColorAdjustment: true,
-            indicatorSize: TabBarIndicatorSize.label,
-            controller: _tabController,
-            tabs: [
-              Tab(
-                text: 'All',
-              ),
-              Tab(
-                text: 'My Groups',
-              )
-            ],
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              isScrollable: true,
+              automaticIndicatorColorAdjustment: true,
+              indicatorSize: TabBarIndicatorSize.label,
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: 'All',
+                ),
+                Tab(
+                  text: 'My Groups',
+                )
+              ],
+            ),
           ),
         ),
-        backgroundColor: Colors.transparent,
+
         body: TabBarView(
           controller: _tabController,
           children: [

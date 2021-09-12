@@ -267,6 +267,7 @@ class _FollowingPageState extends State<FollowingPage>
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
+                backgroundColor: Color(0xff161616),
                 automaticallyImplyLeading: false,
                 expandedHeight: 30,
                 pinned: true,
@@ -1268,13 +1269,12 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             .toString());
                                                                         currentlyPlaying
                                                                             .play();
-                                                                        showBarModalBottomSheet(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
+                                                                        Navigator.push(
+                                                                            context,
+                                                                            MaterialPageRoute(builder:
                                                                                 (context) {
-                                                                              return Player();
-                                                                            });
+                                                                          return Player();
+                                                                        }));
                                                                       }
                                                                     }
                                                                   },

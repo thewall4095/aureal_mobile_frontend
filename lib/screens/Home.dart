@@ -391,7 +391,9 @@ class _HomeState extends State<Home> {
     SizeConfig().init(context);
     int count = 0;
     return Scaffold(
+      backgroundColor: Color(0xff161616),
       appBar: AppBar(
+        backgroundColor: Color(0xff161616),
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8),
@@ -440,14 +442,7 @@ class _HomeState extends State<Home> {
           Center(
             child: IconButton(
               icon: Icon(Icons.notifications_none),
-              // icon: Badge(
-              //   badgeColor: Colors.blue,
-              //   badgeContent: Text("$count"),
-              //   child: Icon(
-              //     Icons.notifications_none,
-              //     //    color: Colors.white,
-              //   ),
-              // ),
+
               onPressed: () {
                 Navigator.pushNamed(context, NotificationPage.id);
               },
