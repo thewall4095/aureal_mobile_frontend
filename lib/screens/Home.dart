@@ -528,7 +528,7 @@ class _HomeState extends State<Home> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      bottomSheet: BottomPlayer(),
+      bottomSheet: _selectedIndex == 0 ? SizedBox() : BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: _createPage(context, _selectedIndex),
     );
@@ -601,6 +601,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                 key: UniqueKey(),
                 onDismissed: (direction) {
                   setState(() {
+                    episodeObject.episodeName = null;
                     episodeObject.pause();
                   });
                 },

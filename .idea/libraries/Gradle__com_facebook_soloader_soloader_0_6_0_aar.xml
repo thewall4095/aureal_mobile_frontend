@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.soloader:soloader:0.6.0@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/557952f88cac643a2381917f936a8d13/jetified-soloader-0.6.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/557952f88cac643a2381917f936a8d13/jetified-soloader-0.6.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
