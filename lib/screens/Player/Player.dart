@@ -1054,33 +1054,16 @@ class TrancriptionPlayer extends StatefulWidget {
 }
 
 class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
-  // void getTranscription(episode_id) async {
-  //   String url =
-  //       "https://api.aureal.one/public/getTranscription?episode_id=${episode_id}";
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   print(url);
-  //   try {
-  //     http.Response response = await http.get(Uri.parse(url));
-  //     print(response.body);
-  //     if (response.statusCode == 200) {
-  //       setState(() {
-  //         transcript = jsonDecode(response.body)['data']['transcription'];
-  //       });
-  //       print(transcript);
-  //       print(transcript.runtimeType);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   int currentIndex = 0;
 
   ItemScrollController itemScrollController;
   ItemPositionsListener itemPositionsListener;
 
   PlayerState playerState = PlayerState.playing;
+
+  String actualText = '';
+
+  List transcript = [];
 
   @override
   void initState() {
@@ -1089,6 +1072,20 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
     super.initState();
 
+    setState(() {
+      transcript = widget.transcript;
+      for (var v in transcript) {
+        v['index'] = transcript.indexOf(v);
+      }
+    });
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+
+    for (var v in widget.transcript) {
+      actualText = actualText + v['msg'];
+    }
+
     itemScrollController = ItemScrollController();
     itemPositionsListener = ItemPositionsListener.create();
 
@@ -1096,12 +1093,12 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
     episodeObject.audioPlayer.currentPosition.listen((event) {
       var currentPositionSeconds = event.inMilliseconds / 1000;
-      if (widget.transcript != null && widget.transcript.length > 0) {
+      if (transcript != null && widget.transcript.length > 0) {
         // print(event.inMilliseconds / 1000);
         // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
         // setState(() {
-        if (widget.transcript != null && widget.transcript.length > 0) {
-          var count = (widget.transcript.indexWhere((element) =>
+        if (transcript != null && transcript.length > 0) {
+          var count = (transcript.indexWhere((element) =>
               element['start_time'] < currentPositionSeconds &&
               element['end_time'] > currentPositionSeconds));
           if (count >= 0) {
@@ -1111,12 +1108,10 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
               currentIndex = count;
             });
 
-            itemScrollController.scrollTo(
-                index: count,
-                alignment: count < 10 ? 0.0 : 0.3,
-                duration: Duration(milliseconds: 100)
-                // curve: Curves.easeInCirc,
-                );
+            itemScrollController.jumpTo(
+              index: count,
+              alignment: count < 10 ? 0.0 : 0.3,
+            );
           }
         }
       }
@@ -1125,9 +1120,22 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
   int dominantColor = 0xff222222;
 
+  List snippet = [];
+
+  bool isSelecting = true;
+
+  ScrollController _scrollController;
+  double _scrollPosition;
+
+  _scrollListener() {
+    setState(() {
+      _scrollPosition = _scrollController.position.pixels;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(widget.transcript);
+    print(transcript);
     var episodeObject = Provider.of<PlayerChange>(context);
 
     return Scaffold(
@@ -1196,32 +1204,90 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ScrollablePositionedList.builder(
-                itemCount: widget.transcript.length,
+                itemCount: transcript.length + 1,
                 itemBuilder: (context, index) {
-                  // print(itemPositionsListener.itemPositions.value.toString());
+                  print(itemPositionsListener.itemPositions.value.toString());
                   if (index <= currentIndex) {
-                    return GestureDetector(
-                      child: Text(
-                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
-                        style: TextStyle(
-                            height: 1.8,
-                            fontSize: SizeConfig.safeBlockHorizontal * 7,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 3),
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.horizontal(
+                              left: Radius.circular(8),
+                              right: Radius.circular(8)),
+                        ),
+                        selectedTileColor: Colors.black54,
+                        selected: snippet.contains(transcript[index]),
+                        onTap: () {
+                          setState(() {
+                            if (snippet.length == 0) {
+                              snippet.add(transcript[index]);
+                            } else {
+                              if (snippet.contains(transcript[index]) == true) {
+                                snippet.remove(transcript[index]);
+                              } else {
+                                if (index - (snippet.length - 1) == 1) {
+                                  snippet.add(transcript[index]);
+                                } else {
+                                  for (int i = (snippet.length);
+                                      i <= index;
+                                      i++) {
+                                    if (!snippet.contains(transcript[i]))
+                                      snippet.add(transcript[i]);
+                                  }
+                                }
+                              }
+                            }
+                          });
+                        },
+                        title: Text(
+                          '${transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                          style: TextStyle(
+                              height: 1.8,
+                              fontSize: SizeConfig.safeBlockHorizontal * 7,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white),
+                        ),
                       ),
                     );
                   } else {
-                    return GestureDetector(
-                      child: Text(
-                        '${widget.transcript[index]['msg'].toString().trimLeft().trimRight()}',
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 7,
-                            fontWeight: FontWeight.w600,
-                            height: 1.8,
-                            color: Colors.white.withOpacity(0.5)),
-                      ),
-                    );
+                    if (index == transcript.length) {
+                      return SizedBox(
+                        height: 300,
+                      );
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: ListTile(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(8),
+                                right: Radius.circular(8)),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              if (snippet.length == 0) {
+                                snippet.add(transcript[index]);
+                              } else {}
+                            });
+                            print(snippet);
+                          },
+                          selectedTileColor: Colors.black54,
+                          selected: snippet.contains(transcript[index]),
+                          title: Text(
+                            '${transcript[index]['msg'].toString().trimLeft().trimRight()}',
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 7,
+                                fontWeight: FontWeight.w600,
+                                height: 1.8,
+                                color: Colors.white.withOpacity(0.5)),
+                          ),
+                        ),
+                      );
+                    }
                   }
+
+                  // return SelectableText("${widget.transcript}");
                 },
                 itemScrollController: itemScrollController,
                 itemPositionsListener: itemPositionsListener,
@@ -1257,6 +1323,11 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                             episodeName: episodeObject.episodeName,
                             seekTo: (to) {
                               episodeObject.audioPlayer.seek(to);
+                              itemScrollController.jumpTo(
+                                index: currentIndex,
+
+                                // curve: Curves.easeInCirc,
+                              );
                             },
                           );
                         }
@@ -1311,6 +1382,125 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class EditSnippet extends StatefulWidget {
+  String snippets;
+
+  EditSnippet({@required this.snippets});
+
+  @override
+  _EditSnippetState createState() => _EditSnippetState();
+}
+
+class _EditSnippetState extends State<EditSnippet> {
+  TextEditingController controller;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    controller = TextEditingController(text: "${widget.snippets}");
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0.0,
+        title: Text(
+          "Edit Snippet",
+          textScaleFactor: 1.0,
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+        ),
+      ),
+      body: Center(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        "Give your snippet a title",
+                        textAlign: TextAlign.center,
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          "(Optional)",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: controller,
+                        maxLines: 5,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color(0xffe8e8e8),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
+                    child: Text(
+                      "Create",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          color: Color(0xff161616),
+                          fontSize: SizeConfig.safeBlockHorizontal * 4),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SnippetShare extends StatefulWidget {
+  String snippet;
+
+  SnippetShare({@required this.snippet});
+
+  @override
+  _SnippetShareState createState() => _SnippetShareState();
+}
+
+class _SnippetShareState extends State<SnippetShare> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Edit Snippet",
+          textScaleFactor: 1.0,
+          style: TextStyle(
+              fontSize: SizeConfig.safeBlockHorizontal * 3,
+              color: Color(0xffe8e8e8)),
+        ),
+      ),
+      body: Container(),
     );
   }
 }

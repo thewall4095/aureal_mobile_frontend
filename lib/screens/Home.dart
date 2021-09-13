@@ -391,6 +391,7 @@ class _HomeState extends State<Home> {
     SizeConfig().init(context);
     int count = 0;
     return Scaffold(
+      backgroundColor: Color(0xff161616),
       appBar: AppBar(
         elevation: 0,
         leading: Padding(
