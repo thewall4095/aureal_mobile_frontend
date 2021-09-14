@@ -22,6 +22,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -1121,8 +1122,9 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
   int dominantColor = 0xff222222;
 
   List snippet = [];
+  String snippetString = '';
 
-  bool isSelecting = true;
+  bool isSelecting = false;
 
   ScrollController _scrollController;
   double _scrollPosition;
@@ -1135,7 +1137,6 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    print(transcript);
     var episodeObject = Provider.of<PlayerChange>(context);
 
     return Scaffold(
@@ -1220,24 +1221,35 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                         selected: snippet.contains(transcript[index]),
                         onTap: () {
                           setState(() {
+                            if (snippet.length != 0) {
+                              isSelecting = true;
+                            }
                             if (snippet.length == 0) {
                               snippet.add(transcript[index]);
                             } else {
                               if (snippet.contains(transcript[index]) == true) {
                                 snippet.remove(transcript[index]);
                               } else {
-                                if (index - (snippet.length - 1) == 1) {
+                                if (index -
+                                        snippet[snippet.length - 1]['index'] ==
+                                    1) {
                                   snippet.add(transcript[index]);
                                 } else {
-                                  for (int i = (snippet.length);
-                                      i <= index;
+                                  for (int i = snippet[snippet.length - 1]
+                                              ['index'] +
+                                          1;
+                                      index >= i;
                                       i++) {
-                                    if (!snippet.contains(transcript[i]))
-                                      snippet.add(transcript[i]);
+                                    snippet.add(transcript[i]);
                                   }
                                 }
                               }
                             }
+                            snippetString = '';
+                            for (var v in snippet) {
+                              snippetString = snippetString + v['msg'];
+                            }
+                            print("$snippetString ////////////////////////");
                           });
                         },
                         title: Text(
@@ -1266,11 +1278,39 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                           ),
                           onTap: () {
                             setState(() {
+                              if (snippet.length != 0) {
+                                isSelecting = true;
+                              }
+                              print("$snippetString ////////////////////////");
                               if (snippet.length == 0) {
                                 snippet.add(transcript[index]);
-                              } else {}
+                              } else {
+                                if (snippet.contains(transcript[index]) ==
+                                    true) {
+                                  snippet.remove(transcript[index]);
+                                } else {
+                                  if (index -
+                                          snippet[snippet.length - 1]
+                                              ['index'] ==
+                                      1) {
+                                    snippet.add(transcript[index]);
+                                  } else {
+                                    for (int i = snippet[snippet.length - 1]
+                                                ['index'] +
+                                            1;
+                                        index >= i;
+                                        i++) {
+                                      snippet.add(transcript[i]);
+                                    }
+                                  }
+                                }
+                              }
+                              snippetString = '';
+                              for (var v in snippet) {
+                                snippetString = snippetString + v['msg'];
+                              }
+                              print("$snippetString ////////////////////////");
                             });
-                            print(snippet);
                           },
                           selectedTileColor: Colors.black54,
                           selected: snippet.contains(transcript[index]),
@@ -1307,7 +1347,30 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 40,
+                        height: 20,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return EditSnippet(snippetString: snippetString);
+                          }));
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: LinearGradient(colors: [
+                                Color(0xff5d5da8),
+                                Color(0xff5bc3ef)
+                              ])),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Text("Create Snippet"),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                       episodeObject.audioPlayer.builderRealtimePlayingInfos(
                           builder: (context, infos) {
@@ -1387,9 +1450,9 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 }
 
 class EditSnippet extends StatefulWidget {
-  String snippets;
+  String snippetString;
 
-  EditSnippet({@required this.snippets});
+  EditSnippet({@required this.snippetString});
 
   @override
   _EditSnippetState createState() => _EditSnippetState();
@@ -1398,15 +1461,22 @@ class EditSnippet extends StatefulWidget {
 class _EditSnippetState extends State<EditSnippet> {
   TextEditingController controller;
 
+  String snippetText = '';
   @override
   void initState() {
     // TODO: implement initState
-    controller = TextEditingController(text: "${widget.snippets}");
+    controller = TextEditingController(
+        text: "${widget.snippetString.trimLeft().trimRight()}");
     super.initState();
+    setState(() {
+      snippetText = widget.snippetString.trimRight().trimLeft();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -1418,58 +1488,145 @@ class _EditSnippetState extends State<EditSnippet> {
         ),
       ),
       body: Center(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "Give your snippet a title",
-                        textAlign: TextAlign.center,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 5),
+        child: SingleChildScrollView(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff222222),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: episodeObject.episodeObject['image'],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    height:
+                                        MediaQuery.of(context).size.width / 6,
+                                    width:
+                                        MediaQuery.of(context).size.width / 6,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  );
+                                },
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${episodeObject.episodeObject['name']}",
+                                        maxLines: 1,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        "${episodeObject.episodeObject['podcast_name']}",
+                                        textScaleFactor: 1.0,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.all(20),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            decoration: InputDecoration(
+                                labelText: 'Give your snippet a title',
+                                labelStyle: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 5)),
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 6),
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "(Optional)",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onChanged: (value) {
+                            setState(() {
+                              snippetText = value;
+                            });
+                            print(snippetText);
+                          },
+                          controller: controller,
+                          maxLines: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return SnippetShare(snippet: snippetText);
+                      }));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xffe8e8e8),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 15),
                         child: Text(
-                          "(Optional)",
-                          textAlign: TextAlign.center,
+                          "Create",
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              color: Color(0xff161616),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        controller: controller,
-                        maxLines: 5,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: Color(0xffe8e8e8),
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    child: Text(
-                      "Create",
-                      textScaleFactor: 1.0,
-                      style: TextStyle(
-                          color: Color(0xff161616),
-                          fontSize: SizeConfig.safeBlockHorizontal * 4),
-                    ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -1490,17 +1647,170 @@ class SnippetShare extends StatefulWidget {
 class _SnippetShareState extends State<SnippetShare> {
   @override
   Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Edit Snippet",
-          textScaleFactor: 1.0,
-          style: TextStyle(
-              fontSize: SizeConfig.safeBlockHorizontal * 3,
-              color: Color(0xffe8e8e8)),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+          child: Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Column(
+                      children: [
+                        Icon(FontAwesomeIcons.quoteLeft),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: Text(
+                            "${widget.snippet}",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Icon(FontAwesomeIcons.quoteRight),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: episodeObject.episodeObject['image'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.width / 6,
+                                  width: MediaQuery.of(context).size.width / 6,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                );
+                              },
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${episodeObject.episodeObject['name']}",
+                                      maxLines: 1,
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          color: Color(0xff222222),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "${episodeObject.episodeObject['podcast_name']}",
+                                      textScaleFactor: 1.0,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: Color(0xff222222),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  2.5),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        right: 5,
+                        bottom: 5,
+                        child: Image.asset(
+                          'assets/images/Favicon.png',
+                          cacheHeight:
+                              (MediaQuery.of(context).size.height / 4).floor(),
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.3),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10))),
+                  height: MediaQuery.of(context).size.height / 3.5,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "#YourVoiceIsWorthSomething",
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeConfig.safeBlockHorizontal * 4),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "aureal.one",
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 4),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          )),
         ),
       ),
-      body: Container(),
     );
   }
 }

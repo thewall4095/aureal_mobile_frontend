@@ -55,13 +55,14 @@ class _WrapperState extends State<Wrapper> {
     });
     String url = 'https://api.aureal.one/public/getToken';
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("${prefs.containsKey('userId')} /////////////////////");
     if (prefs.containsKey('userId')) {
       var map = Map<String, dynamic>();
       map['user_id'] = prefs.getString('userId');
       map['registration_token'] = registrationToken;
       print(registrationToken);
       print(map.toString());
-      print(prefs.containsKey('userId'));
+      print('${prefs.containsKey('userId')} //////////////////////////////');
 
       FormData formData = FormData.fromMap(map);
 
@@ -96,6 +97,7 @@ class _WrapperState extends State<Wrapper> {
         }));
       }
     } else {
+      print("Came here////////////////////////");
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
         return Welcome();
       }));

@@ -487,15 +487,29 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         var response = await dio.post(url, data: formData);
 
         if (response.statusCode == 200) {
+          print("Response == 200 //////////////////////");
+          print(response.data);
+
           setState(() {
+            print("Came here too ///////////////////");
             prefs.setString(
                 'access_token', response.data['updatedUser']['access_token']);
+            print("Came here!!!!!!!!!!!!!!!!!!!");
             prefs.setString('token', response.data['updatedUser']['token']);
+            print("Came here ---------------------");
             prefs.setString(
                 'displayPicture', response.data['updatedUser']['img']);
-            prefs.setString(
-                'userName', response.data['updatedUser']['username']);
+            print("came here ----------------------");
+            print(prefs.getString('userId'));
+            // prefs.setString(
+            //     'userName', response.data['updatedUser']['username']);
+            // print(prefs.getString('userName'));
+            print("Came here -----------------------");
+            print(
+                "${prefs.getString('userId')} //////////////////////////////////////");
           });
+
+          print('${prefs.getString('userId')} /////////////////////');
 
           DiscoverProvider discoverData =
               Provider.of<DiscoverProvider>(context, listen: false);
@@ -514,6 +528,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           });
         }
       } catch (e) {
+        print(e);
         setState(() {
           _home = Welcome();
         });
