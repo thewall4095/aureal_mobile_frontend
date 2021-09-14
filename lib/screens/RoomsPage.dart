@@ -17,7 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:jitsi_meet/jitsi_meet.dart';
+// import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
@@ -129,66 +129,66 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
-    Map<FeatureFlagEnum, bool> featureFlags = {
-      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-      FeatureFlagEnum.CHAT_ENABLED: false,
-    };
-    if (!kIsWeb) {
-      // Here is an example, disabling features for each platform
-      if (Platform.isAndroid) {
-        // Disable ConnectionService usage on Android to avoid issues (see README)
-        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-      } else if (Platform.isIOS) {
-        // Disable PIP on iOS as it looks weird
-        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-      }
-    }
+    // Map<FeatureFlagEnum, bool> featureFlags = {
+    //   FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+    //   FeatureFlagEnum.CHAT_ENABLED: false,
+    // };
+    // if (!kIsWeb) {
+    //   // Here is an example, disabling features for each platform
+    //   if (Platform.isAndroid) {
+    //     // Disable ConnectionService usage on Android to avoid issues (see README)
+    //     featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+    //   } else if (Platform.isIOS) {
+    //     // Disable PIP on iOS as it looks weird
+    //     featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+    //   }
+    // }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var options = JitsiMeetingOptions(room: roomId)
-      ..serverURL = 'https://sessions.aureal.one'
-      ..subject = roomName
-      ..userDisplayName = displayName
-      ..userEmail = 'emailText.text'
-      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-      ..audioOnly = true
-      ..audioMuted = isAudioMuted
-      ..videoMuted = isVideoMuted
-      ..featureFlags.addAll(featureFlags)
-      ..webOptions = {
-        "roomName": roomName,
-        "width": "100%",
-        "height": "100%",
-        "enableWelcomePage": false,
-        "chromeExtensionBanner": null,
-        "userInfo": {
-          "displayName": prefs.getString('userName'),
-          'avatarUrl': prefs.getString('displayPicture')
-        }
-      };
+    // var options = JitsiMeetingOptions(room: roomId)
+    //   ..serverURL = 'https://sessions.aureal.one'
+    //   ..subject = roomName
+    //   ..userDisplayName = displayName
+    //   ..userEmail = 'emailText.text'
+    //   // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+    //   ..audioOnly = true
+    //   ..audioMuted = isAudioMuted
+    //   ..videoMuted = isVideoMuted
+    //   ..featureFlags.addAll(featureFlags)
+    //   ..webOptions = {
+    //     "roomName": roomName,
+    //     "width": "100%",
+    //     "height": "100%",
+    //     "enableWelcomePage": false,
+    //     "chromeExtensionBanner": null,
+    //     "userInfo": {
+    //       "displayName": prefs.getString('userName'),
+    //       'avatarUrl': prefs.getString('displayPicture')
+    //     }
+    //   };
 
-    debugPrint("JitsiMeetingOptions: $options");
-    await JitsiMeet.joinMeeting(
-      options,
-      listener: JitsiMeetingListener(
-          onConferenceWillJoin: (message) {
-            debugPrint("${options.room} will join with message: $message");
-          },
-          onConferenceJoined: (message) {
-            debugPrint("${options.room} joined with message: $message");
-          },
-          onConferenceTerminated: (message) {
-            debugPrint("${options.room} terminated with message: $message");
-          },
-          genericListeners: [
-            JitsiGenericListener(
-                eventName: 'readyToClose',
-                callback: (dynamic message) {
-                  debugPrint("readyToClose callback");
-                }),
-          ]),
-    );
+    // debugPrint("JitsiMeetingOptions: $options");
+    // await JitsiMeet.joinMeeting(
+    //   options,
+    //   listener: JitsiMeetingListener(
+    //       onConferenceWillJoin: (message) {
+    //         debugPrint("${options.room} will join with message: $message");
+    //       },
+    //       onConferenceJoined: (message) {
+    //         debugPrint("${options.room} joined with message: $message");
+    //       },
+    //       onConferenceTerminated: (message) {
+    //         debugPrint("${options.room} terminated with message: $message");
+    //       },
+    //       genericListeners: [
+    //         JitsiGenericListener(
+    //             eventName: 'readyToClose',
+    //             callback: (dynamic message) {
+    //               debugPrint("readyToClose callback");
+    //             }),
+    //       ]),
+    // );
   }
 
   void _onConferenceWillJoin(message) {
@@ -263,24 +263,28 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           isExtended: !upDirection,
         ),
         appBar: AppBar(
+          backgroundColor: Color(0xff161616),
           elevation: 0,
           automaticallyImplyLeading: false,
-          title: TabBar(
-            isScrollable: true,
-            automaticIndicatorColorAdjustment: true,
-            indicatorSize: TabBarIndicatorSize.label,
-            controller: _tabController,
-            tabs: [
-              Tab(
-                text: 'All',
-              ),
-              Tab(
-                text: 'My Groups',
-              )
-            ],
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: TabBar(
+              isScrollable: true,
+              automaticIndicatorColorAdjustment: true,
+              indicatorSize: TabBarIndicatorSize.label,
+              controller: _tabController,
+              tabs: [
+                Tab(
+                  text: 'All',
+                ),
+                Tab(
+                  text: 'My Groups',
+                )
+              ],
+            ),
           ),
         ),
-        backgroundColor: Colors.transparent,
+
         body: TabBarView(
           controller: _tabController,
           children: [
@@ -704,66 +708,66 @@ class _CreateRoomState extends State<CreateRoom> {
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
-    Map<FeatureFlagEnum, bool> featureFlags = {
-      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-      FeatureFlagEnum.CHAT_ENABLED: false,
-    };
-    if (!kIsWeb) {
-      // Here is an example, disabling features for each platform
-      if (Platform.isAndroid) {
-        // Disable ConnectionService usage on Android to avoid issues (see README)
-        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-      } else if (Platform.isIOS) {
-        // Disable PIP on iOS as it looks weird
-        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-      }
-    }
+    // Map<FeatureFlagEnum, bool> featureFlags = {
+    //   FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+    //   FeatureFlagEnum.CHAT_ENABLED: false,
+    // };
+    // if (!kIsWeb) {
+    //   // Here is an example, disabling features for each platform
+    //   if (Platform.isAndroid) {
+    //     // Disable ConnectionService usage on Android to avoid issues (see README)
+    //     featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+    //   } else if (Platform.isIOS) {
+    //     // Disable PIP on iOS as it looks weird
+    //     featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+    //   }
+    // }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+    // var options = JitsiMeetingOptions(room: roomId)
+    //   ..serverURL = 'https://sessions.aureal.one'
+    //   ..subject = roomName
+    //   ..userDisplayName = prefs.getString('userName')
+    //   ..userEmail = 'emailText.text'
+    //   // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+    //   ..audioOnly = true
+    //   ..audioMuted = isAudioMuted
+    //   ..videoMuted = isVideoMuted
+    //   ..featureFlags.addAll(featureFlags)
+    //   ..webOptions = {
+    //     "roomName": roomName,
+    //     "width": "100%",
+    //     "height": "100%",
+    //     "enableWelcomePage": false,
+    //     "chromeExtensionBanner": null,
+    //     "userInfo": {
+    //       "displayName": prefs.getString('userName'),
+    //       'avatarUrl': prefs.getString('displayPicture')
+    //     }
+    //   };
 
-    var options = JitsiMeetingOptions(room: roomId)
-      ..serverURL = 'https://sessions.aureal.one'
-      ..subject = roomName
-      ..userDisplayName = prefs.getString('userName')
-      ..userEmail = 'emailText.text'
-      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-      ..audioOnly = true
-      ..audioMuted = isAudioMuted
-      ..videoMuted = isVideoMuted
-      ..featureFlags.addAll(featureFlags)
-      ..webOptions = {
-        "roomName": roomName,
-        "width": "100%",
-        "height": "100%",
-        "enableWelcomePage": false,
-        "chromeExtensionBanner": null,
-        "userInfo": {
-          "displayName": prefs.getString('userName'),
-          'avatarUrl': prefs.getString('displayPicture')
-        }
-      };
-
-    debugPrint("JitsiMeetingOptions: $options");
-    await JitsiMeet.joinMeeting(
-      options,
-      listener: JitsiMeetingListener(
-          onConferenceWillJoin: (message) {
-            debugPrint("${options.room} will join with message: $message");
-          },
-          onConferenceJoined: (message) {
-            debugPrint("${options.room} joined with message: $message");
-          },
-          onConferenceTerminated: (message) {
-            debugPrint("${options.room} terminated with message: $message");
-          },
-          genericListeners: [
-            JitsiGenericListener(
-                eventName: 'readyToClose',
-                callback: (dynamic message) {
-                  debugPrint("readyToClose callback");
-                }),
-          ]),
-    );
+    // debugPrint("JitsiMeetingOptions: $options");
+    // await JitsiMeet.joinMeeting(
+    //   options,
+    //   listener: JitsiMeetingListener(
+    //       onConferenceWillJoin: (message) {
+    //         debugPrint("${options.room} will join with message: $message");
+    //       },
+    //       onConferenceJoined: (message) {
+    //         debugPrint("${options.room} joined with message: $message");
+    //       },
+    //       onConferenceTerminated: (message) {
+    //         debugPrint("${options.room} terminated with message: $message");
+    //       },
+    //       genericListeners: [
+    //         JitsiGenericListener(
+    //             eventName: 'readyToClose',
+    //             callback: (dynamic message) {
+    //               debugPrint("readyToClose callback");
+    //             }),
+    //       ]),
+    // );
   }
 
   void _onConferenceWillJoin(message) {

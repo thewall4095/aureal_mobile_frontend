@@ -2,7 +2,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_media_notification/flutter_media_notification.dart';
+// import 'package:flutter_media_notification/flutter_media_notification.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -181,31 +181,31 @@ class PlayerChange extends ChangeNotifier {
     state = PlayerState.stopped;
     audioPlayer.stop();
     // print(
-    //     '${audioPlayer.currentPosition.valueWrapper.value} ///////////////////////////////////////////////////////////////////');
-    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    //     '${audioPlayer.currentPosition.value} ///////////////////////////////////////////////////////////////////');
+    _currentPosition = audioPlayer.currentPosition.value;
     if (audioPlayer.isPlaying == true) {
       var a = dursaver.getAllEpisodes();
       print(a.toString());
 
       dursaver.addToDatabase(
           episodeObject['id'],
-          audioPlayer.currentPosition.valueWrapper.value,
-          audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+          audioPlayer.currentPosition.value,
+          audioPlayer.realtimePlayingInfos.value.duration);
     }
   }
 
   void pause() {
-    MediaNotification.showNotification(
-        title: _episodeObject['name'],
-        author: _episodeObject['podcast_name'],
-        isPlaying: false);
+    // MediaNotification.showNotification(
+    //     title: _episodeObject['name'],
+    //     author: _episodeObject['podcast_name'],
+    //     isPlaying: false);
     state = PlayerState.paused;
     audioPlayer.pause();
-    _currentPosition = audioPlayer.currentPosition.valueWrapper.value;
+    _currentPosition = audioPlayer.currentPosition.value;
     dursaver.addToDatabase(
         _episodeObject['id'],
-        audioPlayer.currentPosition.valueWrapper.value,
-        audioPlayer.realtimePlayingInfos.valueWrapper.value.duration);
+        audioPlayer.currentPosition.value,
+        audioPlayer.realtimePlayingInfos.value.duration);
   }
 
   void resume() {

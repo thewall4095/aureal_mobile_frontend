@@ -642,7 +642,6 @@ class _EpisodeViewState extends State<EpisodeView>
                                             ? (episodeObject
                                                         .audioPlayer
                                                         .realtimePlayingInfos
-                                                        .valueWrapper
                                                         .value
                                                         .isPlaying ==
                                                     true
@@ -1565,7 +1564,6 @@ class _EpisodeViewState extends State<EpisodeView>
                                     ? (episodeObject
                                                 .audioPlayer
                                                 .realtimePlayingInfos
-                                                .valueWrapper
                                                 .value
                                                 .isPlaying ==
                                             true

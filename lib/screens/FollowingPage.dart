@@ -267,6 +267,7 @@ class _FollowingPageState extends State<FollowingPage>
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
+                backgroundColor: Color(0xff161616),
                 automaticallyImplyLeading: false,
                 expandedHeight: 30,
                 pinned: true,

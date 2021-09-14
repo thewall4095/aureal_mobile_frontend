@@ -36,7 +36,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_share/social_share.dart';
+// import 'package:social_share/social_share.dart';
 import 'dart:math' as math;
 import 'dart:math';
 import 'package:flutter/material.dart';

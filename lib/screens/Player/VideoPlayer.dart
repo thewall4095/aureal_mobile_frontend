@@ -44,7 +44,7 @@ class _PodcastVideoPlayerState extends State<PodcastVideoPlayer> {
       ),
       body: Center(
         child: Container(
-            child: _controller.value.initialized
+            child: _controller.value.isInitialized
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

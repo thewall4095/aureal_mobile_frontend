@@ -14,7 +14,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_media_notification/flutter_media_notification.dart';
+// import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -351,15 +351,15 @@ class _HomeState extends State<Home> {
 
     getUserDetails();
 
-    MediaNotification.setListener('pause', () {
-      setState(() => status = 'pause');
-    });
-    MediaNotification.setListener('play', () {
-      setState(() => status = 'play');
-    });
-    MediaNotification.setListener('next', () {});
-    MediaNotification.setListener('prev', () {});
-    MediaNotification.setListener('select', () {});
+    // MediaNotification.setListener('pause', () {
+    //   setState(() => status = 'pause');
+    // });
+    // MediaNotification.setListener('play', () {
+    //   setState(() => status = 'play');
+    // });
+    // MediaNotification.setListener('next', () {});
+    // MediaNotification.setListener('prev', () {});
+    // MediaNotification.setListener('select', () {});
 
     getLocalData();
     _handleIncomingLinks();
@@ -393,6 +393,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Color(0xff161616),
       appBar: AppBar(
+        backgroundColor: Color(0xff161616),
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8),
@@ -441,14 +442,7 @@ class _HomeState extends State<Home> {
           Center(
             child: IconButton(
               icon: Icon(Icons.notifications_none),
-              // icon: Badge(
-              //   badgeColor: Colors.blue,
-              //   badgeContent: Text("$count"),
-              //   child: Icon(
-              //     Icons.notifications_none,
-              //     //    color: Colors.white,
-              //   ),
-              // ),
+
               onPressed: () {
                 Navigator.pushNamed(context, NotificationPage.id);
               },
