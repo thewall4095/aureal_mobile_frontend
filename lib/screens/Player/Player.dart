@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
@@ -1066,6 +1067,257 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
   List transcript = [];
 
+  Widget _dialogContent(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  "Replace previous selection?",
+                  textAlign: TextAlign.center,
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "This line is over the character limit and can't be added to your previous selection",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              color: Color(0xff161616),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context, true);
+
+                      // setState(() {
+                      //   if (index - snippet[snippet.length - 1]['index'] == 1) {
+                      //     snippet.add(transcript[index]);
+                      //     snippet.removeAt(0);
+                      //   }
+                      //   if (index - snippet[0]['index'] == -1) {
+                      //     snippet = snippet.reversed.toList();
+                      //     snippet.add(transcript[index]);
+                      //     snippet.removeAt(0);
+                      //     snippet = snippet.reversed.toList();
+                      //   }
+                      //   // if ((index - snippet[0]['index']) < -1) {
+                      //   //   int difference = snippet[0]['index'] - index;
+                      //   //   snippet = snippet.reversed.toList();
+                      //   //   for (int i = difference; i >= 0; i--) {
+                      //   //     snippet.add(transcript[index + i]);
+                      //   //     snippetString = '';
+                      //   //     for (var v in snippet) {
+                      //   //       snippetString = snippetString + v['msg'];
+                      //   //     }
+                      //   //     if (snippetString.length > 150) {
+                      //   //       snippet.removeAt(0);
+                      //   //     }
+                      //   //   }
+                      //   //   snippet = snippet.toSet().toList().reversed.toList();
+                      //   //   snippetString = '';
+                      //   //   for (var v in snippet) {
+                      //   //     snippetString = snippetString + v['msg'];
+                      //   //   }
+                      //   // }
+                      //
+                      //   for (var v in snippet) {
+                      //     print(v['index']);
+                      //   }
+                      //
+                      //   Navigator.pop(context);
+                      // });
+                    },
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Replace",
+                            style: TextStyle(color: Colors.red)),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _selectionFunction(int index) async {
+    // setState(() {
+    //   if (snippet.length == 0) {
+    //     snippet.add(transcript[index]);
+    //   } else {
+    //     if (snippet.contains(transcript[index]) == true) {
+    //       snippet.remove(transcript[index]);
+    //     } else {
+    //       if (snippetString.length >= 150) {
+    //         showDialog(
+    //             context: context,
+    //             builder: (context) {
+    //               return Dialog(
+    //                 backgroundColor: Color(0xff222222),
+    //                 child: _dialogContent(index),
+    //               );
+    //             });
+    //       } else {
+    //         if (index - snippet[snippet.length - 1]['index'] == 1) {
+    //           snippet.add(transcript[index]);
+    //         }
+    //         if (snippet[0]['index'] - index > 1) {
+    //           snippet = snippet.reversed.toSet().toList();
+    //           for (int i = (snippet[0]['index'] - 1); i >= index; i--) {
+    //             snippet.add(transcript[i]);
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   snippetString = '';
+    //   for (var v in snippet) {
+    //     snippetString = snippetString + v['msg'];
+    //   }
+    //   print("$snippetString ////////////////////////");
+    // });
+
+    if (snippet.length == 0) {
+      snippet.add(transcript[index]);
+    } else {
+      if (snippetString.length < 150) {
+        if (snippet.contains(transcript[index])) {
+          snippet = [transcript[index]];
+        }
+        if (index > snippet[snippet.length - 1]['index']) {
+          for (int i = snippet[snippet.length - 1]["index"]; i <= index; i++) {
+            snippet.add(transcript[i]);
+          }
+        }
+        if (index < snippet[0]['index']) {
+          var listElement = snippet[0];
+          snippet = snippet.reversed.toList();
+          for (int i = snippet[0]['index'] - 1; i >= index; i--) {
+            snippet.add(transcript[i]);
+          }
+          snippet = snippet.toSet().toList().reversed.toList();
+
+          // for (var v in snippet) {
+          //   print(v['index']);
+          // }
+          // for (int i = snippet[snippet.length - 1]['index'];
+          //     i > listElement['index'];
+          //     i--) {
+          //   snippet.remove(transcript[i]);
+          // }
+        }
+      } else {
+        if (snippet.contains(transcript[index])) {
+          snippet = [transcript[index]];
+        } else {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  child: _dialogContent(index),
+                );
+              }).then((value) {
+            if (value == true) {
+              setState(() {
+                if (index < snippet[0]['index']) {
+                  snippet = snippet.reversed.toList();
+                  for (int i = snippet[0]['index'] - 1; i >= index; i--) {
+                    snippet.add(transcript[index]);
+                    snippetString = '';
+                    for (var v in snippet) {
+                      snippetString = snippetString + v['msg'];
+                    }
+                  }
+                  while (snippetString.length > 150) {
+                    snippet.removeAt(0);
+                    snippetString = '';
+                    for (var v in snippet) {
+                      snippetString = snippetString + v['msg'];
+                    }
+                  }
+                  snippet = snippet.reversed.toList();
+                  snippetString = '';
+                  for (var v in snippet) {
+                    snippetString = snippetString + v['msg'];
+                  }
+                }
+                if (index > snippet[snippet.length - 1]['index']) {
+                  for (int i = snippet[snippet.length - 1]['index'] + 1;
+                      i <= index;
+                      i++) {
+                    snippet.add(transcript[i]);
+                    snippetString = '';
+                    for (var v in snippet) {
+                      snippetString = snippetString + v['msg'];
+                    }
+                  }
+                  while (snippetString.length > 150) {
+                    snippet.removeAt(0);
+                    snippetString = '';
+                    for (var v in snippet) {
+                      snippetString = snippetString + v['msg'];
+                    }
+                  }
+                  snippet = snippet.reversed.toList();
+                  snippetString = '';
+                  for (var v in snippet) {
+                    snippetString = snippetString + v['msg'];
+                  }
+                }
+              });
+            }
+          });
+        }
+      }
+
+      // if (snippet.contains(transcript[index])) {
+      //   for (int i = snippet[snippet.length - 1]['index']; i > index; i--) {
+      //     snippet.remove(transcript[i]);
+      //   }
+      // }
+    }
+    // } else {
+    //   showDialog(context: context, builder: (context){
+    //     return Dialog(
+    //       child: Text("Character Limit Exceeded 150"),
+    //     );
+    //   });
+    // }
+    snippetString = '';
+    for (var v in snippet) {
+      snippetString = snippetString + v['msg'];
+    }
+    print("$snippetString");
+  }
+
   @override
   void initState() {
     // getTranscription(widget.episode_id);
@@ -1095,9 +1347,6 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
     episodeObject.audioPlayer.currentPosition.listen((event) {
       var currentPositionSeconds = event.inMilliseconds / 1000;
       if (transcript != null && widget.transcript.length > 0) {
-        // print(event.inMilliseconds / 1000);
-        // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-        // setState(() {
         if (transcript != null && transcript.length > 0) {
           var count = (transcript.indexWhere((element) =>
               element['start_time'] < currentPositionSeconds &&
@@ -1207,8 +1456,8 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
               child: ScrollablePositionedList.builder(
                 itemCount: transcript.length + 1,
                 itemBuilder: (context, index) {
-                  print(itemPositionsListener.itemPositions.value.toString());
-                  if (index <= currentIndex) {
+                  // print(itemPositionsListener.itemPositions.value.toString());
+                  if (index == currentIndex) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 3),
                       child: ListTile(
@@ -1221,42 +1470,14 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                         selected: snippet.contains(transcript[index]),
                         onTap: () {
                           setState(() {
-                            if (snippet.length != 0) {
-                              isSelecting = true;
-                            }
-                            if (snippet.length == 0) {
-                              snippet.add(transcript[index]);
-                            } else {
-                              if (snippet.contains(transcript[index]) == true) {
-                                snippet.remove(transcript[index]);
-                              } else {
-                                if (index -
-                                        snippet[snippet.length - 1]['index'] ==
-                                    1) {
-                                  snippet.add(transcript[index]);
-                                } else {
-                                  for (int i = snippet[snippet.length - 1]
-                                              ['index'] +
-                                          1;
-                                      index >= i;
-                                      i++) {
-                                    snippet.add(transcript[i]);
-                                  }
-                                }
-                              }
-                            }
-                            snippetString = '';
-                            for (var v in snippet) {
-                              snippetString = snippetString + v['msg'];
-                            }
-                            print("$snippetString ////////////////////////");
+                            _selectionFunction(index);
                           });
                         },
                         title: Text(
                           '${transcript[index]['msg'].toString().trimLeft().trimRight()}',
                           style: TextStyle(
                               height: 1.8,
-                              fontSize: SizeConfig.safeBlockHorizontal * 7,
+                              fontSize: SizeConfig.safeBlockHorizontal * 6,
                               fontWeight: FontWeight.w600,
                               color: Colors.white),
                         ),
@@ -1278,38 +1499,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                           ),
                           onTap: () {
                             setState(() {
-                              if (snippet.length != 0) {
-                                isSelecting = true;
-                              }
-                              print("$snippetString ////////////////////////");
-                              if (snippet.length == 0) {
-                                snippet.add(transcript[index]);
-                              } else {
-                                if (snippet.contains(transcript[index]) ==
-                                    true) {
-                                  snippet.remove(transcript[index]);
-                                } else {
-                                  if (index -
-                                          snippet[snippet.length - 1]
-                                              ['index'] ==
-                                      1) {
-                                    snippet.add(transcript[index]);
-                                  } else {
-                                    for (int i = snippet[snippet.length - 1]
-                                                ['index'] +
-                                            1;
-                                        index >= i;
-                                        i++) {
-                                      snippet.add(transcript[i]);
-                                    }
-                                  }
-                                }
-                              }
-                              snippetString = '';
-                              for (var v in snippet) {
-                                snippetString = snippetString + v['msg'];
-                              }
-                              print("$snippetString ////////////////////////");
+                              _selectionFunction(index);
                             });
                           },
                           selectedTileColor: Colors.black54,
@@ -1317,7 +1507,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                           title: Text(
                             '${transcript[index]['msg'].toString().trimLeft().trimRight()}',
                             style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 7,
+                                fontSize: SizeConfig.safeBlockHorizontal * 6,
                                 fontWeight: FontWeight.w600,
                                 height: 1.8,
                                 color: Colors.white.withOpacity(0.5)),
@@ -1349,26 +1539,55 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                       SizedBox(
                         height: 20,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return EditSnippet(snippetString: snippetString);
-                          }));
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: LinearGradient(colors: [
-                                Color(0xff5d5da8),
-                                Color(0xff5bc3ef)
-                              ])),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Text("Create Snippet"),
-                          ),
-                        ),
-                      ),
+                      snippet.length == 0
+                          ? SizedBox()
+                          : Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        snippet = [];
+                                      });
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(colors: [
+                                        Color(0xff5d5da8),
+                                        Color(0xff5bc3ef)
+                                      ])),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Text("CANCEL"),
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return EditSnippet(
+                                            snippetString: snippetString);
+                                      }));
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(colors: [
+                                        Color(0xff5d5da8),
+                                        Color(0xff5bc3ef)
+                                      ])),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10),
+                                        child: Text("Create Snippet"),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                       SizedBox(
                         height: 20,
                       ),
@@ -1645,170 +1864,529 @@ class SnippetShare extends StatefulWidget {
 }
 
 class _SnippetShareState extends State<SnippetShare> {
+  ScreenshotController squareScreenshotController = ScreenshotController();
+  ScreenshotController rectScreenshotController = ScreenshotController();
+
+  Future<dynamic> ShowCapturedWidget(
+      BuildContext context, Uint8List capturedImage) {
+    return showDialog(
+      useSafeArea: true,
+      context: context,
+      builder: (context) {
+        return Container(
+          color: Color(0xff161616).withOpacity(0.7),
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                height: MediaQuery.of(context).size.height * 0.75,
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.memory(
+                      capturedImage,
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () {},
+                          child: Icon(FontAwesomeIcons.square),
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {},
+                          child: Icon(FontAwesomeIcons.react),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  bool isSquare = false;
+
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
-          child: Center(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(10)),
+              FloatingActionButton(
+                backgroundColor: Colors.black54,
+                child: Icon(Icons.crop_square),
+                onPressed: () {
+                  setState(() {
+                    isSquare = true;
+                  });
+                },
+              ),
+              FloatingActionButton(
+                backgroundColor: Colors.black54,
+                child: Icon(Icons.crop_16_9_outlined),
+                onPressed: () {
+                  // rectScreenshotController
+                  //     .capture(delay: Duration(milliseconds: 10))
+                  //     .then((capturedImage) async {
+                  //   ShowCapturedWidget(context, capturedImage);
+                  // }).catchError((onError) {
+                  //   print(onError);
+                  // });
+                  setState(() {
+                    isSquare = false;
+                  });
+                },
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: InkWell(
+              onTap: () async {
+                if (isSquare == true) {
+                  // await squareScreenshotController
+                  //     .capture(delay: Duration(milliseconds: 10))
+                  //     .then((capturedImage) async {
+                  //
+                  //   // ShowCapturedWidget(context, capturedImage);
+                  // }).catchError((onError) {
+                  //   print(onError);
+                  // });
+                  await squareScreenshotController
+                      .capture(delay: const Duration(milliseconds: 10))
+                      .then((Uint8List image) async {
+                    if (image != null) {
+                      final directory =
+                          await getApplicationDocumentsDirectory();
+                      final imagePath =
+                          await File('${directory.path}/image.png').create();
+                      await imagePath.writeAsBytes(image);
+
+                      /// Share Plugin
+                      await Share.shareFiles([imagePath.path]);
+                    }
+                  });
+                } else {
+                  await rectScreenshotController
+                      .capture(delay: const Duration(milliseconds: 10))
+                      .then((Uint8List image) async {
+                    if (image != null) {
+                      final directory =
+                          await getApplicationDocumentsDirectory();
+                      final imagePath =
+                          await File('${directory.path}/image.png').create();
+                      await imagePath.writeAsBytes(image);
+
+                      /// Share Plugin
+                      await Share.shareFiles([imagePath.path]);
+                    }
+                  });
+                  // await rectScreenshotController
+                  //     .capture(delay: Duration(milliseconds: 10))
+                  //     .then((capturedImage) async {
+                  //
+                  //   // ShowCapturedWidget(context, capturedImage);
+                  // }).catchError((onError) {
+                  //   print(onError);
+                  // });
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Color(0xff161616),
+                ),
+                width: double.infinity,
+                child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 30),
-                    child: Column(
-                      children: [
-                        Icon(FontAwesomeIcons.quoteLeft),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
-                          child: Text(
-                            "${widget.snippet}",
-                            textScaleFactor: 1.0,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Icon(FontAwesomeIcons.quoteRight),
-                      ],
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Text(
+                      "Share",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 4,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Stack(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            isSquare == true
+                ? Center(
+                    child: Screenshot(
+                      controller: squareScreenshotController,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                              Color(0xff5d5da8),
+                              Color(0xff5bc3ef)
+                            ])),
+                        width: MediaQuery.of(context).size.width * 1.1,
+                        height: MediaQuery.of(context).size.width * 1.1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            CachedNetworkImage(
-                              imageUrl: episodeObject.episodeObject['image'],
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  height: MediaQuery.of(context).size.width / 6,
-                                  width: MediaQuery.of(context).size.width / 6,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.3),
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        topLeft: Radius.circular(10))),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 30),
+                                  child: Column(
+                                    children: [
+                                      Icon(FontAwesomeIcons.quoteLeft),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 20),
+                                        child: Text(
+                                          "${widget.snippet}",
+                                          textScaleFactor: 1.0,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                  5,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      Icon(FontAwesomeIcons.quoteRight),
+                                    ],
                                   ),
-                                );
-                              },
+                                ),
+                              ),
                             ),
-                            Flexible(
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 20, left: 40, right: 40),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        bottomRight: Radius.circular(10))),
+                                child: Stack(
                                   children: [
-                                    Text(
-                                      "${episodeObject.episodeObject['name']}",
-                                      maxLines: 1,
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                          color: Color(0xff222222),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8, right: 8, bottom: 8, top: 8),
+                                      child: Row(
+                                        children: [
+                                          CachedNetworkImage(
+                                            imageUrl: episodeObject
+                                                .episodeObject['image'],
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    6,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    6,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          Flexible(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "${episodeObject.episodeObject['name']}",
+                                                    maxLines: 1,
+                                                    textScaleFactor: 1.0,
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff222222),
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            3),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    "${episodeObject.episodeObject['podcast_name']}",
+                                                    textScaleFactor: 1.0,
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xff222222),
+                                                        fontSize: SizeConfig
+                                                                .safeBlockHorizontal *
+                                                            2.5),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                    SizedBox(
-                                      height: 5,
+                                    Positioned(
+                                      right: 5,
+                                      bottom: 5,
+                                      child: Image.asset(
+                                        'assets/images/Favicon.png',
+                                        cacheHeight: (MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                4)
+                                            .floor(),
+                                        height: 30,
+                                        width: 30,
+                                      ),
                                     ),
-                                    Text(
-                                      "${episodeObject.episodeObject['podcast_name']}",
-                                      textScaleFactor: 1.0,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: Color(0xff222222),
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  2.5),
-                                    )
                                   ],
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
-                      Positioned(
-                        right: 5,
-                        bottom: 5,
-                        child: Image.asset(
-                          'assets/images/Favicon.png',
-                          cacheHeight:
-                              (MediaQuery.of(context).size.height / 4).floor(),
-                          height: 30,
-                          width: 30,
-                        ),
-                      ),
-                    ],
+                    ),
+                  )
+                : Screenshot(
+                    controller: rectScreenshotController,
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+                      child: Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.3),
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10),
+                                      topLeft: Radius.circular(10))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 30),
+                                child: Column(
+                                  children: [
+                                    Icon(FontAwesomeIcons.quoteLeft),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 20),
+                                      child: Text(
+                                        "${widget.snippet}",
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    5,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Icon(FontAwesomeIcons.quoteRight),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: 20, left: 40, right: 40),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(10),
+                                      bottomRight: Radius.circular(10))),
+                              child: Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8, right: 8, bottom: 8, top: 8),
+                                    child: Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: episodeObject
+                                              .episodeObject['image'],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  6,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  6,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        Flexible(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "${episodeObject.episodeObject['name']}",
+                                                  maxLines: 1,
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      color: Color(0xff222222),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3),
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  "${episodeObject.episodeObject['podcast_name']}",
+                                                  textScaleFactor: 1.0,
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: Color(0xff222222),
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          2.5),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 5,
+                                    bottom: 5,
+                                    child: Image.asset(
+                                      'assets/images/Favicon.png',
+                                      cacheHeight:
+                                          (MediaQuery.of(context).size.height /
+                                                  4)
+                                              .floor(),
+                                      height: 30,
+                                      width: 30,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.3),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10))),
+                              height: MediaQuery.of(context).size.height / 3.5,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "#YourVoiceIsWorthSomething",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "aureal.one",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10))),
-                  height: MediaQuery.of(context).size.height / 3.5,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "#YourVoiceIsWorthSomething",
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: SizeConfig.safeBlockHorizontal * 4),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "aureal.one",
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 4),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          )),
+          ],
         ),
       ),
     );

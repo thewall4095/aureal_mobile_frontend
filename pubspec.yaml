@@ -99,6 +99,7 @@ dependencies:
  # flutter_signin_button: ^1.1.0
 
 
+
 #  just_audio: ^0.8.0
   firebase_auth: ^3.1.0
   firebase_core: ^1.2.0
@@ -117,6 +118,7 @@ dependencies:
   uni_links: ^0.5.0
   badges: ^2.0.1
 #  jitsi_meet: ^4.0.0
+
 
 
 
