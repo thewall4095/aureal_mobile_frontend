@@ -61,15 +61,6 @@ class _FollowingPageState extends State<FollowingPage>
 
   var currentlyPlaying = null;
 
-  // void share(var v) async {
-  //   String sharableLink;
-  //
-  //   await FlutterShare.share(
-  //       title: '${v['title']}',
-  //       text:
-  //           "Hey There, I'm listening to ${v['name']} on Aureal, here's the link for you https://api.aureal.one/podcast/${v['podcast_id']}");
-  // }
-
   void getLocalData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
@@ -143,9 +134,6 @@ class _FollowingPageState extends State<FollowingPage>
   List hiveEpisodes = [];
 
   void getHiveFollowedEpisode() async {
-    // setState(() {
-    //   hiveEpisodeLoading = true;
-    // });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/browseHiveEpisodesTest?user_id=${prefs.getString('userId')}&page=$pageNumber&pageSize=10";
@@ -186,6 +174,7 @@ class _FollowingPageState extends State<FollowingPage>
 
   bool isPaginationLoading = true;
   bool isFollowingPageLoading = true;
+
   @override
   void initState() {
     animationController =
@@ -221,28 +210,11 @@ class _FollowingPageState extends State<FollowingPage>
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    // communities = Provider.of<CommunityProvider>(context);
+
     var categories = Provider.of<CategoriesProvider>(context);
     currentlyPlaying = Provider.of<PlayerChange>(context);
-    // print('the communities');
-    // print(communities);
-    // print(communities.allCommunities);
-    // if (communities.isFetchedallCommunities == false) {
-    //   // communities.getAllCommunity();
-    // }
-    // if (communities.isFetcheduserCreatedCommunities == false) {
-    //   // communities.getUserCreatedCommunities();
-    // }
-    // if (communities.isFetcheduserCommunities == false) {
-    //   // communities.getAllCommunitiesForUser();
-    // }
-    // isLoading = false;
-    //
+
     Future<void> _pullRefreshEpisodes() async {
-      // getCommunityEposidesForUser();
-      // await communities.getAllCommunitiesForUser();
-      // await communities.getUserCreatedCommunities();
-      // await communities.getAllCommunity();
       getFollowedPodcasts();
       getHiveFollowedEpisode();
 

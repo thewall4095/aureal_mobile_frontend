@@ -1557,7 +1557,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                                       decoration: BoxDecoration(
                                           gradient: LinearGradient(colors: [
                                         Color(0xff5d5da8),
-                                        Color(0xff5bc3ef)
+                                        Colors.red
                                       ])),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
@@ -1570,7 +1570,9 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                                       Navigator.push(context,
                                           MaterialPageRoute(builder: (context) {
                                         return EditSnippet(
-                                            snippetString: snippetString);
+                                          snippetString: snippetString,
+                                          snippet: snippet,
+                                        );
                                       }));
                                     },
                                     child: Container(
@@ -1581,7 +1583,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                                       ])),
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
-                                        child: Text("Create Snippet"),
+                                        child: Text("CREATE CLIP"),
                                       ),
                                     ),
                                   ),
@@ -1670,8 +1672,9 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 
 class EditSnippet extends StatefulWidget {
   String snippetString;
+  List snippet;
 
-  EditSnippet({@required this.snippetString});
+  EditSnippet({@required this.snippetString, @required this.snippet});
 
   @override
   _EditSnippetState createState() => _EditSnippetState();
@@ -1679,6 +1682,33 @@ class EditSnippet extends StatefulWidget {
 
 class _EditSnippetState extends State<EditSnippet> {
   TextEditingController controller;
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  String title;
+
+  void addCLip() async {
+    String url = 'https://api.aureal.one/private/createSnippet';
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    var map = Map<String, dynamic>();
+    map['episode_id'] = episodeObject.episodeObject['id'];
+    map['words'] = widget.snippetString;
+    map['start_time'] = widget.snippet[0]['start_time'];
+    map['end_time'] = widget.snippet[widget.snippet.length - 1]['end_time'];
+    map['title'] = title;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return ClipScreen();
+      }));
+    } catch (e) {
+      print(e);
+    }
+  }
 
   String snippetText = '';
   @override
@@ -1701,7 +1731,7 @@ class _EditSnippetState extends State<EditSnippet> {
         centerTitle: true,
         elevation: 0.0,
         title: Text(
-          "Edit Snippet",
+          "Edit Clip",
           textScaleFactor: 1.0,
           style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
         ),
@@ -1785,6 +1815,11 @@ class _EditSnippetState extends State<EditSnippet> {
                         title: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                title = value;
+                              });
+                            },
                             decoration: InputDecoration(
                                 labelText: 'Give your snippet a title',
                                 labelStyle: TextStyle(
@@ -1805,6 +1840,7 @@ class _EditSnippetState extends State<EditSnippet> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextField(
+                          maxLength: 200,
                           onChanged: (value) {
                             setState(() {
                               snippetText = value;
@@ -1822,10 +1858,11 @@ class _EditSnippetState extends State<EditSnippet> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return SnippetShare(snippet: snippetText);
-                      }));
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) {
+                      //   return SnippetShare(snippet: snippetText);
+                      // }));
+                      addCLip();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -1855,9 +1892,11 @@ class _EditSnippetState extends State<EditSnippet> {
 }
 
 class SnippetShare extends StatefulWidget {
-  String snippet;
+  var snippet;
 
-  SnippetShare({@required this.snippet});
+  var episodeDetails;
+
+  SnippetShare({@required this.snippet, @required this.episodeDetails});
 
   @override
   _SnippetShareState createState() => _SnippetShareState();
@@ -2081,7 +2120,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 20),
                                         child: Text(
-                                          "${widget.snippet}",
+                                          "${widget.snippet['words']}",
                                           textScaleFactor: 1.0,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
@@ -2114,8 +2153,8 @@ class _SnippetShareState extends State<SnippetShare> {
                                       child: Row(
                                         children: [
                                           CachedNetworkImage(
-                                            imageUrl: episodeObject
-                                                .episodeObject['image'],
+                                            imageUrl: widget.episodeDetails[
+                                                'podcast_image'],
                                             imageBuilder:
                                                 (context, imageProvider) {
                                               return Container(
@@ -2146,7 +2185,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    "${episodeObject.episodeObject['name']}",
+                                                    "${widget.episodeDetails['episode_name']}",
                                                     maxLines: 1,
                                                     textScaleFactor: 1.0,
                                                     style: TextStyle(
@@ -2162,7 +2201,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                                     height: 5,
                                                   ),
                                                   Text(
-                                                    "${episodeObject.episodeObject['podcast_name']}",
+                                                    "${widget.episodeDetails['podcast_name']}",
                                                     textScaleFactor: 1.0,
                                                     maxLines: 1,
                                                     style: TextStyle(
@@ -2234,7 +2273,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 20),
                                       child: Text(
-                                        "${widget.snippet}",
+                                        "${widget.snippet['words']}",
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -2267,8 +2306,8 @@ class _SnippetShareState extends State<SnippetShare> {
                                     child: Row(
                                       children: [
                                         CachedNetworkImage(
-                                          imageUrl: episodeObject
-                                              .episodeObject['image'],
+                                          imageUrl: widget
+                                              .episodeDetails['podcast_image'],
                                           imageBuilder:
                                               (context, imageProvider) {
                                             return Container(
@@ -2299,7 +2338,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "${episodeObject.episodeObject['name']}",
+                                                  "${widget.episodeDetails['episode_name']}",
                                                   maxLines: 1,
                                                   textScaleFactor: 1.0,
                                                   style: TextStyle(
@@ -2314,7 +2353,7 @@ class _SnippetShareState extends State<SnippetShare> {
                                                   height: 5,
                                                 ),
                                                 Text(
-                                                  "${episodeObject.episodeObject['podcast_name']}",
+                                                  "${widget.episodeDetails['podcast_name']}",
                                                   textScaleFactor: 1.0,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -2392,3 +2431,249 @@ class _SnippetShareState extends State<SnippetShare> {
     );
   }
 }
+
+class ClipScreen extends StatefulWidget {
+  @override
+  _ClipScreenState createState() => _ClipScreenState();
+}
+
+class _ClipScreenState extends State<ClipScreen> {
+  var clips = [];
+
+  void getClips() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/getSnippet?user_id=${prefs.getString('userId')}";
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          clips = jsonDecode(response.body)['snippets'];
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getClips();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          "Your Clips",
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+          textScaleFactor: 1.0,
+        ),
+      ),
+      body: Container(
+        child: ListView(
+          children: [
+            for (var v in clips)
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Container(
+                    child: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: CachedNetworkImage(
+                            imageUrl: v['episode_image'],
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                height: MediaQuery.of(context).size.width / 7,
+                                width: MediaQuery.of(context).size.width / 7,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover)),
+                              );
+                            },
+                          ),
+                          title: Text("${v['episode_name']}"),
+                          subtitle: Text(
+                            "${v["podcast_name"]}",
+                            textScaleFactor: 1.0,
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 2.5),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (var a in v['snippet'])
+                              Container(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: Color(0xffe8e8e8)
+                                                      .withOpacity(0.5),
+                                                  width: 0.5))),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 20),
+                                            child: ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              title: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "${a['title']}",
+                                                      textScaleFactor: 1.0,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .safeBlockHorizontal *
+                                                              3.5,
+                                                          fontWeight:
+                                                              FontWeight.w600),
+                                                    ),
+                                                    Text("${a["start_time"]}")
+                                                  ],
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                "${a['words'].toString().trimRight().trimLeft()}",
+                                                textScaleFactor: 1.0,
+                                              ),
+                                            ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {},
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 15),
+                                                  child: Icon(Icons
+                                                      .remove_circle_outline),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {},
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(15),
+                                                  child: Icon(Icons.edit),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) {
+                                                    return SnippetShare(
+                                                      snippet: a,
+                                                      episodeDetails: v,
+                                                    );
+                                                  }));
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(15),
+                                                  child: Icon(Icons.ios_share),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// class SnippetScreen extends StatefulWidget {
+//   var snippetObject;
+//
+//   SnippetScreen({@required this.snippetObject});
+//
+//   @override
+//   _SnippetScreenState createState() => _SnippetScreenState();
+// }
+
+// class _SnippetScreenState extends State<SnippetScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: NestedScrollView(
+//           physics: BouncingScrollPhysics(),
+//           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
+//             return <Widget>[
+//               SliverAppBar(
+//                 pinned: true,
+//                 leading: IconButton(
+//                   icon: Icon(Icons.close),
+//                 ),
+//               )
+//             ];
+//           },
+//           body: Padding(
+//             padding: const EdgeInsets.all(15),
+//             child: Container(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(vertical: 20),
+//                     child: Text(
+//                       "Title Come here",
+//                       textScaleFactor: 1.0,
+//                       style: TextStyle(
+//                           fontSize: SizeConfig.safeBlockHorizontal * 7),
+//                     ),
+//                   ),
+//                   Text(
+//                     "Snippet",
+//                     style: TextStyle(color: Color(0xffe8e8e8).withOpacity(0.5)),
+//                   ),
+//                   Text("${widget.snippetObject['']}")
+//                 ],
+//               ),
+//             ),
+//           )),
+//     );
+//   }
+// }
