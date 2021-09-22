@@ -442,7 +442,6 @@ class _HomeState extends State<Home> {
           Center(
             child: IconButton(
               icon: Icon(Icons.notifications_none),
-
               onPressed: () {
                 Navigator.pushNamed(context, NotificationPage.id);
               },
@@ -458,18 +457,46 @@ class _HomeState extends State<Home> {
                   context: context, delegate: SearchFunctionality());
             },
           ),
-          // IconButton(
-          //   icon: Icon(
-          //     Icons.mic,
-          //     //     color: Colors.white,
-          //   ),
-          //       onPressed: () {
-          //       Navigator.of(context).push(   SlideRightRoute(widget:
-          //
-          //       AudioRecognize()));
-          //       },
-          //
-          // )
+          IconButton(
+            icon: Icon(Icons.more_vert_outlined),
+            onPressed: () {
+              showBarModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return DownloadPage();
+                              }));
+                            },
+                            leading: Icon(Icons.arrow_circle_down),
+                            title: Text("Downloads"),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return ClipScreen();
+                              }));
+                            },
+                            leading: Icon(Icons.text_snippet),
+                            title: Text("Clips"),
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.account_balance_wallet),
+                            title: Text("Wallet"),
+                          )
+                        ],
+                      ),
+                    );
+                  });
+            },
+          )
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

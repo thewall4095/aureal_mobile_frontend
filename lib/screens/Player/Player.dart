@@ -2028,7 +2028,9 @@ class _SnippetShareState extends State<SnippetShare> {
                       await imagePath.writeAsBytes(image);
 
                       /// Share Plugin
-                      await Share.shareFiles([imagePath.path]);
+                      await Share.shareFiles([imagePath.path],
+                          text:
+                              "${widget.snippet['words'].toString().trimLeft().trimRight()} \n https://aureal.one/episode/${widget.episodeDetails['episode_id']} \n #YourVoiceIsworthSomething #Aureal");
                     }
                   });
                 } else {
@@ -2043,7 +2045,9 @@ class _SnippetShareState extends State<SnippetShare> {
                       await imagePath.writeAsBytes(image);
 
                       /// Share Plugin
-                      await Share.shareFiles([imagePath.path]);
+                      await Share.shareFiles([imagePath.path],
+                          text:
+                              "${widget.snippet['words'].toString().trimLeft().trimRight()} \n https://aureal.one/episode/${widget.episodeDetails['episode_id']} \n #YourVoiceIsworthSomething #Aureal");
                     }
                   });
                   // await rectScreenshotController
@@ -2478,6 +2482,8 @@ class _ClipScreenState extends State<ClipScreen> {
         ),
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         child: ListView(
           children: [
             for (var v in clips)
@@ -2489,23 +2495,27 @@ class _ClipScreenState extends State<ClipScreen> {
                       children: [
                         ListTile(
                           contentPadding: EdgeInsets.zero,
-                          leading: CachedNetworkImage(
-                            imageUrl: v['episode_image'],
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                height: MediaQuery.of(context).size.width / 7,
-                                width: MediaQuery.of(context).size.width / 7,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover)),
-                              );
-                            },
+                          leading: SizedBox(
+                            height: MediaQuery.of(context).size.width / 7,
+                            width: MediaQuery.of(context).size.width / 7,
+                            child: CachedNetworkImage(
+                              imageUrl: v['episode']['episode_image'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.width / 7,
+                                  width: MediaQuery.of(context).size.width / 7,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(6),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
+                                );
+                              },
+                            ),
                           ),
-                          title: Text("${v['episode_name']}"),
+                          title: Text("${v['episode']['episode_name']}"),
                           subtitle: Text(
-                            "${v["podcast_name"]}",
+                            "${v['episode']["podcast_name"]}",
                             textScaleFactor: 1.0,
                             style: TextStyle(
                                 fontSize: SizeConfig.safeBlockHorizontal * 2.5),
@@ -2546,7 +2556,7 @@ class _ClipScreenState extends State<ClipScreen> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      "${a['title']}",
+                                                      "${a['title'] == null ? "" : a['title']}",
                                                       textScaleFactor: 1.0,
                                                       style: TextStyle(
                                                           fontSize: SizeConfig
@@ -2592,7 +2602,8 @@ class _ClipScreenState extends State<ClipScreen> {
                                                           builder: (context) {
                                                     return SnippetShare(
                                                       snippet: a,
-                                                      episodeDetails: v,
+                                                      episodeDetails:
+                                                          v['episode'],
                                                     );
                                                   }));
                                                 },
