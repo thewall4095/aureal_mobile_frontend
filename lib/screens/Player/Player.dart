@@ -2444,6 +2444,17 @@ class ClipScreen extends StatefulWidget {
 class _ClipScreenState extends State<ClipScreen> {
   var clips = [];
 
+  void edit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+  }
+
+  void delete() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/private/deleteSnippet';
+
+    var map = Map<String, dynamic>();
+  }
+
   void getClips() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =

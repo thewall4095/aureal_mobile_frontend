@@ -414,38 +414,10 @@ class _HomeState extends State<Home> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.account_balance_wallet_outlined),
+            icon: Icon(Icons.notifications_none),
             onPressed: () {
-              if (prefs.getString('HiveUserName') != null) {
-                print('Wallet Pressed');
-                Navigator.pushNamed(context, Wallet.id);
-              } else {
-                showBarModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return HiveDetails();
-                    });
-              }
+              Navigator.pushNamed(context, NotificationPage.id);
             },
-          ),
-          Platform.isAndroid == true
-              ? IconButton(
-                  icon: Icon(
-                    Icons.arrow_circle_down_outlined,
-                    //    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, DownloadPage.id);
-                  },
-                )
-              : SizedBox(height: 0, width: 0),
-          Center(
-            child: IconButton(
-              icon: Icon(Icons.notifications_none),
-              onPressed: () {
-                Navigator.pushNamed(context, NotificationPage.id);
-              },
-            ),
           ),
           IconButton(
             icon: Icon(
@@ -467,16 +439,18 @@ class _HomeState extends State<Home> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ListTile(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return DownloadPage();
-                              }));
-                            },
-                            leading: Icon(Icons.arrow_circle_down),
-                            title: Text("Downloads"),
-                          ),
+                          Platform.isAndroid != true
+                              ? SizedBox()
+                              : ListTile(
+                                  onTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) {
+                                      return DownloadPage();
+                                    }));
+                                  },
+                                  leading: Icon(Icons.arrow_circle_down),
+                                  title: Text("Downloads"),
+                                ),
                           ListTile(
                             onTap: () {
                               Navigator.push(context,
@@ -488,7 +462,19 @@ class _HomeState extends State<Home> {
                             title: Text("Clips"),
                           ),
                           ListTile(
-                            leading: Icon(Icons.account_balance_wallet),
+                            onTap: () {
+                              if (prefs.getString('HiveUserName') != null) {
+                                print('Wallet Pressed');
+                                Navigator.pushNamed(context, Wallet.id);
+                              } else {
+                                showBarModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return HiveDetails();
+                                    });
+                              }
+                            },
+                            leading: Icon(FontAwesomeIcons.hive),
                             title: Text("Wallet"),
                           )
                         ],

@@ -419,12 +419,12 @@ class _EpisodeViewState extends State<EpisodeView>
                                 height: 0,
                                 width: 0,
                               ),
-                        IconButton(
-                          onPressed: () {
-                            share1(episodeObject: episodeObject.episodeObject);
-                          },
-                          icon: Icon(Icons.share),
-                        )
+                        // IconButton(
+                        //   onPressed: () {
+                        //     share1(episodeObject: episodeObject.episodeObject);
+                        //   },
+                        //   icon: Icon(Icons.ios_share),
+                        // )
                       ],
                       expandedHeight: episodeContent['permlink'] == null
                           ? MediaQuery.of(context).size.height / 1.5
@@ -1371,7 +1371,7 @@ class _EpisodeViewState extends State<EpisodeView>
             onPressed: () {
               share1(episodeObject: episodeObject.episodeObject);
             },
-            icon: Icon(Icons.share),
+            icon: Icon(Icons.ios_share),
           )
         ],
       ),

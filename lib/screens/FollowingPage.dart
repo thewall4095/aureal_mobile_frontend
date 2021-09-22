@@ -1300,7 +1300,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         v);
                                                               },
                                                               child: Icon(
-                                                                Icons.share,
+                                                                Icons.ios_share,
                                                                 // size: 14,
                                                               ),
                                                             ),

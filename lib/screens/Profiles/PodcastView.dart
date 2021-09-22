@@ -1867,7 +1867,7 @@ class _FollowButtonState extends State<FollowButton> {
                   podcastShare();
                 },
                 icon: Icon(
-                  FontAwesomeIcons.shareAlt,
+                  Icons.ios_share,
                   //    color: Colors.grey,
                   size: 18,
                 ),
