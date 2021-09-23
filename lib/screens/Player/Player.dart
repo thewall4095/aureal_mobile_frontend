@@ -1673,8 +1673,10 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
 class EditSnippet extends StatefulWidget {
   String snippetString;
   List snippet;
+  var snippetObject;
+  bool isEditing;
 
-  EditSnippet({@required this.snippetString, @required this.snippet});
+  EditSnippet({this.snippetString, this.snippet});
 
   @override
   _EditSnippetState createState() => _EditSnippetState();
@@ -2442,17 +2444,29 @@ class ClipScreen extends StatefulWidget {
 }
 
 class _ClipScreenState extends State<ClipScreen> {
+  postreq.Interceptor intercept = postreq.Interceptor();
+
   var clips = [];
 
   void edit() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
   }
 
-  void delete() async {
+  void delete(var snippetId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/private/deleteSnippet';
 
     var map = Map<String, dynamic>();
+    map['snippet_id'] = snippetId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getClips() async {
@@ -2589,7 +2603,10 @@ class _ClipScreenState extends State<ClipScreen> {
                                           Row(
                                             children: [
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () async {
+                                                  await delete(a['id']);
+                                                  getClips();
+                                                },
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -2599,7 +2616,18 @@ class _ClipScreenState extends State<ClipScreen> {
                                                 ),
                                               ),
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  showBarModalBottomSheet(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return EditClip(
+                                                          episodeDetails: v,
+                                                          clipDetails: a,
+                                                        );
+                                                      }).then((value) {
+                                                    getClips();
+                                                  });
+                                                },
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.all(15),
@@ -2699,3 +2727,227 @@ class _ClipScreenState extends State<ClipScreen> {
 //     );
 //   }
 // }
+
+class EditClip extends StatefulWidget {
+  var episodeDetails;
+
+  var clipDetails;
+
+  EditClip({@required this.episodeDetails, @required this.clipDetails});
+
+  @override
+  _EditClipState createState() => _EditClipState();
+}
+
+class _EditClipState extends State<EditClip> {
+  String title;
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController clipController = TextEditingController();
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  void editClip(var snippetId, var snippetTitle, var snippetWords) async {
+    String url = "https://api.aureal.one/private/updateSnippet";
+
+    var map = Map<String, dynamic>();
+
+    map['snippet_id'] = snippetId;
+    map['title'] = snippetTitle;
+    map['words'] = snippetWords;
+
+    FormData formData = FormData.fromMap(map);
+
+    print(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+      Navigator.pop(context, true);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      titleController.text =
+          widget.clipDetails['title'].toString().trimRight().trimLeft();
+      clipController.text =
+          widget.clipDetails['words'].toString().trimLeft().trimRight();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Edit Clip",
+          textScaleFactor: 1.0,
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),
+        ),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff222222),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: widget.episodeDetails['episode']
+                                    ['podcast_image'],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    height:
+                                        MediaQuery.of(context).size.width / 6,
+                                    width:
+                                        MediaQuery.of(context).size.width / 6,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  );
+                                },
+                              ),
+                              Flexible(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${widget.episodeDetails['episode']['episode_name']}",
+                                        maxLines: 1,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        "${widget.episodeDetails['episode']['podcast_name']}",
+                                        textScaleFactor: 1.0,
+                                        maxLines: 1,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: titleController,
+                            onChanged: (value) {
+                              setState(() {
+                                title = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                labelText: 'Title',
+                                labelStyle: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 5)),
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 6),
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            "(Optional)",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: clipController,
+                          maxLength: 200,
+                          onChanged: (value) {
+                            // setState(() {
+                            //   snippetText = value;
+                            // });
+                            // print(snippetText);
+                          },
+                          // controller: controller,
+                          maxLines: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) {
+                      //   return SnippetShare(snippet: snippetText);
+                      // }));
+                      // addCLip();
+
+                      editClip(widget.clipDetails['id'], titleController.text,
+                          clipController.text);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xffe8e8e8),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 15),
+                        child: Text(
+                          "Update",
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              color: Color(0xff161616),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
