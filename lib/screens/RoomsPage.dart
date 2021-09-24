@@ -113,6 +113,44 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     // await getFollowedPodcasts();
   }
 
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  void hostLeft(var roomId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/hostLeft";
+
+    var map = Map<String, dynamic>();
+    map['userid'] = prefs.getString("userId");
+    map['roomid'] = roomId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void hostJoined(var roomId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/hostJoined";
+
+    var map = Map<String, dynamic>();
+    map['userid'] = prefs.getString("userId");
+    map['roomid'] = roomId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   TabController _tabController;
 
   List rooms = [];
@@ -139,7 +177,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     });
   }
 
-  _joinMeeting({String roomId, String roomName, String displayName}) async {
+  _joinMeeting({String roomId, String roomName, String hostUserId}) async {
     // Enable or disable any feature flag here
     // If feature flag are not provided, default values will be used
     // Full list of feature flags (and defaults) available in the README
@@ -163,7 +201,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     var options = JitsiMeetingOptions(room: roomId)
       ..serverURL = 'https://sessions.aureal.one'
       ..subject = roomName
-      ..userDisplayName = displayName
+      ..userDisplayName = prefs.getString("HiveUserName")
       ..userEmail = 'emailText.text'
       // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
       ..audioOnly = true
@@ -183,6 +221,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
       };
 
     debugPrint("JitsiMeetingOptions: $options");
+
     await JitsiMeet.joinMeeting(
       options,
       listener: JitsiMeetingListener(
@@ -197,8 +236,11 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           },
           genericListeners: [
             JitsiGenericListener(
-                eventName: 'readyToClose',
+                eventName: 'onConferenceTerminated',
                 callback: (dynamic message) {
+                  if (hostUserId == prefs.getString("userId")) {
+                    hostLeft(roomId);
+                  }
                   debugPrint("readyToClose callback");
                 }),
           ]),
@@ -221,12 +263,17 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
     debugPrint("_onError broadcasted: $error");
   }
 
+  void makeRoomInactive() async {
+    String url = "https://api.aureal.one/public/";
+  }
+
   var userRooms = [];
 
   void getMyGroupRooms() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/getRooms?page=$pageNumber&pageSize=20&isactive=true&use_id=${prefs.getString("userId")}';
+        'https://api.aureal.one/public/getRooms?page=$pageNumber&pageSize=20&isactive=true&user_id=${prefs.getString("userId")}';
+    print(prefs.getString("userId"));
 
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -676,11 +723,13 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             prefs.getString('userId')) {
                                           addRoomParticipant(
                                               roomid: v['roomid']);
+                                        } else {
+                                          hostJoined(v['roomid']);
                                         }
                                         await _joinMeeting(
-                                          roomId: v['roomid'],
-                                          roomName: v['title'],
-                                        );
+                                            roomId: v['roomid'],
+                                            roomName: v['title'],
+                                            hostUserId: v['hostuserid']);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -895,10 +944,10 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                     9) *
                                                 2.1,
                                             child: GridView(
-                                              scrollDirection: Axis.horizontal,
+                                              scrollDirection: Axis.vertical,
                                               gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 2,
+                                                      crossAxisCount: 5,
                                                       mainAxisSpacing: 10,
                                                       crossAxisSpacing: 5,
                                                       childAspectRatio: 1 / 1),
@@ -1015,11 +1064,13 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             prefs.getString('userId')) {
                                           addRoomParticipant(
                                               roomid: v['roomid']);
+                                        } else {
+                                          hostJoined(v['roomid']);
                                         }
                                         await _joinMeeting(
-                                          roomId: v['roomid'],
-                                          roomName: v['title'],
-                                        );
+                                            roomId: v['roomid'],
+                                            roomName: v['title'],
+                                            hostUserId: v['hostuserid']);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
