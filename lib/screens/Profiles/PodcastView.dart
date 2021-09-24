@@ -17,6 +17,7 @@ import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -902,8 +903,8 @@ class _PodcastViewState extends State<PodcastView> {
                           onTap: () {
                             Navigator.push(
                                 context,
-                                SlideRightRoute(
-                                    widget: EpisodeView(
+                                CupertinoPageRoute(
+                                    builder: (context) => EpisodeView(
                                         episodeId: episodeList[index - 1]
                                             ['id'])));
                           },
@@ -1187,12 +1188,14 @@ class _PodcastViewState extends State<PodcastView> {
                                                         null) {
                                                       Navigator.push(
                                                           context,
-                                                          SlideRightRoute(
-                                                              widget: Comments(
-                                                            episodeObject:
-                                                                episodeList[
-                                                                    index - 1],
-                                                          )));
+                                                          CupertinoPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      Comments(
+                                                                        episodeObject:
+                                                                            episodeList[index -
+                                                                                1],
+                                                                      )));
                                                     } else {
                                                       showBarModalBottomSheet(
                                                           context: context,
@@ -1293,7 +1296,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                       true) {
                                                 currentlyPlaying.stop();
                                                 Navigator.push(context,
-                                                    MaterialPageRoute(
+                                                    CupertinoPageRoute(
                                                         builder: (context) {
                                                   return PodcastVideoPlayer(
                                                     episodeObject:
@@ -1307,7 +1310,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                         .contains('.pdf') ==
                                                     true) {
                                                   // Navigator.push(context,
-                                                  //     MaterialPageRoute(
+                                                  //     CupertinoPageRoute(
                                                   //         builder: (context) {
                                                   //   return PDFviewer(
                                                   //     episodeObject:
@@ -1330,7 +1333,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                   currentlyPlaying.play();
                                                   // _pullRefreshEpisodes();
                                                   Navigator.push(context,
-                                                      MaterialPageRoute(
+                                                      CupertinoPageRoute(
                                                           builder: (context) {
                                                     return Player();
                                                   }));

@@ -45,7 +45,7 @@ class _WelcomeState extends State<Welcome> {
     // loginStateSubscription = authBloc.currentUser.listen((fbUser) {
     //   if (fbUser != null) {
     //     Navigator.of(context).pushReplacement(
-    //       MaterialPageRoute(
+    //       CupertinoPageRoute(
     //         builder: (context) => Home(),
     //       ),
     //     );

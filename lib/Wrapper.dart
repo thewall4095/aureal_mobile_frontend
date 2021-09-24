@@ -2,6 +2,7 @@ import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
@@ -80,25 +81,25 @@ class _WrapperState extends State<Wrapper> {
               'displayPicture', response.data['updatedUser']['img']);
           print(prefs.getString('token'));
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
+              CupertinoPageRoute(builder: (context) {
             return Home();
           }));
         } else {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
+              CupertinoPageRoute(builder: (context) {
             return Welcome();
           }));
         }
         counter++;
       } catch (e) {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
+            CupertinoPageRoute(builder: (context) {
           return Welcome();
         }));
       }
     } else {
       print("Came here////////////////////////");
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+      Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
         return Welcome();
       }));
     }

@@ -7,6 +7,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:color_thief_flutter/color_thief_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,7 +27,7 @@ class CategoryView extends StatefulWidget {
   var data;
   String query;
 
-  var  categoryObject;
+  var categoryObject;
 
   CategoryView({@required this.categoryObject, this.query, this.data});
 
@@ -56,8 +57,7 @@ class _CategoryViewState extends State<CategoryView>
   void explorePodcast() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/explorePodcasts?type=new&page=${explorPage}&user_id=${prefs
-        .getString('userId')}&category_ids=${widget.categoryObject['id']}";
+        "https://api.aureal.one/public/explorePodcasts?type=new&page=${explorPage}&user_id=${prefs.getString('userId')}&category_ids=${widget.categoryObject['id']}";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -72,12 +72,9 @@ class _CategoryViewState extends State<CategoryView>
   }
 
   void explorePagination() async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/explorePodcasts?user_id=${prefs
-        .getString('userId')}&category_ids=${widget
-        .categoryObject['id']}&page=$explorPage&pageSize=10";
+        "https://api.aureal.one/public/explorePodcasts?user_id=${prefs.getString('userId')}&category_ids=${widget.categoryObject['id']}&page=$explorPage&pageSize=10";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -91,7 +88,7 @@ class _CategoryViewState extends State<CategoryView>
     } catch (e) {
       print(e);
     }
-  await  getColor(explorePodcasts[0]['image']);
+    await getColor(explorePodcasts[0]['image']);
     setState(() {
       _isExploreLoading = false;
     });
@@ -103,8 +100,7 @@ class _CategoryViewState extends State<CategoryView>
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/explorePodcasts?page=${newpage}&pageSize=10&user_id=${prefs
-        .getString('userId')}&category_ids=${widget.categoryObject['id']}";
+        "https://api.aureal.one/public/explorePodcasts?page=${newpage}&pageSize=10&user_id=${prefs.getString('userId')}&category_ids=${widget.categoryObject['id']}";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -126,8 +122,7 @@ class _CategoryViewState extends State<CategoryView>
   void newPodcastget() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/explorePodcasts?user_id=${prefs
-        .getString('userId')}&category_ids=${widget.categoryObject['id']}";
+        "https://api.aureal.one/public/explorePodcasts?user_id=${prefs.getString('userId')}&category_ids=${widget.categoryObject['id']}";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -145,8 +140,7 @@ class _CategoryViewState extends State<CategoryView>
   void getCategoryPodcasts() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/categorySearch?category_ids=${widget
-        .categoryObject['id']}&user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/categorySearch?category_ids=${widget.categoryObject['id']}&user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -166,9 +160,7 @@ class _CategoryViewState extends State<CategoryView>
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/public/categorySearch?category_ids=${widget
-        .categoryObject['id']}&user_id=${prefs.getString(
-        'userId')}&page=$pageNumber}';
+        'https://api.aureal.one/public/categorySearch?category_ids=${widget.categoryObject['id']}&user_id=${prefs.getString('userId')}&page=$pageNumber}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -205,7 +197,6 @@ class _CategoryViewState extends State<CategoryView>
 //   }
 // }
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -217,7 +208,8 @@ class _CategoryViewState extends State<CategoryView>
 
     _explorePodcastScroller = ScrollController();
     _explorePodcastScroller.addListener(() {
-      if (_explorePodcastScroller.position.pixels ==_explorePodcastScroller.position.maxScrollExtent) {
+      if (_explorePodcastScroller.position.pixels ==
+          _explorePodcastScroller.position.maxScrollExtent) {
         explorePagination();
       }
     });
@@ -229,7 +221,6 @@ class _CategoryViewState extends State<CategoryView>
         newPodcast();
       }
     });
-
 
     super.initState();
   }
@@ -247,8 +238,7 @@ class _CategoryViewState extends State<CategoryView>
     b = (b > 255) ? 255 : b;
     int a = opacity.toInt();
     return int.parse(
-        '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b
-            .toRadixString(16)}');
+        '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
   }
 
   void getColor(String url) async {
@@ -270,8 +260,8 @@ class _CategoryViewState extends State<CategoryView>
     var categories = Provider.of<CategoriesProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     SizeConfig().init(context);
-    return Stack(
-      children:[  Scaffold(
+    return Stack(children: [
+      Scaffold(
         body: SafeArea(
           child: CustomScrollView(
             controller: controller,
@@ -279,24 +269,15 @@ class _CategoryViewState extends State<CategoryView>
               SliverAppBar(
                 pinned: true,
                 floating: true,
-                expandedHeight: MediaQuery
-                    .of(context)
-                    .size
-                    .height / 3.8,
+                expandedHeight: MediaQuery.of(context).size.height / 3.8,
                 flexibleSpace: Container(
                   child: FlexibleSpaceBar(
                     background: Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                            colors: [ Color(dominantColor), Colors.transparent],
+                            colors: [Color(dominantColor), Colors.transparent],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter),
                       ),
@@ -315,11 +296,10 @@ class _CategoryViewState extends State<CategoryView>
                                       .clamp(0.5, 1)
                                       .toDouble(),
                                   style: TextStyle(
-                                      fontSize: SizeConfig.safeBlockHorizontal *
-                                          8,
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 8,
                                       fontWeight: FontWeight.w700),
                                 ),
-
                               ],
                             )
                           ],
@@ -328,60 +308,56 @@ class _CategoryViewState extends State<CategoryView>
                     ),
                   ),
                 ),
-
               ),
               SliverToBoxAdapter(
-                child:
-                Column(
+                child: Column(
                   children: [
                     Text(
                       "Top Podcasts",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w500),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height / 3,
+                      height: MediaQuery.of(context).size.height / 3,
                       //width: MediaQuery.of(context).size.width/5,
                       child: ListView.builder(
                         controller: _explorePodcastScroller,
                         scrollDirection: Axis.horizontal,
                         itemCount: explorePodcasts.length + 1,
                         itemBuilder: (context, index) {
-                          if( index == explorePodcasts.length){
-                            return   Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                          if (index == explorePodcasts.length) {
+                            return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Shimmer.fromColors(
                                   baseColor: themeProvider.isLightTheme == false
                                       ? kPrimaryColor
                                       : Colors.white,
-                                  highlightColor: themeProvider.isLightTheme == false
-                                      ? Color(0xff3a3a3a)
-                                      : Colors.white,
+                                  highlightColor:
+                                      themeProvider.isLightTheme == false
+                                          ? Color(0xff3a3a3a)
+                                          : Colors.white,
                                   child: Column(
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(15.0),
                                         child: Container(
-                                          decoration:
-                                          BoxDecoration(
+                                          decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(
-                                                10),
-                                            color: kSecondaryColor,),
-
-                                          height:
-                                          MediaQuery
-                                              .of(context)
-                                              .size
-                                              .height / 8,
-                                          width: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width / 4,
+                                                BorderRadius.circular(10),
+                                            color: kSecondaryColor,
+                                          ),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              8,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
                                         ),
                                       ),
                                       SizedBox(width: 30),
@@ -389,27 +365,29 @@ class _CategoryViewState extends State<CategoryView>
                                         children: [
                                           Container(
                                             color: kPrimaryColor,
-                                            height:
-                                            MediaQuery
-                                                .of(context)
-                                                .size
-                                                .height /50,
-                                            width: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width / 4,),
-                                          SizedBox(height: 5,),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
                                           Container(
                                             color: kPrimaryColor,
-                                            height:
-                                            MediaQuery
-                                                .of(context)
-                                                .size
-                                                .height / 50,
-                                            width: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width / 4,),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                4,
+                                          ),
                                         ],
                                       )
                                     ],
@@ -419,10 +397,10 @@ class _CategoryViewState extends State<CategoryView>
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                    return PodcastView(
-                                        explorePodcasts[index]['id']);
-                                  }));
+                                  CupertinoPageRoute(builder: (context) {
+                                return PodcastView(
+                                    explorePodcasts[index]['id']);
+                              }));
                             },
                             child: Column(
                               children: <Widget>[
@@ -430,76 +408,53 @@ class _CategoryViewState extends State<CategoryView>
                                   padding: const EdgeInsets.all(15.0),
                                   child: Container(
                                     height:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height / 8,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width / 4,
-                                    child:  Container(
-                                      child:   CachedNetworkImage(
-                                        imageBuilder:
-                                            (context,
-                                            imageProvider) {
+                                        MediaQuery.of(context).size.height / 8,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    child: Container(
+                                      child: CachedNetworkImage(
+                                        imageBuilder: (context, imageProvider) {
                                           return Container(
-                                            decoration:
-                                            BoxDecoration(
+                                            decoration: BoxDecoration(
                                               borderRadius:
-                                              BorderRadius.circular(
-                                                  10),
+                                                  BorderRadius.circular(10),
                                               image: DecorationImage(
-                                                  image:
-                                                  imageProvider,
-                                                  fit: BoxFit
-                                                      .cover),
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover),
                                             ),
                                             width: MediaQuery.of(context)
-                                                .size
-                                                .width /
+                                                    .size
+                                                    .width /
                                                 4,
                                             height: MediaQuery.of(context)
-                                                .size
-                                                .width /
+                                                    .size
+                                                    .width /
                                                 4,
                                           );
                                         },
-                                        imageUrl:
-                                        explorePodcasts[index]['image'],
+                                        imageUrl: explorePodcasts[index]
+                                            ['image'],
                                         memCacheWidth:
-                                        (MediaQuery.of(context)
-                                            .size
-                                            .width)
-                                            .floor(),
+                                            (MediaQuery.of(context).size.width)
+                                                .floor(),
                                         memCacheHeight:
-                                        (MediaQuery.of(context)
-                                            .size
-                                            .width)
-                                            .floor(),
-                                        placeholder:
-                                            (context,
-                                            url) =>
+                                            (MediaQuery.of(context).size.width)
+                                                .floor(),
+                                        placeholder: (context, url) =>
                                             Container(
-                                              width: MediaQuery.of(
-                                                  context)
+                                          width: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                                  4,
-                                              height: MediaQuery.of(
-                                                  context)
+                                              4,
+                                          height: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                                  4,
-                                              child: Image
-                                                  .asset(
-                                                  'assets/images/Thumbnail.png'),
-                                            ),
-                                        errorWidget: (context,
-                                            url,
-                                            error) =>
-                                            Icon(Icons
-                                                .error),
+                                              4,
+                                          child: Image.asset(
+                                              'assets/images/Thumbnail.png'),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
                                       ),
                                     ),
                                   ),
@@ -508,17 +463,12 @@ class _CategoryViewState extends State<CategoryView>
                                 Expanded(
                                   child: Container(
                                     height:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height / 8,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width / 4,
+                                        MediaQuery.of(context).size.height / 8,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           "${explorePodcasts[index]['name']}",
@@ -529,9 +479,9 @@ class _CategoryViewState extends State<CategoryView>
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            // color: Colors.white,
-                                              fontSize:
-                                              SizeConfig.safeBlockHorizontal *
+                                              // color: Colors.white,
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
                                                   3.5,
                                               fontWeight: FontWeight.w400),
                                         ),
@@ -548,9 +498,9 @@ class _CategoryViewState extends State<CategoryView>
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            //  color: Colors.grey,
-                                              fontSize:
-                                              SizeConfig.safeBlockHorizontal *
+                                              //  color: Colors.grey,
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
                                                   3),
                                         ),
                                       ],
@@ -568,28 +518,28 @@ class _CategoryViewState extends State<CategoryView>
               ),
               SliverList(
                   delegate: SliverChildListDelegate([
-                    Center(
-                      child: Text(
-                        'New Podcasts',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    SizedBox(height: 20,)
-                  ]
-                  )),
+                Center(
+                  child: Text(
+                    'New Podcasts',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                )
+              ])),
               // Text("Greed"),
               SliverGrid(
-                gridDelegate:SliverGridDelegateWithMaxCrossAxisExtent(
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 205.0,
                   mainAxisSpacing: 40.0,
                   crossAxisSpacing: 10.0,
                   childAspectRatio: 0.8,
                 ),
                 delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index){
-                    if (index == newPodcasts.length ){
-                      return  Padding(
+                  (BuildContext context, int index) {
+                    if (index == newPodcasts.length) {
+                      return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Shimmer.fromColors(
                             baseColor: themeProvider.isLightTheme == false
@@ -603,21 +553,14 @@ class _CategoryViewState extends State<CategoryView>
                                 Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: Container(
-                                    decoration:
-                                    BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          10),
-                                      color: kSecondaryColor,),
-
-                                    height: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height /6,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width / 2.8,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: kSecondaryColor,
+                                    ),
+                                    height:
+                                        MediaQuery.of(context).size.height / 6,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.8,
                                   ),
                                 ),
                                 SizedBox(width: 30),
@@ -626,127 +569,78 @@ class _CategoryViewState extends State<CategoryView>
                                     Container(
                                       color: kPrimaryColor,
                                       height:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height /50,
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width / 4,),
-                                    SizedBox(height: 5,),
+                                          MediaQuery.of(context).size.height /
+                                              50,
+                                      width:
+                                          MediaQuery.of(context).size.width / 4,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
                                     Container(
                                       color: kPrimaryColor,
                                       height:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height / 50,
-                                      width: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width / 4,),
+                                          MediaQuery.of(context).size.height /
+                                              50,
+                                      width:
+                                          MediaQuery.of(context).size.width / 4,
+                                    ),
                                   ],
                                 )
                               ],
                             ),
                           ));
-                    } return GestureDetector(
+                    }
+                    return GestureDetector(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                              return PodcastView(newPodcasts[index]['id']);
-                            }));
+                            CupertinoPageRoute(builder: (context) {
+                          return PodcastView(newPodcasts[index]['id']);
+                        }));
                       },
-                      child:
-                      Column(
+                      child: Column(
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Container(
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height /6,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 2.8,
-                              child:  CachedNetworkImage(
-                                imageBuilder:
-                                    (context,
-                                    imageProvider) {
+                              height: MediaQuery.of(context).size.height / 6,
+                              width: MediaQuery.of(context).size.width / 2.8,
+                              child: CachedNetworkImage(
+                                imageBuilder: (context, imageProvider) {
                                   return Container(
-                                    decoration:
-                                    BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
                                       image: DecorationImage(
-                                          image:
-                                          imageProvider,
-                                          fit: BoxFit
-                                              .cover),
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
                                     ),
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .width /
-                                        4,
-                                    height: MediaQuery.of(context)
-                                        .size
-                                        .width /
-                                        4,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    height:
+                                        MediaQuery.of(context).size.width / 4,
                                   );
                                 },
-                                imageUrl:
-                                newPodcasts[index]['image'],
+                                imageUrl: newPodcasts[index]['image'],
                                 memCacheWidth:
-                                (MediaQuery.of(context)
-                                    .size
-                                    .width)
-                                    .floor(),
+                                    (MediaQuery.of(context).size.width).floor(),
                                 memCacheHeight:
-                                (MediaQuery.of(context)
-                                    .size
-                                    .width)
-                                    .floor(),
-                                placeholder:
-                                    (context,
-                                    url) =>
-                                    Container(
-                                      width: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width /
-                                          4,
-                                      height: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width /
-                                          4,
-                                      child: Image
-                                          .asset(
-                                          'assets/images/Thumbnail.png'),
-                                    ),
-                                errorWidget: (context,
-                                    url,
-                                    error) =>
-                                    Icon(Icons
-                                        .error),
+                                    (MediaQuery.of(context).size.width).floor(),
+                                placeholder: (context, url) => Container(
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  height: MediaQuery.of(context).size.width / 4,
+                                  child: Image.asset(
+                                      'assets/images/Thumbnail.png'),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ),
                             ),
                           ),
                           SizedBox(width: 30),
                           Expanded(
                             child: Container(
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height / 7,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 3,
+                              height: MediaQuery.of(context).size.height / 7,
+                              width: MediaQuery.of(context).size.width / 3,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
@@ -759,9 +653,10 @@ class _CategoryViewState extends State<CategoryView>
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      // color: Colors.white,
+                                        // color: Colors.white,
                                         fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3.5,
+                                            SizeConfig.safeBlockHorizontal *
+                                                3.5,
                                         fontWeight: FontWeight.w400),
                                   ),
                                   SizedBox(
@@ -777,33 +672,26 @@ class _CategoryViewState extends State<CategoryView>
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      //  color: Colors.grey,
+                                        //  color: Colors.grey,
                                         fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3),
+                                            SizeConfig.safeBlockHorizontal * 3),
                                   ),
-
                                 ],
                               ),
                             ),
                           ),
-
                         ],
                       ),
-
                     );
-
                   },
-
                   childCount: newPodcasts.length + 1,
-
                 ),
               ),
             ],
           ),
         ),
-      ),]
-
-    );
+      ),
+    ]);
   }
 }
 // class SearchCategorys extends StatefulWidget {
@@ -912,22 +800,22 @@ class _CategoryViewState extends State<CategoryView>
 //
 //     super.initState();
 //   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   var categories = Provider.of<CategoriesProvider>(context);
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       elevation: 0,
-  //       backgroundColor: Colors.transparent,
-  //     ),
-  //     body: ListView.builder(
-  //         controller: controller,
-  //         itemCount: result.length + 1,
-  //         itemBuilder: (BuildContext context, int index) {
-  //           return index == 0 ? _searchBr() : _categorieslistview(index - 1);
-  //         }),
-  //   );
-  // }
+// @override
+// Widget build(BuildContext context) {
+//   var categories = Provider.of<CategoriesProvider>(context);
+//   return Scaffold(
+//     appBar: AppBar(
+//       elevation: 0,
+//       backgroundColor: Colors.transparent,
+//     ),
+//     body: ListView.builder(
+//         controller: controller,
+//         itemCount: result.length + 1,
+//         itemBuilder: (BuildContext context, int index) {
+//           return index == 0 ? _searchBr() : _categorieslistview(index - 1);
+//         }),
+//   );
+// }
 
 //
 //   _searchBr() {
@@ -971,7 +859,7 @@ class _CategoryViewState extends State<CategoryView>
 // //
 //           return GestureDetector(
 //             onTap: () {
-//               Navigator.push(context, MaterialPageRoute(builder: (context) {
+//               Navigator.push(context, CupertinoPageRoute(builder: (context) {
 //                 return PodcastView(result[index]['id']);
 //               }));
 //             },
@@ -1064,25 +952,24 @@ class _CategoryViewState extends State<CategoryView>
 //
 // }
 
-
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       elevation: 0,
-  //       backgroundColor: Colors.transparent,
-  //       title: Text(
-  //         '${widget.categoryObject['name']}',
-  //         textScaleFactor:
-  //             mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
-  //         style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
-  //       ),
-  //     ),
-  //     body: ListView.builder(
-  //         controller: controller,
-  //         itemCount: result.length + 1,
-  //         itemBuilder: (BuildContext context, int index) {
-  //           return index == 0 ? _searchBr() : _categorieslistview(index - 1);
-  //         }),
-  //   );
-  // }
+//   return Scaffold(
+//     appBar: AppBar(
+//       elevation: 0,
+//       backgroundColor: Colors.transparent,
+//       title: Text(
+//         '${widget.categoryObject['name']}',
+//         textScaleFactor:
+//             mediaQueryData.textScaleFactor.clamp(0.5, 1).toDouble(),
+//         style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+//       ),
+//     ),
+//     body: ListView.builder(
+//         controller: controller,
+//         itemCount: result.length + 1,
+//         itemBuilder: (BuildContext context, int index) {
+//           return index == 0 ? _searchBr() : _categorieslistview(index - 1);
+//         }),
+//   );
+// }
 
 //

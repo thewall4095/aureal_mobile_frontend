@@ -5,6 +5,7 @@ import 'package:auditory/screens/recorderApp/recorderpages/CreatePodcast.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/PublishEpisode.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 // import 'package:provider/provider.dart';
@@ -148,7 +149,7 @@ class _SelectPodcastState extends State<SelectPodcast> {
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
+                                  CupertinoPageRoute(builder: (context) {
                                 return Publish(
                                   userId: widget.userId,
                                   currentEpisodeId: widget.currentEpisodeId,

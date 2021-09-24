@@ -6,6 +6,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -29,8 +30,7 @@ class _NotificationPageState extends State<NotificationPage>
 
   Dio dio = Dio();
   TabController _tabController;
-    String displayPicture;
-
+  String displayPicture;
 
   var notificationList = [];
 
@@ -58,7 +58,6 @@ class _NotificationPageState extends State<NotificationPage>
       }
     } catch (e) {
       print(e);
-
     }
   }
 
@@ -85,7 +84,6 @@ class _NotificationPageState extends State<NotificationPage>
       print(e);
     }
   }
-
 
   void viewedNotification(int notificationId) async {
     String url = 'https://api.aureal.one/public/viewedNotificaiton';
@@ -157,7 +155,7 @@ class _NotificationPageState extends State<NotificationPage>
 //                  onPressed: () => debugPrint('Action Notification'),
 //                ),
               ],
-       //       expandedHeight: 170,
+              //       expandedHeight: 170,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
@@ -175,7 +173,6 @@ class _NotificationPageState extends State<NotificationPage>
             ),
           ];
         },
-
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Container(
@@ -192,15 +189,15 @@ class _NotificationPageState extends State<NotificationPage>
                             child: Container(
                               width: double.infinity,
                               child: GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   print(v['data']);
-                                  if( v['data']['episode_id']!= null)
+                                  if (v['data']['episode_id'] != null)
                                     Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
-                                          return EpisodeView(
-                                            episodeId: v['data']['episode_id'],
-                                          );
-                                        }));
+                                        CupertinoPageRoute(builder: (context) {
+                                      return EpisodeView(
+                                        episodeId: v['data']['episode_id'],
+                                      );
+                                    }));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -216,23 +213,29 @@ class _NotificationPageState extends State<NotificationPage>
                                               height: 65,
                                               width: 65,
                                               child: CachedNetworkImage(
-                                                imageBuilder: (context, imageProvider) {
+                                                imageBuilder:
+                                                    (context, imageProvider) {
                                                   return Container(
                                                     decoration: BoxDecoration(
-
                                                       borderRadius:
-                                                      BorderRadius.circular(10),
+                                                          BorderRadius.circular(
+                                                              10),
                                                       image: DecorationImage(
                                                           image: imageProvider,
                                                           fit: BoxFit.cover),
                                                     ),
                                                     height:
-                                                    MediaQuery.of(context).size.width,
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                     width:
-                                                    MediaQuery.of(context).size.width,
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width,
                                                   );
                                                 },
-                                                imageUrl:  v['data']['image'] == null
+                                                imageUrl: v['data']['image'] ==
+                                                        null
                                                     ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
                                                     : v['data']['image'],
                                                 fit: BoxFit.cover,
@@ -242,15 +245,16 @@ class _NotificationPageState extends State<NotificationPage>
                                                 //         .size
                                                 //         .width
                                                 //         .ceil(),
-                                                memCacheHeight: MediaQuery.of(context)
-                                                    .size
-                                                    .height
-                                                    .floor(),
+                                                memCacheHeight:
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height
+                                                        .floor(),
 
-                                                errorWidget: (context, url, error) =>
-                                                    Icon(Icons.error),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
-
                                             ),
                                             SizedBox(
                                               width: 15,
@@ -269,22 +273,20 @@ class _NotificationPageState extends State<NotificationPage>
                                                                   .safeBlockHorizontal *
                                                               3.2),
                                                     ),
-
                                                   ),
-                                                  SizedBox(height: 10,),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
                                                   Text(
                                                     v['body'],
                                                     textScaleFactor: 0.75,
                                                     style: TextStyle(
                                                         fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
+                                                                .safeBlockHorizontal *
                                                             3.2),
                                                   ),
-
                                                 ],
-
                                               ),
-
                                             )
                                           ],
                                         ),

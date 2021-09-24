@@ -13,6 +13,7 @@ import 'package:auditory/Wrapper.dart';
 import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/buttonPages/Bio.dart';
 import 'package:auditory/screens/buttonPages/HiveWallet.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
@@ -25,6 +26,7 @@ import 'package:auditory/utilities/TagSearch.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -375,46 +377,58 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       if (message != null) {
         if (message.data['type'] != null) {
           if (message.data['type'] == 'vote_episode') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
           if (message.data['type'] == 'reply_comment') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
           if (message.data['type'] == 'comment_episode') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
           if (message.data['type'] == 'episode_published') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(episodeId: message.data['episode_id']);
             }));
           }
           if (message.data['type'] == 'episode_published') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(
                 episodeId: message.data['episode_id'],
               );
             }));
           }
           if (message.data['type'] == 'new_episode') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return EpisodeView(
+                episodeId: message.data['episode_id'],
+              );
+            }));
+          }
+          if (message.data['type'] == 'new_podcast') {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return PodcastView(message.data['podcast_id']);
+            }));
+          }
+          if (message.data['type'] == 'new_episode') {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(
                 episodeId: message.data['episode_id'],
               );
             }));
           }
         } else {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return _home;
           }));
         }
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return _home;
         }));
       }
@@ -447,23 +461,35 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       print(
           "it is coming here/////////////////////////////////////////////////");
       if (message.data['type'] == 'vote_episode') {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
       }
       if (message.data['type'] == 'reply_comment') {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
       }
       if (message.data['type'] == 'comment_episode') {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
       }
       if (message.data['type'] == 'episode_published') {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
+        }));
+      }
+      if (message.data['type'] == 'new_podcast') {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PodcastView(message.data['podcast_id']);
+        }));
+      }
+      if (message.data['type'] == 'new_episode') {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: message.data['episode_id'],
+          );
         }));
       }
     });
@@ -539,7 +565,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       });
     }
 
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+    // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
     //   return _home;
     // }));
 

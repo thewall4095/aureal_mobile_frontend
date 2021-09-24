@@ -176,6 +176,7 @@
 //
 // }
 //
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -238,7 +239,7 @@ class _LocalNotificationScreenState extends State<LocalNotificationScreen> {
 
   onNotificationClick(String payload) {
     print('Payload $payload');
-    Navigator.push(context, MaterialPageRoute(builder: (coontext) {
+    Navigator.push(context, CupertinoPageRoute(builder: (coontext) {
       return NotificationScreen(
         payload: payload,
       );

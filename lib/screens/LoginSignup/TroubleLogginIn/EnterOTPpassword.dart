@@ -1,6 +1,7 @@
 import 'package:auditory/screens/LoginSignup/TroubleLogginIn/ChangePassword.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -79,7 +80,7 @@ class _EnterOTPState extends State<EnterOTP> {
       showInSnackBar('${response.data['msg']}');
     } else {
       print('Verification success');
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
         return ChangePassword(
           userId: widget.userId,
         );

@@ -1,6 +1,7 @@
 import 'package:auditory/screens/LoginSignup/TroubleLogginIn/EnterOTPpassword.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:dio/dio.dart';
@@ -37,7 +38,7 @@ class _EnterPhoneNumberState extends State<EnterPhoneNumber> {
       print(response.toString());
       print(response.data['data']['user_id']);
       print(response.data['data']['username']);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
         return EnterOTP(
           userId: response.data['data']['user_id'],
           username: response.data['data']['username'],

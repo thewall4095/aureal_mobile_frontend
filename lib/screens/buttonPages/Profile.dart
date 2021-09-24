@@ -187,11 +187,17 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       if (response.statusCode == 200) {
         print(response.body);
         setState(() {
-          data = (jsonDecode(response.body)['users'] == null ? "": jsonDecode(response.body)['users']);
-          fullName = jsonDecode(response.body)['users']['fullname'] == null ? "": jsonDecode(response.body)['users']['fullname'];
+          data = (jsonDecode(response.body)['users'] == null
+              ? ""
+              : jsonDecode(response.body)['users']);
+          fullName = jsonDecode(response.body)['users']['fullname'] == null
+              ? ""
+              : jsonDecode(response.body)['users']['fullname'];
           // prefs.setString(
           //     'FullName', jsonDecode(response.body)['users']['fullname']);
-          userName = (jsonDecode(response.body)['users']['username'] == null ? "":jsonDecode(response.body)['users']['username']);
+          userName = (jsonDecode(response.body)['users']['username'] == null
+              ? ""
+              : jsonDecode(response.body)['users']['username']);
           prefs.setString(
               'userName', jsonDecode(response.body)['users']['username']);
           prefs.setString('HiveUserName',
@@ -199,17 +205,22 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           displayPicture = jsonDecode(response.body)['users']['img'];
           status = jsonDecode(response.body)['users']['settings']['Account']
               ['Presence'];
-          bio =
-              (jsonDecode(response.body)['users']['settings']['Account']['Bio'] == null ? "":jsonDecode(response.body)['users']['settings']['Account']['Bio']);
+          bio = (jsonDecode(response.body)['users']['settings']['Account']
+                      ['Bio'] ==
+                  null
+              ? ""
+              : jsonDecode(response.body)['users']['settings']['Account']
+                  ['Bio']);
           hiveUserName = prefs.getString('HiveUserName');
-          email = (jsonDecode(response.body)['users']['email'] == null  ? "" : jsonDecode(response.body)['users']['email']);
+          email = (jsonDecode(response.body)['users']['email'] == null
+              ? ""
+              : jsonDecode(response.body)['users']['email']);
         });
         setState(() {
           isLoading = false;
           isProfileLoading = false;
         });
       }
-
     } catch (e) {
       print(e);
     }
@@ -346,7 +357,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     //   // loginStateSubscription = authBloc.currentUser.listen((fbUser) {
     //   //   if (fbUser == null) {
     //   //     Navigator.of(context).pushReplacement(
-    //   //       MaterialPageRoute(
+    //   //       CupertinoPageRoute(
     //   //         builder: (context) => Home(),
     //   //       ),
     //   //     );
@@ -409,53 +420,63 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               pinned: true,
                               floating: true,
                               actions: [
-                                IconButton(onPressed: (){
-                              Navigator.push(context,
-                              SlideRightRoute(widget: Settings()));
-
-                                }, icon: Icon(Icons.settings))
+                                IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  Settings()));
+                                    },
+                                    icon: Icon(Icons.settings))
                               ],
                               expandedHeight:
                                   MediaQuery.of(context).size.height / 2.5,
                               flexibleSpace: FlexibleSpaceBar(
                                   background: Container(
-                                    child: Stack(
-                                alignment: AlignmentDirectional.bottomCenter,
-                                children: [
+                                child: Stack(
+                                  alignment: AlignmentDirectional.bottomCenter,
+                                  children: [
                                     Positioned(
-                                      top: MediaQuery.of(context).size.height/7,
+                                      top: MediaQuery.of(context).size.height /
+                                          7,
                                       child: Center(
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                              boxShadow: [
-                                                new BoxShadow(
-                                                  color: Colors
-                                                      .black54
-                                                      .withOpacity(
-                                                      0.2),
-                                                  blurRadius: 10.0,
-                                                ),
-                                              ],
-                                              color: themeProvider
-                                                  .isLightTheme ==
-                                                  true
-                                                  ? Colors.white
-                                                  : Color(0xff222222),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: [
+                                              new BoxShadow(
+                                                color: Colors.black54
+                                                    .withOpacity(0.2),
+                                                blurRadius: 10.0,
+                                              ),
+                                            ],
+                                            color: themeProvider.isLightTheme ==
+                                                    true
+                                                ? Colors.white
+                                                : Color(0xff222222),
                                           ),
-                                          height:
-                                              MediaQuery.of(context).size.height /
-                                                  3.5,
-                                          width: MediaQuery.of(context).size.width /
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              3.5,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
                                               1.2,
                                           child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 SizedBox(
-                                                  height:MediaQuery.of(context).size.height/50,  // height: 55,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      50, // height: 55,
                                                 ),
                                                 Text(
                                                   "$userName",
@@ -466,38 +487,47 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                           7),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.all(8.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: prefs.getString(
-                                                      'HiveUserName') ==
-                                                      null
+                                                              'HiveUserName') ==
+                                                          null
                                                       ? ShaderMask(
-                                                    shaderCallback: (Rect bounds) {
-                                                      return LinearGradient(
-                                                          colors: [
-                                                            Color(0xff52BFF9),
-                                                            Color(0xff6048F6)
-                                                          ]).createShader(bounds);
-                                                    },
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return HiveDetails();
-                                                            });
-                                                      },
-                                                      child: Text(
-                                                        "Connect Your Hive Account",
-                                                        textScaleFactor: 1.0,
-                                                      ),
-                                                    ),
-                                                  )
+                                                          shaderCallback:
+                                                              (Rect bounds) {
+                                                            return LinearGradient(
+                                                                colors: [
+                                                                  Color(
+                                                                      0xff52BFF9),
+                                                                  Color(
+                                                                      0xff6048F6)
+                                                                ]).createShader(
+                                                                bounds);
+                                                          },
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              showBarModalBottomSheet(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return HiveDetails();
+                                                                  });
+                                                            },
+                                                            child: Text(
+                                                              "Connect Your Hive Account",
+                                                              textScaleFactor:
+                                                                  1.0,
+                                                            ),
+                                                          ),
+                                                        )
                                                       : Text(
-                                                    '@${prefs.getString('HiveUserName')}',
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        color: Color(0xff777777)),
-                                                  ),
+                                                          '@${prefs.getString('HiveUserName')}',
+                                                          textScaleFactor: 1.0,
+                                                          style: TextStyle(
+                                                              color: Color(
+                                                                  0xff777777)),
+                                                        ),
                                                 ),
                                                 // Padding(
                                                 //   padding:
@@ -534,7 +564,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                         MainAxisAlignment
                                                             .spaceEvenly,
                                                     children: [
-                                                      data['instagram'] == null ||
+                                                      data['instagram'] ==
+                                                                  null ||
                                                               data['instagram'] ==
                                                                   ''
                                                           ? SizedBox()
@@ -544,10 +575,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                       .instagram),
                                                               iconSize: 15,
                                                               onPressed: () {
-                                                                launcher.launchInBrowser(
-                                                                    data[
-                                                                        'instagram'],
-                                                                    );
+                                                                launcher
+                                                                    .launchInBrowser(
+                                                                  data[
+                                                                      'instagram'],
+                                                                );
                                                               },
                                                             ),
                                                       data['twitter'] == null ||
@@ -558,14 +590,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .twitter),
-                                                        iconSize: 15,
+                                                              iconSize: 15,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
                                                                         'twitter']);
                                                               },
                                                             ),
-                                                      data['linkedin'] == null ||
+                                                      data['linkedin'] ==
+                                                                  null ||
                                                               data['linkedin'] ==
                                                                   ''
                                                           ? SizedBox()
@@ -573,7 +606,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .linkedin),
-                                                        iconSize: 15,
+                                                              iconSize: 15,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
@@ -588,7 +621,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .externalLinkSquareAlt),
-                                                        iconSize: 15,
+                                                              iconSize: 15,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
@@ -603,12 +636,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                     Positioned(
-                                      top: MediaQuery.of(context).size.height/20 ,
-                                      left: MediaQuery.of(context).size.height/5.8,
+                                      top: MediaQuery.of(context).size.height /
+                                          20,
+                                      left: MediaQuery.of(context).size.height /
+                                          5.8,
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(
+                                              CupertinoPageRoute(
                                                   builder: (context) {
                                             return Bio();
                                           }));
@@ -651,7 +686,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     //         // GestureDetector(
                                     //         //   onTap: () {
                                     //         //     Navigator.push(context,
-                                    //         //         MaterialPageRoute(builder: (context) {
+                                    //         //         CupertinoPageRoute(builder: (context) {
                                     //         //       return Bio();
                                     //         //     }));
                                     //         //   },
@@ -695,7 +730,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     //         GestureDetector(
                                     //           onTap: () {
                                     //             Navigator.push(context,
-                                    //                 MaterialPageRoute(
+                                    //                 CupertinoPageRoute(
                                     //                     builder: (context) {
                                     //               return Bio();
                                     //             }));
@@ -870,9 +905,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     //     ),
                                     //   ),
                                     // )
-                                ],
-                              ),
-                                  )),
+                                  ],
+                                ),
+                              )),
                             ),
                             // SliverList(
                             //   delegate: SliverChildListDelegate([
@@ -904,7 +939,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //     //             //     child: InkWell(
                             //     //             //       onTap: () {
                             //     //             //         Navigator.push(context,
-                            //     //             //             MaterialPageRoute(builder: (context) {
+                            //     //             //             CupertinoPageRoute(builder: (context) {
                             //     //             //           return CreateCommunity();
                             //     //             //         })).then((value) async {
                             //     //             //           await _pullRefreshEpisodes();
@@ -938,7 +973,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //     //             //     child: InkWell(
                             //     //             //       onTap: () {
                             //     //             //         Navigator.push(context,
-                            //     //             //             MaterialPageRoute(
+                            //     //             //             CupertinoPageRoute(
                             //     //             //                 builder: (context) {
                             //     //             //           return Rewards();
                             //     //             //         }));
@@ -1169,11 +1204,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           child: Container(
                             child: ListView(children: [
                               Container(
-                                height: MediaQuery.of(context).size.height * 0.26,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.26,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
@@ -1185,62 +1222,72 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                     5),
                                       ),
                                       Container(
-                                        height: MediaQuery.of(context).size.height *
-                                            0.2,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.2,
                                         child: ListView(
                                           scrollDirection: Axis.horizontal,
                                           children: [
                                             for (var v in podcastList)
                                               Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    15, 8, 0, 8),
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        15, 8, 0, 8),
                                                 child: InkWell(
                                                   onTap: () {
                                                     Navigator.push(context,
-                                                        MaterialPageRoute(
+                                                        CupertinoPageRoute(
                                                             builder: (context) {
-                                                      return PodcastView(v['id']);
+                                                      return PodcastView(
+                                                          v['id']);
                                                     }));
                                                   },
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        4.5,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            4.5,
                                                     child: Column(
                                                       children: [
                                                         Container(
-                                                          decoration: BoxDecoration(
+                                                          decoration:
+                                                              BoxDecoration(
                                                             boxShadow: [
                                                               new BoxShadow(
                                                                 color: Colors
                                                                     .black54
                                                                     .withOpacity(
                                                                         0.2),
-                                                                blurRadius: 10.0,
+                                                                blurRadius:
+                                                                    10.0,
                                                               ),
                                                             ],
                                                             color: themeProvider
                                                                         .isLightTheme ==
                                                                     true
                                                                 ? Colors.white
-                                                                : Color(0xff222222),
+                                                                : Color(
+                                                                    0xff222222),
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(15),
+                                                                    .circular(
+                                                                        15),
                                                           ),
-                                                          width:
-                                                              MediaQuery.of(context)
-                                                                      .size
-                                                                      .width /
-                                                                  4.5,
-                                                          height:
-                                                              MediaQuery.of(context)
-                                                                      .size
-                                                                      .width /
-                                                                  4.5,
-                                                          child: CachedNetworkImage(
-                                                            imageUrl: v['image'],
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                v['image'],
                                                             imageBuilder: (context,
                                                                 imageProvider) {
                                                               return Container(
@@ -1256,9 +1303,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                     4.5,
                                                                 decoration: BoxDecoration(
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                10),
+                                                                        BorderRadius.circular(
+                                                                            10),
                                                                     image: DecorationImage(
                                                                         image:
                                                                             imageProvider,
@@ -1269,11 +1315,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                           ),
                                                         ),
                                                         Padding(
-                                                          padding: const EdgeInsets
-                                                                  .symmetric(
-                                                              vertical: 8),
-                                                          child:
-                                                              Text("${v['name']}"),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical: 8),
+                                                          child: Text(
+                                                              "${v['name']}"),
                                                         )
                                                       ],
                                                     ),
@@ -1282,8 +1329,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                               ),
 
                                             Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  15, 8, 0, 8),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      15, 8, 0, 8),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -1303,8 +1351,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                             context: context,
                                                             builder: (context) {
                                                               return EmailVerificationDialog(
-                                                                username:
-                                                                    prefs.getString(
+                                                                username: prefs
+                                                                    .getString(
                                                                         'userName'),
                                                               );
                                                             });
@@ -1314,8 +1362,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                       decoration: BoxDecoration(
                                                         boxShadow: [
                                                           new BoxShadow(
-                                                            color: Colors.black54
-                                                                .withOpacity(0.2),
+                                                            color: Colors
+                                                                .black54
+                                                                .withOpacity(
+                                                                    0.2),
                                                             blurRadius: 10.0,
                                                           ),
                                                         ],
@@ -1325,17 +1375,19 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                             ? Colors.white
                                                             : Color(0xff222222),
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                15),
+                                                            BorderRadius
+                                                                .circular(15),
                                                       ),
-                                                      width: MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
-                                                      height: MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
                                                       child: Center(
                                                         child: Column(
                                                           mainAxisAlignment:
@@ -1351,11 +1403,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                     ),
                                                   ),
                                                   Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                            vertical: 8,
-                                                            horizontal: 5),
-                                                    child: Text("Add a podcast"),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 5),
+                                                    child:
+                                                        Text("Add a podcast"),
                                                   ),
                                                 ],
                                               ),
@@ -1534,8 +1587,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   onTap: () {
                                     Navigator.push(
                                         context,
-                                        SlideRightRoute(
-                                            widget: ReferralProgram()));
+                                        CupertinoPageRoute(
+                                            builder: (context) =>
+                                                ReferralProgram()));
                                   },
                                   child: Container(
                                     child: Row(
@@ -1587,8 +1641,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.all(15.0),
                                 child: GestureDetector(
                                   onTap: () {
-                                    Navigator.push(context,
-                                        SlideRightRoute(widget: Rewards()));
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) => Rewards()));
                                   },
                                   child: Container(
                                     child: Row(
@@ -1719,7 +1775,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               //   child: GestureDetector(
                               //     onTap: () {
                               //       Navigator.push(context,
-                              //           SlideRightRoute(widget: Settings()));
+                              //           CupertinoPageRoute(widget: Settings()));
                               //     },
                               //     child: Container(
                               //       child: Row(
@@ -1782,7 +1838,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //             GestureDetector(
                         //               onTap: () {
                         //                 Navigator.push(context,
-                        //                     MaterialPageRoute(builder: (context) {
+                        //                     CupertinoPageRoute(builder: (context) {
                         //                   return Bio();
                         //                 }));
                         //               },
@@ -2052,7 +2108,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                     //               child: InkWell(
                         //                     //                 onTap: () {
                         //                     //                   Navigator.push(context,
-                        //                     //                       MaterialPageRoute(builder: (context) {
+                        //                     //                       CupertinoPageRoute(builder: (context) {
                         //                     //                     return CommunityView(communityObject: v);
                         //                     //                   }));
                         //                     //                 },
@@ -2127,7 +2183,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                     //                 GestureDetector(
                         //                     //                     onTap: () {
                         //                     //                         Navigator.push(context,
-                        //                     //                         MaterialPageRoute(builder: (context) {
+                        //                     //                         CupertinoPageRoute(builder: (context) {
                         //                     //                         return CreateCommunity();
                         //                     //                         })).then((value) async {
                         //                     //                         await _pullRefreshEpisodes();
@@ -2226,7 +2282,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                   child: InkWell(
                         //                                     onTap: () {
                         //                                       Navigator.push(context,
-                        //                                           MaterialPageRoute(
+                        //                                           CupertinoPageRoute(
                         //                                               builder:
                         //                                                   (context) {
                         //                                         return PodcastView(
@@ -2919,7 +2975,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                       //     child: InkWell(
                         //                                       //       onTap: () {
                         //                                       //         Navigator.push(context,
-                        //                                       //             MaterialPageRoute(builder: (context) {
+                        //                                       //             CupertinoPageRoute(builder: (context) {
                         //                                       //           return CreateCommunity();
                         //                                       //         })).then((value) async {
                         //                                       //           await _pullRefreshEpisodes();
@@ -2958,7 +3014,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                             onTap: () {
                         //                                               Navigator.push(
                         //                                                   context,
-                        //                                                   MaterialPageRoute(
+                        //                                                   CupertinoPageRoute(
                         //                                                       builder:
                         //                                                           (context) {
                         //                                                 return Rewards();

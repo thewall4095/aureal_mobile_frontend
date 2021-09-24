@@ -142,7 +142,7 @@ class _SignUpState extends State<SignUp> {
         prefs.setString('userId', response.data['user']['id']);
         prefs.setString('userName', response.data['user']['username']);
         await sendOTP();
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return Verification();
         }));
       }

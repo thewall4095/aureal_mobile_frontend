@@ -14,6 +14,7 @@ import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -150,7 +151,8 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                           child: Container(
                             width: double.infinity,
                             child: FadeInImage.assetNetwork(
-                              placeholder: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                              placeholder:
+                                  'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                               image:
                                   '${widget.communityObject['bannerImageUrl']}',
                               fit: BoxFit.cover,
@@ -374,7 +376,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                 child: InkWell(
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
+                        CupertinoPageRoute(builder: (context) {
                       return EpisodeView(episodeId: v['id']);
                     }));
                   },
@@ -479,7 +481,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                                               true) {
                                         currentlyPlaying.stop();
                                         Navigator.push(context,
-                                            MaterialPageRoute(
+                                            CupertinoPageRoute(
                                                 builder: (context) {
                                           return PodcastVideoPlayer(
                                             episodeObject: v,
@@ -490,7 +492,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                                             .toString()
                                             .contains('.pdf')) {
                                           // Navigator.push(context,
-                                          //     MaterialPageRoute(
+                                          //     CupertinoPageRoute(
                                           //         builder: (context) {
                                           //   return PDFviewer(
                                           //     episodeObject: v,
@@ -514,7 +516,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                                       width: 120,
                                       child: FadeInImage.assetNetwork(
                                           placeholder:
-                                         ' https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                              ' https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                                           image: v['image'] == null
                                               ? 'assets/images/Thumbnail.png'
                                               : v['image']),
@@ -668,7 +670,7 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                               IconButton(
                                 onPressed: () async {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return Comments(
                                       episodeObject: v,
                                     );

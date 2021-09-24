@@ -5,6 +5,7 @@ import 'package:auditory/screens/recorderApp/recorderpages/selectPodcast.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -756,7 +757,7 @@ class _RecordState extends State<Record> with SingleTickerProviderStateMixin {
                             }
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                   maintainState: false,
                                   builder: (context) {
                                     return SelectPodcast(
@@ -1256,7 +1257,7 @@ class _RecordState extends State<Record> with SingleTickerProviderStateMixin {
                                                                           onTap:
                                                                               () {
                                                                             Navigator.pop(context);
-                                                                            Navigator.push(context, MaterialPageRoute(builder:
+                                                                            Navigator.push(context, CupertinoPageRoute(builder:
                                                                                 (context) {
                                                                               print(loggedInUser.runtimeType);
                                                                               print(v['id'].runtimeType);
@@ -1293,7 +1294,7 @@ class _RecordState extends State<Record> with SingleTickerProviderStateMixin {
                                                                             Navigator.pop(context);
 
                                                                             Navigator.push(context,
-                                                                                MaterialPageRoute(builder: (context) {
+                                                                                CupertinoPageRoute(builder: (context) {
                                                                               return AddBackgroundMusic(
                                                                                 libraryObject: v,
                                                                               );

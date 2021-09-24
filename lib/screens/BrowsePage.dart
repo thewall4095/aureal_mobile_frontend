@@ -541,8 +541,7 @@ class _BrowsePageState extends State<BrowsePage>
                 ),
               ),
               Expanded(
-                child:
-                TabBarView(
+                child: TabBarView(
                   controller: _tabController,
                   children: <Widget>[
                     Container(
@@ -573,7 +572,7 @@ class _BrowsePageState extends State<BrowsePage>
                                 child: GestureDetector(
                                   onTap: () {
                                     Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
+                                        CupertinoPageRoute(builder: (context) {
                                       return PodcastView(podcasts[index]['id']);
                                     }));
                                   },
@@ -742,10 +741,12 @@ class _BrowsePageState extends State<BrowsePage>
                                             GestureDetector(
                                               onTap: () {
                                                 Navigator.push(context,
-                                                    MaterialPageRoute(builder:
+                                                    CupertinoPageRoute(builder:
                                                         (BuildContext context) {
-                                                  return EpisodeView(episodeId:
-                                                      episodes[index]['id'],);
+                                                  return EpisodeView(
+                                                    episodeId: episodes[index]
+                                                        ['id'],
+                                                  );
                                                 }));
                                               },
                                               child: Text(

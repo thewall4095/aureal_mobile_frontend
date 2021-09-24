@@ -260,11 +260,16 @@ class _FollowingPageState extends State<FollowingPage>
                                 for (var v in categories.categoryList)
                                   GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          SlideRightRoute(
-                                              widget: CategoryView(
-                                                  categoryObject: v)));
+                                      // Navigator.push(
+                                      //     context,
+                                      //     CupertinoPageRoute(
+                                      //         widget: CategoryView(
+                                      //             categoryObject: v)));
+                                      Navigator.push(context,
+                                          CupertinoPageRoute(
+                                              builder: (context) {
+                                        return CategoryView(categoryObject: v);
+                                      }));
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(2.0),
@@ -415,9 +420,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                 onTap: () {
                                                   Navigator.push(
                                                       context,
-                                                      SlideRightRoute(
-                                                          widget: PodcastView(
-                                                              v['id'])));
+                                                      CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              PodcastView(
+                                                                  v['id'])));
                                                 },
                                                 child: Padding(
                                                   padding:
@@ -768,9 +774,10 @@ class _FollowingPageState extends State<FollowingPage>
                                         onTap: () {
                                           Navigator.push(
                                               context,
-                                              SlideRightRoute(
-                                                  widget: EpisodeView(
-                                                      episodeId: v['id'])));
+                                              CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      EpisodeView(
+                                                          episodeId: v['id'])));
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -887,8 +894,8 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   onTap: () {
                                                                     Navigator.push(
                                                                         context,
-                                                                        SlideRightRoute(
-                                                                            widget:
+                                                                        CupertinoPageRoute(
+                                                                            builder: (context) =>
                                                                                 PodcastView(v['podcast_id'])));
                                                                   },
                                                                   child: Text(
@@ -1131,11 +1138,10 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         null) {
                                                                       Navigator.push(
                                                                           context,
-                                                                          SlideRightRoute(
-                                                                              widget: Comments(
-                                                                            episodeObject:
-                                                                                v,
-                                                                          )));
+                                                                          CupertinoPageRoute(
+                                                                              builder: (context) => Comments(
+                                                                                    episodeObject: v,
+                                                                                  )));
                                                                     } else {
                                                                       showBarModalBottomSheet(
                                                                           context:
@@ -1212,7 +1218,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                           .stop();
                                                                       Navigator.push(
                                                                           context,
-                                                                          MaterialPageRoute(builder:
+                                                                          CupertinoPageRoute(builder:
                                                                               (context) {
                                                                         return PodcastVideoPlayer(
                                                                             episodeObject:
@@ -1224,7 +1230,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                           true) {
                                                                         // Navigator.push(
                                                                         //     context,
-                                                                        //     MaterialPageRoute(
+                                                                        //     CupertinoPageRoute(
                                                                         // der:
                                                                         //             (context) {
                                                                         //   return PDFviewer(
@@ -1243,7 +1249,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             .play();
                                                                         Navigator.push(
                                                                             context,
-                                                                            MaterialPageRoute(builder:
+                                                                            CupertinoPageRoute(builder:
                                                                                 (context) {
                                                                           return Player();
                                                                         }));

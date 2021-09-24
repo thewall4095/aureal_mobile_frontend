@@ -539,7 +539,6 @@ class _PublishState extends State<Publish> {
                         });
                   },
                   child: Container(
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(),
@@ -552,7 +551,7 @@ class _PublishState extends State<Publish> {
                         child: Text(
                           "Tags",
                           style: TextStyle(
-                            //  color: Colors.white,
+                              //  color: Colors.white,
                               fontSize: SizeConfig.safeBlockHorizontal * 4),
                         ),
                       ),
@@ -571,7 +570,7 @@ class _PublishState extends State<Publish> {
                           ? GestureDetector(
                               onTap: () {
                                 Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
+                                    CupertinoPageRoute(builder: (context) {
                                   return SelectTags(
                                     userID: userId,
                                     currentPodcastId: widget.currentPodcastId,
@@ -602,7 +601,7 @@ class _PublishState extends State<Publish> {
                                     child: Text(
                                       "Publish now",
                                       style: TextStyle(
-                                        //  color: Colors.white,
+                                          //  color: Colors.white,
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
                                                   3.2),

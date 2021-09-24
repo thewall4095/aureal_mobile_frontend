@@ -19,6 +19,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../CommunityProvider.dart';
 import 'Onboarding/HiveDetails.dart';
@@ -151,8 +152,14 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         padding: const EdgeInsets.all(15.0),
                         child: InkWell(
                           onTap: () {
+                            // Navigator.push(context,
+                            //     CupertinoPageRoute(builder: (context){
+                            //       return ReferralProgram();
+                            //     }));
                             Navigator.push(context,
-                                SlideRightRoute(widget: ReferralProgram()));
+                                CupertinoPageRoute(builder: (context) {
+                              return ReferralProgram();
+                            }));
                           },
                           child: Container(
                               decoration: BoxDecoration(
@@ -520,10 +527,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                 children: [
                                                                   GestureDetector(
                                                                     onTap: () {
+                                                                      // Navigator.push(
+                                                                      //     context,
+                                                                      //     CupertinoPageRoute(
+                                                                      //         widget: PodcastView(v['id'])));
                                                                       Navigator.push(
                                                                           context,
-                                                                          SlideRightRoute(
-                                                                              widget: PodcastView(v['id'])));
+                                                                          CupertinoPageRoute(builder:
+                                                                              (context) {
+                                                                        return PodcastView(
+                                                                            v['id']);
+                                                                      }));
                                                                     },
                                                                     child:
                                                                         Container(
@@ -697,7 +711,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   .stop();
                                                               Navigator.push(
                                                                   context,
-                                                                  MaterialPageRoute(
+                                                                  CupertinoPageRoute(
                                                                       builder:
                                                                           (context) {
                                                                 return PodcastVideoPlayer(
@@ -712,7 +726,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   true) {
                                                                 // Navigator.push(
                                                                 //     context,
-                                                                //     MaterialPageRoute(
+                                                                //     CupertinoPageRoute(
                                                                 // der:
                                                                 //             (context) {
                                                                 //   return PDFviewer(
@@ -731,7 +745,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     .play();
                                                                 Navigator.push(
                                                                     context,
-                                                                    MaterialPageRoute(
+                                                                    CupertinoPageRoute(
                                                                         builder:
                                                                             (context) {
                                                                   return Player();
@@ -861,11 +875,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 padding: const EdgeInsets.only(bottom: 5),
                                                                                 child: GestureDetector(
                                                                                   onTap: () {
-                                                                                    Navigator.push(context, SlideRightRoute(widget: EpisodeView(episodeId: a['id'])));
+                                                                                    // Navigator.push(context, CupertinoPageRoute(widget: EpisodeView(episodeId: a['id'])));
+                                                                                    Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                                                                                      return EpisodeView(
+                                                                                        episodeId: a['id'],
+                                                                                      );
+                                                                                    }));
                                                                                   },
                                                                                   child: GestureDetector(
                                                                                     onTap: () {
-                                                                                      Navigator.push(context, SlideRightRoute(widget: PodcastView(a['podcast_id'])));
+                                                                                      Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                                                                                        return PodcastView(a['podcast_id']);
+                                                                                      }));
                                                                                     },
                                                                                     child: Text(
                                                                                       a['name'].toString(),
@@ -953,10 +974,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                         if (pref.getString('HiveUserName') != null) {
                                                                                           Navigator.push(
                                                                                               context,
-                                                                                              SlideRightRoute(
-                                                                                                  widget: Comments(
-                                                                                                episodeObject: a,
-                                                                                              )));
+                                                                                              CupertinoPageRoute(
+                                                                                                  builder: (context) => Comments(
+                                                                                                        episodeObject: a,
+                                                                                                      )));
                                                                                         } else {
                                                                                           showBarModalBottomSheet(
                                                                                               context: context,
@@ -1037,8 +1058,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     onTap: () {
                                                                       Navigator.push(
                                                                           context,
-                                                                          SlideRightRoute(
-                                                                              widget: PodcastView(a['id'])));
+                                                                          CupertinoPageRoute(
+                                                                              builder: (context) => PodcastView(a['id'])));
                                                                     },
                                                                     child:
                                                                         Container(
@@ -1184,7 +1205,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 currentlyPlaying.episodeObject = a;
                                                                                 currentlyPlaying.play();
                                                                               } else {
-                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                                                                Navigator.push(context, CupertinoPageRoute(builder: (context) {
                                                                                   return PodcastView(a['id']);
                                                                                 }));
                                                                               }

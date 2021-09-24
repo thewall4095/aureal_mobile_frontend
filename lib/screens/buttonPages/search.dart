@@ -8,11 +8,11 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/animation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 import '../../SearchProvider.dart';
 
@@ -206,7 +206,7 @@ class SearchFunctionality extends SearchDelegate {
     );
   }
 
-   MaterialColor primaryBlack = MaterialColor(
+  MaterialColor primaryBlack = MaterialColor(
     0XFF000000,
     <int, Color>{
       50: Color(0xFF000000),
@@ -222,34 +222,25 @@ class SearchFunctionality extends SearchDelegate {
     },
   );
 
-
   @override
   ThemeData appBarTheme(BuildContext context) {
     // final themeProvider = Provider.of<ThemeProvider>(context);
     return ThemeData(
-      primaryColor:
-           Color(0xff161616),
+      primaryColor: Color(0xff161616),
       primarySwatch: primaryBlack,
       primaryIconTheme: IconThemeData(
-        color:
-            Colors.white ,
-
+        color: Colors.white,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        hintStyle: Theme.of(context).textTheme.bodyText1.copyWith(
-              color:
-                  Colors.white
-
-            ),
+        hintStyle:
+            Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
       ),
       textTheme: TextTheme(
         headline6: TextStyle(
-          color:
-               Colors.white,
+          color: Colors.white,
           fontSize: 18,
         ),
       ),
-
     );
   }
 
@@ -271,7 +262,8 @@ class SearchFunctionality extends SearchDelegate {
               padding: const EdgeInsets.all(7.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) {
                     return CategoryView(
                       categoryObject: v,
                     );
@@ -509,20 +501,17 @@ class _ResultsSectionState extends State<ResultsSection>
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return PodcastView(
                                         podcastResult[index]['id']);
                                   }));
                                 },
-
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                     borderRadius:
-                                      BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-
                                     width: double.infinity,
                                     child: Row(
                                       children: [
@@ -535,55 +524,61 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   .size
                                                   .width /
                                               5,
-                                      child:  CachedNetworkImage(
-                                          height:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              5,
-                                          width:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              5,
-                                        imageBuilder:
-                                            (context, imageProvider) {
-                                          return Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                            ),
-                                            height: MediaQuery.of(context).size.width,
-                                            width: MediaQuery.of(context).size.width,
-                                          );
-                                        },
-                                        imageUrl: podcastResult[index]
-                                        ['image'] ==
-                                            null
-                                            ? 'assets/images/Thumbnail.png'
-                                            : podcastResult[index]
-                                        ['image'],
-                                        fit: BoxFit.cover,
-                                        // memCacheHeight:
-                                        //     MediaQuery.of(
-                                        //             context)
-                                        //         .size
-                                        //         .width
-                                        //         .ceil(),
-                                        memCacheHeight: MediaQuery.of(context)
-                                            .size
-                                            .height
-                                            .floor(),
+                                          child: CachedNetworkImage(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                              );
+                                            },
+                                            imageUrl: podcastResult[index]
+                                                        ['image'] ==
+                                                    null
+                                                ? 'assets/images/Thumbnail.png'
+                                                : podcastResult[index]['image'],
+                                            fit: BoxFit.cover,
+                                            // memCacheHeight:
+                                            //     MediaQuery.of(
+                                            //             context)
+                                            //         .size
+                                            //         .width
+                                            //         .ceil(),
+                                            memCacheHeight:
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .height
+                                                    .floor(),
 
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 15, vertical: 10),
                                           child: Container(
-                                         //   height: double.infinity,
+                                            //   height: double.infinity,
                                             width: 240,
                                             child: Column(
                                                 crossAxisAlignment:
@@ -591,10 +586,11 @@ class _ResultsSectionState extends State<ResultsSection>
                                                 children: [
                                                   Text(
                                                     "${podcastResult[index]['name']}",
-                                                    textScaleFactor: mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(1, 1.3)
-                                                        .toDouble(),
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(1, 1.3)
+                                                            .toDouble(),
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -612,26 +608,25 @@ class _ResultsSectionState extends State<ResultsSection>
                                                   ),
                                                   Text(
                                                     '${podcastResult[index]['author']}',
-                                                    textScaleFactor: mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.5, 1.3)
-                                                        .toDouble(),
+                                                    textScaleFactor:
+                                                        mediaQueryData
+                                                            .textScaleFactor
+                                                            .clamp(0.5, 1.3)
+                                                            .toDouble(),
                                                     maxLines: 2,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                        color: themeProvider
-                                                                    .isLightTheme !=
-                                                                true
-                                                            ? Colors.white
-                                                                .withOpacity(
-                                                                    0.5)
-                                                            : kPrimaryColor
-                                                                .withOpacity(
-                                                                    0.5),
-                                                        // fontSize: SizeConfig
-                                                        //         .safeBlockHorizontal *
-                                                        //     4
+                                                      color: themeProvider
+                                                                  .isLightTheme !=
+                                                              true
+                                                          ? Colors.white
+                                                              .withOpacity(0.5)
+                                                          : kPrimaryColor
+                                                              .withOpacity(0.5),
+                                                      // fontSize: SizeConfig
+                                                      //         .safeBlockHorizontal *
+                                                      //     4
                                                     ),
                                                   ),
                                                 ]),
@@ -717,7 +712,7 @@ class _ResultsSectionState extends State<ResultsSection>
             //                     child: GestureDetector(
             //                       onTap: () {
             //                         Navigator.push(context,
-            //                             MaterialPageRoute(builder: (context) {
+            //                             CupertinoPageRoute(builder: (context) {
             //                           return PodcastView(
             //                               podcastResult[index]['id']);
             //                         }));
@@ -863,7 +858,7 @@ class _ResultsSectionState extends State<ResultsSection>
             //     //                 child: GestureDetector(
             //     //                   onTap: () {
             //     //                     Navigator.push(context,
-            //     //                         MaterialPageRoute(builder: (context) {
+            //     //                         CupertinoPageRoute(builder: (context) {
             //     //                       return EpisodeView(
             //     //                           episodeId: episodeResult[index]
             //     //                               ['id']);
@@ -1008,7 +1003,7 @@ class _ResultsSectionState extends State<ResultsSection>
             //     //               return InkWell(
             //     //                   onTap: () {
             //     //                     Navigator.push(context,
-            //     //                         MaterialPageRoute(builder: (context) {
+            //     //                         CupertinoPageRoute(builder: (context) {
             //     //                       return CommunityProfileView(
             //     //                           communityObject:
             //     //                               communityResult[index]);

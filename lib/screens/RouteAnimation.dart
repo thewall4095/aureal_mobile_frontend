@@ -1,10 +1,14 @@
+// import 'dart:async';
+//
+// import 'package:flutter/material.dart';
+//
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
-class SlideRightRoute extends PageRouteBuilder {
+class KupertinoPageRoute extends PageRouteBuilder {
   final Widget widget;
-  SlideRightRoute({this.widget})
+  KupertinoPageRoute({this.widget})
       : super(pageBuilder: (BuildContext context, Animation<double> animation,
             Animation<double> secondaryAnimation) {
           return widget;

@@ -198,7 +198,8 @@ class _EditablePodcastProfileState extends State<EditablePodcastProfile>
                                     onTap: () {
                                       print("Edit Podcast Clicked");
                                       Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
+                                          CupertinoPageRoute(
+                                              builder: (context) {
                                         return EditPodcast(
                                           podcastObject: widget.podcastObject,
                                         );
@@ -285,7 +286,7 @@ class _EditablePodcastProfileState extends State<EditablePodcastProfile>
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
+                                  CupertinoPageRoute(builder: (context) {
                                 return Distribution(
                                   podcastObject: widget.podcastObject,
                                 );
@@ -361,7 +362,7 @@ class _EditablePodcastProfileState extends State<EditablePodcastProfile>
                               onTap: () {
                                 print(v);
                                 Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
+                                    CupertinoPageRoute(builder: (context) {
                                   return EditEpisode(
                                     episodeObject: v,
                                     podcastId: widget.podcastObject['id'],

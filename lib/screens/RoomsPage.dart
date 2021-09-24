@@ -1134,7 +1134,7 @@ class _CreateRoomState extends State<CreateRoom> {
       var response = await dio.post(url, data: formData);
       print(response.data);
       // if (response.data['success'] == true) {
-      //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
       //     return RoomPageInit(
       //       roomObject: response.data['data'],
       //     );
@@ -2083,7 +2083,7 @@ class _ScheduledRoomsState extends State<ScheduledRooms>
               icon: Icon(Icons.add),
               onPressed: () {
                 print("Added to Calender");
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                Navigator.push(context, CupertinoPageRoute(builder: (context) {
                   return ScheduleEvent();
                 }));
               },

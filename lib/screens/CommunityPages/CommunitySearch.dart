@@ -3,6 +3,7 @@ import 'package:auditory/screens/CommunityPages/CommunityProfileView.dart';
 import 'package:auditory/screens/Profiles/CategoryView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -55,11 +56,11 @@ class _CommunitySearchState extends State<CommunitySearch>
                   });
                 },
                 style: TextStyle(
-            //        color: Colors.white,
+                    //        color: Colors.white,
                     fontSize: SizeConfig.safeBlockHorizontal * 3.5),
                 decoration: InputDecoration(enabled: true),
               ),
-           //   backgroundColor: kPrimaryColor,
+              //   backgroundColor: kPrimaryColor,
               pinned: true,
               expandedHeight: MediaQuery.of(context).size.height / 10,
 
@@ -75,7 +76,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                 child: Container(
                   height: 50,
                   width: double.infinity,
-                //  color: kPrimaryColor,
+                  //  color: kPrimaryColor,
                   child: communities.searchResults.toList().length != 0
                       ? Padding(
                           padding: const EdgeInsets.symmetric(
@@ -94,7 +95,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                                   "Results",
                                   textScaleFactor: 0.75,
                                   style: TextStyle(
-                                //      color: Colors.white,
+                                      //      color: Colors.white,
                                       fontSize:
                                           SizeConfig.safeBlockHorizontal * 4),
                                 ),
@@ -109,7 +110,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                                   },
                                   child: Icon(
                                     Icons.close,
-                                 //   color: Colors.white,
+                                    //   color: Colors.white,
                                   ))
                             ],
                           ),
@@ -147,7 +148,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                         InkWell(
                           onTap: () {
                             Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
+                                CupertinoPageRoute(builder: (context) {
                               return CommunityView(communityObject: v);
                             }));
                           },
@@ -199,7 +200,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return CommunityProfileView(
                                         communityObject: v);
                                   }));
@@ -255,7 +256,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return CommunityView(communityObject: v);
                                   }));
                                 },
@@ -310,7 +311,7 @@ class _CommunitySearchState extends State<CommunitySearch>
                               InkWell(
                                 onTap: () {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return CommunityView(communityObject: v);
                                   }));
                                 },

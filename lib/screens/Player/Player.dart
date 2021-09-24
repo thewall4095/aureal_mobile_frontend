@@ -406,7 +406,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) {
+                                      CupertinoPageRoute(builder: (context) {
                                     return EpisodeView(
                                         episodeId:
                                             episodeObject.episodeObject['id']);
@@ -944,7 +944,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(
+                                              CupertinoPageRoute(
                                                   builder: (context) {
                                             print(transcript);
                                             print(transcript.runtimeType);
@@ -1568,7 +1568,8 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
+                                          CupertinoPageRoute(
+                                              builder: (context) {
                                         return EditSnippet(
                                           snippetString: snippetString,
                                           snippet: snippet,
@@ -1704,7 +1705,7 @@ class _EditSnippetState extends State<EditSnippet> {
     try {
       var response = await intercept.postRequest(formData, url);
       print(response);
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
         return ClipScreen();
       }));
     } catch (e) {
@@ -1861,7 +1862,7 @@ class _EditSnippetState extends State<EditSnippet> {
                   GestureDetector(
                     onTap: () {
                       // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
+                      //     CupertinoPageRoute(builder: (context) {
                       //   return SnippetShare(snippet: snippetText);
                       // }));
                       addCLip();
@@ -2637,7 +2638,7 @@ class _ClipScreenState extends State<ClipScreen> {
                                               InkWell(
                                                 onTap: () {
                                                   Navigator.push(context,
-                                                      MaterialPageRoute(
+                                                      CupertinoPageRoute(
                                                           builder: (context) {
                                                     return SnippetShare(
                                                       snippet: a,
@@ -2917,7 +2918,7 @@ class _EditClipState extends State<EditClip> {
                   GestureDetector(
                     onTap: () {
                       // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) {
+                      //     CupertinoPageRoute(builder: (context) {
                       //   return SnippetShare(snippet: snippetText);
                       // }));
                       // addCLip();

@@ -12,6 +12,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -375,8 +376,7 @@ class _CommunityViewState extends State<CommunityView>
                                                               20),
                                                       border: Border.all(
                                                         width: 2,
-                                                        color:
-                                                            kSecondaryColor,
+                                                        color: kSecondaryColor,
                                                       ),
                                                     ),
                                                     child: Padding(
@@ -448,7 +448,7 @@ class _CommunityViewState extends State<CommunityView>
                                                               onTap: () {
                                                                 Navigator.push(
                                                                     context,
-                                                                    MaterialPageRoute(
+                                                                    CupertinoPageRoute(
                                                                         builder:
                                                                             (context) {
                                                                   return EditCommunity(
@@ -532,7 +532,7 @@ class _CommunityViewState extends State<CommunityView>
                     child: InkWell(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
+                            CupertinoPageRoute(builder: (context) {
                           return EpisodeView(episodeId: v['id']);
                         }));
                       },
@@ -709,7 +709,7 @@ class _CommunityViewState extends State<CommunityView>
                                       InkWell(
                                         onTap: () {
                                           Navigator.push(context,
-                                              MaterialPageRoute(
+                                              CupertinoPageRoute(
                                                   builder: (context) {
                                             return Comments(
                                               episodeObject: v,

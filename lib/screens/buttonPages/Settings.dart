@@ -8,6 +8,7 @@ import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -43,6 +44,7 @@ class _SettingsState extends State<Settings> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     loggedInUser = prefs.getString('userId');
   }
+
   String hiveUserName;
   void feedBack() async {
     String url = "'https://api.aureal.one/public/report";
@@ -58,23 +60,23 @@ class _SettingsState extends State<Settings> {
       Fluttertoast.showToast(msg: "We've received your feedback");
     }
   }
-void hiveUser ()async{
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String url =
-      'https://api.aureal.one/private/users?user_id=${prefs.getString('userId')}';
-  try {
-    http.Response response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      print(response.body);
-      setState(() {
-        hiveUserName = prefs.getString('HiveUserName');
-      });
-    }
 
-  } catch (e) {
-    print(e);
+  void hiveUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/private/users?user_id=${prefs.getString('userId')}';
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(response.body);
+        setState(() {
+          hiveUserName = prefs.getString('HiveUserName');
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
   }
-}
 
   // void explorePodcast() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -148,9 +150,8 @@ void hiveUser ()async{
                                   title: Text(
                                     "Send Feedback",
                                     style: TextStyle(
-                                        fontSize: SizeConfig
-                                                .safeBlockHorizontal *
-                                            3),
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 3),
                                     textScaleFactor: 1.0,
                                   ),
                                 ),
@@ -159,35 +160,24 @@ void hiveUser ()async{
                                     children: [
                                       Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Padding(
-                                            padding:
-                                                const EdgeInsets
-                                                        .symmetric(
-                                                    horizontal: 15,
-                                                    vertical: 20),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 15, vertical: 20),
                                             child: Container(
-                                              decoration:
-                                                  BoxDecoration(
-                                                color:
-                                                    kSecondaryColor,
+                                              decoration: BoxDecoration(
+                                                color: kSecondaryColor,
                                                 borderRadius:
-                                                    BorderRadius
-                                                        .circular(
-                                                            10),
+                                                    BorderRadius.circular(10),
                                               ),
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets
-                                                        .all(8.0),
+                                                    const EdgeInsets.all(8.0),
                                                 child: TextField(
-                                                  onChanged:
-                                                      (value) {
+                                                  onChanged: (value) {
                                                     setState(() {
-                                                      feedback =
-                                                          value;
+                                                      feedback = value;
                                                     });
                                                   },
                                                   maxLines: 25,
@@ -196,48 +186,38 @@ void hiveUser ()async{
                                             ),
                                           ),
                                           Padding(
-                                            padding:
-                                                const EdgeInsets
-                                                        .symmetric(
-                                                    vertical: 20,
-                                                    horizontal: 15),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 20, horizontal: 15),
                                             child: InkWell(
                                               onTap: () {
-                                                if (feedback
-                                                        .isEmpty ==
-                                                    true) {
-                                                  Fluttertoast
-                                                      .showToast(
-                                                          msg:
-                                                              "Please enter a message");
+                                                if (feedback.isEmpty == true) {
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                          "Please enter a message");
                                                 } else {
                                                   feedBack();
                                                 }
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                    color:
-                                                        kSecondaryColor,
+                                                    color: kSecondaryColor,
                                                     borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                                10)),
+                                                        BorderRadius.circular(
+                                                            10)),
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Padding(
                                                       padding: const EdgeInsets
                                                               .symmetric(
-                                                          vertical:
-                                                              15),
+                                                          vertical: 15),
                                                       child: Text(
                                                         "Send",
                                                         style: TextStyle(
-                                                            fontSize:
-                                                                SizeConfig.safeBlockHorizontal *
-                                                                    4),
+                                                            fontSize: SizeConfig
+                                                                    .safeBlockHorizontal *
+                                                                4),
                                                       ),
                                                     ),
                                                   ],
@@ -259,8 +239,7 @@ void hiveUser ()async{
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
                                   "Send Feedback",
@@ -271,9 +250,8 @@ void hiveUser ()async{
                                   style: TextStyle(
                                       //  color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: SizeConfig
-                                              .safeBlockHorizontal *
-                                          3.5),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3.5),
                                 ),
                                 Text(
                                   "Let us know if you see anything troubling",
@@ -284,33 +262,32 @@ void hiveUser ()async{
                                   style: TextStyle(
                                       //       color: Colors.white70,
                                       fontWeight: FontWeight.w300,
-                                      fontSize: SizeConfig
-                                              .safeBlockHorizontal *
-                                          3),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3),
                                 )
                               ],
                             ),
-                            Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                            Icon(Icons.arrow_forward_ios_rounded, size: 15)
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(
+                      height: 30,
+                    ),
                     InkWell(
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => UserCategories(
-
-                              )
-                              ));
-                        },
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                                builder: (context) => UserCategories()));
+                      },
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
                                   "Categories",
@@ -319,13 +296,12 @@ void hiveUser ()async{
                                       .clamp(0.5, 1.5)
                                       .toDouble(),
                                   style: TextStyle(
-                                    //  color: Colors.white,
+                                      //  color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          3.5),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3.5),
                                 ),
-                                SizedBox(height:5),
+                                SizedBox(height: 5),
                                 Text(
                                   "Select Categories",
                                   textScaleFactor: mediaQueryData
@@ -333,32 +309,32 @@ void hiveUser ()async{
                                       .clamp(0.5, 0.8)
                                       .toDouble(),
                                   style: TextStyle(
-                                    //       color: Colors.white70,
+                                      //       color: Colors.white70,
                                       fontWeight: FontWeight.w300,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          3),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3),
                                 )
                               ],
                             ),
-                            Icon(Icons.arrow_forward_ios_rounded,size: 15)
+                            Icon(Icons.arrow_forward_ios_rounded, size: 15)
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 30,),
+                    SizedBox(
+                      height: 30,
+                    ),
                     Container(
-                      child:  InkWell(
-                        onTap:(){
-                          launcher.launchInBrowser("https://play.google.com/store/apps/details?id=co.titandlt.auditory");
-
+                      child: InkWell(
+                        onTap: () {
+                          launcher.launchInBrowser(
+                              "https://play.google.com/store/apps/details?id=co.titandlt.auditory");
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
                                   "Version",
@@ -367,18 +343,16 @@ void hiveUser ()async{
                                       .clamp(0.5, 1.5)
                                       .toDouble(),
                                   style: TextStyle(
-                                    //  color: Colors.white,
+                                      //  color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          3.5),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3.5),
                                 ),
-                                SizedBox(height:5),
-
+                                SizedBox(height: 5),
                               ],
                             ),
                             Text("1.0.49"),
-                        //    Icon(Icons.arrow_forward_ios_rounded)
+                            //    Icon(Icons.arrow_forward_ios_rounded)
                           ],
                         ),
                       ),
@@ -387,7 +361,7 @@ void hiveUser ()async{
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height/2.1,
+                height: MediaQuery.of(context).size.height / 2.1,
               ),
               Column(
                 children: [
@@ -399,42 +373,43 @@ void hiveUser ()async{
                           bottom: 3, // space between underline and text
                         ),
                         decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(
-                              color: Colors.white,  // Text colour here
-                              width: 1.0, // Underline width
-                            ))
-                        ),
-
+                            border: Border(
+                                bottom: BorderSide(
+                          color: Colors.white, // Text colour here
+                          width: 1.0, // Underline width
+                        ))),
                         child: Text(
                           "Privacy Policy",
                           style: TextStyle(
-                            color: Colors.white,  // Text colour here
+                            color: Colors.white, // Text colour here
                           ),
                         ),
                       ),
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Text("and"),
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Container(
                         padding: EdgeInsets.only(
                           bottom: 3, // space between underline and text
                         ),
                         decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(
-                              color: Colors.white,  // Text colour here
-                              width: 1.0, // Underline width
-                            ))
-                        ),
-
+                            border: Border(
+                                bottom: BorderSide(
+                          color: Colors.white, // Text colour here
+                          width: 1.0, // Underline width
+                        ))),
                         child: Text(
                           "Terms of Use",
                           style: TextStyle(
-                            color: Colors.white,  // Text colour here
+                            color: Colors.white, // Text colour here
                           ),
                         ),
                       ),
                     ],
-
                   ),
                   // Container(
                   //   padding: EdgeInsets.only(
@@ -454,44 +429,45 @@ void hiveUser ()async{
                   //     ),
                   //   ),
                   // ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text(
-                    hiveUserName != null
-                                            ? "Logged in with Google"
-                                            : "Logged in with Hive",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                          //     color: Color(0xffe8e8e8),
-                                          fontSize: SizeConfig
-                                                  .safeBlockHorizontal *
-                                              3)),
+                      hiveUserName != null
+                          ? "Logged in with Google"
+                          : "Logged in with Hive",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          //     color: Color(0xffe8e8e8),
+                          fontSize: SizeConfig.safeBlockHorizontal * 3)),
                   //   "Logged in with Hive",style: TextStyle(
                   //   fontSize: 12
                   // ),),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
 
                   InkWell(
-                      onTap: () {
-                        logout();
-                        prefs.clear();
-                      },
+                    onTap: () {
+                      logout();
+                      prefs.clear();
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      height: MediaQuery.of(context).size.height /18,
-                      width: MediaQuery.of(context).size.width /1.2,
-                      child: Center(child: Text("Log Out",style: TextStyle(
-                          color: Colors.white
-                      ),)),
-
+                          borderRadius: BorderRadius.circular(10)),
+                      height: MediaQuery.of(context).size.height / 18,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      child: Center(
+                          child: Text(
+                        "Log Out",
+                        style: TextStyle(color: Colors.white),
+                      )),
                     ),
                   ),
                 ],
               ),
             ],
-
           ),
         ));
   }

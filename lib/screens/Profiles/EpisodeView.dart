@@ -575,7 +575,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                       true) {
                                                 episodeObject.stop();
                                                 Navigator.push(context,
-                                                    MaterialPageRoute(
+                                                    CupertinoPageRoute(
                                                         builder: (context) {
                                                   return PodcastVideoPlayer(
                                                     episodeObject:
@@ -588,7 +588,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                         .contains('.pdf') ==
                                                     true) {
                                                   // Navigator.push(context,
-                                                  //     MaterialPageRoute(
+                                                  //     CupertinoPageRoute(
                                                   //         builder: (context) {
                                                   //   return PDFviewer(
                                                   //     episodeObject:
@@ -785,7 +785,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                           true) {
                                                     episodeObject.stop();
                                                     Navigator.push(context,
-                                                        MaterialPageRoute(
+                                                        CupertinoPageRoute(
                                                             builder: (context) {
                                                       return PodcastVideoPlayer(
                                                         episodeObject:
@@ -798,7 +798,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                             .contains('.pdf') ==
                                                         true) {
                                                       // Navigator.push(context,
-                                                      //     MaterialPageRoute(
+                                                      //     CupertinoPageRoute(
                                                       //         builder: (context) {
                                                       //   return PDFviewer(
                                                       //     episodeObject:
@@ -1116,7 +1116,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                   child: ListTile(
                                                     onTap: () {
                                                       Navigator.push(context,
-                                                          MaterialPageRoute(
+                                                          CupertinoPageRoute(
                                                               builder:
                                                                   (context) {
                                                         return Comments(
@@ -1194,7 +1194,8 @@ class _EpisodeViewState extends State<EpisodeView>
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.push(context,
-                                          MaterialPageRoute(builder: (context) {
+                                          CupertinoPageRoute(
+                                              builder: (context) {
                                         return PodcastView(v['id']);
                                       }));
                                     },
@@ -1503,7 +1504,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                               true) {
                                         episodeObject.stop();
                                         Navigator.push(context,
-                                            MaterialPageRoute(
+                                            CupertinoPageRoute(
                                                 builder: (context) {
                                           return PodcastVideoPlayer(
                                             episodeObject: episodeContent,
@@ -1515,7 +1516,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 .contains('.pdf') ==
                                             true) {
                                           // Navigator.push(context,
-                                          //     MaterialPageRoute(
+                                          //     CupertinoPageRoute(
                                           //         builder: (context) {
                                           //   return PDFviewer(
                                           //     episodeObject:
@@ -1530,7 +1531,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                               .toString());
                                           episodeObject.play();
                                           Navigator.push(context,
-                                              MaterialPageRoute(
+                                              CupertinoPageRoute(
                                                   builder: (context) {
                                             return Player();
                                           }));
@@ -1693,7 +1694,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                   true) {
                                             episodeObject.stop();
                                             Navigator.push(context,
-                                                MaterialPageRoute(
+                                                CupertinoPageRoute(
                                                     builder: (context) {
                                               return PodcastVideoPlayer(
                                                 episodeObject: episodeContent,
@@ -1705,7 +1706,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                     .contains('.pdf') ==
                                                 true) {
                                               // Navigator.push(context,
-                                              //     MaterialPageRoute(
+                                              //     CupertinoPageRoute(
                                               //         builder: (context) {
                                               //   return PDFviewer(
                                               //     episodeObject:
@@ -1932,7 +1933,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                             child: ListTile(
                                               onTap: () {
                                                 Navigator.push(context,
-                                                    MaterialPageRoute(
+                                                    CupertinoPageRoute(
                                                         builder: (context) {
                                                   return Comments(
                                                     episodeObject:

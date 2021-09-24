@@ -11,6 +11,7 @@ import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -224,7 +225,7 @@ class _HomeState extends State<Home> {
         });
 
         if (_latestUri.toString().contains('episode') == true) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return EpisodeView(
               episodeId: _latestUri
                   .toString()
@@ -233,7 +234,7 @@ class _HomeState extends State<Home> {
           }));
         }
         if (_latestUri.toString().contains('podcast') == true) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
             return PodcastView(
               _latestUri
                   .toString()
@@ -241,8 +242,9 @@ class _HomeState extends State<Home> {
             );
           }));
         }
+
         // if (uri.toString().contains('episode') == true) {
-        //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
         //     return EpisodeView(
         //       episodeId: uri
         //           .toString()
@@ -251,7 +253,7 @@ class _HomeState extends State<Home> {
         //   }));
         // }
         // if (uri.toString().contains('episode') == true) {
-        //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+        //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
         //     return EpisodeView(
         //       episodeId: uri
         //           .toString()
@@ -297,7 +299,7 @@ class _HomeState extends State<Home> {
         } else {
           print('got initial uri: $uri');
           if (uri.toString().contains('episode') == true) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return EpisodeView(
                 episodeId: uri
                     .toString()
@@ -306,14 +308,14 @@ class _HomeState extends State<Home> {
             }));
           }
           if (uri.toString().contains('podcast') == true) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
               return PodcastView(
                 uri.toString().split('/')[uri.toString().split('/').length - 1],
               );
             }));
           }
           // if (uri.toString().contains('episode') == true) {
-          //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
           //     return EpisodeView(
           //       episodeId: uri
           //           .toString()
@@ -322,7 +324,7 @@ class _HomeState extends State<Home> {
           //   }));
           // }
           // if (uri.toString().contains('episode') == true) {
-          //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
           //     return EpisodeView(
           //       episodeId: uri
           //           .toString()
@@ -399,7 +401,8 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).push(SlideRightRoute(widget: Profile()));
+              Navigator.of(context)
+                  .push(CupertinoPageRoute(builder: (context) => Profile()));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -444,7 +447,7 @@ class _HomeState extends State<Home> {
                               : ListTile(
                                   onTap: () {
                                     Navigator.push(context,
-                                        MaterialPageRoute(builder: (context) {
+                                        CupertinoPageRoute(builder: (context) {
                                       return DownloadPage();
                                     }));
                                   },
@@ -454,7 +457,7 @@ class _HomeState extends State<Home> {
                           ListTile(
                             onTap: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
+                                  CupertinoPageRoute(builder: (context) {
                                 return ClipScreen();
                               }));
                             },
