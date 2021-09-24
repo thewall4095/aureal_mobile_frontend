@@ -5,6 +5,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -726,10 +727,17 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                         } else {
                                           hostJoined(v['roomid']);
                                         }
-                                        await _joinMeeting(
-                                            roomId: v['roomid'],
-                                            roomName: v['title'],
-                                            hostUserId: v['hostuserid']);
+                                        getRoomDetails(v['roomid'])
+                                            .then((value) {
+                                          _joinMeeting(
+                                              roomId: value['roomid'],
+                                              roomName: value['title'],
+                                              hostUserId: value['hostuserid']);
+                                        });
+                                        // await _joinMeeting(
+                                        //     roomId: v['roomid'],
+                                        //     roomName: v['title'],
+                                        //     hostUserId: v['hostuserid']);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -1067,10 +1075,17 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                         } else {
                                           hostJoined(v['roomid']);
                                         }
-                                        await _joinMeeting(
-                                            roomId: v['roomid'],
-                                            roomName: v['title'],
-                                            hostUserId: v['hostuserid']);
+                                        getRoomDetails(v['roomid'])
+                                            .then((value) {
+                                          _joinMeeting(
+                                              roomId: value['roomid'],
+                                              roomName: value['title'],
+                                              hostUserId: value['hostuserid']);
+                                        });
+                                        // await _joinMeeting(
+                                        //     roomId: v['roomid'],
+                                        //     roomName: v['title'],
+                                        //     hostUserId: v['hostuserid']);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
