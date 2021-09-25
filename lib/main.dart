@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
 import 'package:auditory/CategoriesProvider.dart';
@@ -23,6 +23,7 @@ import 'package:auditory/screens/errorScreens/PopError.dart';
 import 'package:auditory/screens/errorScreens/TemporaryError.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/PostRSSFeed.dart';
 import 'package:auditory/utilities/TagSearch.dart';
+import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -34,6 +35,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as feature;
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -352,6 +355,134 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     super.initState();
   }
 
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  _joinMeeting({String roomId, String roomName, String hostUserId}) async {
+    // Enable or disable any feature flag here
+    // If feature flag are not provided, default values will be used
+    // Full list of feature flags (and defaults) available in the README
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      FeatureFlagEnum.CHAT_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    bool isAudioMuted = true;
+    bool isVideoMuted = true;
+
+    var options = JitsiMeetingOptions(room: roomId)
+      ..serverURL = 'https://sessions.aureal.one'
+      ..subject = roomName
+      ..userDisplayName = prefs.getString("HiveUserName")
+      ..userEmail = 'emailText.text'
+      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+      ..audioOnly = true
+      ..audioMuted = isAudioMuted
+      ..videoMuted = isVideoMuted
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": roomName,
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {
+          "displayName": prefs.getString('userName'),
+          'avatarUrl': prefs.getString('displayPicture')
+        }
+      };
+
+    debugPrint("JitsiMeetingOptions: $options");
+
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'onConferenceTerminated',
+                callback: (dynamic message) {
+                  if (hostUserId == prefs.getString("userId")) {
+                    hostLeft(roomId);
+                  }
+                  debugPrint("readyToClose callback");
+                }),
+          ]),
+    );
+  }
+
+  void addRoomParticipant({String roomid}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/addRoomParticipant';
+
+    var map = Map<String, dynamic>();
+    map['roomid'] = roomid;
+    map['userid'] = prefs.getString('userId');
+
+    FormData formData = FormData.fromMap(map);
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void hostLeft(var roomId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/hostLeft";
+
+    var map = Map<String, dynamic>();
+    map['userid'] = prefs.getString("userId");
+    map['roomid'] = roomId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void hostJoined(var roomId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/hostJoined";
+
+    var map = Map<String, dynamic>();
+    map['userid'] = prefs.getString("userId");
+    map['roomid'] = roomId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void _showSnackBar(String msg) {
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final context = _scaffoldKey.currentContext;
@@ -367,6 +498,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     if (counter < 1) {
       await checkAuthenticity(context);
     }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -421,6 +554,19 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
                 episodeId: message.data['episode_id'],
               );
             }));
+          }
+          if (message.data['type'] == 'room_active') {
+            getRoomDetails(message.data['room_id']).then((value) {
+              if (value['hostuserid'] != prefs.getString('userId')) {
+                addRoomParticipant(roomid: value['roomid']);
+              } else {
+                hostJoined(value['roomid']);
+              }
+              _joinMeeting(
+                  roomId: value['roomid'],
+                  roomName: value['title'],
+                  hostUserId: value['hostuserid']);
+            });
           }
         } else {
           Navigator.push(context, CupertinoPageRoute(builder: (context) {

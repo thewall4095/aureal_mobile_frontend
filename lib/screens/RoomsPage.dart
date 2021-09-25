@@ -373,743 +373,879 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
           }
           return true;
         },
-        child: Scaffold(
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              showBarModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return CreateRoom();
-                  });
-            },
-            label: Text('Create Room'),
-            icon: Icon(Icons.add),
-            isExtended: !upDirection,
-          ),
-          appBar: AppBar(
-            backgroundColor: Color(0xff161616),
-            elevation: 0,
-            automaticallyImplyLeading: false,
-            title: Align(
-              alignment: Alignment.centerLeft,
-              child: TabBar(
-                isScrollable: true,
-                automaticIndicatorColorAdjustment: true,
-                indicatorSize: TabBarIndicatorSize.label,
-                controller: _tabController,
-                tabs: [
-                  Tab(
-                    text: 'All',
-                  ),
-                  Tab(
-                    text: 'My Groups',
-                  )
-                ],
-              ),
-            ),
-          ),
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              rooms.length == 0
-                  ? ListView.builder(
-                      controller: _controller,
-                      itemCount: 50,
-                      itemBuilder: (context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 7.5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xff222222),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: Color(0xff161616)),
-                                          height: 15,
-                                          width: 60,
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Container(
-                                          height: 15,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              color: Color(0xff161616)),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
-                                    child: Container(
-                                      height:
-                                          (MediaQuery.of(context).size.width /
-                                                  9) *
-                                              2.1,
-                                      child: GridView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: MediaQuery.of(context)
-                                                      .orientation ==
-                                                  Orientation.landscape
-                                              ? 3
-                                              : 2,
-                                          crossAxisSpacing: 5,
-                                          mainAxisSpacing: 5,
-                                          childAspectRatio: (1 / 1),
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          return CircleAvatar(
-                                            backgroundColor: Color(0xff161616),
-                                          );
-                                        },
-                                        itemCount: 10,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Container(
-                                      height: 15,
-                                      width:
-                                          MediaQuery.of(context).size.width / 5,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Color(0xff161616)),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: Container(
-                                      height: 50,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Color(0xff161616)),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Color(0xff161616)),
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 5,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Color(0xff161616)),
-                                  )
-                                ],
+        child: Platform.isAndroid != true
+            ? Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: MediaQuery.of(context).size.width / 2,
+                            child: Image.asset('assets/images/Mascot.png'),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Aureal live rooms is coming to iOS soon!",
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 5),
                               ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Icon(Icons.wifi_tethering),
+                          ),
+                          Text(
+                              "We'd love your feedbacks and suggestions in our discord.")
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () {
+                          launcher
+                              .launchInBrowser('https://discord.gg/WJav6sKvZj');
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Color(0xff171b27))
+                              //  color: kSecondaryColor,
+                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(FontAwesomeIcons.discord),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Text(
+                                  'Join our discord channel',
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4),
+                                )
+                              ],
                             ),
                           ),
-                        );
-                      })
-                  : ListView(
-                      controller: _controller,
-                      children: [
-                        for (var v in rooms)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 7.5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color(0xff222222),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            : Scaffold(
+                floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () {
+                    showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return CreateRoom();
+                        });
+                  },
+                  label: Text('Create Room'),
+                  icon: Icon(Icons.add),
+                  isExtended: !upDirection,
+                ),
+                appBar: AppBar(
+                  backgroundColor: Color(0xff161616),
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                  title: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      isScrollable: true,
+                      automaticIndicatorColorAdjustment: true,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      controller: _tabController,
+                      tabs: [
+                        Tab(
+                          text: 'All',
+                        ),
+                        Tab(
+                          text: 'My Groups',
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                body: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    rooms.length == 0
+                        ? ListView.builder(
+                            controller: _controller,
+                            itemCount: 50,
+                            itemBuilder: (context, int index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 7.5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color(0xff222222),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
+                                              vertical: 5),
                                           child: Row(
-                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
-                                                Icons.group,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                color: Colors.blue,
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: Color(0xff161616)),
+                                                height: 15,
+                                                width: 60,
                                               ),
                                               SizedBox(
                                                 width: 10,
                                               ),
-                                              Text(
-                                                v['communities'] != null
-                                                    ? "community"
-                                                    : 'general',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
+                                              Container(
+                                                height: 15,
+                                                width: 60,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: Color(0xff161616)),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    v['roomParticipants'] == null
-                                        ? SizedBox(
-                                            height: 10,
-                                          )
-                                        : Container(
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15),
+                                          child: Container(
                                             height: (MediaQuery.of(context)
                                                         .size
                                                         .width /
                                                     9) *
                                                 2.1,
-                                            child: GridView(
+                                            child: GridView.builder(
                                               scrollDirection: Axis.horizontal,
                                               gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 2,
-                                                      mainAxisSpacing: 10,
-                                                      crossAxisSpacing: 5,
-                                                      childAspectRatio: 1 / 1),
-                                              children: [
-                                                for (var a
-                                                    in v['roomParticipants'])
-                                                  CachedNetworkImage(
-                                                    imageUrl: a['user_image'],
-                                                    memCacheHeight:
-                                                        (MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                2)
-                                                            .ceil(),
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            10,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            10,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit:
-                                                                  BoxFit.cover),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                              ],
+                                                crossAxisCount:
+                                                    MediaQuery.of(context)
+                                                                .orientation ==
+                                                            Orientation
+                                                                .landscape
+                                                        ? 3
+                                                        : 2,
+                                                crossAxisSpacing: 5,
+                                                mainAxisSpacing: 5,
+                                                childAspectRatio: (1 / 1),
+                                              ),
+                                              itemBuilder: (context, index) {
+                                                return CircleAvatar(
+                                                  backgroundColor:
+                                                      Color(0xff161616),
+                                                );
+                                              },
+                                              itemCount: 10,
                                             ),
                                           ),
-                                    v['description'] == null
-                                        ? SizedBox()
-                                        : Text(
-                                            "${v['description']}",
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    2.8),
-                                          ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      child: Text(
-                                        "${v['title']}",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    5,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.stream,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                color: Colors.blue,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                'LIVE',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
-                                              ),
-                                            ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 10),
+                                          child: Container(
+                                            height: 15,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: Color(0xff161616)),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    InkWell(
-                                      onTap: () async {
-                                        SharedPreferences prefs =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        if (v['hostuserid'] !=
-                                            prefs.getString('userId')) {
-                                          addRoomParticipant(
-                                              roomid: v['roomid']);
-                                        } else {
-                                          hostJoined(v['roomid']);
-                                        }
-                                        getRoomDetails(v['roomid'])
-                                            .then((value) {
-                                          _joinMeeting(
-                                              roomId: value['roomid'],
-                                              roomName: value['title'],
-                                              hostUserId: value['hostuserid']);
-                                        });
-                                        // await _joinMeeting(
-                                        //     roomId: v['roomid'],
-                                        //     roomName: v['title'],
-                                        //     hostUserId: v['hostuserid']);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          color: Color(0xff191919),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: Container(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: Color(0xff161616)),
+                                          ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 15),
-                                          child: Text("join room"),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-              userRooms.length == 0
-                  ? ListView.builder(
-                      controller: mygroupScrollController,
-                      itemCount: 50,
-                      itemBuilder: (context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 7.5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xff222222),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Row(
-                                      children: [
                                         Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
                                               color: Color(0xff161616)),
-                                          height: 15,
-                                          width: 60,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                          height: 10,
                                         ),
                                         SizedBox(
-                                          width: 10,
+                                          height: 10,
                                         ),
                                         Container(
-                                          height: 15,
-                                          width: 60,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              5,
+                                          height: 40,
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(8),
+                                                  BorderRadius.circular(15),
                                               color: Color(0xff161616)),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15),
-                                    child: Container(
-                                      height:
-                                          (MediaQuery.of(context).size.width /
-                                                  9) *
-                                              2.1,
-                                      child: GridView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: MediaQuery.of(context)
-                                                      .orientation ==
-                                                  Orientation.landscape
-                                              ? 3
-                                              : 2,
-                                          crossAxisSpacing: 5,
-                                          mainAxisSpacing: 5,
-                                          childAspectRatio: (1 / 1),
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          return CircleAvatar(
-                                            backgroundColor: Color(0xff161616),
-                                          );
-                                        },
-                                        itemCount: 10,
+                                ),
+                              );
+                            })
+                        : ListView(
+                            controller: _controller,
+                            children: [
+                              for (var v in rooms)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 7.5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color(0xff222222),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.group,
+                                                      size: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      v['communities'] != null
+                                                          ? "community"
+                                                          : 'general',
+                                                      textScaleFactor: 1.0,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .blockSizeHorizontal *
+                                                              2.5),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          v['roomParticipants'] == null
+                                              ? SizedBox(
+                                                  height: 10,
+                                                )
+                                              : Container(
+                                                  height:
+                                                      (MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              9) *
+                                                          2.1,
+                                                  child: GridView(
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    gridDelegate:
+                                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            mainAxisSpacing: 10,
+                                                            crossAxisSpacing: 5,
+                                                            childAspectRatio:
+                                                                1 / 1),
+                                                    children: [
+                                                      for (var a in v[
+                                                          'roomParticipants'])
+                                                        CachedNetworkImage(
+                                                          imageUrl:
+                                                              a['user_image'],
+                                                          memCacheHeight:
+                                                              (MediaQuery.of(context)
+                                                                          .size
+                                                                          .width /
+                                                                      2)
+                                                                  .ceil(),
+                                                          imageBuilder: (context,
+                                                              imageProvider) {
+                                                            return Container(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  10,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  10,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                          v['description'] == null
+                                              ? SizedBox()
+                                              : Text(
+                                                  "${v['description']}",
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      color: Colors.blue,
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          2.8),
+                                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            child: Text(
+                                              "${v['title']}",
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      5,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.stream,
+                                                      size: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      'LIVE',
+                                                      textScaleFactor: 1.0,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .blockSizeHorizontal *
+                                                              2.5),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              if (v['hostuserid'] !=
+                                                  prefs.getString('userId')) {
+                                                addRoomParticipant(
+                                                    roomid: v['roomid']);
+                                              } else {
+                                                hostJoined(v['roomid']);
+                                              }
+                                              getRoomDetails(v['roomid'])
+                                                  .then((value) {
+                                                _joinMeeting(
+                                                    roomId: value['roomid'],
+                                                    roomName: value['title'],
+                                                    hostUserId:
+                                                        value['hostuserid']);
+                                              });
+                                              // await _joinMeeting(
+                                              //     roomId: v['roomid'],
+                                              //     roomName: v['title'],
+                                              //     hostUserId: v['hostuserid']);
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Color(0xff191919),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 15),
+                                                child: Text("join room"),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 10),
-                                    child: Container(
-                                      height: 15,
-                                      width:
-                                          MediaQuery.of(context).size.width / 5,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Color(0xff161616)),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: Container(
-                                      height: 50,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.60,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: Color(0xff161616)),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Color(0xff161616)),
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
-                                    height: 10,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 5,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Color(0xff161616)),
-                                  )
-                                ],
-                              ),
-                            ),
+                                ),
+                            ],
                           ),
-                        );
-                      })
-                  : ListView(
-                      controller: mygroupScrollController,
-                      children: [
-                        for (var v in userRooms)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 7.5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Color(0xff222222),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
+                    userRooms.length == 0
+                        ? ListView.builder(
+                            controller: mygroupScrollController,
+                            itemCount: 50,
+                            itemBuilder: (context, int index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 7.5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color(0xff222222),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
+                                              vertical: 5),
                                           child: Row(
-                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
-                                                Icons.group,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                color: Colors.blue,
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: Color(0xff161616)),
+                                                height: 15,
+                                                width: 60,
                                               ),
                                               SizedBox(
                                                 width: 10,
                                               ),
-                                              Text(
-                                                v['communities'] != null
-                                                    ? "community"
-                                                    : 'general',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
+                                              Container(
+                                                height: 15,
+                                                width: 60,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: Color(0xff161616)),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    v['roomParticipants'] == null
-                                        ? SizedBox(
-                                            height: 10,
-                                          )
-                                        : Container(
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15),
+                                          child: Container(
                                             height: (MediaQuery.of(context)
                                                         .size
                                                         .width /
                                                     9) *
                                                 2.1,
-                                            child: GridView(
-                                              scrollDirection: Axis.vertical,
+                                            child: GridView.builder(
+                                              scrollDirection: Axis.horizontal,
                                               gridDelegate:
                                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 5,
-                                                      mainAxisSpacing: 10,
-                                                      crossAxisSpacing: 5,
-                                                      childAspectRatio: 1 / 1),
-                                              children: [
-                                                for (var a
-                                                    in v['roomParticipants'])
-                                                  CachedNetworkImage(
-                                                    imageUrl: a['user_image'],
-                                                    memCacheHeight:
-                                                        (MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                2)
-                                                            .ceil(),
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            10,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            10,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit:
-                                                                  BoxFit.cover),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                              ],
+                                                crossAxisCount:
+                                                    MediaQuery.of(context)
+                                                                .orientation ==
+                                                            Orientation
+                                                                .landscape
+                                                        ? 3
+                                                        : 2,
+                                                crossAxisSpacing: 5,
+                                                mainAxisSpacing: 5,
+                                                childAspectRatio: (1 / 1),
+                                              ),
+                                              itemBuilder: (context, index) {
+                                                return CircleAvatar(
+                                                  backgroundColor:
+                                                      Color(0xff161616),
+                                                );
+                                              },
+                                              itemCount: 10,
                                             ),
                                           ),
-                                    v['description'] == null
-                                        ? SizedBox()
-                                        : Text(
-                                            "${v['description']}",
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: SizeConfig
-                                                        .blockSizeHorizontal *
-                                                    2.8),
-                                          ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      child: Text(
-                                        "${v['title']}",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    5,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.stream,
-                                                size: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3,
-                                                color: Colors.blue,
-                                              ),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text(
-                                                'LIVE',
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        2.5),
-                                              ),
-                                            ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 10),
+                                          child: Container(
+                                            height: 15,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: Color(0xff161616)),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    InkWell(
-                                      onTap: () async {
-                                        SharedPreferences prefs =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        if (v['hostuserid'] !=
-                                            prefs.getString('userId')) {
-                                          addRoomParticipant(
-                                              roomid: v['roomid']);
-                                        } else {
-                                          hostJoined(v['roomid']);
-                                        }
-                                        getRoomDetails(v['roomid'])
-                                            .then((value) {
-                                          _joinMeeting(
-                                              roomId: value['roomid'],
-                                              roomName: value['title'],
-                                              hostUserId: value['hostuserid']);
-                                        });
-                                        // await _joinMeeting(
-                                        //     roomId: v['roomid'],
-                                        //     roomName: v['title'],
-                                        //     hostUserId: v['hostuserid']);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          color: Color(0xff191919),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 20),
+                                          child: Container(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: Color(0xff161616)),
+                                          ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 15),
-                                          child: Text("join room"),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              color: Color(0xff161616)),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                          height: 10,
                                         ),
-                                      ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              5,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: Color(0xff161616)),
+                                        )
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            })
+                        : ListView(
+                            controller: mygroupScrollController,
+                            children: [
+                              for (var v in userRooms)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 7.5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color(0xff222222),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.group,
+                                                      size: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      v['communities'] != null
+                                                          ? "community"
+                                                          : 'general',
+                                                      textScaleFactor: 1.0,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .blockSizeHorizontal *
+                                                              2.5),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          v['roomParticipants'] == null
+                                              ? SizedBox(
+                                                  height: 10,
+                                                )
+                                              : Container(
+                                                  height:
+                                                      (MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              9) *
+                                                          2.1,
+                                                  child: GridView(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    gridDelegate:
+                                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 5,
+                                                            mainAxisSpacing: 10,
+                                                            crossAxisSpacing: 5,
+                                                            childAspectRatio:
+                                                                1 / 1),
+                                                    children: [
+                                                      for (var a in v[
+                                                          'roomParticipants'])
+                                                        CachedNetworkImage(
+                                                          imageUrl:
+                                                              a['user_image'],
+                                                          memCacheHeight:
+                                                              (MediaQuery.of(context)
+                                                                          .size
+                                                                          .width /
+                                                                      2)
+                                                                  .ceil(),
+                                                          imageBuilder: (context,
+                                                              imageProvider) {
+                                                            return Container(
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  10,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  10,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                          v['description'] == null
+                                              ? SizedBox()
+                                              : Text(
+                                                  "${v['description']}",
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      color: Colors.blue,
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          2.8),
+                                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 5),
+                                            child: Text(
+                                              "${v['title']}",
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      5,
+                                                  fontWeight: FontWeight.w800),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kPrimaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.stream,
+                                                      size: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          3,
+                                                      color: Colors.blue,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      'LIVE',
+                                                      textScaleFactor: 1.0,
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                                  .blockSizeHorizontal *
+                                                              2.5),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              if (v['hostuserid'] !=
+                                                  prefs.getString('userId')) {
+                                                addRoomParticipant(
+                                                    roomid: v['roomid']);
+                                              } else {
+                                                hostJoined(v['roomid']);
+                                              }
+                                              getRoomDetails(v['roomid'])
+                                                  .then((value) {
+                                                _joinMeeting(
+                                                    roomId: value['roomid'],
+                                                    roomName: value['title'],
+                                                    hostUserId:
+                                                        value['hostuserid']);
+                                              });
+                                              // await _joinMeeting(
+                                              //     roomId: v['roomid'],
+                                              //     roomName: v['title'],
+                                              //     hostUserId: v['hostuserid']);
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Color(0xff191919),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 15),
+                                                child: Text("join room"),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                      ],
-                    ),
-            ],
-          ),
-        ),
+                  ],
+                ),
+              ),
       ),
     );
   }

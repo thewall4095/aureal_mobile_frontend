@@ -262,53 +262,31 @@ class _CategoryViewState extends State<CategoryView>
     SizeConfig().init(context);
     return Stack(children: [
       Scaffold(
+        appBar: AppBar(
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(50),
+            child: Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${widget.categoryObject['name']}",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 8),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         body: SafeArea(
           child: CustomScrollView(
             controller: controller,
             slivers: [
-              SliverAppBar(
-                pinned: true,
-                floating: true,
-                expandedHeight: MediaQuery.of(context).size.height / 3.8,
-                flexibleSpace: Container(
-                  child: FlexibleSpaceBar(
-                    background: Container(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(dominantColor), Colors.transparent],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 80),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  '${widget.categoryObject['name']}',
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 8,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               SliverToBoxAdapter(
                 child: Column(
                   children: [
