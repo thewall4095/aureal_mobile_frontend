@@ -172,7 +172,7 @@ class _HomeState extends State<Home> {
 
       case 3:
         // return BrowsePage();
-        return Profile();
+        return LibraryPage();
         break;
 
       // case 3:
@@ -683,6 +683,11 @@ class _HomeState extends State<Home> {
             icon: Icon(FontAwesomeIcons.compass),
             activeIcon: Icon(FontAwesomeIcons.solidCompass),
           ),
+          BottomNavigationBarItem(
+            label: "",
+            icon: Icon(Icons.library_books_outlined),
+            activeIcon: Icon(Icons.library_books),
+          )
           // BottomNavigationBarItem(
           //   label: "",
           //   icon: Icon(
@@ -920,5 +925,17 @@ class _BottomPlayerState extends State<BottomPlayer> {
         : SizedBox(
             height: 0,
           );
+  }
+}
+
+class LibraryPage extends StatefulWidget {
+  @override
+  _LibraryPageState createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
