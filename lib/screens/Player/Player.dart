@@ -372,8 +372,11 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
                 child: ListView(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   children: [
                     Column(
+                      mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
@@ -820,6 +823,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                           ],
                         ),
                         Container(
+                          height: MediaQuery.of(context).size.height / 1.5,
                           decoration: BoxDecoration(
                             boxShadow: [
                               new BoxShadow(
