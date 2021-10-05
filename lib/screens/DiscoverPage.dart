@@ -572,7 +572,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height /
-                                                2.8,
+                                                2.9,
                                             child: GridView(
                                               scrollDirection: Axis.horizontal,
                                               gridDelegate:

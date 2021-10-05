@@ -7,6 +7,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
+import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
@@ -925,17 +926,5 @@ class _BottomPlayerState extends State<BottomPlayer> {
         : SizedBox(
             height: 0,
           );
-  }
-}
-
-class LibraryPage extends StatefulWidget {
-  @override
-  _LibraryPageState createState() => _LibraryPageState();
-}
-
-class _LibraryPageState extends State<LibraryPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

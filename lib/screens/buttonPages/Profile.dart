@@ -1583,7 +1583,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               // ),
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     Navigator.push(
                                         context,
@@ -1639,7 +1639,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               // ReferralDashboard(),
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
-                                child: GestureDetector(
+                                child: InkWell(
                                   onTap: () {
                                     Navigator.push(
                                         context,
