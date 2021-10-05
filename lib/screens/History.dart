@@ -101,15 +101,6 @@ class _HistoryState extends State<History> {
                      .contains(
                      '.pdf') ==
                      true) {
-                   // Navigator.push(
-                   //     context,
-                   //     CupertinoPageRoute(
-                   // der:
-                   //             (context) {
-                   //   return PDFviewer(
-                   //       episodeObject:
-                   //           v);
-                   // }));
                  } else {
                    currentlyPlaying
                        .stop();
@@ -155,12 +146,12 @@ class _HistoryState extends State<History> {
                            context)
                            .size
                            .width /
-                           4.5,
+                           6,
                        height: MediaQuery.of(
                            context)
                            .size
                            .width /
-                           4.5,
+                           6,
                        child: Stack(
                          children: [
                            CachedNetworkImage(
@@ -169,9 +160,9 @@ class _HistoryState extends State<History> {
                                  imageProvider) {
                                return Container(
                                  height: MediaQuery.of(context).size.width /
-                                     4.5,
+                                     6,
                                  width: MediaQuery.of(context).size.width /
-                                     4.5,
+                                     6,
                                  decoration:
                                  BoxDecoration(
                                    borderRadius:
@@ -203,38 +194,38 @@ class _HistoryState extends State<History> {
                                );
                              },
                            ),
-                           Column(
-                             mainAxisAlignment:
-                             MainAxisAlignment
-                                 .end,
-                             children: [
-                               FutureBuilder(
-                                   future: dursaver.percentageDone(a[
-                                   'id']),
-                                   builder:
-                                       (context, snapshot) {
-                                     if (snapshot.data.toString() ==
-                                         'null') {
-                                       return Container();
-                                     } else {
-                                       // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
-                                       return Stack(
-                                         children: [
-                                           Container(
-                                             decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-                                             width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
-                                             height: 5,
-                                           ),
-                                           Container(
-                                             width: MediaQuery.of(context).size.width / 4.5,
-                                             height: 2,
-                                           )
-                                         ],
-                                       );
-                                     }
-                                   }),
-                             ],
-                           ),
+                           // Column(
+                           //   mainAxisAlignment:
+                           //   MainAxisAlignment
+                           //       .end,
+                           //   children: [
+                           //     FutureBuilder(
+                           //         future: dursaver.percentageDone(a[
+                           //         'id']),
+                           //         builder:
+                           //             (context, snapshot) {
+                           //           if (snapshot.data.toString() ==
+                           //               'null') {
+                           //             return Container();
+                           //           } else {
+                           //             // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
+                           //             return Stack(
+                           //               children: [
+                           //                 Container(
+                           //                   decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+                           //                   width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
+                           //                   height: 5,
+                           //                 ),
+                           //                 Container(
+                           //                   width: MediaQuery.of(context).size.width / 4.5,
+                           //                   height: 2,
+                           //                 )
+                           //               ],
+                           //             );
+                           //           }
+                           //         }),
+                           //   ],
+                           // ),
                          ],
                        ),
                      ),
@@ -253,7 +244,7 @@ class _HistoryState extends State<History> {
                              context)
                              .size
                              .width /
-                             4.5,
+                             6,
                          child: Column(
                              mainAxisAlignment:
                              MainAxisAlignment
@@ -269,7 +260,7 @@ class _HistoryState extends State<History> {
                                  children: [
                                    Padding(
                                      padding:
-                                     const EdgeInsets.only(bottom: 10),
+                                     const EdgeInsets.only(bottom: 5),
                                      child:
                                      GestureDetector(
                                        onTap:
@@ -289,7 +280,7 @@ class _HistoryState extends State<History> {
                                            }));
                                          },
                                          child: Padding(
-                                           padding:   const EdgeInsets.only(top: 12),
+                                           padding:   const EdgeInsets.only(top: 8),
                                            child: Text(
                                              a['name'].toString(),
                                              overflow: TextOverflow.clip,
