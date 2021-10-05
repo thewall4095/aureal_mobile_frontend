@@ -431,7 +431,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     icon: Icon(Icons.settings))
                               ],
                               expandedHeight:
-                                  MediaQuery.of(context).size.height / 2.5,
+                                  MediaQuery.of(context).size.height / 2.4,
                               flexibleSpace: FlexibleSpaceBar(
                                   background: Container(
                                 child: Stack(
@@ -529,36 +529,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                   0xff777777)),
                                                         ),
                                                 ),
-                                                // Padding(
-                                                //   padding:
-                                                //       const EdgeInsets.symmetric(
-                                                //           vertical: 10),
-                                                //   child: Text(
-                                                //     "$bio",
-                                                //     textScaleFactor: 1.0,
-                                                //   ),
-                                                // ),
-
                                                 Container(
-                                                  // decoration: BoxDecoration(
-                                                  //     boxShadow: [
-                                                  //       new BoxShadow(
-                                                  //         color: Colors
-                                                  //             .black54
-                                                  //             .withOpacity(
-                                                  //             0.2),
-                                                  //         blurRadius: 10.0,
-                                                  //       ),
-                                                  //     ],
-                                                  //     color: themeProvider
-                                                  //         .isLightTheme ==
-                                                  //         true
-                                                  //         ? Colors.white
-                                                  //         : Color(0xff222222),
-                                                  //     borderRadius:
-                                                  //     BorderRadius
-                                                  //         .circular(15),
-                                                  //   ),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -573,7 +544,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .instagram),
-                                                              iconSize: 15,
+                                                              iconSize: 20,
                                                               onPressed: () {
                                                                 launcher
                                                                     .launchInBrowser(
@@ -590,7 +561,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .twitter),
-                                                              iconSize: 15,
+                                                              iconSize: 20,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
@@ -606,7 +577,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .linkedin),
-                                                              iconSize: 15,
+                                                              iconSize: 20,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
@@ -621,7 +592,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                               icon: Icon(
                                                                   FontAwesomeIcons
                                                                       .externalLinkSquareAlt),
-                                                              iconSize: 15,
+                                                              iconSize: 20,
                                                               onPressed: () {
                                                                 launcher.launchInBrowser(
                                                                     data[
@@ -660,543 +631,12 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         ),
                                       ),
                                     )
-                                    // Container(
-                                    //   width: MediaQuery.of(context).size.width * 0.65,
-                                    //   height:
-                                    //       MediaQuery.of(context).size.height * 0.4,
-                                    //   decoration: BoxDecoration(
-                                    //       image: DecorationImage(
-                                    //           image: AssetImage(
-                                    //               'assets/images/ProfileCircle.png'),
-                                    //           fit: BoxFit.contain)),
-                                    // ),
-                                    // Container(
-                                    //   child: Padding(
-                                    //     padding: const EdgeInsets.symmetric(
-                                    //         horizontal: 15),
-                                    //     child: Column(
-                                    //       crossAxisAlignment:
-                                    //           CrossAxisAlignment.start,
-                                    //       children: [
-                                    //         SizedBox(
-                                    //           height:
-                                    //               MediaQuery.of(context).size.height /
-                                    //                   9,
-                                    //         ),
-                                    //         // GestureDetector(
-                                    //         //   onTap: () {
-                                    //         //     Navigator.push(context,
-                                    //         //         CupertinoPageRoute(builder: (context) {
-                                    //         //       return Bio();
-                                    //         //     }));
-                                    //         //   },
-                                    //         //   child: Container(
-                                    //         //       height:
-                                    //         //           MediaQuery.of(context).size.width / 4,
-                                    //         //       width:
-                                    //         //           MediaQuery.of(context).size.width / 4,
-                                    //         //       child: CachedNetworkImage(
-                                    //         //         maxHeightDiskCache: MediaQuery.of(context)
-                                    //         //             .size
-                                    //         //             .height
-                                    //         //             .toInt(),
-                                    //         //         imageBuilder: (context, imageProvider) {
-                                    //         //           return Container(
-                                    //         //             decoration: BoxDecoration(
-                                    //         //               shape: BoxShape.circle,
-                                    //         //               //   borderRadius: BorderRadius.circular(10),
-                                    //         //               image: DecorationImage(
-                                    //         //                   image: imageProvider,
-                                    //         //                   fit: BoxFit.cover),
-                                    //         //             ),
-                                    //         //             height:
-                                    //         //                 MediaQuery.of(context).size.width,
-                                    //         //             width:
-                                    //         //                 MediaQuery.of(context).size.width,
-                                    //         //           );
-                                    //         //         },
-                                    //         //         imageUrl: displayPicture == null
-                                    //         //             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                    //         //             : displayPicture,
-                                    //         //         fit: BoxFit.cover,
-                                    //         //         memCacheHeight: MediaQuery.of(context)
-                                    //         //             .size
-                                    //         //             .height
-                                    //         //             .floor(),
-                                    //         //         errorWidget: (context, url, error) =>
-                                    //         //             Icon(Icons.error),
-                                    //         //       )),
-                                    //         // ),
-                                    //         GestureDetector(
-                                    //           onTap: () {
-                                    //             Navigator.push(context,
-                                    //                 CupertinoPageRoute(
-                                    //                     builder: (context) {
-                                    //               return Bio();
-                                    //             }));
-                                    //           },
-                                    //           child: CircleAvatar(
-                                    //             backgroundColor: Colors.blue,
-                                    //             backgroundImage:
-                                    //                 CachedNetworkImageProvider(
-                                    //               displayPicture == null
-                                    //                   ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                    //                   : displayPicture,
-                                    //             ),
-                                    //             radius: 55,
-                                    //           ),
-                                    //         ),
-                                    //         SizedBox(
-                                    //           height: 30,
-                                    //         ),
-                                    //         Text(
-                                    //           "$userName",
-                                    //           textScaleFactor: 1.0,
-                                    //           style: TextStyle(
-                                    //               fontSize:
-                                    //                   SizeConfig.safeBlockHorizontal *
-                                    //                       7),
-                                    //         ),
-                                    //         Padding(
-                                    //           padding: const EdgeInsets.symmetric(
-                                    //               vertical: 10),
-                                    //           child: prefs.getString(
-                                    //                       'HiveUserName') ==
-                                    //                   null
-                                    //               ? ShaderMask(
-                                    //                   shaderCallback: (Rect bounds) {
-                                    //                     return LinearGradient(
-                                    //                         colors: [
-                                    //                           Color(0xff52BFF9),
-                                    //                           Color(0xff6048F6)
-                                    //                         ]).createShader(bounds);
-                                    //                   },
-                                    //                   child: InkWell(
-                                    //                     onTap: () {
-                                    //                       showBarModalBottomSheet(
-                                    //                           context: context,
-                                    //                           builder: (context) {
-                                    //                             return HiveDetails();
-                                    //                           });
-                                    //                     },
-                                    //                     child: Text(
-                                    //                       "Connect Your Hive Account",
-                                    //                       textScaleFactor: 1.0,
-                                    //                     ),
-                                    //                   ),
-                                    //                 )
-                                    //               : Text(
-                                    //                   '@${prefs.getString('HiveUserName')}',
-                                    //                   textScaleFactor: 1.0,
-                                    //                   style: TextStyle(
-                                    //                       color: Color(0xff777777)),
-                                    //                 ),
-                                    //         ),
-                                    //         Padding(
-                                    //           padding: const EdgeInsets.symmetric(
-                                    //               vertical: 10),
-                                    //           child: Text(
-                                    //             "$bio",
-                                    //             textScaleFactor: 1.0,
-                                    //           ),
-                                    //         ),
-                                    //
-                                    //         Padding(
-                                    //           padding: const EdgeInsets.symmetric(
-                                    //               vertical: 10),
-                                    //           child: Row(
-                                    //             children: [
-                                    //               data['instagram'] == null ||
-                                    //                       data['instagram'] == 'null'
-                                    //                   ? SizedBox()
-                                    //                   : IconButton(
-                                    //                       icon: Icon(FontAwesomeIcons
-                                    //                           .instagram),
-                                    //                       onPressed: () {
-                                    //                         launcher.launchInBrowser(
-                                    //                             data['instagram']);
-                                    //                       },
-                                    //                     ),
-                                    //               data['twitter'] == null ||
-                                    //                       data['twitter'] == 'null'
-                                    //                   ? SizedBox()
-                                    //                   : IconButton(
-                                    //                       icon: Icon(FontAwesomeIcons
-                                    //                           .twitter),
-                                    //                       onPressed: () {
-                                    //                         launcher.launchInBrowser(
-                                    //                             data['twitter']);
-                                    //                       },
-                                    //                     ),
-                                    //               data['linkedin'] == null ||
-                                    //                       data['linkedin'] == 'null'
-                                    //                   ? SizedBox()
-                                    //                   : IconButton(
-                                    //                       icon: Icon(FontAwesomeIcons
-                                    //                           .linkedin),
-                                    //                       onPressed: () {
-                                    //                         launcher.launchInBrowser(
-                                    //                             data['linkedin']);
-                                    //                       },
-                                    //                     ),
-                                    //               data['website'] == null ||
-                                    //                       data['website'] == 'null'
-                                    //                   ? SizedBox()
-                                    //                   : IconButton(
-                                    //                       icon: Icon(FontAwesomeIcons
-                                    //                           .externalLinkSquareAlt),
-                                    //                       onPressed: () {
-                                    //                         launcher.launchInBrowser(
-                                    //                             data['website']);
-                                    //                       },
-                                    //                     )
-                                    //             ],
-                                    //           ),
-                                    //         ),
-                                    //         // Padding(
-                                    //         //   padding: const EdgeInsets.symmetric(
-                                    //         //       vertical: 10),
-                                    //         //   child: Row(
-                                    //         //     children: [
-                                    //         //       Padding(
-                                    //         //         padding: const EdgeInsets.only(
-                                    //         //             right: 10),
-                                    //         //         child: Container(
-                                    //         //           decoration: BoxDecoration(
-                                    //         //               border: Border.all(
-                                    //         //                   color:
-                                    //         //                       Color(0xff777777)),
-                                    //         //               borderRadius:
-                                    //         //                   BorderRadius.circular(
-                                    //         //                       20)),
-                                    //         //           child: Padding(
-                                    //         //             padding: const EdgeInsets
-                                    //         //                     .symmetric(
-                                    //         //                 horizontal: 10,
-                                    //         //                 vertical: 8),
-                                    //         //             child: Text("232 Following"),
-                                    //         //           ),
-                                    //         //         ),
-                                    //         //       ),
-                                    //         //       Padding(
-                                    //         //         padding: const EdgeInsets.only(
-                                    //         //             right: 6),
-                                    //         //         child: Container(
-                                    //         //           decoration: BoxDecoration(
-                                    //         //               border: Border.all(
-                                    //         //                   color:
-                                    //         //                       Color(0xff777777)),
-                                    //         //               borderRadius:
-                                    //         //                   BorderRadius.circular(
-                                    //         //                       20)),
-                                    //         //           child: Padding(
-                                    //         //             padding: const EdgeInsets
-                                    //         //                     .symmetric(
-                                    //         //                 horizontal: 10,
-                                    //         //                 vertical: 8),
-                                    //         //             child: Text("232 Followers"),
-                                    //         //           ),
-                                    //         //         ),
-                                    //         //       ),
-                                    //         //     ],
-                                    //         //   ),
-                                    //         // )
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // )
+
                                   ],
                                 ),
                               )),
                             ),
-                            // SliverList(
-                            //   delegate: SliverChildListDelegate([
-                            //
-                            //     // Padding(
-                            //     //   padding: const EdgeInsets.symmetric(
-                            //     //       horizontal: 15, vertical: 20),
-                            //     //   child: Column(
-                            //     //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     //     children: [
-                            //     //       Divider(
-                            //     //         color: kSecondaryColor,
-                            //     //       ),
-                            //     //       Padding(
-                            //     //         padding: const EdgeInsets.symmetric(
-                            //     //             horizontal: 10),
-                            //     //         child: Column(
-                            //     //           crossAxisAlignment:
-                            //     //               CrossAxisAlignment.start,
-                            //     //           children: [
-                            //     //             // Container(
-                            //     //             //   width: double.infinity,
-                            //     //             //   decoration: BoxDecoration(
-                            //     //             //       border: Border(
-                            //     //             //           bottom:
-                            //     //             //               BorderSide(color: kSecondaryColor))),
-                            //     //             //   child: Padding(
-                            //     //             //     padding: const EdgeInsets.symmetric(vertical: 15),
-                            //     //             //     child: InkWell(
-                            //     //             //       onTap: () {
-                            //     //             //         Navigator.push(context,
-                            //     //             //             CupertinoPageRoute(builder: (context) {
-                            //     //             //           return CreateCommunity();
-                            //     //             //         })).then((value) async {
-                            //     //             //           await _pullRefreshEpisodes();
-                            //     //             //         });
-                            //     //             //       },
-                            //     //             //       child: Text(
-                            //     //             //         "Add your community",
-                            //     //             //         textScaleFactor: mediaQueryData.textScaleFactor
-                            //     //             //             .clamp(0.2, 1)
-                            //     //             //             .toDouble(),
-                            //     //             //         style: TextStyle(
-                            //     //             //           fontSize: SizeConfig.safeBlockHorizontal * 4,
-                            //     //             //           //      color: Color(0xffe8e8e8),
-                            //     //             //         ),
-                            //     //             //       ),
-                            //     //             //     ),
-                            //     //             //   ),
-                            //     //             // ),
-                            //     //             // Container(
-                            //     //             //   width: double.infinity,
-                            //     //             //   decoration: BoxDecoration(
-                            //     //             //     border: Border(
-                            //     //             //       bottom: BorderSide(
-                            //     //             //         color: kSecondaryColor,
-                            //     //             //       ),
-                            //     //             //     ),
-                            //     //             //   ),
-                            //     //             //   child: Padding(
-                            //     //             //     padding: const EdgeInsets.symmetric(
-                            //     //             //         vertical: 15),
-                            //     //             //     child: InkWell(
-                            //     //             //       onTap: () {
-                            //     //             //         Navigator.push(context,
-                            //     //             //             CupertinoPageRoute(
-                            //     //             //                 builder: (context) {
-                            //     //             //           return Rewards();
-                            //     //             //         }));
-                            //     //             //       },
-                            //     //             //       child: Text(
-                            //     //             //         "Your rewards",
-                            //     //             //         textScaleFactor: 1.0,
-                            //     //             //         style: TextStyle(
-                            //     //             //           //    color: Color(0xffe8e8e8),
-                            //     //             //           fontSize: SizeConfig
-                            //     //             //                   .safeBlockHorizontal *
-                            //     //             //               4,
-                            //     //             //         ),
-                            //     //             //       ),
-                            //     //             //     ),
-                            //     //             //   ),
-                            //     //             // ),
-                            //     //             // Container(
-                            //     //             //   width: double.infinity,
-                            //     //             //   decoration: BoxDecoration(
-                            //     //             //     border: Border(
-                            //     //             //       bottom: BorderSide(
-                            //     //             //         color: kSecondaryColor,
-                            //     //             //       ),
-                            //     //             //     ),
-                            //     //             //   ),
-                            //     //             //   child: Padding(
-                            //     //             //     padding: const EdgeInsets.symmetric(
-                            //     //             //         vertical: 15),
-                            //     //             //     child: InkWell(
-                            //     //             //       onTap: () {
-                            //     //             //         showBarModalBottomSheet(
-                            //     //             //             context: context,
-                            //     //             //             builder: (context) {
-                            //     //             //               return DownloadPage();
-                            //     //             //             });
-                            //     //             //       },
-                            //     //             //       child: Text(
-                            //     //             //         "Library",
-                            //     //             //         textScaleFactor: 1.0,
-                            //     //             //         style: TextStyle(
-                            //     //             //           //        color: Color(0xffe8e8e8),
-                            //     //             //           fontSize: SizeConfig
-                            //     //             //                   .safeBlockHorizontal *
-                            //     //             //               4,
-                            //     //             //         ),
-                            //     //             //       ),
-                            //     //             //     ),
-                            //     //             //   ),
-                            //     //             // ),
-                            //     //             Container(
-                            //     //               width: double.infinity,
-                            //     //               decoration: BoxDecoration(
-                            //     //                 border: Border(
-                            //     //                   bottom: BorderSide(
-                            //     //                     color: kSecondaryColor,
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //               child: Padding(
-                            //     //                 padding: const EdgeInsets.symmetric(
-                            //     //                     vertical: 15),
-                            //     //                 child: InkWell(
-                            //     //                   onTap: () {
-                            //     //                     showBarModalBottomSheet(
-                            //     //                         context: context,
-                            //     //                         builder: (context) {
-                            //     //                           return Container(
-                            //     //                             height: MediaQuery.of(
-                            //     //                                     context)
-                            //     //                                 .size
-                            //     //                                 .height,
-                            //     //                             // child: InAppWebView(
-                            //     //                             //     gestureRecognizers:
-                            //     //                             //         gestureRecognizers,
-                            //     //                             //     initialFile:
-                            //     //                             //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
-                            //     //                             child: WebView(
-                            //     //                               gestureRecognizers:
-                            //     //                                   Set()
-                            //     //                                     ..add(
-                            //     //                                       Factory<
-                            //     //                                           VerticalDragGestureRecognizer>(
-                            //     //                                         () =>
-                            //     //                                             VerticalDragGestureRecognizer(),
-                            //     //                                       ), // or null
-                            //     //                                     ),
-                            //     //                               gestureNavigationEnabled:
-                            //     //                                   true,
-                            //     //                               javascriptMode:
-                            //     //                                   JavascriptMode
-                            //     //                                       .unrestricted,
-                            //     //                               initialUrl:
-                            //     //                                   'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
-                            //     //                             ),
-                            //     //                           );
-                            //     //                         });
-                            //     //                   },
-                            //     //                   child: Text(
-                            //     //                     "Your wallet",
-                            //     //                     textScaleFactor: 1.0,
-                            //     //                     style: TextStyle(
-                            //     //                       //        color: Color(0xffe8e8e8),
-                            //     //                       fontSize: SizeConfig
-                            //     //                               .safeBlockHorizontal *
-                            //     //                           4,
-                            //     //                     ),
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //             ),
-                            //     //             Container(
-                            //     //               width: double.infinity,
-                            //     //               decoration: BoxDecoration(
-                            //     //                 border: Border(
-                            //     //                   bottom: BorderSide(
-                            //     //                     color: kSecondaryColor,
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //               child: Padding(
-                            //     //                 padding: const EdgeInsets.symmetric(
-                            //     //                     vertical: 15),
-                            //     //                 child: InkWell(
-                            //     //                   onTap: () {
-                            //     //                     hiveUserName == null
-                            //     //                         ? Navigator
-                            //     //                             .pushNamedAndRemoveUntil(
-                            //     //                                 context,
-                            //     //                                 HiveAccount.id,
-                            //     //                                 (route) => false)
-                            //     //                         : print('nothing');
-                            //     //                   },
-                            //     //                   child: Text(
-                            //     //                     hiveUserName != null
-                            //     //                         ? "Connected with your Hive Account ( @${hiveUserName} )"
-                            //     //                         : "Connect your Hive Account",
-                            //     //                     textScaleFactor: 1.0,
-                            //     //                     style: TextStyle(
-                            //     //                       //     color: Color(0xffe8e8e8),
-                            //     //                       fontSize: SizeConfig
-                            //     //                               .safeBlockHorizontal *
-                            //     //                           4,
-                            //     //                     ),
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //             ),
-                            //     //             Container(
-                            //     //               width: double.infinity,
-                            //     //               decoration: BoxDecoration(
-                            //     //                 border: Border(
-                            //     //                   bottom: BorderSide(
-                            //     //                     color: kSecondaryColor,
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //               child: Padding(
-                            //     //                 padding: const EdgeInsets.symmetric(
-                            //     //                     vertical: 15),
-                            //     //
-                            //     //                 child: InkWell(
-                            //     //                   onTap: () {
-                            //     //                     showBarModalBottomSheet(
-                            //     //                         context: context,
-                            //     //                         builder: (context) {
-                            //     //                           return Settings();
-                            //     //                         });
-                            //     //                   },
-                            //     //                   child: Text(
-                            //     //                     "Setting",
-                            //     //                     textScaleFactor: 1.0,
-                            //     //                     style: TextStyle(
-                            //     //                       //  color: Color(0xffe8e8e8),
-                            //     //                       fontSize: SizeConfig
-                            //     //                               .safeBlockHorizontal *
-                            //     //                           4,
-                            //     //                     ),
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //             ),
-                            //     //             Container(
-                            //     //               width: double.infinity,
-                            //     //               decoration: BoxDecoration(
-                            //     //                 border: Border(
-                            //     //                   bottom: BorderSide(
-                            //     //                     color: kSecondaryColor,
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //               child: Padding(
-                            //     //                 padding: const EdgeInsets.symmetric(
-                            //     //                     vertical: 15),
-                            //     //                 child: InkWell(
-                            //     //                   onTap: () {
-                            //     //                     logout();
-                            //     //                     prefs.clear();
-                            //     //                   },
-                            //     //                   child: Text(
-                            //     //                     "Sign Out",
-                            //     //                     textScaleFactor: 1.0,
-                            //     //                     style: TextStyle(
-                            //     //                       //    color: Color(0xffe8e8e8),
-                            //     //                       fontSize: SizeConfig
-                            //     //                               .safeBlockHorizontal *
-                            //     //                           4,
-                            //     //                     ),
-                            //     //                   ),
-                            //     //                 ),
-                            //     //               ),
-                            //     //             ),
-                            //     //             // SignInButton(Buttons.Google,
-                            //     //             //     text: 'Sign Out of Google',
-                            //     //             //     onPressed: () => authBloc.logout())
-                            //     //           ],
-                            //     //         ),
-                            //     //       ),
-                            //     //     ],
-                            //     //   ),
-                            //     // )
-                            //   ]),
-                            //  ),
+
                           ];
                         },
                         body: RefreshIndicator(
@@ -1581,116 +1021,190 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               //     ],
                               //   ),
                               // ),
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) =>
-                                                ReferralProgram()));
-                                  },
-                                  child: Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              "Invite ",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1.5)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              "Invite friends and earn rewards",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 0.8)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //       color: Colors.white70,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3.4),
-                                            )
-                                          ],
-                                        ),
-                                        Icon(Icons.arrow_forward_ios_rounded,
-                                            size: 15)
-                                      ],
-                                    ),
-                                  ),
+                              ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              ReferralProgram()));
+                                },
+                                title:   Text(
+                                  "Invite ",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 1.5)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //  color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: SizeConfig
+                                          .safeBlockHorizontal *
+                                          4),
+                                ),
+                                trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 15),
+                                subtitle:   Text(
+                                  "Invite friends and earn rewards",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 0.8)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //       color: Colors.white70,
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: SizeConfig
+                                          .safeBlockHorizontal *
+                                          3.4),
                                 ),
                               ),
+                              ListTile(
+                                onTap: (){
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) => Rewards()));
+                                },
+                                title:   Text(
+                                  "Your rewards",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 1.5)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //  color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: SizeConfig
+                                          .safeBlockHorizontal *
+                                          4),
+                                ),
+                                trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 15),
+                                subtitle:   Text(
+                                  "Check your rewards",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 0.8)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                    //       color: Colors.white70,
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: SizeConfig
+                                          .safeBlockHorizontal *
+                                          3.4),
+                                ),
+                              ),
+
+                              // Padding(
+                              //   padding: const EdgeInsets.all(15.0),
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           CupertinoPageRoute(
+                              //               builder: (context) =>
+                              //                   ReferralProgram()));
+                              //     },
+                              //     child: Container(
+                              //       child: Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.spaceBetween,
+                              //         children: [
+                              //           Column(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             children: <Widget>[
+                              //               Text(
+                              //                 "Invite ",
+                              //                 textScaleFactor: mediaQueryData
+                              //                     .textScaleFactor
+                              //                     .clamp(0.5, 1.5)
+                              //                     .toDouble(),
+                              //                 style: TextStyle(
+                              //                     //  color: Colors.white,
+                              //                     fontWeight: FontWeight.w700,
+                              //                     fontSize: SizeConfig
+                              //                             .safeBlockHorizontal *
+                              //                         4),
+                              //               ),
+                              //               SizedBox(height: 5),
+                              //               Text(
+                              //                 "Invite friends and earn rewards",
+                              //                 textScaleFactor: mediaQueryData
+                              //                     .textScaleFactor
+                              //                     .clamp(0.5, 0.8)
+                              //                     .toDouble(),
+                              //                 style: TextStyle(
+                              //                     //       color: Colors.white70,
+                              //                     fontWeight: FontWeight.w300,
+                              //                     fontSize: SizeConfig
+                              //                             .safeBlockHorizontal *
+                              //                         3.4),
+                              //               )
+                              //             ],
+                              //           ),
+                              //           Icon(Icons.arrow_forward_ios_rounded,
+                              //               size: 15)
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                               // ReferralDashboard(),
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) => Rewards()));
-                                  },
-                                  child: Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              "Your rewards",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1.5)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              "Check your rewards",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 0.8)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //       color: Colors.white70,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3.4),
-                                            )
-                                          ],
-                                        ),
-                                        Icon(Icons.arrow_forward_ios_rounded,
-                                            size: 15)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(15.0),
+                              //   child: InkWell(
+                              //     onTap: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           CupertinoPageRoute(
+                              //               builder: (context) => Rewards()));
+                              //     },
+                              //     child: Container(
+                              //       child: Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.spaceBetween,
+                              //         children: [
+                              //           Column(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             children: <Widget>[
+                              //               Text(
+                              //                 "Your rewards",
+                              //                 textScaleFactor: mediaQueryData
+                              //                     .textScaleFactor
+                              //                     .clamp(0.5, 1.5)
+                              //                     .toDouble(),
+                              //                 style: TextStyle(
+                              //                     //  color: Colors.white,
+                              //                     fontWeight: FontWeight.w700,
+                              //                     fontSize: SizeConfig
+                              //                             .safeBlockHorizontal *
+                              //                         4),
+                              //               ),
+                              //               SizedBox(height: 5),
+                              //               Text(
+                              //                 "Check your rewards",
+                              //                 textScaleFactor: mediaQueryData
+                              //                     .textScaleFactor
+                              //                     .clamp(0.5, 0.8)
+                              //                     .toDouble(),
+                              //                 style: TextStyle(
+                              //                     //       color: Colors.white70,
+                              //                     fontWeight: FontWeight.w300,
+                              //                     fontSize: SizeConfig
+                              //                             .safeBlockHorizontal *
+                              //                         3.4),
+                              //               )
+                              //             ],
+                              //           ),
+                              //           Icon(Icons.arrow_forward_ios_rounded,
+                              //               size: 15)
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: InkWell(

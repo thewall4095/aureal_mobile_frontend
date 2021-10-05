@@ -230,7 +230,7 @@ class DiscoverProvider extends ChangeNotifier {
 
   void recommendedPodcast() async {
     String url =
-        'https://api.aureal.one/public/recommend?user_id=${prefs.getString('userId')}';
+        'https://sandbox.aureal.one/public/recommend?user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

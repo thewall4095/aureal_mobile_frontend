@@ -234,129 +234,90 @@ class _SettingsState extends State<Settings> {
                             });
                         // Navigator.pushNamed(context, Prefrences.id);
                       },
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Send Feedback",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1.5)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      //  color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3.5),
-                                ),
-                                Text(
-                                  "Let us know if you see anything troubling",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 0.8)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      //       color: Colors.white70,
-                                      fontWeight: FontWeight.w300,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3),
-                                )
-                              ],
-                            ),
-                            Icon(Icons.arrow_forward_ios_rounded, size: 15)
-                          ],
+                      child:ListTile(
+                        title:Text(
+                          "Send Feedback",
+                          textScaleFactor: mediaQueryData
+                              .textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 5),
                         ),
+                        trailing:     Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                        subtitle:
+                        Text(
+                                      "Let us know if you see anything troubling",
+                                      textScaleFactor: mediaQueryData
+                                          .textScaleFactor
+                                          .clamp(0.5, 0.8)
+                                          .toDouble(),
+                                      style: TextStyle(
+                                          //       color: Colors.white70,
+                                          fontWeight: FontWeight.w300,
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal * 3),
+                                    ),
                       ),
+
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    InkWell(
+                    ListTile(
                       onTap: () {
                         Navigator.push(
                             context,
                             CupertinoPageRoute(
                                 builder: (context) => UserCategories()));
                       },
-                      child: Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Categories",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1.5)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      //  color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3.5),
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Select Categories",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 0.8)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      //       color: Colors.white70,
-                                      fontWeight: FontWeight.w300,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3),
-                                )
-                              ],
-                            ),
-                            Icon(Icons.arrow_forward_ios_rounded, size: 15)
-                          ],
-                        ),
+                      title:   Text(
+                        "Categories",
+                        textScaleFactor: mediaQueryData
+                            .textScaleFactor
+                            .clamp(0.5, 1.5)
+                            .toDouble(),
+                        style: TextStyle(
+                          //  color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal * 5),
                       ),
+                      subtitle: Text(
+                        "Selected Categories",
+                        textScaleFactor: mediaQueryData
+                            .textScaleFactor
+                            .clamp(0.5, 0.8)
+                            .toDouble(),
+                        style: TextStyle(
+                          //       color: Colors.white70,
+                            fontWeight: FontWeight.w300,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal * 3),
+                      ) ,
+                      trailing:  Icon(Icons.arrow_forward_ios_rounded, size: 15),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          launcher.launchInBrowser(
-                              "https://play.google.com/store/apps/details?id=co.titandlt.auditory");
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "Version",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1.5)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                      //  color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3.5),
-                                ),
-                                SizedBox(height: 5),
-                              ],
-                            ),
-                            Text("1.0.49"),
-                            //    Icon(Icons.arrow_forward_ios_rounded)
-                          ],
-                        ),
+
+                    ListTile(
+                      onTap: () {
+                        launcher.launchInBrowser(
+                            "https://play.google.com/store/apps/details?id=co.titandlt.auditory");
+                      },
+                      title:  Text(
+                        "Version",
+                        textScaleFactor: mediaQueryData
+                            .textScaleFactor
+                            .clamp(0.5, 1.5)
+                            .toDouble(),
+                        style: TextStyle(
+                          //  color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal * 5),
                       ),
+                      trailing:   Text("1.0.49"),
                     ),
+
                   ],
                 ),
               ),

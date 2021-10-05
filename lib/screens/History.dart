@@ -54,7 +54,9 @@ class _HistoryState extends State<History> {
       }
     }
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("History"),
+      ),
      body:  ListView(
        children: [
          for (var a in recentlyPlayed)

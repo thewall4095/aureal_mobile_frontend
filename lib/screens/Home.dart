@@ -556,7 +556,7 @@ class _HomeState extends State<Home> {
       backgroundColor: Color(0xff161616),
       appBar: AppBar(
         backgroundColor: Color(0xff161616),
-        elevation: 0,
+         elevation: 0.5,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
