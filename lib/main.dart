@@ -642,6 +642,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   }
 
   void checkAuthenticity(BuildContext context) async {
+    print("Came Here//////////////////////");
+
     String url = 'https://api.aureal.one/public/getToken';
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('userId')) {

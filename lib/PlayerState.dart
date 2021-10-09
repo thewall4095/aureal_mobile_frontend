@@ -22,9 +22,11 @@ class PlayerChange extends ChangeNotifier {
   var _episodeObject;
   var _currentPosition;
 
-  var _playList;
+  List _playList;
 
   bool _ifVoted;
+
+  bool _isPlayListPlaying;
 
   String episodeName;
   String podcastName;
@@ -42,6 +44,14 @@ class PlayerChange extends ChangeNotifier {
   Map<String, dynamic> get episodeObject => _episodeObject;
 
   bool get ifVoted => _ifVoted;
+
+  bool get isPlaylistPlaying => _isPlayListPlaying;
+
+  set isPlaylistPlaying(bool newValue) {
+    _isPlayListPlaying = newValue;
+
+    notifyListeners();
+  }
 
   set ifVoted(bool newValue) {
     _ifVoted = newValue;
@@ -102,7 +112,9 @@ class PlayerChange extends ChangeNotifier {
 
   NotificationAction customNextAction(AssetsAudioPlayer audioplayer) {
     if (currentIndex != playList.length - 1) {
-      _episodeObject = playList[currentIndex + 1];
+      print(
+          "${_playList.indexOf(episodeObject)} /////////////////////////////////////////////////////////////");
+      episodeObject = _playList[_playList.indexOf(episodeObject) + 1];
       stop();
       play();
     }
@@ -110,7 +122,7 @@ class PlayerChange extends ChangeNotifier {
 
   NotificationAction customPreviousAction(AssetsAudioPlayer audioplayer) {
     if (currentIndex != 0) {
-      _episodeObject = playList[currentIndex - 1];
+      episodeObject = _playList[_playList.indexOf(episodeObject) - 1];
       stop();
       play();
     }
@@ -137,7 +149,11 @@ class PlayerChange extends ChangeNotifier {
       seek: dur,
       showNotification: true,
       notificationSettings: NotificationSettings(
-          nextEnabled: true, prevEnabled: true, seekBarEnabled: true),
+          customNextAction: customNextAction,
+          customPrevAction: customPreviousAction,
+          nextEnabled: true,
+          prevEnabled: true,
+          seekBarEnabled: true),
     );
 //    audioPlayer.play(kUrl, isLocal: false);
 //    setState(() {

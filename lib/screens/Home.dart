@@ -556,7 +556,7 @@ class _HomeState extends State<Home> {
       backgroundColor: Color(0xff161616),
       appBar: AppBar(
         backgroundColor: Color(0xff161616),
-         elevation: 0.5,
+        elevation: 0.5,
         leading: Padding(
           padding: const EdgeInsets.only(left: 8),
           child: IconButton(
@@ -744,6 +744,13 @@ class _BottomPlayerState extends State<BottomPlayer> {
     SizeConfig().init(context);
     var episodeObject = Provider.of<PlayerChange>(context);
 
+    episodeObject.audioPlayer.currentPosition.listen((event) {
+      if (episodeObject.audioPlayer.currentPosition.value ==
+          episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+        episodeObject.customNextAction(episodeObject.audioPlayer);
+      }
+    });
+
     return episodeObject.episodeName != null
         ? Padding(
             padding: const EdgeInsets.all(8.0),
@@ -832,73 +839,73 @@ class _BottomPlayerState extends State<BottomPlayer> {
                               }
                             }
                           }),
-                          InkWell(
-                            onTap: () {
-                              {
-                                if (episodeObject.permlink == null) {
-                                } else {
-                                  if (prefs.getString('HiveUserName') != null) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              child: UpvoteEpisode(
-                                                  episode_id: episodeObject.id,
-                                                  permlink:
-                                                      episodeObject.permlink));
-                                        }).then((value) async {
-                                      print(value);
-                                    });
-                                    Fluttertoast.showToast(msg: 'Upvote done');
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg:
-                                            'Please connect your Hive Account');
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return HiveDetails();
-                                        });
-                                  }
-                                }
-                              }
-                            },
-                            child: IconButton(
-                              icon: Icon(
-                                FontAwesomeIcons.chevronCircleUp,
-                                size: 20,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Fluttertoast.showToast(msg: 'Upvote done');
-                                if (episodeObject.permlink == null) {
-                                } else {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Dialog(
-                                            backgroundColor: Colors.transparent,
-                                            child: UpvoteEpisode(
-                                                episode_id: episodeObject.id,
-                                                permlink:
-                                                    episodeObject.permlink));
-                                      }).then((value) async {
-                                    print(value);
-                                  });
-
-                                  // upvoteEpisode(
-                                  //     episode_id:
-                                  //         episodeObject
-                                  //             .id,
-                                  //     permlink:
-                                  //         episodeObject
-                                  //             .permlink);
-                                }
-                              },
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     {
+                          //       if (episodeObject.permlink == null) {
+                          //       } else {
+                          //         if (prefs.getString('HiveUserName') != null) {
+                          //           showDialog(
+                          //               context: context,
+                          //               builder: (context) {
+                          //                 return Dialog(
+                          //                     backgroundColor:
+                          //                         Colors.transparent,
+                          //                     child: UpvoteEpisode(
+                          //                         episode_id: episodeObject.id,
+                          //                         permlink:
+                          //                             episodeObject.permlink));
+                          //               }).then((value) async {
+                          //             print(value);
+                          //           });
+                          //           Fluttertoast.showToast(msg: 'Upvote done');
+                          //         } else {
+                          //           Fluttertoast.showToast(
+                          //               msg:
+                          //                   'Please connect your Hive Account');
+                          //           showBarModalBottomSheet(
+                          //               context: context,
+                          //               builder: (context) {
+                          //                 return HiveDetails();
+                          //               });
+                          //         }
+                          //       }
+                          //     }
+                          //   },
+                          //   child: IconButton(
+                          //     icon: Icon(
+                          //       FontAwesomeIcons.chevronCircleUp,
+                          //       size: 20,
+                          //       color: Colors.white,
+                          //     ),
+                          //     onPressed: () {
+                          //       Fluttertoast.showToast(msg: 'Upvote done');
+                          //       if (episodeObject.permlink == null) {
+                          //       } else {
+                          //         showDialog(
+                          //             context: context,
+                          //             builder: (context) {
+                          //               return Dialog(
+                          //                   backgroundColor: Colors.transparent,
+                          //                   child: UpvoteEpisode(
+                          //                       episode_id: episodeObject.id,
+                          //                       permlink:
+                          //                           episodeObject.permlink));
+                          //             }).then((value) async {
+                          //           print(value);
+                          //         });
+                          //
+                          //         // upvoteEpisode(
+                          //         //     episode_id:
+                          //         //         episodeObject
+                          //         //             .id,
+                          //         //     permlink:
+                          //         //         episodeObject
+                          //         //             .permlink);
+                          //       }
+                          //     },
+                          //   ),
+                          // ),
                           Container(
                             height: 40,
                             width: MediaQuery.of(context).size.width / 1.5,

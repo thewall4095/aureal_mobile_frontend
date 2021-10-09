@@ -285,6 +285,13 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
       }
     });
 
+    episodeObject.audioPlayer.currentPosition.listen((event) {
+      if (episodeObject.audioPlayer.currentPosition.value ==
+          episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+        episodeObject.customNextAction(episodeObject.audioPlayer);
+      }
+    });
+
     getColor(episodeObject.episodeObject['image'] == null
         ? episodeObject.episodeObject['podcast_image']
         : episodeObject.episodeObject['image']);
