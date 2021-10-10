@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingCategories extends StatefulWidget {
@@ -56,6 +59,10 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
     print(response);
   }
 
+  List _icons = [
+    LineIcons.palette,
+  ];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -67,111 +74,121 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "Select Categories",
-            textScaleFactor: 0.75,
-            style: TextStyle(
-                //   color: Colors.white,
-                fontSize: SizeConfig.safeBlockHorizontal * 4),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () async {
-                if (selectedCategories.length == 0) {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      HiveDetails.id, (Route<dynamic> route) => false);
-                } else {
-                  await sendCategories();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      HiveDetails.id, (Route<dynamic> route) => false);
-                }
-              },
-              child: selectedCategories.length == 0
-                  ? Text(
-                      'Skip',
-                      textScaleFactor: 1,
-                      style: TextStyle(
-                          // color: Colors.white,
-                          fontSize: SizeConfig.safeBlockHorizontal * 4),
-                    )
-                  : Text(
-                      'Save',
-                      textScaleFactor: 1,
-                      style: TextStyle(
-                          //   color: Colors.white,
-                          fontSize: SizeConfig.safeBlockHorizontal * 4),
-                    ),
-            ),
-          ],
-        ),
-        body: Stack(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Center(
-                child: ListView(
-                  children: <Widget>[
-                    Wrap(
-                      runSpacing: 15.0,
-                      spacing: 15.0,
-                      alignment: WrapAlignment.center,
-                      children: <Widget>[
-                        for (var v in categories)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (selectedCategories.contains(v['id'])) {
-                                    selectedCategories.remove(v['id']);
-                                  } else {
-                                    selectedCategories.add(v['id']);
-                                  }
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: selectedCategories.contains(v['id'])
-                                        ? Colors.blue
-                                        : Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 15),
-                                  child: Text(
-                                    v['name'],
-                                    textScaleFactor: 0.75,
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3,
-                                        color:
-                                            selectedCategories.contains(v['id'])
-                                                ? Colors.white
-                                                : Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                      ],
-                    )
-                  ],
+        body: SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ListTile(
+              title: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  "Select Topics:",
+                  textScaleFactor: 1.0,
+                  style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 7,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "Please select 3 or more topics to personalise your Aureal feed",
+                  textScaleFactor: 1.0,
+                  style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 3.6,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
             ),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  // Wrap(
+                  //   runSpacing: 15.0,
+                  //   spacing: 15.0,
+                  //   alignment: WrapAlignment.center,
+                  //   children: <Widget>[
+                  //     for (var v in categories)
+                  //       Padding(
+                  //         padding: const EdgeInsets.symmetric(
+                  //             horizontal: 5, vertical: 5),
+                  //         child: GestureDetector(
+                  //           onTap: () {
+                  //             setState(() {
+                  //               if (selectedCategories.contains(v['id'])) {
+                  //                 selectedCategories.remove(v['id']);
+                  //               } else {
+                  //                 selectedCategories.add(v['id']);
+                  //               }
+                  //             });
+                  //           },
+                  //           child: Container(
+                  //             decoration: BoxDecoration(
+                  //                 border: Border.all(),
+                  //                 borderRadius: BorderRadius.circular(30),
+                  //                 color: selectedCategories.contains(v['id'])
+                  //                     ? Colors.blue
+                  //                     : Colors.white),
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.symmetric(
+                  //                   vertical: 8, horizontal: 15),
+                  //               child: Text(
+                  //                 v['name'],
+                  //                 textScaleFactor: 0.75,
+                  //                 style: TextStyle(
+                  //                     fontSize:
+                  //                         SizeConfig.safeBlockHorizontal * 3,
+                  //                     color:
+                  //                         selectedCategories.contains(v['id'])
+                  //                             ? Colors.white
+                  //                             : Colors.black),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       )
+                  //   ],
+                  // )
+                  for (var v in categories)
+                    ListTile(
+                      leading: Icon(LineIcons.palette),
+                      title: Text("${v['name']}"),
+                    ),
+                ],
+              ),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    decoration: BoxDecoration(gradient: kGradient),
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: Text("CONTINUE"),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Text("Select at least 3 topics")
+              ],
+            )
           ],
-        ));
+        ),
+      ),
+    ));
   }
 }
+
 class UserCategories extends StatefulWidget {
-
-
   @override
   _UserCategoriesState createState() => _UserCategoriesState();
 }
@@ -182,20 +199,22 @@ class _UserCategoriesState extends State<UserCategories> {
   postreq.Interceptor intercept = postreq.Interceptor();
   void userCategories() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = 'https://api.aureal.one/public/getCategory?user_id=${prefs
-        .getString('userId')}';
+    String url =
+        'https://api.aureal.one/public/getCategory?user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       print(response.body);
       if (response.statusCode == 200) {
         setState(() {
-          userselectedCategories = jsonDecode(response.body)['Categories_you_like'];
+          userselectedCategories =
+              jsonDecode(response.body)['Categories_you_like'];
         });
       }
     } catch (e) {
       print(e);
     }
   }
+
   void showCategories() async {
     String url = 'https://api.aureal.one/public/getCategory';
 
@@ -234,7 +253,7 @@ class _UserCategoriesState extends State<UserCategories> {
   @override
   void initState() {
     // TODO: implement initState
-   userCategories();
+    userCategories();
     super.initState();
   }
 
@@ -257,79 +276,74 @@ class _UserCategoriesState extends State<UserCategories> {
           "Categories",
         ),
       ),
-           body:Stack(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Center(
-                  child: ListView(
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Center(
+              child: ListView(
+                children: <Widget>[
+                  Wrap(
+                    runSpacing: 15.0,
+                    spacing: 15.0,
+                    alignment: WrapAlignment.center,
                     children: <Widget>[
-                      Wrap(
-                        runSpacing: 15.0,
-                        spacing: 15.0,
-                        alignment: WrapAlignment.center,
-                        children: <Widget>[
-                          for (var v in userselectedCategories)
-                            Padding(
+                      for (var v in userselectedCategories)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.white),
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(30),
-                                color:Colors.white),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 15),
-                                  child: Text(
-                                    v['name'],
-                                    textScaleFactor: 0.75,
-                                    style: TextStyle(
-                                        fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3,
-                                        color:Colors.black)
-                                  ),
-                                ),
-                              ),
-                            )
-                        ],
-                      ),
-                      // FlatButton(
-                      //   onPressed: () async {
-                      //     if (userselectedCategories.length == 0) {
-                      //       Navigator.of(context).pushNamedAndRemoveUntil(
-                      //           HiveDetails.id, (Route<dynamic> route) => false);
-                      //     } else {
-                      //       await selectCategories();
-                      //       Navigator.of(context).pushNamedAndRemoveUntil(
-                      //           HiveDetails.id, (Route<dynamic> route) => false);
-                      //     }
-                      //   },
-                      //   child: userselectedCategories.length == 0
-                      //       ? Text(
-                      //     'Skip',
-                      //     textScaleFactor: 1,
-                      //     style: TextStyle(
-                      //       // color: Colors.white,
-                      //         fontSize: SizeConfig.safeBlockHorizontal * 4),
-                      //   )
-                      //       : Text(
-                      //     'Save',
-                      //     textScaleFactor: 1,
-                      //     style: TextStyle(
-                      //       //   color: Colors.white,
-                      //         fontSize: SizeConfig.safeBlockHorizontal * 4),
-                      //   ),
-                      // ),
+                                  vertical: 8, horizontal: 15),
+                              child: Text(v['name'],
+                                  textScaleFactor: 0.75,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3,
+                                      color: Colors.black)),
+                            ),
+                          ),
+                        )
                     ],
-
                   ),
-                ),
+                  // FlatButton(
+                  //   onPressed: () async {
+                  //     if (userselectedCategories.length == 0) {
+                  //       Navigator.of(context).pushNamedAndRemoveUntil(
+                  //           HiveDetails.id, (Route<dynamic> route) => false);
+                  //     } else {
+                  //       await selectCategories();
+                  //       Navigator.of(context).pushNamedAndRemoveUntil(
+                  //           HiveDetails.id, (Route<dynamic> route) => false);
+                  //     }
+                  //   },
+                  //   child: userselectedCategories.length == 0
+                  //       ? Text(
+                  //     'Skip',
+                  //     textScaleFactor: 1,
+                  //     style: TextStyle(
+                  //       // color: Colors.white,
+                  //         fontSize: SizeConfig.safeBlockHorizontal * 4),
+                  //   )
+                  //       : Text(
+                  //     'Save',
+                  //     textScaleFactor: 1,
+                  //     style: TextStyle(
+                  //       //   color: Colors.white,
+                  //         fontSize: SizeConfig.safeBlockHorizontal * 4),
+                  //   ),
+                  // ),
+                ],
               ),
-
-            ],
+            ),
           ),
-        );
-
+        ],
+      ),
+    );
   }
 }

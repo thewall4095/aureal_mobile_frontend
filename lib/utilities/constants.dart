@@ -50,3 +50,6 @@ const String selectPodcast = '/selectPodcast';
 const String tagSelection = '/TagSelection';
 const String tagSearch = '/TagSearch';
 const String home = '/';
+
+const LinearGradient kGradient =
+    LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]);

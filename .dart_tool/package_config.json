@@ -536,6 +536,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "koukicons",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/koukicons-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.1"
+    },
+    {
+      "name": "line_icons",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/line_icons-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "linkable",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/linkable-3.0.1",
       "packageUri": "lib/",
@@ -1082,7 +1094,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-10-05T20:55:35.670893Z",
+  "generated": "2021-10-10T18:55:23.177937Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

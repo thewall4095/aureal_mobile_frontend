@@ -625,6 +625,20 @@
             </list>
           </value>
         </entry>
+        <entry key="koukicons">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/koukicons-2.0.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="line_icons">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/line_icons-2.0.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="linkable">
           <value>
             <list>
@@ -1344,6 +1358,8 @@
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_platform_interface-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_web_plugin-2.0.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.3/lib" />
+      <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/koukicons-2.0.3/lib" />
+      <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/line_icons-2.0.1/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/linkable-3.0.1/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/loading_animations-2.2.0/lib" />
       <root url="file://$USER_HOME$/Development/flutter/.pub-cache/hosted/pub.dartlang.org/loading_indicator-3.0.1/lib" />

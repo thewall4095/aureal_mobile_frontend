@@ -62,7 +62,8 @@ dependencies:
   in_app_update: ^2.0.0
   flutter_spinkit: ^5.0.0
   assets_audio_player: ^3.0.3+6
-#  flutter_ffmpeg: ^0.4.0
+  koukicons: ^2.0.3
+  line_icons: ^2.0.1
   image_picker: any
   image_cropper: any
   screenshot: any

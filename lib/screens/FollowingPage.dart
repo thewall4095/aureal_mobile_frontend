@@ -103,19 +103,30 @@ class _FollowingPageState extends State<FollowingPage>
 
   List favPodcast = [];
 
+  int followedPodPageNumber = 0;
+
   void getFollowedPodcasts() async {
     setState(() {
       isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/followedPodcasts?user_id=${prefs.getString('userId')}";
+        "https://api.aureal.one/public/followedPodcasts?user_id=${prefs.getString('userId')}&page=$followedPodPageNumber";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        setState(() {
-          favPodcast = jsonDecode(response.body)['PodcastResult'];
-        });
+        if (followedPodPageNumber == 0) {
+          setState(() {
+            favPodcast = jsonDecode(response.body)['PodcastResult'];
+            followedPodPageNumber = followedPodPageNumber + 1;
+          });
+        } else {
+          setState(() {
+            favPodcast =
+                favPodcast + jsonDecode(response.body)['PodcastResult'];
+            followedPodPageNumber = followedPodPageNumber + 1;
+          });
+        }
       } else {
         print(response.statusCode);
       }
@@ -175,6 +186,8 @@ class _FollowingPageState extends State<FollowingPage>
   bool isPaginationLoading = true;
   bool isFollowingPageLoading = true;
 
+  ScrollController _podcastScrollController;
+
   @override
   void initState() {
     animationController =
@@ -184,6 +197,16 @@ class _FollowingPageState extends State<FollowingPage>
     getData();
     getFollowedPodcasts();
     getHiveFollowedEpisode();
+    _podcastScrollController = ScrollController();
+
+    _podcastScrollController.addListener(() {
+      if (_podcastScrollController.position.pixels ==
+          _podcastScrollController.position.maxScrollExtent) {
+        print("pagination happening");
+        getFollowedPodcasts();
+      }
+    });
+
     _scrollController = ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -328,6 +351,7 @@ class _FollowingPageState extends State<FollowingPage>
                                 height: MediaQuery.of(context).size.height / 5,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
+                                  controller: _podcastScrollController,
                                   children: [
                                     for (int i = 0; i < 10; i++)
                                       Padding(

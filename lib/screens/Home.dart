@@ -668,6 +668,7 @@ class _HomeState extends State<Home> {
             activeIcon: Icon(Icons.stream),
             label: '',
           ),
+
           BottomNavigationBarItem(
             label: "",
             icon: Icon(
@@ -744,12 +745,14 @@ class _BottomPlayerState extends State<BottomPlayer> {
     SizeConfig().init(context);
     var episodeObject = Provider.of<PlayerChange>(context);
 
-    episodeObject.audioPlayer.currentPosition.listen((event) {
-      if (episodeObject.audioPlayer.currentPosition.value ==
-          episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
-        episodeObject.customNextAction(episodeObject.audioPlayer);
-      }
-    });
+    if (episodeObject.episodeObject != null) {
+      episodeObject.audioPlayer.currentPosition.listen((event) {
+        if (episodeObject.audioPlayer.currentPosition.value ==
+            episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+          episodeObject.customNextAction(episodeObject.audioPlayer);
+        }
+      });
+    }
 
     return episodeObject.episodeName != null
         ? Padding(
