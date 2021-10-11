@@ -61,6 +61,24 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 
   List _icons = [
     LineIcons.palette,
+    LineIcons.briefcase,
+    LineIcons.laughFaceWithBeamingEyes,
+    LineIcons.fruitApple,
+    LineIcons.cloudWithAChanceOfMeatball,
+    LineIcons.businessTime,
+    LineIcons.hourglass,
+    LineIcons.swimmingPool,
+    LineIcons.baby,
+    LineIcons.beer,
+    LineIcons.music,
+    LineIcons.newspaper,
+    LineIcons.twitter,
+    LineIcons.atom,
+    LineIcons.globe,
+    LineIcons.footballBall,
+    LineIcons.alternateGithub,
+    LineIcons.dungeon,
+    LineIcons.television
   ];
 
   @override
@@ -73,15 +91,15 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    return Scaffold(
-        body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ListTile(
+    return SafeArea(
+      child: Scaffold(
+          body: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            color: Color(0xff161616),
+            child: ListTile(
               title: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Text(
@@ -103,64 +121,45 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  // Wrap(
-                  //   runSpacing: 15.0,
-                  //   spacing: 15.0,
-                  //   alignment: WrapAlignment.center,
-                  //   children: <Widget>[
-                  //     for (var v in categories)
-                  //       Padding(
-                  //         padding: const EdgeInsets.symmetric(
-                  //             horizontal: 5, vertical: 5),
-                  //         child: GestureDetector(
-                  //           onTap: () {
-                  //             setState(() {
-                  //               if (selectedCategories.contains(v['id'])) {
-                  //                 selectedCategories.remove(v['id']);
-                  //               } else {
-                  //                 selectedCategories.add(v['id']);
-                  //               }
-                  //             });
-                  //           },
-                  //           child: Container(
-                  //             decoration: BoxDecoration(
-                  //                 border: Border.all(),
-                  //                 borderRadius: BorderRadius.circular(30),
-                  //                 color: selectedCategories.contains(v['id'])
-                  //                     ? Colors.blue
-                  //                     : Colors.white),
-                  //             child: Padding(
-                  //               padding: const EdgeInsets.symmetric(
-                  //                   vertical: 8, horizontal: 15),
-                  //               child: Text(
-                  //                 v['name'],
-                  //                 textScaleFactor: 0.75,
-                  //                 style: TextStyle(
-                  //                     fontSize:
-                  //                         SizeConfig.safeBlockHorizontal * 3,
-                  //                     color:
-                  //                         selectedCategories.contains(v['id'])
-                  //                             ? Colors.white
-                  //                             : Colors.black),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       )
-                  //   ],
-                  // )
-                  for (var v in categories)
-                    ListTile(
-                      leading: Icon(LineIcons.palette),
-                      title: Text("${v['name']}"),
-                    ),
-                ],
-              ),
-            ),
-            Column(
+          ),
+          Expanded(
+            child: categories.length == 0
+                ? Container()
+                : ListView.builder(
+                    itemCount: _icons.length,
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemBuilder: (context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          onTap: () {
+                            setState(() {
+                              if (selectedCategories
+                                  .contains(categories[index]['id'])) {
+                                selectedCategories
+                                    .remove(categories[index]['id']);
+                              } else {
+                                selectedCategories.add(categories[index]['id']);
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          selectedTileColor: Color(0xff222222),
+                          selected: selectedCategories
+                              .toSet()
+                              .toList()
+                              .contains(categories[index]['id']),
+                          leading: Icon(_icons[index]),
+                          title: Text("${categories[index]['name']}"),
+                        ),
+                      );
+                    }),
+          ),
+          Container(
+            color: Color(0xff161616),
+            child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
@@ -180,11 +179,11 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
                 ),
                 Text("Select at least 3 topics")
               ],
-            )
-          ],
-        ),
-      ),
-    ));
+            ),
+          )
+        ],
+      )),
+    );
   }
 }
 
@@ -347,3 +346,50 @@ class _UserCategoriesState extends State<UserCategories> {
     );
   }
 }
+
+// Wrap(
+//   runSpacing: 15.0,
+//   spacing: 15.0,
+//   alignment: WrapAlignment.center,
+//   children: <Widget>[
+//     for (var v in categories)
+//       Padding(
+//         padding: const EdgeInsets.symmetric(
+//             horizontal: 5, vertical: 5),
+//         child: GestureDetector(
+//           onTap: () {
+//             setState(() {
+//               if (selectedCategories.contains(v['id'])) {
+//                 selectedCategories.remove(v['id']);
+//               } else {
+//                 selectedCategories.add(v['id']);
+//               }
+//             });
+//           },
+//           child: Container(
+//             decoration: BoxDecoration(
+//                 border: Border.all(),
+//                 borderRadius: BorderRadius.circular(30),
+//                 color: selectedCategories.contains(v['id'])
+//                     ? Colors.blue
+//                     : Colors.white),
+//             child: Padding(
+//               padding: const EdgeInsets.symmetric(
+//                   vertical: 8, horizontal: 15),
+//               child: Text(
+//                 v['name'],
+//                 textScaleFactor: 0.75,
+//                 style: TextStyle(
+//                     fontSize:
+//                         SizeConfig.safeBlockHorizontal * 3,
+//                     color:
+//                         selectedCategories.contains(v['id'])
+//                             ? Colors.white
+//                             : Colors.black),
+//               ),
+//             ),
+//           ),
+//         ),
+//       )
+//   ],
+// )
