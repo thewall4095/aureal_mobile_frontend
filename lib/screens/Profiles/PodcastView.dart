@@ -332,14 +332,78 @@ class _PodcastViewState extends State<PodcastView> {
             floating: true,
             actions: [
               IconButton(
-                icon: Icon(Icons.ios_share),
+                icon: Icon(Icons.more_vert_outlined),
                 onPressed: () {
-                  podcastShare();
+                  showBarModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: ListTile(
+                                leading: CachedNetworkImage(
+                                  memCacheHeight:
+                                      (MediaQuery.of(context).size.width / 2)
+                                          .floor(),
+                                  imageUrl: podcastData['image'],
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover)),
+                                    );
+                                  },
+                                ),
+                                title: Text(
+                                  "${podcastData['name']}",
+                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                                subtitle: Text("${podcastData['author']}"),
+                              ),
+                            ),
+                            Divider(),
+                            ListTile(
+                              leading: Icon(Icons.ios_share),
+                              title: Text("Share"),
+                              onTap: () {
+                                podcastShare();
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.add_circle_outline),
+                              title: Text("Subscribe"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.notification_add),
+                              title: Text("Get Notified"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.playlist_add),
+                              title: Text("Add to podcast playlist"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.animation),
+                              title: Text("More like these"),
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.send),
+                              title: Text("Invite this podcast to Aureal"),
+                            ),
+                          ],
+                        );
+                      });
                 },
-              )
+              ),
             ],
             //   backgroundColor: kPrimaryColor,
-            expandedHeight: MediaQuery.of(context).size.height / 2,
+            expandedHeight: MediaQuery.of(context).size.height / 1.8,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
@@ -796,6 +860,15 @@ class _PodcastViewState extends State<PodcastView> {
                                         //   ),
                                         // ])
                                       ]),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                        "All Episodes (${podcastData['total_count']})")
+                                  ],
                                 ),
                               )
                             ],

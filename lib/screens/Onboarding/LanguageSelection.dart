@@ -87,62 +87,67 @@ class _SelectLanguageState extends State<SelectLanguage> {
           inAsyncCall: isLoading,
           child: Stack(
             children: <Widget>[
-              ListView(
-                children: <Widget>[
-                  for (var v in languages)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      child: FlatButton(
-                        onPressed: () {
-                          setState(() {
-                            if (selectedLanguages.contains(v['id'])) {
-                              selectedLanguages.remove(v['id']);
-                            } else {
-                              selectedLanguages.add(v['id']);
-                            }
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: double.infinity,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                v['name'],
-                                textScaleFactor: 0.75,
-                                style: TextStyle(
-                                    //    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 18),
-                              ),
-                              selectedLanguages.contains(v['id'])
-                                  ? Icon(
-                                      Icons.radio_button_checked,
-                                      color: kActiveColor,
-                                    )
-                                  : Icon(
-                                      Icons.radio_button_checked,
-                                      color: kPrimaryColor,
-                                    )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                ],
-              ),
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
+                    Expanded(
+                      child: ListView(
+                        children: <Widget>[
+                          for (var v in languages)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              child: FlatButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (selectedLanguages.contains(v['id'])) {
+                                      selectedLanguages.remove(v['id']);
+                                    } else {
+                                      selectedLanguages.add(v['id']);
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  height: 40,
+                                  width: double.infinity,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        v['name'],
+                                        textScaleFactor: 0.75,
+                                        style: TextStyle(
+                                            //    color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18),
+                                      ),
+                                      selectedLanguages.contains(v['id'])
+                                          ? Icon(
+                                              Icons.radio_button_checked,
+                                              color: kActiveColor,
+                                            )
+                                          : Icon(
+                                              Icons.radio_button_checked,
+                                              color: kPrimaryColor,
+                                            )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                        ],
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () async {
                         setState(() {
@@ -167,7 +172,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
                         height: 40,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                            color: kSecondaryColor,
+                            gradient: kGradient,
                             border: Border.all(),
                             borderRadius: BorderRadius.circular(30)),
                         child: Center(
@@ -176,10 +181,9 @@ class _SelectLanguageState extends State<SelectLanguage> {
                                     'Skip',
                                     textScaleFactor: 0.75,
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.white
-                                    ),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.white),
                                   )
                                 : Text(
                                     "Next",

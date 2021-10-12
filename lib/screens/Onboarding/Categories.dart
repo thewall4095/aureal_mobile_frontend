@@ -163,21 +163,42 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Container(
-                    decoration: BoxDecoration(gradient: kGradient),
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          child: Text("CONTINUE"),
-                        ),
-                      ],
+                  child: InkWell(
+                    onTap: () async {
+                      if (selectedCategories.length == 0) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            HiveDetails.id, (Route<dynamic> route) => false);
+                      } else {
+                        await sendCategories();
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            HiveDetails.id, (Route<dynamic> route) => false);
+                      }
+                    },
+                    child: Container(
+                      decoration: selectedCategories.isEmpty
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xff222222))
+                          : BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: kGradient),
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: Text("CONTINUE"),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Text("Select at least 3 topics")
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Select at least 3 topics"),
+                )
               ],
             ),
           )
