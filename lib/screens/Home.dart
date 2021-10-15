@@ -7,6 +7,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
+import 'package:auditory/screens/Clips.dart';
 import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -176,9 +177,9 @@ class _HomeState extends State<Home> {
         return LibraryPage();
         break;
 
-      // case 3:
-      //   return Player();
-      //   break;
+      case 4:
+        return Clips();
+        break;
     }
   }
 
@@ -689,7 +690,12 @@ class _HomeState extends State<Home> {
             label: "",
             icon: Icon(Icons.library_books_outlined),
             activeIcon: Icon(Icons.library_books),
-          )
+          ),
+          // BottomNavigationBarItem(
+          //   label: "",
+          //   icon: Icon(Icons.casino_outlined),
+          //   activeIcon: Icon(Icons.casino_outlined),
+          // )
           // BottomNavigationBarItem(
           //   label: "",
           //   icon: Icon(
