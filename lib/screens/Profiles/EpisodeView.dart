@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
@@ -2000,6 +2001,12 @@ class _EpisodeViewState extends State<EpisodeView>
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               child: ListTile(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return PublicProfile();
+                                  }));
+                                },
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(
                                   backgroundImage: CachedNetworkImageProvider(

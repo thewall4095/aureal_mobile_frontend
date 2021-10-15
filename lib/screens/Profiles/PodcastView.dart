@@ -11,6 +11,7 @@ import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -554,21 +555,30 @@ class _PodcastViewState extends State<PodcastView> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            podcastData['author'],
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            textScaleFactor: mediaQueryData
-                                                .textScaleFactor
-                                                .clamp(0.5, 1)
-                                                .toDouble(),
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8)
-                                                    .withOpacity(0.5),
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  CupertinoPageRoute(
+                                                      builder: (context) {
+                                                return PublicProfile();
+                                              }));
+                                            },
+                                            child: Text(
+                                              podcastData['author'],
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1)
+                                                  .toDouble(),
+                                              style: TextStyle(
+                                                  color: Color(0xffe8e8e8)
+                                                      .withOpacity(0.5),
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      3),
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -620,9 +630,10 @@ class _PodcastViewState extends State<PodcastView> {
                                             : InkWell(
                                                 onTap: () {
                                                   setState(() {
+                                                    currentlyPlaying.stop();
                                                     currentlyPlaying.playList =
                                                         episodeList;
-                                                    currentlyPlaying.stop();
+
                                                     currentlyPlaying
                                                             .episodeObject =
                                                         currentlyPlaying

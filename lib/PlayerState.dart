@@ -111,20 +111,28 @@ class PlayerChange extends ChangeNotifier {
   }
 
   NotificationAction customNextAction(AssetsAudioPlayer audioplayer) {
-    if (currentIndex != playList.length - 1) {
-      print(
-          "${_playList.indexOf(episodeObject)} /////////////////////////////////////////////////////////////");
-      episodeObject = _playList[_playList.indexOf(episodeObject) + 1];
-      stop();
-      play();
+    if (playList.length > 1) {
+      if (currentIndex != playList.length - 1) {
+        print(
+            "${_playList.indexOf(episodeObject)} /////////////////////////////////////////////////////////////");
+        if (_playList.contains(episodeObject) == true) {
+          episodeObject = _playList[_playList.indexOf(episodeObject) + 1];
+          stop();
+          play();
+        }
+      }
     }
   }
 
   NotificationAction customPreviousAction(AssetsAudioPlayer audioplayer) {
-    if (currentIndex != 0) {
-      episodeObject = _playList[_playList.indexOf(episodeObject) - 1];
-      stop();
-      play();
+    if (playList.length > 1) {
+      if (currentIndex != 0) {
+        if (_playList.contains(episodeObject) == true) {
+          episodeObject = _playList[_playList.indexOf(episodeObject) + 1];
+          stop();
+          play();
+        }
+      }
     }
   }
 
