@@ -560,7 +560,10 @@ class _PodcastViewState extends State<PodcastView> {
                                               Navigator.push(context,
                                                   CupertinoPageRoute(
                                                       builder: (context) {
-                                                return PublicProfile();
+                                                return PublicProfile(
+                                                  userId:
+                                                      podcastData['user_id'],
+                                                );
                                               }));
                                             },
                                             child: Text(

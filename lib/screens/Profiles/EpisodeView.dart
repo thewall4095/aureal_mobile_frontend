@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:auditory/Services/audioEditor.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
@@ -346,7 +347,7 @@ class _EpisodeViewState extends State<EpisodeView>
     getColorFromUrl(url).then((value) {
       setState(() {
         dominantColor = hexOfRGBA(value[0], value[1], value[2]);
-        print(dominantColor.toString());
+
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Color(dominantColor),
         ));
@@ -530,214 +531,10 @@ class _EpisodeViewState extends State<EpisodeView>
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    episodeObject.episodeObject == null
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              print(episodeContent['url']
-                                                  .toString()
-                                                  .contains('.mp4'));
-                                              if (episodeContent['url']
-                                                          .toString()
-                                                          .contains('.mp4') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.m4v') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.flv') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.f4v') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.ogv') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.ogx') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.wmv') ==
-                                                      true ||
-                                                  episodeContent['url']
-                                                          .toString()
-                                                          .contains('.webm') ==
-                                                      true) {
-                                                episodeObject.stop();
-                                                Navigator.push(context,
-                                                    CupertinoPageRoute(
-                                                        builder: (context) {
-                                                  return PodcastVideoPlayer(
-                                                    episodeObject:
-                                                        episodeContent,
-                                                  );
-                                                }));
-                                              } else {
-                                                if (episodeContent['url']
-                                                        .toString()
-                                                        .contains('.pdf') ==
-                                                    true) {
-                                                  // Navigator.push(context,
-                                                  //     CupertinoPageRoute(
-                                                  //         builder: (context) {
-                                                  //   return PDFviewer(
-                                                  //     episodeObject:
-                                                  //         widget.episodeObject,
-                                                  //   );
-                                                  // }));
-                                                } else {
-                                                  episodeObject.stop();
-                                                  episodeObject.episodeObject =
-                                                      episodeContent;
-                                                  print(episodeObject
-                                                      .episodeObject
-                                                      .toString());
-                                                  episodeObject.play();
-                                                  showBarModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return Player();
-                                                      });
-                                                }
-                                              }
-                                            },
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Color(0xff5d5da8),
-                                                      Color(0xff5bc3ef)
-                                                    ],
-                                                  )),
-                                              width: double.infinity,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Center(
-                                                    child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(7.0),
-                                                  child: Text("GET STARTED"),
-                                                )),
-                                              ),
-                                            ),
-                                          )
-                                        : (episodeObject.episodeObject['id'] ==
-                                                    null ||
-                                                episodeObject
-                                                        .episodeObject['id'] ==
-                                                    episodeContent['id']
-                                            ? (episodeObject
-                                                        .audioPlayer
-                                                        .realtimePlayingInfos
-                                                        .value
-                                                        .isPlaying ==
-                                                    true
-                                                ? GestureDetector(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        episodeObject.pause();
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                          gradient:
-                                                              LinearGradient(
-                                                            colors: [
-                                                              Color(0xff5d5da8),
-                                                              Color(0xff5bc3ef)
-                                                            ],
-                                                          )),
-                                                      width: double.infinity,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Center(
-                                                            child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(7.0),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              // Padding(
-                                                              //   padding: const EdgeInsets
-                                                              //           .symmetric(
-                                                              //       horizontal:
-                                                              //           5),
-                                                              //   child: Icon(
-                                                              //       Icons
-                                                              //           .pause),
-                                                              // ),
-                                                              Text("PAUSE"),
-                                                            ],
-                                                          ),
-                                                        )),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : GestureDetector(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        episodeObject.resume();
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                          gradient:
-                                                              LinearGradient(
-                                                            colors: [
-                                                              Color(0xff5d5da8),
-                                                              Color(0xff5bc3ef)
-                                                            ],
-                                                          )),
-                                                      width: double.infinity,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Center(
-                                                            child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(7.0),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              // Padding(
-                                                              //   padding: const EdgeInsets
-                                                              //           .symmetric(
-                                                              //       horizontal:
-                                                              //           5),
-                                                              //   child: Icon(Icons
-                                                              //       .play_arrow_rounded),
-                                                              // ),
-                                                              Text("RESUME"),
-                                                            ],
-                                                          ),
-                                                        )),
-                                                      ),
-                                                    ),
-                                                  ))
-                                            : GestureDetector(
+                                    Row(
+                                      children: [
+                                        episodeObject.episodeObject == null
+                                            ? GestureDetector(
                                                 onTap: () {
                                                   print(episodeContent['url']
                                                       .toString()
@@ -843,7 +640,245 @@ class _EpisodeViewState extends State<EpisodeView>
                                                     )),
                                                   ),
                                                 ),
-                                              )),
+                                              )
+                                            : (episodeObject.episodeObject[
+                                                            'id'] ==
+                                                        null ||
+                                                    episodeObject.episodeObject[
+                                                            'id'] ==
+                                                        episodeContent['id']
+                                                ? (episodeObject
+                                                            .audioPlayer
+                                                            .realtimePlayingInfos
+                                                            .value
+                                                            .isPlaying ==
+                                                        true
+                                                    ? GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            episodeObject
+                                                                .pause();
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xff5d5da8),
+                                                                      Color(
+                                                                          0xff5bc3ef)
+                                                                    ],
+                                                                  )),
+                                                          width:
+                                                              double.infinity,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Center(
+                                                                child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(7.0),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  // Padding(
+                                                                  //   padding: const EdgeInsets
+                                                                  //           .symmetric(
+                                                                  //       horizontal:
+                                                                  //           5),
+                                                                  //   child: Icon(
+                                                                  //       Icons
+                                                                  //           .pause),
+                                                                  // ),
+                                                                  Text("PAUSE"),
+                                                                ],
+                                                              ),
+                                                            )),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : GestureDetector(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            episodeObject
+                                                                .resume();
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                    colors: [
+                                                                      Color(
+                                                                          0xff5d5da8),
+                                                                      Color(
+                                                                          0xff5bc3ef)
+                                                                    ],
+                                                                  )),
+                                                          width:
+                                                              double.infinity,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Center(
+                                                                child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(7.0),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  // Padding(
+                                                                  //   padding: const EdgeInsets
+                                                                  //           .symmetric(
+                                                                  //       horizontal:
+                                                                  //           5),
+                                                                  //   child: Icon(Icons
+                                                                  //       .play_arrow_rounded),
+                                                                  // ),
+                                                                  Text(
+                                                                      "RESUME"),
+                                                                ],
+                                                              ),
+                                                            )),
+                                                          ),
+                                                        ),
+                                                      ))
+                                                : GestureDetector(
+                                                    onTap: () {
+                                                      print(
+                                                          episodeContent['url']
+                                                              .toString()
+                                                              .contains(
+                                                                  '.mp4'));
+                                                      if (episodeContent['url'].toString().contains('.mp4') == true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.m4v') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.flv') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.f4v') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.ogv') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.ogx') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.wmv') ==
+                                                              true ||
+                                                          episodeContent['url']
+                                                                  .toString()
+                                                                  .contains(
+                                                                      '.webm') ==
+                                                              true) {
+                                                        episodeObject.stop();
+                                                        Navigator.push(context,
+                                                            CupertinoPageRoute(
+                                                                builder:
+                                                                    (context) {
+                                                          return PodcastVideoPlayer(
+                                                            episodeObject:
+                                                                episodeContent,
+                                                          );
+                                                        }));
+                                                      } else {
+                                                        if (episodeContent[
+                                                                    'url']
+                                                                .toString()
+                                                                .contains(
+                                                                    '.pdf') ==
+                                                            true) {
+                                                          // Navigator.push(context,
+                                                          //     CupertinoPageRoute(
+                                                          //         builder: (context) {
+                                                          //   return PDFviewer(
+                                                          //     episodeObject:
+                                                          //         widget.episodeObject,
+                                                          //   );
+                                                          // }));
+                                                        } else {
+                                                          episodeObject.stop();
+                                                          episodeObject
+                                                                  .episodeObject =
+                                                              episodeContent;
+                                                          print(episodeObject
+                                                              .episodeObject
+                                                              .toString());
+                                                          episodeObject.play();
+                                                          showBarModalBottomSheet(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return Player();
+                                                              });
+                                                        }
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(5),
+                                                          gradient:
+                                                              LinearGradient(
+                                                            colors: [
+                                                              Color(0xff5d5da8),
+                                                              Color(0xff5bc3ef)
+                                                            ],
+                                                          )),
+                                                      width: double.infinity,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Center(
+                                                            child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(7.0),
+                                                          child: Text(
+                                                              "GET STARTED"),
+                                                        )),
+                                                      ),
+                                                    ),
+                                                  )),
+                                      ],
+                                    ),
                                     // episodeContent['permlink'] == null
                                     //     ? SizedBox()
                                     //     : Padding(
@@ -1154,6 +1189,16 @@ class _EpisodeViewState extends State<EpisodeView>
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 15),
                                     child: ListTile(
+                                      onTap: () {
+                                        print(episodeContent['user_id']);
+                                        Navigator.push(context,
+                                            CupertinoPageRoute(
+                                                builder: (context) {
+                                          return PublicProfile(
+                                            userId: episodeContent['user_id'],
+                                          );
+                                        }));
+                                      },
                                       contentPadding: EdgeInsets.zero,
                                       leading: CircleAvatar(
                                         backgroundImage:
@@ -1333,6 +1378,16 @@ class _EpisodeViewState extends State<EpisodeView>
           ),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.crop),
+            onPressed: () {
+              Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                return AudioEditor(
+                  episodeObject: episodeContent,
+                );
+              }));
+            },
+          ),
           Platform.isAndroid == true
               ? GestureDetector(
                   onTap: () {
