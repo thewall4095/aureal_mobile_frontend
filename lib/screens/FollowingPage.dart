@@ -345,72 +345,155 @@ class _FollowingPageState extends State<FollowingPage>
                   child: WidgetANimator(
                     Column(
                       children: [
-                        favPodcast.length == 0 || favPodcast.length == null
-                            ? Container(
+                      favPodcast.length == 0  ?
+                        Container(
                                 width: double.infinity,
-                                height: MediaQuery.of(context).size.height / 5,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  controller: _podcastScrollController,
-                                  children: [
-                                    for (int i = 0; i < 10; i++)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Color(0xff222222)),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    4,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    4,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color: Color(0xff222222)),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      4,
-                                                  height: 12,
-                                                ),
-                                              ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Color(0xff222222)),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    4,
-                                                height: 8,
-                                              ),
-                                            ],
+                                height: MediaQuery.of(context).size.height / 4.1,
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [  Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  child: Text(
+                                    "Your Favourites",
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 1.3)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                      //    color: Color(0xffe8e8e8),
+                                        fontSize:
+                                        SizeConfig.safeBlockHorizontal *
+                                            7,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                                color: Color(0xff222222)),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                4,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text("Subscribe"),
+                                                  SizedBox(height: 5,),
+                                                  Icon(Icons.add)
+                                                ], ),
                                           ),
-                                        ),
-                                      )
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Container(
+
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      10),
+                                                  color: Color(0xff222222)),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                                  4,
+                                              height: 12,
+
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    10),
+                                                color: Color(0xff222222)),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: 8,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
                                   ],
                                 ),
+                                // ListView(
+                                //   scrollDirection: Axis.horizontal,
+                                //   controller: _podcastScrollController,
+                                //   children: [
+                                //     for (int i = 0; i < 10; i++)
+                                //       Padding(
+                                //         padding: const EdgeInsets.all(8.0),
+                                //         child: Container(
+                                //           child: Column(
+                                //             children: [
+                                //               Container(
+                                //                 decoration: BoxDecoration(
+                                //                     borderRadius:
+                                //                         BorderRadius.circular(
+                                //                             10),
+                                //                     color: Color(0xff222222)),
+                                //                 width: MediaQuery.of(context)
+                                //                         .size
+                                //                         .width /
+                                //                     4,
+                                //                 height: MediaQuery.of(context)
+                                //                         .size
+                                //                         .width /
+                                //                     4,
+                                //               ),
+                                //               Padding(
+                                //                 padding:
+                                //                     const EdgeInsets.symmetric(
+                                //                         vertical: 8),
+                                //                 child: Container(
+                                //                   decoration: BoxDecoration(
+                                //                       borderRadius:
+                                //                           BorderRadius.circular(
+                                //                               10),
+                                //                       color: Color(0xff222222)),
+                                //                   width: MediaQuery.of(context)
+                                //                           .size
+                                //                           .width /
+                                //                       4,
+                                //                   height: 12,
+                                //                 ),
+                                //               ),
+                                //               Container(
+                                //                 decoration: BoxDecoration(
+                                //                     borderRadius:
+                                //                         BorderRadius.circular(
+                                //                             10),
+                                //                     color: Color(0xff222222)),
+                                //                 width: MediaQuery.of(context)
+                                //                         .size
+                                //                         .width /
+                                //                     4,
+                                //                 height: 8,
+                                //               ),
+                                //             ],
+                                //           ),
+                                //         ),
+                                //       )
+                                //   ],
+                                // ),
                               )
-                            : Container(
+                        : Container(
                                 width: double.infinity,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,7 +518,7 @@ class _FollowingPageState extends State<FollowingPage>
                                     Container(
                                         height:
                                             MediaQuery.of(context).size.height /
-                                                4.2,
+                                                5,
                                         child: ListView(
                                           scrollDirection: Axis.horizontal,
                                           children: [

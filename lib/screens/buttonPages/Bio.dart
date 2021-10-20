@@ -381,13 +381,14 @@ class _BioState extends State<Bio> {
                               borderRadius: BorderRadius.circular(10),
                             )
                           : BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 image: CachedNetworkImageProvider(displayUrl),
                                 fit: BoxFit.cover,
                               ),
                             ),
-                      height: 100,
+                      height:MediaQuery.of(context).size.height/10,
                       width: 100,
                       child: isImageLoading == true
                           ? SpinKitPulse(
@@ -422,34 +423,6 @@ class _BioState extends State<Bio> {
           ),
           SliverList(
               delegate: SliverChildListDelegate([
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            //   child: TextField(
-            //     enabled: false,
-            //     decoration: InputDecoration(
-            //       // hintText: data['hive_username'],
-            //       labelText: 'Username',
-            //     ),
-            //     onChanged: ((value) {
-            //       setState(() {});
-            //     }),
-            //   ),
-            // ),
-
-            // Padding(
-            //   padding:
-            //       const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-            //   child: TextField(
-            //     maxLines: 3,
-            //     decoration: InputDecoration(hintText: 'Bio', labelText: 'Bio'),
-            //     onChanged: ((value) {
-            //       setState(() {
-            //         //   _bioController.text = value;
-            //       });
-            //     }),
-            //   ),
-            // ),
-
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
