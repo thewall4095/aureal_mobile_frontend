@@ -314,6 +314,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_ffmpeg",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_ffmpeg-0.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_html",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_html-2.1.2",
       "packageUri": "lib/",
@@ -356,6 +362,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_page_indicator",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_page_indicator-0.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "flutter_plugin_android_lifecycle",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2",
       "packageUri": "lib/",
@@ -384,6 +396,12 @@
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_svg-0.22.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_swiper",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_swiper-1.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
     },
     {
       "name": "flutter_test",
@@ -640,6 +658,12 @@
     {
       "name": "page_transition",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/page_transition-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "palette_generator",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/palette_generator-0.3.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -926,6 +950,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "transformer_page_view",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/transformer_page_view-0.1.6",
+      "packageUri": "lib/",
+      "languageVersion": "2.0"
+    },
+    {
       "name": "transparent_image",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/transparent_image-2.0.0",
       "packageUri": "lib/",
@@ -1094,7 +1124,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-10-15T10:26:29.858425Z",
+  "generated": "2021-10-17T21:33:47.823035Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

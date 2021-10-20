@@ -691,11 +691,11 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.library_books_outlined),
             activeIcon: Icon(Icons.library_books),
           ),
-          // BottomNavigationBarItem(
-          //   label: "",
-          //   icon: Icon(Icons.casino_outlined),
-          //   activeIcon: Icon(Icons.casino_outlined),
-          // )
+          BottomNavigationBarItem(
+            label: "",
+            icon: Icon(Icons.casino_outlined),
+            activeIcon: Icon(Icons.casino_outlined),
+          )
           // BottomNavigationBarItem(
           //   label: "",
           //   icon: Icon(
