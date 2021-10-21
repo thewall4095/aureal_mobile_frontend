@@ -46,7 +46,25 @@ class _ClipsState extends State<Clips> {
   var recentlyPlayed = [];
   var homeData = [];
 
-  AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+  int currentIndex = 1;
+
+  SwiperController _controller;
+
+  AssetsAudioPlayer audioPlayer;
+
+  List loadedIndex = [];
+
+  CustomLayoutOption customLayoutOption;
+
+  @override
+  void initState() {
+    customLayoutOption = new CustomLayoutOption(startIndex: 1, stateCount: 2);
+
+    // TODO: implement initState
+    audioPlayer = AssetsAudioPlayer();
+    _controller = SwiperController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +90,14 @@ class _ClipsState extends State<Clips> {
     }
     return Scaffold(
       body: Swiper(
+        index: currentIndex,
+        onIndexChanged: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        controller: _controller,
+        customLayoutOption: customLayoutOption,
         viewportFraction: 0.82,
         scrollDirection: Axis.vertical,
         itemCount: recentlyPlayed.length,
@@ -79,6 +105,7 @@ class _ClipsState extends State<Clips> {
           return SwipeCard(
             clipObject: recentlyPlayed[index],
             audioPlayer: audioPlayer,
+            play: index == currentIndex ? true : false,
           );
         },
       ),
@@ -88,9 +115,10 @@ class _ClipsState extends State<Clips> {
 
 class SwipeCard extends StatefulWidget {
   var clipObject;
-  var audioPlayer;
+  AssetsAudioPlayer audioPlayer;
+  bool play;
 
-  SwipeCard({@required this.clipObject, this.audioPlayer});
+  SwipeCard({@required this.clipObject, this.audioPlayer, this.play});
 
   @override
   _SwipeCardState createState() => _SwipeCardState();
@@ -127,13 +155,46 @@ class _SwipeCardState extends State<SwipeCard> {
   }
 
   @override
+  void didUpdateWidget(Widget oldWidget) {
+    print("${widget.play} /////////////////////////////Teri maa ki widget");
+    if (widget.play == true) {
+      widget.audioPlayer.stop();
+      widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
+    }
+    // print(
+    //     "${oldWidget.play} /////////////////////////////Teri maa ki oldWidget");
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     setState(() {
       dominantColor = getColor(widget.clipObject['image']);
+      if (widget.play == true) {
+        widget.audioPlayer.stop();
+        widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
+      }
     });
 
+    print("${widget.play} /////////////////////////////Teri maa ki chhot");
+
+    widget.play.pipe((t) =>
+        print("${widget.play} /////////////////////////////Teri maa bhosada"));
+
+    print(
+        "Init State Called.//////////////////////////// for ${widget.clipObject['name']}");
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    super.dispose();
+
+    widget.audioPlayer.stop();
+
+    print("Dispose called ${widget.clipObject['name']}");
   }
 
   @override
@@ -142,7 +203,8 @@ class _SwipeCardState extends State<SwipeCard> {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Color(0xff222222)),
+            borderRadius: BorderRadius.circular(10),
+            color: widget.play == true ? Colors.blue : Color(0xff222222)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -182,7 +244,21 @@ class _SwipeCardState extends State<SwipeCard> {
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(Icons.play_circle_fill),
+                          widget.audioPlayer.builderRealtimePlayingInfos(
+                              builder: (context, infos) {
+                            if (infos.isPlaying == true) {
+                              return InkWell(
+                                  onTap: () {
+                                    widget.audioPlayer.pause();
+                                  },
+                                  child: Icon(Icons.pause));
+                            }
+                            if (infos.isBuffering == true) {
+                              return Icon(Icons.radio_button_off);
+                            } else {
+                              return Icon(Icons.play_circle_fill);
+                            }
+                          }),
                           Text(
                             "CONTINUE LISTENING",
                             textScaleFactor: 1.0,
