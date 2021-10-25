@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -23,6 +25,7 @@ import 'Player/PlayerElements/Seekbar.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/EpisodeView.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:http/http.dart' as http;
 
 import 'dart:ui';
 
@@ -781,6 +784,36 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
     with TickerProviderStateMixin {
   TabController _tabControler;
 
+  List searchResults = [];
+
+  int pageNumber = 0;
+
+  void getPodcastSearchResults(String query) async {
+    String url = "https://api.aureal.one/public/search?word=$query";
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        if (pageNumber == 0) {
+          setState(() {
+            searchResults = jsonDecode(response.body)['PodcastList'];
+            pageNumber = pageNumber + 1;
+          });
+        } else {
+          setState(() {
+            searchResults =
+                searchResults + jsonDecode(response.body)['PodcastList'];
+            pageNumber = pageNumber + 1;
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     _tabControler = TabController(length: 3, vsync: this);
@@ -792,72 +825,261 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return LinearGradient(
+                    colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])
+                .createShader(bounds);
+          },
+          child: Text(
+            "ADD CLIP",
+            textScaleFactor: 1.0,
+            style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),
+          ),
+        ),
+        actions: [
+          TabBar(
+            controller: _tabControler,
+            isScrollable: true,
+            indicatorSize: TabBarIndicatorSize.label,
+            tabs: [
+              Tab(
+                text: "Search",
+              ),
+              Tab(text: "Explore"),
+              Tab(
+                text: "Your Shows",
+              )
+            ],
+          )
+        ],
+      ),
+      body: TabBarView(
+        controller: _tabControler,
+        children: [
+          Container(
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color(0xff222222),
+                    ),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          pageNumber = 0;
+                        });
+                      },
+                      onSubmitted: (value) {
+                        getPodcastSearchResults(value);
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(top: 14),
+                          border: InputBorder.none,
+                          prefixIcon: Icon(Icons.search)),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (var v in searchResults.toSet().toList())
+                        ListTile(
+                          onTap: () {
+                            Navigator.push(context,
+                                CupertinoPageRoute(builder: (context) {
+                              return PodcastDetailsSnippets(
+                                podcastObject: v,
+                              );
+                            }));
+                          },
+                          leading: SizedBox(
+                            height: 60,
+                            width: 60,
+                            child: CachedNetworkImage(
+                              imageUrl: v['image'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          title: Text("${v['name']}"),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(),
+          Container()
+        ],
+      ),
+    );
+  }
+}
+
+class PodcastDetailsSnippets extends StatefulWidget {
+  var podcastObject;
+
+  PodcastDetailsSnippets({@required this.podcastObject});
+
+  @override
+  _PodcastDetailsSnippetsState createState() => _PodcastDetailsSnippetsState();
+}
+
+class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
+  int pageNumber = 0;
+  List episodeList = [];
+  bool episodeListLoading;
+
+  ScrollController _controller;
+
+  void getEpisodes() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/episode?podcast_id=${widget.podcastObject['id']}&user_id=${prefs.getString('userId')}&page=$pageNumber';
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          if (pageNumber == 0) {
+            episodeList = jsonDecode(response.body)['episodes'];
+            pageNumber = pageNumber + 1;
+            episodeListLoading = false;
+          } else {
+            episodeList = episodeList + jsonDecode(response.body)['episodes'];
+            episodeListLoading = false;
+            pageNumber = pageNumber + 1;
+          }
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _controller = ScrollController();
+    getEpisodes();
+
+    _controller.addListener(() {
+      if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+        getEpisodes();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
           return <Widget>[
             SliverAppBar(
-                pinned: true,
-                title: Text(
-                  "Create a Clip",
-                  textScaleFactor: 1.0,
-                  style:
-                      TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                ),
-                expandedHeight: 50,
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(30),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: TabBar(
-                      isScrollable: true,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      controller: _tabControler,
-                      tabs: [
-                        Tab(
-                          text: "Search",
-                        ),
-                        Tab(
-                          text: "Browse",
-                        ),
-                        Tab(
-                          text: 'My Shows',
-                        )
-                      ],
+              pinned: true,
+              expandedHeight: 60,
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(60),
+                child: ListTile(
+                  leading: SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.podcastObject['image'],
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover)),
+                        );
+                      },
                     ),
                   ),
-                ))
-          ];
-        },
-        body: Container(
-          child: TabBarView(
-            controller: _tabControler,
-            children: [
-              Container(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xff222222),
-                              borderRadius: BorderRadius.circular(30)),
-                          child: TextField(
-                            scrollPadding: EdgeInsets.only(top: 10),
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                prefixIcon: Icon(Icons.search)),
-                          )),
-                    ),
-                  ],
+                  title: Text(
+                    "${widget.podcastObject['name']}",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Text("${widget.podcastObject['author']}",
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
               ),
-              Container(),
-              Container()
-            ],
-          ),
+            )
+          ];
+        },
+        body: ListView(
+          controller: _controller,
+          children: [
+            ListTile(
+              title: Text(
+                "Episodes",
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 6,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            for (var v in episodeList)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: ListTile(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
+                      return SnippetEditor();
+                    }));
+                  },
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  tileColor: Color(0xff222222),
+                  title: Text(
+                    "${v['name']}",
+                    maxLines: 2,
+                    textScaleFactor: 1.0,
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text("${v['summary']}",
+                      maxLines: 3, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+          ],
         ),
       ),
     );
+  }
+}
+
+class SnippetEditor extends StatefulWidget {
+  @override
+  _SnippetEditorState createState() => _SnippetEditorState();
+}
+
+class _SnippetEditorState extends State<SnippetEditor> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold();
   }
 }
