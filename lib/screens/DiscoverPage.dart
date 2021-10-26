@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -128,9 +129,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
     }
 
     Future<bool> _onBackPressed() async {
-      Navigator.pushNamedAndRemoveUntil(
-          context, Home.id, ModalRoute.withName("/"));
-      return false; // return true if the route to be popped
+     SystemNavigator.pop();
+      return true; // return true if the route to be popped
     }
 
     final mediaQueryData = MediaQuery.of(context);

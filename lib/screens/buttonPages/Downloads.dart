@@ -229,79 +229,79 @@ class _DownloadPageState extends State<DownloadPage>
       body: Container(
         child: episodeList.length == 0
             ? Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      height: MediaQuery.of(context).size.width / 2,
+                      child: Image.asset('assets/images/Mascot.png'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "No Downloads..!",
+                          style: TextStyle(
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 5),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Icon(Icons.download_outlined),
+                    ),
+                    Text("You can now download your favourate podcast.")
+                  ],
+                ),
+                InkWell(
+                  onTap: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return FollowingPage();
+                        });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: kSecondaryColor)
+                      //  color: kSecondaryColor,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2,
-                            height: MediaQuery.of(context).size.width / 2,
-                            child: Image.asset('assets/images/Mascot.png'),
+                          Icon(FontAwesomeIcons.download),
+                          SizedBox(
+                            width: 8.0,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "No Downloads..!",
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 5),
-                              ),
-                            ],
+                          Text(
+                            'Browse',
+                            style: TextStyle(
+                                fontSize:
+                                SizeConfig.safeBlockHorizontal * 4),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Icon(Icons.download_outlined),
-                          ),
-                          Text("You can now download your favourate podcast.")
                         ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return FollowingPage();
-                              });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: kSecondaryColor)
-                              //  color: kSecondaryColor,
-                              ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(FontAwesomeIcons.download),
-                                SizedBox(
-                                  width: 8.0,
-                                ),
-                                Text(
-                                  'Browse',
-                                  style: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 4),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 100,
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              )
+                SizedBox(
+                  height: 100,
+                )
+              ],
+            ),
+          ),
+        )
             : ListView(
                 children: [
                   for (var v in episodeList)

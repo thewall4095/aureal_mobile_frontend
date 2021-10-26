@@ -43,6 +43,7 @@ import 'dart:math' as math;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import '../FollowingPage.dart';
 import '../Home.dart';
 import 'PlayerElements/Seekbar.dart';
 import 'package:screenshot/screenshot.dart';
@@ -345,29 +346,9 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-// WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     var episodeObject = Provider.of<PlayerChange>(context);
-    // episodeObject.audioPlayer.currentPosition.listen((event) {
-    //   var currentPositionSeconds = event.inMilliseconds/1000;
-    //   if(transcript!=null && transcript.length > 0){
-    //     // List<String> filteredTranscript  = transcript.where((item) {
-    //     //   return item.start_time < currentPositionSeconds && item.end_time > currentPositionSeconds;
-    //     // });
-    //     print('hre');
-    //     print(event.inMilliseconds/1000);
-    //     print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-    //         // setState(() {
-    //         //   itemScrollController.scrollTo(
-    //         //       index: transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds), duration: Duration(seconds: 1));
-    //         // });
-    //     // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-    //   }
-    // });
-//    duration = Duration(seconds: episodeObject.episodeObject['duration']);
-//    print(duration.toString());
     SizeConfig().init(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    // print(episodeObject.episodeObject.toString());
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -2518,7 +2499,82 @@ class _ClipScreenState extends State<ClipScreen> {
           textScaleFactor: 1.0,
         ),
       ),
-      body: Container(
+      body: clips.length == 0
+      ?Container(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: MediaQuery.of(context).size.width / 2,
+                    child: Image.asset('assets/images/Mascot.png'),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "No Clips..!",
+                        style: TextStyle(
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal * 5),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Icon(Icons.download_outlined),
+                  ),
+                  Text("You can now add your favrate Clips.")
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return FollowingPage();
+                      });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: kSecondaryColor)
+                    //  color: kSecondaryColor,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.arrow_forward_ios),
+                        SizedBox(
+                          width: 8.0,
+                        ),
+                        Text(
+                          'Browse',
+                          style: TextStyle(
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              )
+            ],
+          ),
+        ),
+      )
+      :Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: ListView(
