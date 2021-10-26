@@ -79,7 +79,7 @@ class _PublicProfileState extends State<PublicProfile>
 
   void userSnippet(String userId) async {
     String url =
-        "https://api.aureal.one/public/getSnippet?user_id=c2bada4fcacaf6431b02eb178861eec4";
+        "https://api.aureal.one/public/getSnippet?user_id=${widget.userId}";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -99,7 +99,7 @@ class _PublicProfileState extends State<PublicProfile>
 
   void userRooms(String userId) async {
     String url =
-        "https://api.aureal.one/public/getUserRooms?userid=c2bada4fcacaf6431b02eb178861eec4";
+        "https://api.aureal.one/public/getUserRooms?userid=${widget.userId}";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -673,7 +673,7 @@ class _PublicProfileState extends State<PublicProfile>
             ///LiveRoom
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: userRoom.length == 0
+              child: userRoom == null
                   ? Center(
                 child: Container(child: Text("No Room yet..")),
               )
