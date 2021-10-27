@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -17,11 +19,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+import '../Clips.dart';
 
 class PublicProfile extends StatefulWidget {
   String userId;
-
-  PublicProfile({@required this.userId});
+  AssetsAudioPlayer audioPlayer;
+  PublicProfile({@required this.userId, this.audioPlayer,});
 
   @override
   _PublicProfileState createState() => _PublicProfileState();
@@ -79,7 +82,7 @@ class _PublicProfileState extends State<PublicProfile>
 
   void userSnippet(String userId) async {
     String url =
-        "https://api.aureal.one/public/getSnippet?user_id=${widget.userId}";
+        "https://api.aureal.one/public/getSnippet?user_id=c2bada4fcacaf6431b02eb178861eec4";
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -123,6 +126,7 @@ class _PublicProfileState extends State<PublicProfile>
   bool seeMore = false;
   bool isPodcastListLoading;
   var isPlaying = false;
+  var dominantColor = 0xff222222;
   @override
   void initState() {
     // TODO: implement initState
@@ -167,8 +171,9 @@ class _PublicProfileState extends State<PublicProfile>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CachedNetworkImage(
-                              imageUrl: userData['img'] == null ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                  :userData['img'],
+                              imageUrl: userData['img'] == null
+                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  : userData['img'],
                               imageBuilder: (context, imageProvider) {
                                 return Container(
                                   height:
@@ -378,6 +383,7 @@ class _PublicProfileState extends State<PublicProfile>
                                 children: [
                                   IconButton(
                                     onPressed: () {
+                                      print(userData['instagram']);
                                       launcher.launchInBrowser(
                                         userData['instagram'],
                                       );
@@ -494,180 +500,193 @@ class _PublicProfileState extends State<PublicProfile>
               padding: const EdgeInsets.all(8.0),
               child: podcastList.length == 0
                   ? Center(
-                child: Container(child: Text("No Podcast yet..")),
-              )
+                      child: Container(child: Text("No Podcast yet..")),
+                    )
                   : Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (var a in podcastList)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          new BoxShadow(
-                            color: Colors.black54.withOpacity(0.2),
-                            blurRadius: 10.0,
-                          ),
-                        ],
-                        color: Color(0xff222222),
-                      ),
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        child: ListTile(
-                          onTap: () {
-                            showBarModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return Container(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ListTile(
-                                          leading: SizedBox(
-                                            height: 50,
-                                            width: 50,
-                                            child: CachedNetworkImage(
-                                              imageUrl: userData['img'] == null
-                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                  : userData['img'],
-                                              imageBuilder: (context,
-                                                  imageProvider) {
-                                                return Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                      image: DecorationImage(
-                                                          image:
-                                                              imageProvider,
-                                                          fit: BoxFit
-                                                              .cover)),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          title:a['name'] == null ?SizedBox():Text("${a['name']}"),
-                                          subtitle:a['author'] == null ?SizedBox():
-                                              Text("${a['author']}"),
-                                        ),
-                                        Divider(),
-                                        ListTile(
-                                          title: a['description'] == null
-                                              ? SizedBox()
-                                              : htmlMatch.hasMatch(a[
-                                                              'description']
-                                                          .toString()) ==
-                                                      true
-                                                  ? Text(
-                                                      '${((a['description']).toString())}',
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(0.5,
-                                                                  1.5)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          //      color: Colors.grey,
-                                                          fontSize: SizeConfig
-                                                                  .blockSizeHorizontal *
-                                                              3.5),
-                                                    )
-                                                  : Text(
-                                                      a['description'],
-                                                      textScaleFactor:
-                                                          mediaQueryData
-                                                              .textScaleFactor
-                                                              .clamp(
-                                                                  0.5, 1)
-                                                              .toDouble(),
-                                                      style: TextStyle(
-                                                          //  color: Colors.grey,
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3.5),
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var a in podcastList)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  new BoxShadow(
+                                    color: Colors.black54.withOpacity(0.2),
+                                    blurRadius: 10.0,
+                                  ),
+                                ],
+                                color: Color(0xff222222),
+                              ),
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 15),
+                                child: ListTile(
+                                  onTap: () {
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Container(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ListTile(
+                                                  leading: SizedBox(
+                                                    height: 50,
+                                                    width: 50,
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: userData[
+                                                                  'img'] ==
+                                                              null
+                                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                          : userData['img'],
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        );
+                                                      },
                                                     ),
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                });
-                          },
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            '${a['name']}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textScaleFactor: mediaQueryData
-                                .textScaleFactor
-                                .clamp(0.5, 1.5)
-                                .toDouble(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                //       color: Colors.white,
-                                fontSize:
-                                    SizeConfig.safeBlockHorizontal * 4),
-                          ),
-                          subtitle: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              children: [
-                                a['description'] == null
-                                    ? SizedBox(
-                                        height: 20,
-                                      )
-                                    : Padding(
-                                        padding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10.0),
-                                        child: htmlMatch.hasMatch(
-                                                    a['description']) ==
-                                                true
-                                            ? Text(
-                                                '${(a['description'].toString())}',
-                                                maxLines: 2,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                textScaleFactor:
-                                                    mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.5, 1)
-                                                        .toDouble(),
-                                                style: TextStyle(
-                                                    //       color: Colors.grey,
-                                                    fontSize: SizeConfig
-                                                            .blockSizeHorizontal *
-                                                        3.5),
+                                                  ),
+                                                  title: a['name'] == null
+                                                      ? SizedBox()
+                                                      : Text("${a['name']}"),
+                                                  subtitle: a['author'] == null
+                                                      ? SizedBox()
+                                                      : Text("${a['author']}"),
+                                                ),
+                                                Divider(),
+                                                ListTile(
+                                                  title: a['description'] ==
+                                                          null
+                                                      ? SizedBox()
+                                                      : htmlMatch.hasMatch(a[
+                                                                      'description']
+                                                                  .toString()) ==
+                                                              true
+                                                          ? Text(
+                                                              '${((a['description']).toString())}',
+                                                              textScaleFactor:
+                                                                  mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1.5)
+                                                                      .toDouble(),
+                                                              style: TextStyle(
+                                                                  //      color: Colors.grey,
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .blockSizeHorizontal *
+                                                                          3.5),
+                                                            )
+                                                          : Text(
+                                                              a['description'],
+                                                              textScaleFactor:
+                                                                  mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
+                                                              style: TextStyle(
+                                                                  //  color: Colors.grey,
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3.5),
+                                                            ),
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    '${a['name']}',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textScaleFactor: mediaQueryData
+                                        .textScaleFactor
+                                        .clamp(0.5, 1.5)
+                                        .toDouble(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        //       color: Colors.white,
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4),
+                                  ),
+                                  subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        a['description'] == null
+                                            ? SizedBox(
+                                                height: 20,
                                               )
-                                            : Text(
-                                                a['description'],
-                                                maxLines: 2,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                textScaleFactor:
-                                                    mediaQueryData
-                                                        .textScaleFactor
-                                                        .clamp(0.5, 1)
-                                                        .toDouble(),
-                                                style: TextStyle(
-                                                    //         color: Colors.grey,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        3.5),
+                                            : Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10.0),
+                                                child: htmlMatch.hasMatch(
+                                                            a['description']) ==
+                                                        true
+                                                    ? Text(
+                                                        '${(a['description'].toString())}',
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textScaleFactor:
+                                                            mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                        style: TextStyle(
+                                                            //       color: Colors.grey,
+                                                            fontSize: SizeConfig
+                                                                    .blockSizeHorizontal *
+                                                                3.5),
+                                                      )
+                                                    : Text(
+                                                        a['description'],
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textScaleFactor:
+                                                            mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                        style: TextStyle(
+                                                            //         color: Colors.grey,
+                                                            fontSize: SizeConfig
+                                                                    .safeBlockHorizontal *
+                                                                3.5),
+                                                      ),
                                               ),
-                                      ),
-                              ]),
-                        ),
-                      ),
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                  ),
-              ],
-                ),
             ),
 
             ///LiveRoom
@@ -675,126 +694,119 @@ class _PublicProfileState extends State<PublicProfile>
               padding: const EdgeInsets.all(8.0),
               child: userRoom == null
                   ? Center(
-                child: Container(child: Text("No Room yet..")),
-              )
-                  :ListView(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              children: [
-                for (var d in userRoom)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {for (var a in d['Communities'])
-                        showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                      ListTile(
-                                        leading: SizedBox(
-                                          height: 50,
-                                          width: 50,
-                                          child:  Icon(
-                                            Icons.group,
-                                            size: SizeConfig
-                                                .safeBlockHorizontal *
-                                                10,
-                                            color: Colors.blue,
+                      child: Container(child: Text("No Room yet..")),
+                    )
+                  : ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: [
+                        for (var d in userRoom)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                for (var a in d['Communities'])
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              ListTile(
+                                                leading: SizedBox(
+                                                  height: 50,
+                                                  width: 50,
+                                                  child: Icon(
+                                                    Icons.group,
+                                                    size: SizeConfig
+                                                            .safeBlockHorizontal *
+                                                        10,
+                                                    color: Colors.blue,
+                                                  ),
+                                                ),
+                                                title:
+                                                    Text("${a['description']}"),
+                                              ),
+                                              Divider(),
+                                              Column(
+                                                children: [
+                                                  for (var a
+                                                      in d['Communities'])
+                                                    ListTile(
+                                                      //   title:Text("${d['Communities'][0]['createdAt'].toString()}"),
+                                                      title: a['description'] ==
+                                                              null
+                                                          ? SizedBox()
+                                                          : htmlMatch.hasMatch(d[
+                                                                          'description']
+                                                                      .toString()) ==
+                                                                  true
+                                                              ? Text(
+                                                                  '${((a['description']).toString())}',
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1.5)
+                                                                      .toDouble(),
+                                                                  style: TextStyle(
+                                                                      //      color: Colors.grey,
+                                                                      fontSize: SizeConfig.blockSizeHorizontal * 3.5),
+                                                                )
+                                                              : Text(
+                                                                  a['description'],
+                                                                  textScaleFactor: mediaQueryData
+                                                                      .textScaleFactor
+                                                                      .clamp(
+                                                                          0.5,
+                                                                          1)
+                                                                      .toDouble(),
+                                                                  style: TextStyle(
+                                                                      //  color: Colors.grey,
+                                                                      fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                                                                ),
+                                                    ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        title: Text("${a['description']}"),
-                                      ),
-                                    Divider(),
-                                    Column(
-                                      children: [
-                                        for (var a in d['Communities'])
-                                          ListTile(
-                                            //   title:Text("${d['Communities'][0]['createdAt'].toString()}"),
-                                            title: a['description'] == null
-                                                ? SizedBox()
-                                                : htmlMatch.hasMatch(d[
-                                                                'description']
-                                                            .toString()) ==
-                                                        true
-                                                    ? Text(
-                                                        '${((a['description']).toString())}',
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(
-                                                                    0.5, 1.5)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //      color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .blockSizeHorizontal *
-                                                                3.5),
-                                                      )
-                                                    : Text(
-                                                        a['description'],
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //  color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .safeBlockHorizontal *
-                                                                3.5),
-                                                      ),
-                                          ),
-                                      ],
+                                        );
+                                      });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  boxShadow: [
+                                    new BoxShadow(
+                                      color: Colors.black54.withOpacity(0.2),
+                                      blurRadius: 10.0,
                                     ),
-                                    SizedBox(
-                                      height: 20,
-                                    )
                                   ],
+                                  color: Color(0xff222222),
                                 ),
-                              );
-                            });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                new BoxShadow(
-                                  color: Colors.black54.withOpacity(0.2),
-                                  blurRadius: 10.0,
-                                ),
-                              ],
-                              color: Color(0xff222222),
-                            ),
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
+                                width: double.infinity,
+                                child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       CachedNetworkImage(
-                                        imageBuilder:
-                                            (context, imageProvider) {
+                                        imageBuilder: (context, imageProvider) {
                                           return Container(
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height /
-                                                14,
+                                                12,
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                4.5,
+                                                5,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
@@ -805,15 +817,12 @@ class _PublicProfileState extends State<PublicProfile>
                                           );
                                         },
                                         memCacheHeight:
-                                            (MediaQuery.of(context)
-                                                    .size
-                                                    .height)
+                                            (MediaQuery.of(context).size.height)
                                                 .floor(),
                                         imageUrl: d['imageurl'] != null
                                             ? d['imageurl']
                                             : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                        placeholder:
-                                            (context, imageProvider) {
+                                        placeholder: (context, imageProvider) {
                                           return Container(
                                             decoration: BoxDecoration(
                                                 image: DecorationImage(
@@ -833,91 +842,104 @@ class _PublicProfileState extends State<PublicProfile>
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("${d['title'].toString()}",style: TextStyle(fontWeight: FontWeight.bold),),
-                                            Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  d['description'] == null
-                                                      ? SizedBox(
-                                                          height: 20,
-                                                        )
-                                                      : Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical:
-                                                                      10.0),
-                                                          child: htmlMatch.hasMatch(
-                                                                      d['description']) ==
-                                                                  true
-                                                              ? Text(
-                                                                  '${(d['description'].toString())}',
-                                                                  maxLines: 2,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  textScaleFactor: mediaQueryData
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              1.6,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "${d['title'].toString()}",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              d['description'] == null
+                                                  ? SizedBox(
+                                                      height: 20,
+                                                    )
+                                                  : Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 10.0),
+                                                      child: htmlMatch.hasMatch(
+                                                                  d['description']) ==
+                                                              true
+                                                          ? Text(
+                                                              '${(d['description'].toString())}',
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textScaleFactor:
+                                                                  mediaQueryData
                                                                       .textScaleFactor
                                                                       .clamp(
                                                                           0.5,
                                                                           1)
                                                                       .toDouble(),
-                                                                  style: TextStyle(
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withOpacity(
+                                                                          0.5),
 
-                                                              color: Colors.white
-                                                                  .withOpacity(0.5),
-
-                                                                      //       color: Colors.grey,
-                                                                      fontSize: SizeConfig.blockSizeHorizontal * 3.5),
-                                                                )
-                                                              : Text(
-                                                                  d['description'],
-                                                                  maxLines: 2,
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                  textScaleFactor: mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                          0.5,
-                                                                          1)
-                                                                      .toDouble(),
-                                                                  style: TextStyle(
-                                                                      color: Colors.white
-                                                                          .withOpacity(0.5),
-                                                                      fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                                                                ),
-                                                        ),
-                                                ]),
-                                            SizedBox(
-                                              height: 15,
-                                            ),
-                                          ],
+                                                                  //       color: Colors.grey,
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .blockSizeHorizontal *
+                                                                          3.5),
+                                                            )
+                                                          : Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                d['description'],
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                textScaleFactor:
+                                                                    mediaQueryData
+                                                                        .textScaleFactor
+                                                                        .clamp(
+                                                                            0.5,
+                                                                            1)
+                                                                        .toDouble(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withOpacity(
+                                                                            0.5),
+                                                                    fontSize:
+                                                                        SizeConfig.safeBlockHorizontal *
+                                                                            3.5),
+                                                              ),
+                                                            ),
+                                                    ),
+                                              SizedBox(
+                                                height: 15,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                            // child: ListTile(
-                            //   title:   Text("${d['title'].toString()}"),
-                            //   subtitle:Text("${d['description'].toString()}") ,
-                            // ),
-                          ),
-                        ],
-                      ),
+                          )
+                      ],
                     ),
-                  )
-              ],
-                ),
             ),
 
             ///Snippets
@@ -941,66 +963,158 @@ class _PublicProfileState extends State<PublicProfile>
                                     return Container(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: [for (var b in g['snippet'])
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(8),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                    color: Colors.black54.withOpacity(0.2),
-                                                    blurRadius: 10.0,
+                                        children: [
+                                          for (var b in g['snippet'])
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    boxShadow: [
+                                                      new BoxShadow(
+                                                        color: Colors.black54
+                                                            .withOpacity(0.2),
+                                                        blurRadius: 10.0,
+                                                      ),
+                                                    ],
+                                                    color: Color(0xff222222),
                                                   ),
-                                                ],
-                                                color: Color(0xff222222),
-                                              ),
-                                              width: double.infinity,
-                                             height:60,
-                                             child:Row(
-                                               mainAxisSize: MainAxisSize.min,
-                                               mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-                                               crossAxisAlignment:CrossAxisAlignment.center,
-                                               children: [
-                                                 SizedBox(
-                                                   height:50,
-                                                   width:50,
-                                                   child: CachedNetworkImage(
-                                                     imageUrl:  g['episode']
-                                                     ['episode_image'] == null
-                                                         ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                         :  g['episode']
-                                                     ['episode_image'],
-                                                     imageBuilder:
-                                                         (context, imageProvider) {
-                                                       return Container(
-                                                         decoration: BoxDecoration(
-                                                           borderRadius: BorderRadius.circular(10),
-                                                             image: DecorationImage(
-                                                                 image:
-                                                                 imageProvider,
-                                                                 fit: BoxFit.cover)),
-                                                       );
-                                                     },
-                                                   ),
-                                                 ),
-                                    IconButton(
-                                    icon: isPlaying
-                                    ? Icon(
-                                    Icons.pause_circle_outline,
-                                    size: 40.0,
-                                    )
-                                        : Icon(Icons.stop, size: 40.0),
-                                    onPressed: () {
-                                    setState(() {
-                                    isPlaying = !isPlaying;
-                                    });
-                                    }),
-                                               ],
+                                                  width: double.infinity,
 
-                                             )
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height /
+                                                              12,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              5,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: g['episode']
+                                                                        [
+                                                                        'episode_image'] ==
+                                                                    null
+                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                : g['episode'][
+                                                                    'episode_image'],
+                                                            imageBuilder: (context,
+                                                                imageProvider) {
+                                                              return Container(
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    image: DecorationImage(
+                                                                        image:
+                                                                            imageProvider,
+                                                                        fit: BoxFit
+                                                                            .fill)),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              horizontal: 20, vertical: 10),
+                                                          child: Column(
+
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                "${g['episode']['episode_name'].toString()}",
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight.bold),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.only(
+                                                                    top: 10),
+                                                                child: Text(
+                                                                  "${g['episode']['podcast_name'].toString()}",
+                                                                  style: TextStyle(
+                                                                    color: Colors.white
+                                                                        .withOpacity(0.5),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                               SizedBox(height: 22,),
+                                                               Row(
+                                                                mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                                                                 children: [
+                                                                   Icon(Icons.play_arrow),
+                                                                   SizedBox(width: 5,),
+                                                                   Container(height: 2,
+                                                                   width: MediaQuery.of(context).size.width/2.5,
+                                                                   color: Colors.white,),
+                                                                   SizedBox(width: 5,),
+                                                                   Text("${b["end_time"]}")
+                                                                 ],
+                                                               ),
+
+                                                            ],
+                                                          ),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  )),
                                             ),
-                                          ),
+
+                                          // Padding(
+                                          //   padding: const EdgeInsets.symmetric(
+                                          //       horizontal: 20, vertical: 10),
+                                          //   child: Column(
+                                          //     mainAxisAlignment:
+                                          //     MainAxisAlignment.spaceBetween,
+                                          //     crossAxisAlignment:
+                                          //     CrossAxisAlignment.start,
+                                          //     children: [
+                                          //       Text(
+                                          //         "${g['episode']['episode_name'].toString()}",
+                                          //         style: TextStyle(
+                                          //             fontWeight:
+                                          //             FontWeight.bold),
+                                          //       ),
+                                          //       Padding(
+                                          //         padding: const EdgeInsets.only(
+                                          //             top: 10),
+                                          //         child: Text(
+                                          //           "${g['episode']['podcast_name'].toString()}",
+                                          //           style: TextStyle(
+                                          //             color: Colors.white
+                                          //                 .withOpacity(0.5),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //       SizedBox(
+                                          //         height: 15,
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // ),
+
                                         ],
                                       ),
                                     );
@@ -1018,7 +1132,7 @@ class _PublicProfileState extends State<PublicProfile>
                                 color: Color(0xff222222),
                               ),
                               width: double.infinity,
-                              height: MediaQuery.of(context).size.height / 9,
+
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1026,8 +1140,6 @@ class _PublicProfileState extends State<PublicProfile>
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -1167,17 +1279,21 @@ class _PublicProfileState extends State<PublicProfile>
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                  "${g['episode']['episode_name'].toString()}",style: TextStyle(
-                                                fontWeight: FontWeight.bold
-                                              ),),
+                                                "${g['episode']['episode_name'].toString()}",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 10),
                                                 child: Text(
-                                                    "${g['episode']['podcast_name'].toString()}",style: TextStyle(
-                                                  color: Colors.white
-                                                      .withOpacity(0.5),
-                                                ),),
+                                                  "${g['episode']['podcast_name'].toString()}",
+                                                  style: TextStyle(
+                                                    color: Colors.white
+                                                        .withOpacity(0.5),
+                                                  ),
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: 15,
