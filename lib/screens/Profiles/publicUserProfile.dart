@@ -792,9 +792,8 @@ class _PublicProfileState extends State<PublicProfile>
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       CachedNetworkImage(
                                         imageBuilder: (context, imageProvider) {
@@ -841,15 +840,15 @@ class _PublicProfileState extends State<PublicProfile>
                                         },
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.symmetric(horizontal: 20 ,vertical: 10),
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                              1.6,
+                                              1.9,
                                           child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
@@ -925,9 +924,7 @@ class _PublicProfileState extends State<PublicProfile>
                                                               ),
                                                             ),
                                                     ),
-                                              SizedBox(
-                                                height: 15,
-                                              ),
+
                                             ],
                                           ),
                                         ),
@@ -960,162 +957,166 @@ class _PublicProfileState extends State<PublicProfile>
                               showBarModalBottomSheet(
                                   context: context,
                                   builder: (context) {
-                                    return Container(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          for (var b in g['snippet'])
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    boxShadow: [
-                                                      new BoxShadow(
-                                                        color: Colors.black54
-                                                            .withOpacity(0.2),
-                                                        blurRadius: 10.0,
-                                                      ),
-                                                    ],
-                                                    color: Color(0xff222222),
-                                                  ),
-                                                  width: double.infinity,
-
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height /
-                                                              12,
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            imageUrl: g['episode']
-                                                                        [
-                                                                        'episode_image'] ==
-                                                                    null
-                                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                : g['episode'][
-                                                                    'episode_image'],
-                                                            imageBuilder: (context,
-                                                                imageProvider) {
-                                                              return Container(
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                    image: DecorationImage(
-                                                                        image:
-                                                                            imageProvider,
-                                                                        fit: BoxFit
-                                                                            .fill)),
-                                                              );
-                                                            },
-                                                          ),
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            for (var b in g['snippet'])
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      boxShadow: [
+                                                        new BoxShadow(
+                                                          color: Colors.black54
+                                                              .withOpacity(0.2),
+                                                          blurRadius: 10.0,
                                                         ),
-                                                        Padding(
-                                                          padding: const EdgeInsets.symmetric(
-                                                              horizontal: 20, vertical: 10),
-                                                          child: Column(
+                                                      ],
+                                                      color: Color(0xff222222),
+                                                    ),
+                                                    width: double.infinity,
 
-                                                            crossAxisAlignment:
-                                                            CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                "${g['episode']['episode_name'].toString()}",
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                    FontWeight.bold),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.only(
-                                                                    top: 10),
-                                                                child: Text(
-                                                                  "${g['episode']['podcast_name'].toString()}",
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          SizedBox(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height /
+                                                                12,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                5,
+                                                            child:
+                                                                CachedNetworkImage(
+                                                              imageUrl: g['episode']
+                                                                          [
+                                                                          'episode_image'] ==
+                                                                      null
+                                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                  : g['episode'][
+                                                                      'episode_image'],
+                                                              imageBuilder: (context,
+                                                                  imageProvider) {
+                                                                return Container(
+                                                                  decoration: BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10),
+                                                                      image: DecorationImage(
+                                                                          image:
+                                                                              imageProvider,
+                                                                          fit: BoxFit
+                                                                              .fill)),
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets.symmetric(
+                                                                horizontal: 20, vertical: 10),
+                                                            child: Column(
+
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  "${g['episode']['episode_name'].toString()}",
                                                                   style: TextStyle(
-                                                                    color: Colors.white
-                                                                        .withOpacity(0.5),
+                                                                      fontWeight:
+                                                                      FontWeight.bold),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.only(
+                                                                      top: 10),
+                                                                  child: Text(
+                                                                    "${g['episode']['podcast_name'].toString()}",
+                                                                    style: TextStyle(
+                                                                      color: Colors.white
+                                                                          .withOpacity(0.5),
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                               SizedBox(height: 22,),
-                                                               Row(
-                                                                mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-                                                                 children: [
-                                                                   Icon(Icons.play_arrow),
-                                                                   SizedBox(width: 5,),
-                                                                   Container(height: 2,
-                                                                   width: MediaQuery.of(context).size.width/2.5,
-                                                                   color: Colors.white,),
-                                                                   SizedBox(width: 5,),
-                                                                   Text("${b["end_time"]}")
-                                                                 ],
-                                                               ),
+                                                                 SizedBox(height: 22,),
+                                                                 Row(
+                                                                  mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                                                                   children: [
+                                                                     Icon(Icons.play_arrow),
+                                                                     SizedBox(width: 5,),
+                                                                     Container(height: 2,
+                                                                     width: MediaQuery.of(context).size.width/2.5,
+                                                                     color: Colors.white,),
+                                                                     SizedBox(width: 5,),
+                                                                     Text("${b["end_time"]}")
+                                                                   ],
+                                                                 ),
 
-                                                            ],
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
 
-                                                      ],
-                                                    ),
-                                                  )),
-                                            ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                              ),
 
-                                          // Padding(
-                                          //   padding: const EdgeInsets.symmetric(
-                                          //       horizontal: 20, vertical: 10),
-                                          //   child: Column(
-                                          //     mainAxisAlignment:
-                                          //     MainAxisAlignment.spaceBetween,
-                                          //     crossAxisAlignment:
-                                          //     CrossAxisAlignment.start,
-                                          //     children: [
-                                          //       Text(
-                                          //         "${g['episode']['episode_name'].toString()}",
-                                          //         style: TextStyle(
-                                          //             fontWeight:
-                                          //             FontWeight.bold),
-                                          //       ),
-                                          //       Padding(
-                                          //         padding: const EdgeInsets.only(
-                                          //             top: 10),
-                                          //         child: Text(
-                                          //           "${g['episode']['podcast_name'].toString()}",
-                                          //           style: TextStyle(
-                                          //             color: Colors.white
-                                          //                 .withOpacity(0.5),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //       SizedBox(
-                                          //         height: 15,
-                                          //       ),
-                                          //     ],
-                                          //   ),
-                                          // ),
+                                            // Padding(
+                                            //   padding: const EdgeInsets.symmetric(
+                                            //       horizontal: 20, vertical: 10),
+                                            //   child: Column(
+                                            //     mainAxisAlignment:
+                                            //     MainAxisAlignment.spaceBetween,
+                                            //     crossAxisAlignment:
+                                            //     CrossAxisAlignment.start,
+                                            //     children: [
+                                            //       Text(
+                                            //         "${g['episode']['episode_name'].toString()}",
+                                            //         style: TextStyle(
+                                            //             fontWeight:
+                                            //             FontWeight.bold),
+                                            //       ),
+                                            //       Padding(
+                                            //         padding: const EdgeInsets.only(
+                                            //             top: 10),
+                                            //         child: Text(
+                                            //           "${g['episode']['podcast_name'].toString()}",
+                                            //           style: TextStyle(
+                                            //             color: Colors.white
+                                            //                 .withOpacity(0.5),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            //       SizedBox(
+                                            //         height: 15,
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
 
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     );
                                   });
@@ -1132,179 +1133,98 @@ class _PublicProfileState extends State<PublicProfile>
                                 color: Color(0xff222222),
                               ),
                               width: double.infinity,
-
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            //  print(b['url']);
-                                            // print(g['snippet'][0]['url']
-                                            //
-                                            //     .contains('.mp4'));
-                                            // if (g['snippet'][0]['url']
-                                            //
-                                            //     .contains('.mp4') ==
-                                            //     true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.m4v') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.flv') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.f4v') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.ogv') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.ogx') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.wmv') ==
-                                            //         true ||
-                                            //     g['snippet'][0]['url']
-                                            //
-                                            //         .contains('.webm') ==
-                                            //         true) {
-                                            //
-                                            //   Navigator.push(context,
-                                            //       CupertinoPageRoute(
-                                            //           builder: (context) {
-                                            //             return PodcastVideoPlayer(
-                                            //               episodeObject:g['snippet'][0]['url'] ,
-                                            //             );
-                                            //           }));
-                                            // } else {
-                                            //   if (g['snippet'][0]['url']
-                                            //
-                                            //       .contains('.pdf') ==
-                                            //       true) {
-                                            //     // Navigator.push(context,
-                                            //     //     CupertinoPageRoute(
-                                            //     //         builder: (context) {
-                                            //     //   return PDFviewer(
-                                            //     //     episodeObject:
-                                            //     //         widget.episodeObject,
-                                            //     //   );
-                                            //     // }));
-                                            //   } else {
-                                            //
-                                            //     episodeObject.episodeObject =
-                                            //     g['snippet'][0]['url'] ;
-                                            //     print(episodeObject.episodeObject
-                                            //         .toString());
-                                            //     episodeObject.play();
-                                            //     Navigator.push(context,
-                                            //         CupertinoPageRoute(
-                                            //             builder: (context) {
-                                            //               return Player();
-                                            //             }));
-                                            //   }
-                                            // }
-                                            //
-                                          },
-                                          child: CachedNetworkImage(
-                                            imageBuilder:
-                                                (context, imageProvider) {
-                                              return Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    12,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    5,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.fill),
-                                                ),
-                                              );
-                                            },
-                                            memCacheHeight:
-                                                (MediaQuery.of(context)
-                                                        .size
-                                                        .height)
-                                                    .floor(),
-                                            imageUrl: g['episode']
-                                                        ['episode_image'] !=
-                                                    null
-                                                ? g['episode']['episode_image']
-                                                : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                            placeholder:
-                                                (context, imageProvider) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/Thumbnail.png'),
-                                                        fit: BoxFit.fill)),
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.38,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.38,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 10),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${g['episode']['episode_name'].toString()}",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 10),
-                                                child: Text(
-                                                  "${g['episode']['podcast_name'].toString()}",
-                                                  style: TextStyle(
-                                                    color: Colors.white
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 15,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                      },
+                                      child: CachedNetworkImage(
+                                        imageBuilder:
+                                            (context, imageProvider) {
+                                          return Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                12,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                5,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.fill),
+                                            ),
+                                          );
+                                        },
+                                        memCacheHeight:
+                                            (MediaQuery.of(context)
+                                                    .size
+                                                    .height)
+                                                .floor(),
+                                        imageUrl: g['episode']
+                                                    ['episode_image'] !=
+                                                null
+                                            ? g['episode']['episode_image']
+                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                        placeholder:
+                                            (context, imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: AssetImage(
+                                                        'assets/images/Thumbnail.png'),
+                                                    fit: BoxFit.fill)),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.38,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.38,
+                                          );
+                                        },
+                                      ),
                                     ),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${g['episode']['episode_name']}",
+                                            style: TextStyle(
+                                                fontWeight:
+                                                    FontWeight.bold),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10),
+                                            child: Text(
+                                              "${g['episode']['podcast_name']}",
+                                              style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.5),
+                                              ),
+                                            ),
+                                          ),
+
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
