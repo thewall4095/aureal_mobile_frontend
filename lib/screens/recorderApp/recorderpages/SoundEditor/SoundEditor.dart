@@ -83,7 +83,7 @@ class _SoundEditorState extends State<SoundEditor> {
       libraryId = widget.libraryId;
       soundDuration = widget.soundDuration;
       audioUrl = widget.audioUrl;
-      _values = RangeValues(0.00, soundDuration);
+      _values = RangeValues(0.00, 500);
       startTime = 0.00;
       endTime = soundDuration;
       episodeId = widget.episodeId;
@@ -261,7 +261,9 @@ class _SoundEditorState extends State<SoundEditor> {
                   child: Slider(
                     value: _position?.inMilliseconds?.toDouble() ?? 0.0,
                     onChanged: (double value) {
-                      return player.seek((value / 1000).roundToDouble());
+                      setState(() {
+                        return player.seek((value / 1000).roundToDouble());
+                      });
                     },
                     min: 0.0,
                     max: _duration.inMilliseconds.toDouble(),

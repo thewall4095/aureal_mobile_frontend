@@ -1,45 +1,55 @@
 import 'dart:convert';
 
-import 'package:auditory/screens/Player/VideoPlayer.dart';
+import 'dart:isolate';
+
+import 'package:auditory/screens/recorderApp/recorderpages/SoundEditor/customThumbSelector.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:color_thief_flutter/color_thief_flutter.dart';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+
 import 'package:line_icons/line_icons.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import 'dart:ui';
+
 import 'package:palette_generator/palette_generator.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'dart:io' as io;
 import '../CategoriesProvider.dart';
 import '../DiscoverProvider.dart';
-import '../PlayerState.dart';
-import 'Player/Player.dart';
-import 'Player/PlayerElements/Seekbar.dart';
-import 'Profiles/CategoryView.dart';
-import 'Profiles/EpisodeView.dart';
+
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
+import 'package:html/parser.dart';
 
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 
-import 'package:auditory/PlayerState.dart';
-
-import 'package:auditory/screens/Profiles/EpisodeView.dart';
-
 import 'package:flutter/rendering.dart';
 
-import 'Profiles/PodcastView.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 
 enum PlayerState { stopped, playing, paused }
+
+Future<PaletteGenerator> computeFunction(var clipObject) async {
+  print(clipObject['image']);
+  final PaletteGenerator pg = await PaletteGenerator.fromImageProvider(
+    CachedNetworkImageProvider(clipObject['image']),
+  );
+
+  return pg;
+}
 
 class Clips extends StatefulWidget {
   @override
@@ -101,6 +111,8 @@ class _ClipsState extends State<Clips> {
 
   List<Color> tileColor = [];
 
+  PageController _pageController = PageController(viewportFraction: 0.8);
+
   @override
   void initState() {
     customLayoutOption = new CustomLayoutOption(startIndex: 0, stateCount: 10);
@@ -110,6 +122,12 @@ class _ClipsState extends State<Clips> {
     audioPlayer = AssetsAudioPlayer();
     _controller = SwiperController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer.stop();
+    super.dispose();
   }
 
   Future<PaletteGenerator> getColor(String url) async {
@@ -222,33 +240,42 @@ class _ClipsState extends State<Clips> {
         },
         body: Stack(
           children: [
-            Swiper(
-              index: currentIndex,
-              onIndexChanged: (int index) async {
-// audioPlayer.stop();
-                audioPlayer.open(Audio.network(recentlyPlayed[index]['url']),
-                    autoStart: true);
+            // PageView.builder(
+            //     onPageChanged: (int index) async {
+            //       setState(() {
+            //         currentIndex = index;
+            //       });
+            //       audioPlayer.open(Audio.network(recentlyPlayed[index]['url']));
+            //     },
+            //     pageSnapping: true,
+            //     controller: _pageController,
+            //     itemCount: recentlyPlayed.length,
+            //     scrollDirection: Axis.vertical,
+            //     itemBuilder: (context, int index) {
+            //       return SwipeCard(
+            //         clipObject: recentlyPlayed[index],
+            //         audioPlayer: audioPlayer,
+            //         play: true,
+            //       );
+            //     }),
+            PageView(
+              scrollDirection: Axis.vertical,
+              onPageChanged: (int index) async {
                 setState(() {
                   currentIndex = index;
                 });
+                audioPlayer.open(Audio.network(recentlyPlayed[index]['url']));
               },
-              // autoplay: true,
-              autoplayDelay: 100,
-              controller: _controller,
-              customLayoutOption: customLayoutOption,
-              viewportFraction: 0.8,
-              scrollDirection: Axis.vertical,
-              itemCount: recentlyPlayed.length,
-              containerHeight: MediaQuery.of(context).size.height * 0.9,
-              itemHeight: MediaQuery.of(context).size.height * 0.9,
-              itemBuilder: (context, int index) {
-                return SwipeCard(
-                    clipObject: recentlyPlayed[index],
+              pageSnapping: true,
+              controller: _pageController,
+              children: [
+                for (var v in recentlyPlayed)
+                  SwipeCard(
+                    clipObject: v,
                     audioPlayer: audioPlayer,
-                    play: index == currentIndex ? true : false,
-                    index: index,
-                    currentIndex: currentIndex);
-              },
+                    play: true,
+                  ),
+              ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -317,15 +344,8 @@ class _SwipeCardState extends State<SwipeCard> {
 
   @override
   void didUpdateWidget(Widget oldWidget) {
-    print("did widget update is being called right now");
-    print("currentIndex: ${widget.currentIndex}");
-    print("index: ${widget.index}");
+    // widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
 
-    if (widget.index == widget.currentIndex) {
-      // widget.audioPlayer.stop();
-
-      // widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
-    }
     // print(
     //     "${oldWidget.play} /////////////////////////////Teri maa ki oldWidget");
   }
@@ -336,7 +356,6 @@ class _SwipeCardState extends State<SwipeCard> {
   void initState() {
     // TODO: implement initState
 
-    print("init state is getting called eight now");
     // region = Offset.zero & Size(256.0, 256.0);
     // addColor();
     //
@@ -345,26 +364,51 @@ class _SwipeCardState extends State<SwipeCard> {
     //   // dominantColor = getColor(widget.clipObject['image']);
     //   if (widget.play == true) {
     //     widget.audioPlayer.stop();
-    //     widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
+    // widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
     //   }
     // });
 
-    addColor(widget.clipObject);
+    // createIsolate();
+
+    // createComputeFunction();
+
+    // addColor(widget.clipObject);
     super.initState();
   }
 
-  PaletteColor backgroundColor;
+  void createComputeFunction() async {
+    palette = await compute(computeFunction, widget.clipObject);
+  }
+
+  PaletteGenerator palette;
   int index;
 
-  void addColor(clipObject) async {
-    final PaletteGenerator pg = await PaletteGenerator.fromImageProvider(
-        NetworkImage(widget.clipObject['image']),
-        size: Size(20, 20));
+  // Future addColor(clipObject) async {
+  //   final PaletteGenerator pg = await PaletteGenerator.fromImageProvider(
+  //       NetworkImage(widget.clipObject['image']),
+  //       size: Size(20, 20));
+  //
+  //   setState(() {
+  //     palette = pg;
+  //   });
+  // }
 
-    setState(() {
-      backgroundColor = pg.dominantColor;
-      bgColor = pg.dominantColor.color;
-    });
+  // Isolate implementation for Color Calculation
+
+  Future createIsolate() async {
+    ReceivePort receiveport = ReceivePort();
+
+    // Isolate.spawn(isolateFunction, receiveport.sendPort);
+
+    SendPort childSendPort = await receiveport.first;
+
+    ReceivePort responsePort = ReceivePort();
+
+    childSendPort.send([widget.clipObject, responsePort.sendPort]);
+
+    var response = await responsePort.first;
+
+    print(response);
   }
 
   Color bgColor = Color(0xff222222);
@@ -376,7 +420,7 @@ class _SwipeCardState extends State<SwipeCard> {
     super.dispose();
 
     print("Dispose getting called right now");
-    widget.audioPlayer.stop();
+    // widget.audioPlayer.stop();
   }
 
   @override
@@ -386,7 +430,10 @@ class _SwipeCardState extends State<SwipeCard> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: bgColor),
+              gradient: LinearGradient(
+                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
+              borderRadius: BorderRadius.circular(10),
+              color: bgColor),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
@@ -421,12 +468,12 @@ class _SwipeCardState extends State<SwipeCard> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             fontWeight: FontWeight.w800,
-                            color: backgroundColor.bodyTextColor),
+                            color: palette.dominantColor.bodyTextColor),
                       ),
                       subtitle: Text(
                         "${widget.clipObject['podcast_name']}",
                         style: TextStyle(
-                          color: backgroundColor.bodyTextColor,
+                          color: palette.dominantColor.bodyTextColor,
                         ),
                       ),
                     ),
@@ -446,15 +493,16 @@ class _SwipeCardState extends State<SwipeCard> {
                                           widget.audioPlayer.pause();
                                         },
                                         child: Icon(Icons.pause_circle_filled,
-                                            color:
-                                                backgroundColor.bodyTextColor));
+                                            color: palette
+                                                .dominantColor.bodyTextColor));
                                   }
                                   if (infos.isBuffering == true) {
                                     return SizedBox(
                                         width: 15,
                                         height: 15,
                                         child: CircularProgressIndicator(
-                                          color: backgroundColor.bodyTextColor,
+                                          color: palette
+                                              .dominantColor.bodyTextColor,
                                           strokeWidth: 1,
                                         ));
                                   } else {
@@ -463,8 +511,8 @@ class _SwipeCardState extends State<SwipeCard> {
                                           widget.audioPlayer.play();
                                         },
                                         child: Icon(Icons.play_circle_fill,
-                                            color:
-                                                backgroundColor.bodyTextColor));
+                                            color: palette
+                                                .dominantColor.bodyTextColor));
                                   }
                                 }),
                                 // Text(
@@ -475,7 +523,7 @@ class _SwipeCardState extends State<SwipeCard> {
                               "CONTINUE LISTENING",
                               textScaleFactor: 1.0,
                               style: TextStyle(
-                                  color: backgroundColor.bodyTextColor,
+                                  color: palette.dominantColor.bodyTextColor,
                                   fontSize:
                                       SizeConfig.safeBlockHorizontal * 2.5,
                                   fontWeight: FontWeight.w600),
@@ -490,7 +538,7 @@ class _SwipeCardState extends State<SwipeCard> {
                               currentPosition: infos.currentPosition,
                               duration: infos.duration,
                               audioplayer: widget.audioPlayer,
-                              color: backgroundColor.bodyTextColor,
+                              color: palette.dominantColor.bodyTextColor,
                             );
                           } else {
                             return SizedBox();
@@ -500,17 +548,17 @@ class _SwipeCardState extends State<SwipeCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(LineIcons.heart,
-                            color: backgroundColor.bodyTextColor),
+                            color: palette.dominantColor.bodyTextColor),
                         Text(
                           "SUBSCRIBE",
                           textScaleFactor: 1.0,
                           style: TextStyle(
-                              color: backgroundColor.bodyTextColor,
+                              color: palette.dominantColor.bodyTextColor,
                               fontWeight: FontWeight.w700,
                               fontSize: SizeConfig.safeBlockHorizontal * 3),
                         ),
                         Icon(Icons.ios_share,
-                            color: backgroundColor.bodyTextColor)
+                            color: palette.dominantColor.bodyTextColor)
                       ],
                     )
                   ],
@@ -525,6 +573,8 @@ class _SwipeCardState extends State<SwipeCard> {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         child: Container(
           decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
               borderRadius: BorderRadius.circular(10),
               color: Color(0xff222222)),
           child: Padding(
@@ -535,6 +585,12 @@ class _SwipeCardState extends State<SwipeCard> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30),
                   child: CachedNetworkImage(
+                    placeholder: (context, url) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        height: MediaQuery.of(context).size.width * 0.6,
+                      );
+                    },
                     memCacheHeight:
                         (MediaQuery.of(context).size.hashCode / 2).floor(),
                     imageUrl: widget.clipObject['image'],
@@ -879,6 +935,7 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
                         getPodcastSearchResults(value);
                       },
                       decoration: InputDecoration(
+                          hintText: "Search Podcast",
                           contentPadding: EdgeInsets.only(top: 14),
                           border: InputBorder.none,
                           prefixIcon: Icon(Icons.search)),
@@ -988,81 +1045,114 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
     super.initState();
   }
 
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 60,
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(60),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.close_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return LinearGradient(
+                    colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])
+                .createShader(bounds);
+          },
+          child: Text(
+            "Select episode to create your clip",
+            textScaleFactor: 1.0,
+            style: TextStyle(
+                fontSize: SizeConfig.safeBlockHorizontal * 4,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+      ),
+      body: Container(
+        child: ListView(
+          controller: _controller,
+          children: [
+            for (var v in episodeList)
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                width: double.infinity,
                 child: ListTile(
                   leading: SizedBox(
-                    height: 60,
-                    width: 60,
                     child: CachedNetworkImage(
-                      imageUrl: widget.podcastObject['image'],
+                      imageUrl: v['image'],
                       imageBuilder: (context, imageProvider) {
                         return Container(
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(5),
                               image: DecorationImage(
                                   image: imageProvider, fit: BoxFit.cover)),
                         );
                       },
                     ),
                   ),
-                  title: Text(
-                    "${widget.podcastObject['name']}",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text("${widget.podcastObject['author']}",
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                ),
-              ),
-            )
-          ];
-        },
-        body: ListView(
-          controller: _controller,
-          children: [
-            ListTile(
-              title: Text(
-                "Episodes",
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                    fontSize: SizeConfig.safeBlockHorizontal * 6,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-            for (var v in episodeList)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: ListTile(
+
                   onTap: () {
                     Navigator.push(context,
                         CupertinoPageRoute(builder: (context) {
-                      return SnippetEditor();
+                      return SnippetEditor(
+                        episodeObject: v,
+                      );
                     }));
                   },
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  tileColor: Color(0xff222222),
+                  //
                   title: Text(
-                    "${v['name']}",
+                    v['name'],
                     maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     textScaleFactor: 1.0,
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        //       color: Colors.white,
+                        fontSize: SizeConfig.safeBlockHorizontal * 3.5),
                   ),
-                  subtitle: Text("${v['summary']}",
-                      maxLines: 3, overflow: TextOverflow.ellipsis),
+                  subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        v['summary'] == null
+                            ? SizedBox(
+                                height: 20,
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                child: htmlMatch.hasMatch(v['summary']) == true
+                                    ? Text(
+                                        '${(parse(v['summary']).body.text)}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            //       color: Colors.grey,
+                                            fontSize:
+                                                SizeConfig.blockSizeHorizontal *
+                                                    3),
+                                      )
+                                    : Text(
+                                        v['summary'],
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            //         color: Colors.grey,
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3),
+                                      ),
+                              ),
+                      ]),
                 ),
               ),
           ],
@@ -1073,13 +1163,311 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
 }
 
 class SnippetEditor extends StatefulWidget {
+  var episodeObject;
+
+  SnippetEditor({@required this.episodeObject});
+
   @override
   _SnippetEditorState createState() => _SnippetEditorState();
 }
 
 class _SnippetEditorState extends State<SnippetEditor> {
+  bool loading;
+
+  String imagePath;
+
+  final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
+
+  void createSnippet() async {
+    String url = 'https://api.aureal.one/private/createSnippet';
+
+    var map = Map<String, dynamic>();
+
+    map['episode_id'] = widget.episodeObject['id'];
+    map['start_time'] = startTime;
+    map['end_time'] = endTime;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  double end = 1000;
+  double start = 0.0;
+
+  void getAudioGram(String audioUrl) async {
+    setState(() {
+      loading = true;
+    });
+
+    String customPath = 'aurealAudiogram';
+    io.Directory appDocDirectory;
+
+    if (io.Platform.isIOS) {
+//      appDocDirectory = await getApplicationDocumentsDirectory();
+      appDocDirectory = await getTemporaryDirectory();
+    } else {
+//      appDocDirectory = await getExternalStorageDirectory();
+      appDocDirectory = await getTemporaryDirectory();
+    }
+
+    customPath = appDocDirectory.path +
+        customPath +
+        DateTime.now().millisecondsSinceEpoch.toString();
+
+    _fFmpeg
+        .execute(
+            '-i ${audioUrl} -filter_complex showwavespic=s=1280x720:colors=ffffff -frames:v 1 ${customPath}.png')
+        .then((value) {
+      setState(() {
+        imagePath = '${customPath}.png';
+      });
+    });
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  AssetsAudioPlayer player = AssetsAudioPlayer();
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    getAudioGram(widget.episodeObject['url']);
+
+    player.open(Audio.network(widget.episodeObject['url']));
+
+    print(widget.episodeObject);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    player.stop();
+    player.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant SnippetEditor oldWidget) {
+    // TODO: implement didUpdateWidget
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  var startTime;
+  var endTime;
+
+  RangeValues _values = RangeValues(0.00, 500);
+
+  String DurationCalculation(int time) {
+    double H = (time / 3600);
+    double min = ((time % 3600) / 60);
+    int sec = ((time % 3600) % 60);
+
+    return "${H < 1 ? '00' : H.toStringAsFixed(0)} : ${min.toStringAsFixed(0)} : ${sec.toStringAsFixed(0)}";
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: widget.episodeObject['image'],
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          height: MediaQuery.of(context).size.width / 2.5,
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover)),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Text(
+                        "${widget.episodeObject['name']}",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3.5,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: imagePath == null
+                            ? Container(
+                                child: LinearProgressIndicator(
+                                  value: 1.0,
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              )
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Image.file(
+                                  io.File(imagePath),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(),
+                        child: SliderTheme(
+                          data: SliderThemeData(
+                              thumbColor: Colors.white,
+                              overlayColor: Colors.transparent,
+                              activeTrackColor:
+                                  Colors.blueAccent.withOpacity(0.5),
+                              inactiveTrackColor: Colors.transparent,
+                              trackHeight: 150,
+                              trackShape: RectangularSliderTrackShape()),
+                          child: RangeSlider(
+                            values: _values,
+                            min: 0.00,
+                            max: player.realtimePlayingInfos.hasValue == false
+                                ? 1000.0
+                                : player.realtimePlayingInfos.valueOrNull
+                                    .duration.inSeconds
+                                    .toDouble(),
+                            divisions: 100,
+                            labels: RangeLabels(
+                                '${DurationCalculation(_values.start.round())}',
+                                '${DurationCalculation(_values.end.round())}'),
+                            onChanged: (RangeValues values) {
+                              setState(() {
+                                _values = values;
+                                startTime = _values.start;
+                                endTime = _values.end;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                              colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+                      child: player.builderRealtimePlayingInfos(
+                          builder: (context, infos) {
+                        if (infos == null) {
+                          return Container();
+                        } else {
+                          if (infos.isBuffering) {
+                            return Icon(Icons.radio_button_off);
+                          }
+                          if (infos.isPlaying) {
+                            return InkWell(
+                                onTap: () {
+                                  player.pause();
+                                },
+                                child: Icon(Icons.pause, color: Colors.white));
+                          } else {
+                            return InkWell(
+                                onTap: () {
+                                  player.play();
+                                },
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                ));
+                          }
+                        }
+                      }),
+                    ),
+                  ),
+                  player.builderRealtimePlayingInfos(builder: (context, infos) {
+                    if (infos == null) {
+                      return Container();
+                    } else {
+                      return Container(
+                        child: SliderTheme(
+                          data: SliderThemeData(
+                              thumbColor: Colors.transparent,
+
+                              // inactiveTrackColor: Colors.transparent,
+                              activeTrackColor: Colors.amberAccent,
+                              // trackHeight: 2,
+                              thumbShape: SliderComponentShape.noThumb),
+                          child: Slider(
+                            value: infos.currentPosition.inSeconds.toDouble(),
+                            onChanged: (double value) {
+                              // return player.seek((value / 1000).roundToDouble());
+                            },
+                            min: 0.0,
+                            max: infos.duration.inSeconds.toDouble(),
+                          ),
+                        ),
+                      );
+                    }
+                  }),
+                  GestureDetector(
+                    onTap: () {
+                      createSnippet();
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      color: Color(0xff3F67F6),
+                      child: Center(
+                        child: Text(
+                          'CREATE CLIP',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeConfig.blockSizeHorizontal * 4),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
