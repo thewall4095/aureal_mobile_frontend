@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -128,9 +129,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
     }
 
     Future<bool> _onBackPressed() async {
-      Navigator.pushNamedAndRemoveUntil(
-          context, Home.id, ModalRoute.withName("/"));
-      return false; // return true if the route to be popped
+     SystemNavigator.pop();
+      return true; // return true if the route to be popped
     }
 
     final mediaQueryData = MediaQuery.of(context);
@@ -460,17 +460,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                               ),
                                             )
                                       : v['topic'] == 'Recently Played'
-                                          ? Container(
-                                              // color: themeProvider
-                                              //     .isLightTheme ==
-                                              //     true
-                                              //     ? Color(0xffE8E8E8)
-                                              //     : Color(0xff222222),
+                                      ? Container(
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height /
                                                   2.9,
-                                              child: GridView(
+                                              child:v['topic']== 'Recently Played'?
+                                              GridView(
                                                 scrollDirection: Axis.horizontal,
                                                 gridDelegate:
                                                     SliverGridDelegateWithFixedCrossAxisCount(
@@ -522,15 +518,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   .contains(
                                                                       '.pdf') ==
                                                               true) {
-                                                            // Navigator.push(
-                                                            //     context,
-                                                            //     CupertinoPageRoute(
-                                                            // der:
-                                                            //             (context) {
-                                                            //   return PDFviewer(
-                                                            //       episodeObject:
-                                                            //           v);
-                                                            // }));
                                                           } else {
                                                             currentlyPlaying
                                                                 .stop();
@@ -852,7 +839,25 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       ),
                                                     )
                                                 ],
-                                              ),
+                                              ):Center(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Color(
+                                                        0xff222222),
+                                                  ),
+                                                  height: MediaQuery.of(context).size.height/3.5,
+                                                  width: MediaQuery.of(context).size.width/1.1,
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text("Start listening now",style: TextStyle(fontSize: MediaQuery.of(context).size.height/25),),
+                                                      SizedBox(height: 15,),
+                                                      Icon(Icons.add,size: 20,)
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
                                             )
                                           : v['topic'] == 'Recommended for you'
                                               ? Container(

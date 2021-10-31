@@ -317,16 +317,6 @@ class _PodcastViewState extends State<PodcastView> {
         controller: _controller,
         physics: const BouncingScrollPhysics(),
         slivers: <Widget>[
-          // SliverPersistentHeader(
-          //   delegate: _AnimationHeader(
-          //       podcastData: podcastData,
-          //       dominantColor: dominantColor,
-          //       followState: followState,
-          //       follows: follows),
-          //   pinned: true,
-          // ),
-          ////////////////////////////////
-
           SliverAppBar(
             centerTitle: true,
             pinned: true,
@@ -847,32 +837,6 @@ class _PodcastViewState extends State<PodcastView> {
                                                     .withOpacity(0.5)),
                                           ),
                                         ),
-                                        // SizedBox(
-                                        //   height: 10,
-                                        // ),
-                                        // Divider(
-                                        //   color: kSecondaryColor,
-                                        // ),
-                                        // SizedBox(
-                                        //   height: 10,
-                                        // ),
-                                        // Column(children: [
-                                        //   Row(
-                                        //     children: [
-                                        //       Text('Episodes',
-                                        //           textScaleFactor: mediaQueryData
-                                        //               .textScaleFactor
-                                        //               .clamp(0.5, 1.5)
-                                        //               .toDouble(),
-                                        //           style: TextStyle(
-                                        //               //     color: Color(0xffe8e8e8),
-                                        //               fontWeight: FontWeight.w500,
-                                        //               fontSize: SizeConfig
-                                        //                       .safeBlockHorizontal *
-                                        //                   5)),
-                                        //     ],
-                                        //   ),
-                                        // ])
                                       ]),
                                 ),
                               ),
@@ -913,47 +877,6 @@ class _PodcastViewState extends State<PodcastView> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.start,
-                              //   children: [
-                              //     Container(
-                              //       width:
-                              //           MediaQuery.of(context).size.width / 7,
-                              //       height:
-                              //           MediaQuery.of(context).size.width / 7,
-                              //       decoration: BoxDecoration(
-                              //           color: Color(0xff161616),
-                              //           borderRadius:
-                              //               BorderRadius.circular(10)),
-                              //     ),
-                              //     SizedBox(width: 10),
-                              //     Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: [
-                              //         Container(
-                              //           decoration: BoxDecoration(
-                              //               color: Color(0xff161616)),
-                              //           height: 16,
-                              //           width:
-                              //               MediaQuery.of(context).size.width /
-                              //                   3,
-                              //         ),
-                              //         SizedBox(
-                              //           height: 5,
-                              //         ),
-                              //         Container(
-                              //           decoration: BoxDecoration(
-                              //               color: Color(0xff161616)),
-                              //           height: 8,
-                              //           width:
-                              //               MediaQuery.of(context).size.width /
-                              //                   4,
-                              //         )
-                              //       ],
-                              //     )
-                              //   ],
-                              // ),
                               SizedBox(
                                 height: 10,
                               ),

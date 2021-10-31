@@ -431,7 +431,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     icon: Icon(Icons.settings))
                               ],
                               expandedHeight:
-                                  MediaQuery.of(context).size.height / 2.4,
+                                  MediaQuery.of(context).size.height / 2.6,
                               flexibleSpace: FlexibleSpaceBar(
                                   background: Container(
                                 child: Stack(
@@ -439,176 +439,174 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   children: [
                                     Positioned(
                                       top: MediaQuery.of(context).size.height /
-                                          7,
-                                      child: Center(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            boxShadow: [
-                                              new BoxShadow(
-                                                color: Colors.black54
-                                                    .withOpacity(0.2),
-                                                blurRadius: 10.0,
-                                              ),
-                                            ],
-                                            color: themeProvider.isLightTheme ==
-                                                    true
-                                                ? Colors.white
-                                                : Color(0xff222222),
-                                          ),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              3.5,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.2,
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      50, // height: 55,
-                                                ),
-                                                Text(
-                                                  "$userName",
-                                                  textScaleFactor: 1.0,
-                                                  style: TextStyle(
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          7),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: prefs.getString(
-                                                              'HiveUserName') ==
-                                                          null
-                                                      ? ShaderMask(
-                                                          shaderCallback:
-                                                              (Rect bounds) {
-                                                            return LinearGradient(
-                                                                colors: [
-                                                                  Color(
-                                                                      0xff52BFF9),
-                                                                  Color(
-                                                                      0xff6048F6)
-                                                                ]).createShader(
-                                                                bounds);
-                                                          },
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              showBarModalBottomSheet(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return HiveDetails();
-                                                                  });
-                                                            },
-                                                            child: Text(
-                                                              "Connect Your Hive Account",
-                                                              textScaleFactor:
-                                                                  1.0,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : Text(
-                                                          '@${prefs.getString('HiveUserName')}',
-                                                          textScaleFactor: 1.0,
-                                                          style: TextStyle(
-                                                              color: Color(
-                                                                  0xff777777)),
-                                                        ),
-                                                ),
-                                                Container(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: [
-                                                      data['instagram'] ==
-                                                                  null ||
-                                                              data['instagram'] ==
-                                                                  ''
-                                                          ? SizedBox()
-                                                          : IconButton(
-                                                              icon: Icon(
-                                                                  FontAwesomeIcons
-                                                                      .instagram),
-                                                              iconSize: 20,
-                                                              onPressed: () {
-                                                                launcher
-                                                                    .launchInBrowser(
-                                                                  data[
-                                                                      'instagram'],
-                                                                );
-                                                              },
-                                                            ),
-                                                      data['twitter'] == null ||
-                                                              data['twitter'] ==
-                                                                  ''
-                                                          ? SizedBox()
-                                                          : IconButton(
-                                                              icon: Icon(
-                                                                  FontAwesomeIcons
-                                                                      .twitter),
-                                                              iconSize: 20,
-                                                              onPressed: () {
-                                                                launcher.launchInBrowser(
-                                                                    data[
-                                                                        'twitter']);
-                                                              },
-                                                            ),
-                                                      data['linkedin'] ==
-                                                                  null ||
-                                                              data['linkedin'] ==
-                                                                  ''
-                                                          ? SizedBox()
-                                                          : IconButton(
-                                                              icon: Icon(
-                                                                  FontAwesomeIcons
-                                                                      .linkedin),
-                                                              iconSize: 20,
-                                                              onPressed: () {
-                                                                launcher.launchInBrowser(
-                                                                    data[
-                                                                        'linkedin']);
-                                                              },
-                                                            ),
-                                                      data['website'] == null ||
-                                                              data['website'] ==
-                                                                  ''
-                                                          ? SizedBox()
-                                                          : IconButton(
-                                                              icon: Icon(
-                                                                  FontAwesomeIcons
-                                                                      .externalLinkSquareAlt),
-                                                              iconSize: 20,
-                                                              onPressed: () {
-                                                                launcher.launchInBrowser(
-                                                                    data[
-                                                                        'website']);
-                                                              },
-                                                            )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ]),
+                                      6.5,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          boxShadow: [
+                                            new BoxShadow(
+                                              color: Colors.black54
+                                                  .withOpacity(0.2),
+                                              blurRadius: 10.0,
+                                            ),
+                                          ],
+                                          color: themeProvider.isLightTheme ==
+                                                  true
+                                              ? Colors.white
+                                              : Color(0xff222222),
                                         ),
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height /
+                                            3.8,
+                                        width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                            1.2,
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    50, // height: 55,
+                                              ),
+                                              Text(
+                                                "$userName",
+                                                textScaleFactor: 1.0,
+                                                style: TextStyle(
+                                                    fontSize: SizeConfig
+                                                            .safeBlockHorizontal *
+                                                        7),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: prefs.getString(
+                                                            'HiveUserName') ==
+                                                        null
+                                                    ? ShaderMask(
+                                                        shaderCallback:
+                                                            (Rect bounds) {
+                                                          return LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                    0xff52BFF9),
+                                                                Color(
+                                                                    0xff6048F6)
+                                                              ]).createShader(
+                                                              bounds);
+                                                        },
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            showBarModalBottomSheet(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
+                                                                  return HiveDetails();
+                                                                });
+                                                          },
+                                                          child: Text(
+                                                            "Connect Your Hive Account",
+                                                            textScaleFactor:
+                                                                1.0,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Text(
+                                                        '@${prefs.getString('HiveUserName')}',
+                                                        textScaleFactor: 1.0,
+                                                        style: TextStyle(
+                                                            color: Color(
+                                                                0xff777777)),
+                                                      ),
+                                              ),
+                                              Container(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    data['instagram'] ==
+                                                                null ||
+                                                            data['instagram'] ==
+                                                                ''
+                                                        ? SizedBox()
+                                                        : IconButton(
+                                                            icon: Icon(
+                                                                FontAwesomeIcons
+                                                                    .instagram),
+                                                            iconSize: 20,
+                                                            onPressed: () {
+                                                              launcher
+                                                                  .launchInBrowser(
+                                                                data[
+                                                                    'instagram'],
+                                                              );
+                                                            },
+                                                          ),
+                                                    data['twitter'] == null ||
+                                                            data['twitter'] ==
+                                                                ''
+                                                        ? SizedBox()
+                                                        : IconButton(
+                                                            icon: Icon(
+                                                                FontAwesomeIcons
+                                                                    .twitter),
+                                                            iconSize: 20,
+                                                            onPressed: () {
+                                                              launcher.launchInBrowser(
+                                                                  data[
+                                                                      'twitter']);
+                                                            },
+                                                          ),
+                                                    data['linkedin'] ==
+                                                                null ||
+                                                            data['linkedin'] ==
+                                                                ''
+                                                        ? SizedBox()
+                                                        : IconButton(
+                                                            icon: Icon(
+                                                                FontAwesomeIcons
+                                                                    .linkedin),
+                                                            iconSize: 20,
+                                                            onPressed: () {
+                                                              launcher.launchInBrowser(
+                                                                  data[
+                                                                      'linkedin']);
+                                                            },
+                                                          ),
+                                                    data['website'] == null ||
+                                                            data['website'] ==
+                                                                ''
+                                                        ? SizedBox()
+                                                        : IconButton(
+                                                            icon: Icon(
+                                                                FontAwesomeIcons
+                                                                    .externalLinkSquareAlt),
+                                                            iconSize: 20,
+                                                            onPressed: () {
+                                                              launcher.launchInBrowser(
+                                                                  data[
+                                                                      'website']);
+                                                            },
+                                                          )
+                                                  ],
+                                                ),
+                                              ),
+                                            ]),
                                       ),
                                     ),
                                     Positioned(
                                       top: MediaQuery.of(context).size.height /
-                                          20,
+                                          12,
                                       left: MediaQuery.of(context).size.height /
                                           5.8,
                                       child: GestureDetector(
@@ -641,705 +639,698 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         },
                         body: RefreshIndicator(
                           onRefresh: _pullRefresh,
-                          child: Container(
-                            child: ListView(children: [
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.26,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Your Podcasts",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    5),
-                                      ),
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.2,
-                                        child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            for (var v in podcastList)
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        15, 8, 0, 8),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(context,
-                                                        CupertinoPageRoute(
-                                                            builder: (context) {
-                                                      return PodcastView(
-                                                          v['id']);
-                                                    }));
-                                                  },
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            4.5,
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            boxShadow: [
-                                                              new BoxShadow(
-                                                                color: Colors
-                                                                    .black54
-                                                                    .withOpacity(
-                                                                        0.2),
-                                                                blurRadius:
-                                                                    10.0,
-                                                              ),
-                                                            ],
-                                                            color: themeProvider
-                                                                        .isLightTheme ==
-                                                                    true
-                                                                ? Colors.white
-                                                                : Color(
-                                                                    0xff222222),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                          ),
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              4.5,
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              4.5,
-                                                          child:
-                                                              CachedNetworkImage(
-                                                            imageUrl:
-                                                                v['image'],
-                                                            imageBuilder: (context,
-                                                                imageProvider) {
-                                                              return Container(
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4.5,
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4.5,
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            10),
-                                                                    image: DecorationImage(
-                                                                        image:
-                                                                            imageProvider,
-                                                                        fit: BoxFit
-                                                                            .cover)),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 8),
-                                                          child: Text(
-                                                              "${v['name']}"),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      15, 8, 0, 8),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      if (prefs.getString(
-                                                              'HiveUserName') ==
-                                                          null) {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return HiveDetails();
-                                                            });
-                                                      } else {
-                                                        showBarModalBottomSheet(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return EmailVerificationDialog(
-                                                                username: prefs
-                                                                    .getString(
-                                                                        'userName'),
-                                                              );
-                                                            });
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
+                          child: ListView(children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Your Podcasts",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal *
+                                                5),
+                                  ),
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.height /6.2,
+                                    child: ListView(
+                                      scrollDirection: Axis.horizontal,
+                                      children: [
+                                        for (var v in podcastList)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.fromLTRB(
+                                                    15, 8, 0, 8),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                  return PodcastView(
+                                                      v['id']);
+                                                }));
+                                              },
+                                              child: Container(
+                                                width:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        4.5,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      decoration:
+                                                          BoxDecoration(
                                                         boxShadow: [
                                                           new BoxShadow(
                                                             color: Colors
                                                                 .black54
                                                                 .withOpacity(
                                                                     0.2),
-                                                            blurRadius: 10.0,
+                                                            blurRadius:
+                                                                10.0,
                                                           ),
                                                         ],
                                                         color: themeProvider
                                                                     .isLightTheme ==
                                                                 true
                                                             ? Colors.white
-                                                            : Color(0xff222222),
+                                                            : Color(
+                                                                0xff222222),
                                                         borderRadius:
                                                             BorderRadius
-                                                                .circular(15),
+                                                                .circular(
+                                                                    15),
                                                       ),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              4.5,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              4.5,
-                                                      child: Center(
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Icon(
-                                                              Icons.add,
-                                                            ),
-                                                          ],
-                                                        ),
+                                                      width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                      height: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                      child:
+                                                          CachedNetworkImage(
+                                                        imageUrl:
+                                                            v['image'],
+                                                        imageBuilder: (context,
+                                                            imageProvider) {
+                                                          return Container(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                4.5,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width /
+                                                                4.5,
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                        10),
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover)),
+                                                          );
+                                                        },
                                                       ),
                                                     ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 5),
-                                                    child:
-                                                        Text("Add a podcast"),
-                                                  ),
-                                                ],
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets
+                                                                  .symmetric(
+                                                              vertical: 8),
+                                                      child: Text(
+                                                          "${v['name']}"),
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            // Padding(
-                                            //   padding:
-                                            //       const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                                            //   child: Column(
-                                            //     children: [
-                                            //
-                                            //       Container(
-                                            //         decoration: BoxDecoration(
-                                            //             color: Color(0xff222222),
-                                            //             borderRadius:
-                                            //                 BorderRadius.circular(10)),
-                                            //         width:
-                                            //             MediaQuery.of(context).size.width /
-                                            //                 4.5,
-                                            //         height:
-                                            //             MediaQuery.of(context).size.width /
-                                            //                 4.5,
-                                            //         child: Icon(Icons.add),
-                                            //       ),
-                                            //       Padding(
-                                            //         padding: const EdgeInsets.all(8.0),
-                                            //         child: Text("Add a podcast"),
-                                            //       )
-                                            //     ],
-                                            //   ),
-                                            // ),
-                                          ],
+                                          ),
+
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.fromLTRB(
+                                                  15, 8, 0, 8),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  if (prefs.getString(
+                                                          'HiveUserName') ==
+                                                      null) {
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return HiveDetails();
+                                                        });
+                                                  } else {
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return EmailVerificationDialog(
+                                                            username: prefs
+                                                                .getString(
+                                                                    'userName'),
+                                                          );
+                                                        });
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    boxShadow: [
+                                                      new BoxShadow(
+                                                        color: Colors
+                                                            .black54
+                                                            .withOpacity(
+                                                                0.2),
+                                                        blurRadius: 10.0,
+                                                      ),
+                                                    ],
+                                                    color: themeProvider
+                                                                .isLightTheme ==
+                                                            true
+                                                        ? Colors.white
+                                                        : Color(0xff222222),
+                                                    borderRadius:
+                                                        BorderRadius
+                                                            .circular(15),
+                                                  ),
+                                                  width:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                  height:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width /
+                                                          4.5,
+                                                  child: Center(
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.add,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets
+                                                        .symmetric(
+                                                    vertical: 8,
+                                                    horizontal: 5),
+                                                child:
+                                                    Text("Add a podcast"),
+                                              ),
+                                            ],
+                                          ),
                                         ),
+                                        // Padding(
+                                        //   padding:
+                                        //       const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                                        //   child: Column(
+                                        //     children: [
+                                        //
+                                        //       Container(
+                                        //         decoration: BoxDecoration(
+                                        //             color: Color(0xff222222),
+                                        //             borderRadius:
+                                        //                 BorderRadius.circular(10)),
+                                        //         width:
+                                        //             MediaQuery.of(context).size.width /
+                                        //                 4.5,
+                                        //         height:
+                                        //             MediaQuery.of(context).size.width /
+                                        //                 4.5,
+                                        //         child: Icon(Icons.add),
+                                        //       ),
+                                        //       Padding(
+                                        //         padding: const EdgeInsets.all(8.0),
+                                        //         child: Text("Add a podcast"),
+                                        //       )
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Container(
+                            //   height: MediaQuery.of(context).size.height * 0.26,
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     mainAxisSize: MainAxisSize.min,
+                            //     children: [
+                            //       Padding(
+                            //         padding: const EdgeInsets.symmetric(
+                            //             horizontal: 15, vertical: 10),
+                            //         child: Text(
+                            //           "Your Live Rooms",
+                            //           textScaleFactor: 1.0,
+                            //           style: TextStyle(
+                            //               fontSize: SizeConfig.safeBlockHorizontal * 5),
+                            //         ),
+                            //       ),
+                            //       Container(
+                            //         height: MediaQuery.of(context).size.height * 0.2,
+                            //         child: ListView(
+                            //           scrollDirection: Axis.horizontal,
+                            //           children: [
+                            //             Padding(
+                            //               padding:
+                            //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                            //               child: Column(
+                            //                 children: [
+                            //                   Container(
+                            //                     decoration: BoxDecoration(
+                            //                         color: themeProvider
+                            //                             .isLightTheme ==
+                            //                             true
+                            //                             ? Color(0xffE8E8E8)
+                            //                             : Color(0xff222222),
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(10)),
+                            //                     width:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     height:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     child: Icon(Icons.add),
+                            //                   ),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.all(8.0),
+                            //                     child: Text("Add a podcast"),
+                            //                   )
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //             Padding(
+                            //               padding:
+                            //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                            //               child: Column(
+                            //                 children: [
+                            //                   Container(
+                            //                     decoration: BoxDecoration(
+                            //                         color: Color(0xff222222),
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(10)),
+                            //                     width:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     height:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     child: Icon(Icons.add),
+                            //                   ),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.all(8.0),
+                            //                     child: Text("Add a podcast"),
+                            //                   )
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //             Padding(
+                            //               padding:
+                            //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                            //               child: Column(
+                            //                 children: [
+                            //                   Container(
+                            //                     decoration: BoxDecoration(
+                            //                         color: Color(0xff222222),
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(10)),
+                            //                     width:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     height:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     child: Icon(Icons.add),
+                            //                   ),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.all(8.0),
+                            //                     child: Text("Add a podcast"),
+                            //                   )
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //             Padding(
+                            //               padding:
+                            //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
+                            //               child: Column(
+                            //                 children: [
+                            //                   Container(
+                            //                     decoration: BoxDecoration(
+                            //                         color: themeProvider
+                            //                             .isLightTheme ==
+                            //                             true
+                            //                             ? Color(0xffE8E8E8)
+                            //                             : Color(0xff222222),
+                            //                         borderRadius:
+                            //                             BorderRadius.circular(10)),
+                            //                     width:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     height:
+                            //                         MediaQuery.of(context).size.width /
+                            //                             4.5,
+                            //                     child: Icon(Icons.add),
+                            //                   ),
+                            //                   Padding(
+                            //                     padding: const EdgeInsets.all(8.0),
+                            //                     child: Text("Add a podcast"),
+                            //                   )
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) =>
+                                            ReferralProgram()));
+                              },
+                              title:   Text(
+                                "Invite ",
+                                textScaleFactor: mediaQueryData
+                                    .textScaleFactor
+                                    .clamp(0.5, 1.5)
+                                    .toDouble(),
+                                style: TextStyle(
+                                  //  color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: SizeConfig
+                                        .safeBlockHorizontal *
+                                        4),
+                              ),
+                              trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                                  size: 15),
+                              subtitle:   Text(
+                                "Invite friends and earn rewards",
+                                textScaleFactor: mediaQueryData
+                                    .textScaleFactor
+                                    .clamp(0.5, 0.8)
+                                    .toDouble(),
+                                style: TextStyle(
+                                  //       color: Colors.white70,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: SizeConfig
+                                        .safeBlockHorizontal *
+                                        3.4),
+                              ),
+                            ),
+                            ListTile(
+                              onTap: (){
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => Rewards()));
+                              },
+                              title:   Text(
+                                "Your rewards",
+                                textScaleFactor: mediaQueryData
+                                    .textScaleFactor
+                                    .clamp(0.5, 1.5)
+                                    .toDouble(),
+                                style: TextStyle(
+                                  //  color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: SizeConfig
+                                        .safeBlockHorizontal *
+                                        4),
+                              ),
+                              trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                                  size: 15),
+                              subtitle:   Text(
+                                "Check your rewards",
+                                textScaleFactor: mediaQueryData
+                                    .textScaleFactor
+                                    .clamp(0.5, 0.8)
+                                    .toDouble(),
+                                style: TextStyle(
+                                  //       color: Colors.white70,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: SizeConfig
+                                        .safeBlockHorizontal *
+                                        3.4),
+                              ),
+                            ),
+
+                            // Padding(
+                            //   padding: const EdgeInsets.all(15.0),
+                            //   child: InkWell(
+                            //     onTap: () {
+                            //       Navigator.push(
+                            //           context,
+                            //           CupertinoPageRoute(
+                            //               builder: (context) =>
+                            //                   ReferralProgram()));
+                            //     },
+                            //     child: Container(
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           Column(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: <Widget>[
+                            //               Text(
+                            //                 "Invite ",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 1.5)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //  color: Colors.white,
+                            //                     fontWeight: FontWeight.w700,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         4),
+                            //               ),
+                            //               SizedBox(height: 5),
+                            //               Text(
+                            //                 "Invite friends and earn rewards",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 0.8)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //       color: Colors.white70,
+                            //                     fontWeight: FontWeight.w300,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         3.4),
+                            //               )
+                            //             ],
+                            //           ),
+                            //           Icon(Icons.arrow_forward_ios_rounded,
+                            //               size: 15)
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            // ReferralDashboard(),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(15.0),
+                            //   child: InkWell(
+                            //     onTap: () {
+                            //       Navigator.push(
+                            //           context,
+                            //           CupertinoPageRoute(
+                            //               builder: (context) => Rewards()));
+                            //     },
+                            //     child: Container(
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           Column(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: <Widget>[
+                            //               Text(
+                            //                 "Your rewards",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 1.5)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //  color: Colors.white,
+                            //                     fontWeight: FontWeight.w700,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         4),
+                            //               ),
+                            //               SizedBox(height: 5),
+                            //               Text(
+                            //                 "Check your rewards",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 0.8)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //       color: Colors.white70,
+                            //                     fontWeight: FontWeight.w300,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         3.4),
+                            //               )
+                            //             ],
+                            //           ),
+                            //           Icon(Icons.arrow_forward_ios_rounded,
+                            //               size: 15)
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          // child: InAppWebView(
+                                          //     gestureRecognizers:
+                                          //         gestureRecognizers,
+                                          //     initialFile:
+                                          //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
+                                          child: WebView(
+                                            gestureRecognizers: Set()
+                                              ..add(
+                                                Factory<
+                                                    VerticalDragGestureRecognizer>(
+                                                  () =>
+                                                      VerticalDragGestureRecognizer(),
+                                                ), // or null
+                                              ),
+                                            gestureNavigationEnabled: true,
+                                            javascriptMode:
+                                                JavascriptMode.unrestricted,
+                                            initialUrl:
+                                                'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            "Your wallet",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 1.5)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //  color: Colors.white,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    4),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Text(
+                                            "Hive wallet",
+                                            textScaleFactor: mediaQueryData
+                                                .textScaleFactor
+                                                .clamp(0.5, 0.8)
+                                                .toDouble(),
+                                            style: TextStyle(
+                                                //       color: Colors.white70,
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3.4),
+                                          )
+                                        ],
                                       ),
+                                      Icon(Icons.arrow_forward_ios_rounded,
+                                          size: 15)
                                     ],
                                   ),
                                 ),
                               ),
-                              // Container(
-                              //   height: MediaQuery.of(context).size.height * 0.26,
-                              //   child: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     mainAxisSize: MainAxisSize.min,
-                              //     children: [
-                              //       Padding(
-                              //         padding: const EdgeInsets.symmetric(
-                              //             horizontal: 15, vertical: 10),
-                              //         child: Text(
-                              //           "Your Live Rooms",
-                              //           textScaleFactor: 1.0,
-                              //           style: TextStyle(
-                              //               fontSize: SizeConfig.safeBlockHorizontal * 5),
-                              //         ),
-                              //       ),
-                              //       Container(
-                              //         height: MediaQuery.of(context).size.height * 0.2,
-                              //         child: ListView(
-                              //           scrollDirection: Axis.horizontal,
-                              //           children: [
-                              //             Padding(
-                              //               padding:
-                              //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                              //               child: Column(
-                              //                 children: [
-                              //                   Container(
-                              //                     decoration: BoxDecoration(
-                              //                         color: themeProvider
-                              //                             .isLightTheme ==
-                              //                             true
-                              //                             ? Color(0xffE8E8E8)
-                              //                             : Color(0xff222222),
-                              //                         borderRadius:
-                              //                             BorderRadius.circular(10)),
-                              //                     width:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     height:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     child: Icon(Icons.add),
-                              //                   ),
-                              //                   Padding(
-                              //                     padding: const EdgeInsets.all(8.0),
-                              //                     child: Text("Add a podcast"),
-                              //                   )
-                              //                 ],
-                              //               ),
-                              //             ),
-                              //             Padding(
-                              //               padding:
-                              //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                              //               child: Column(
-                              //                 children: [
-                              //                   Container(
-                              //                     decoration: BoxDecoration(
-                              //                         color: Color(0xff222222),
-                              //                         borderRadius:
-                              //                             BorderRadius.circular(10)),
-                              //                     width:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     height:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     child: Icon(Icons.add),
-                              //                   ),
-                              //                   Padding(
-                              //                     padding: const EdgeInsets.all(8.0),
-                              //                     child: Text("Add a podcast"),
-                              //                   )
-                              //                 ],
-                              //               ),
-                              //             ),
-                              //             Padding(
-                              //               padding:
-                              //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                              //               child: Column(
-                              //                 children: [
-                              //                   Container(
-                              //                     decoration: BoxDecoration(
-                              //                         color: Color(0xff222222),
-                              //                         borderRadius:
-                              //                             BorderRadius.circular(10)),
-                              //                     width:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     height:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     child: Icon(Icons.add),
-                              //                   ),
-                              //                   Padding(
-                              //                     padding: const EdgeInsets.all(8.0),
-                              //                     child: Text("Add a podcast"),
-                              //                   )
-                              //                 ],
-                              //               ),
-                              //             ),
-                              //             Padding(
-                              //               padding:
-                              //                   const EdgeInsets.fromLTRB(15, 8, 0, 8),
-                              //               child: Column(
-                              //                 children: [
-                              //                   Container(
-                              //                     decoration: BoxDecoration(
-                              //                         color: themeProvider
-                              //                             .isLightTheme ==
-                              //                             true
-                              //                             ? Color(0xffE8E8E8)
-                              //                             : Color(0xff222222),
-                              //                         borderRadius:
-                              //                             BorderRadius.circular(10)),
-                              //                     width:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     height:
-                              //                         MediaQuery.of(context).size.width /
-                              //                             4.5,
-                              //                     child: Icon(Icons.add),
-                              //                   ),
-                              //                   Padding(
-                              //                     padding: const EdgeInsets.all(8.0),
-                              //                     child: Text("Add a podcast"),
-                              //                   )
-                              //                 ],
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
-                              ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              ReferralProgram()));
-                                },
-                                title:   Text(
-                                  "Invite ",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1.5)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                    //  color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          4),
-                                ),
-                                trailing:   Icon(Icons.arrow_forward_ios_rounded,
-                                    size: 15),
-                                subtitle:   Text(
-                                  "Invite friends and earn rewards",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 0.8)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                    //       color: Colors.white70,
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          3.4),
-                                ),
-                              ),
-                              ListTile(
-                                onTap: (){
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) => Rewards()));
-                                },
-                                title:   Text(
-                                  "Your rewards",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 1.5)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                    //  color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          4),
-                                ),
-                                trailing:   Icon(Icons.arrow_forward_ios_rounded,
-                                    size: 15),
-                                subtitle:   Text(
-                                  "Check your rewards",
-                                  textScaleFactor: mediaQueryData
-                                      .textScaleFactor
-                                      .clamp(0.5, 0.8)
-                                      .toDouble(),
-                                  style: TextStyle(
-                                    //       color: Colors.white70,
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          3.4),
-                                ),
-                              ),
-
-                              // Padding(
-                              //   padding: const EdgeInsets.all(15.0),
-                              //   child: InkWell(
-                              //     onTap: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           CupertinoPageRoute(
-                              //               builder: (context) =>
-                              //                   ReferralProgram()));
-                              //     },
-                              //     child: Container(
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.spaceBetween,
-                              //         children: [
-                              //           Column(
-                              //             crossAxisAlignment:
-                              //                 CrossAxisAlignment.start,
-                              //             children: <Widget>[
-                              //               Text(
-                              //                 "Invite ",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 1.5)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //  color: Colors.white,
-                              //                     fontWeight: FontWeight.w700,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         4),
-                              //               ),
-                              //               SizedBox(height: 5),
-                              //               Text(
-                              //                 "Invite friends and earn rewards",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 0.8)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //       color: Colors.white70,
-                              //                     fontWeight: FontWeight.w300,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         3.4),
-                              //               )
-                              //             ],
-                              //           ),
-                              //           Icon(Icons.arrow_forward_ios_rounded,
-                              //               size: 15)
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              // ReferralDashboard(),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(15.0),
-                              //   child: InkWell(
-                              //     onTap: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           CupertinoPageRoute(
-                              //               builder: (context) => Rewards()));
-                              //     },
-                              //     child: Container(
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.spaceBetween,
-                              //         children: [
-                              //           Column(
-                              //             crossAxisAlignment:
-                              //                 CrossAxisAlignment.start,
-                              //             children: <Widget>[
-                              //               Text(
-                              //                 "Your rewards",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 1.5)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //  color: Colors.white,
-                              //                     fontWeight: FontWeight.w700,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         4),
-                              //               ),
-                              //               SizedBox(height: 5),
-                              //               Text(
-                              //                 "Check your rewards",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 0.8)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //       color: Colors.white70,
-                              //                     fontWeight: FontWeight.w300,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         3.4),
-                              //               )
-                              //             ],
-                              //           ),
-                              //           Icon(Icons.arrow_forward_ios_rounded,
-                              //               size: 15)
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: InkWell(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Container(
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                            // child: InAppWebView(
-                                            //     gestureRecognizers:
-                                            //         gestureRecognizers,
-                                            //     initialFile:
-                                            //         'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}'),
-                                            child: WebView(
-                                              gestureRecognizers: Set()
-                                                ..add(
-                                                  Factory<
-                                                      VerticalDragGestureRecognizer>(
-                                                    () =>
-                                                        VerticalDragGestureRecognizer(),
-                                                  ), // or null
-                                                ),
-                                              gestureNavigationEnabled: true,
-                                              javascriptMode:
-                                                  JavascriptMode.unrestricted,
-                                              initialUrl:
-                                                  'https://wallet.hive.blog/@${prefs.getString('HiveUserName')}',
-                                            ),
-                                          );
-                                        });
-                                  },
-                                  child: Container(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              "Your wallet",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1.5)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      4),
-                                            ),
-                                            SizedBox(height: 5),
-                                            Text(
-                                              "Hive wallet",
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 0.8)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //       color: Colors.white70,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3.4),
-                                            )
-                                          ],
-                                        ),
-                                        Icon(Icons.arrow_forward_ios_rounded,
-                                            size: 15)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(15.0),
-                              //   child: GestureDetector(
-                              //     onTap: () {
-                              //       Navigator.push(context,
-                              //           CupertinoPageRoute(widget: Settings()));
-                              //     },
-                              //     child: Container(
-                              //       child: Row(
-                              //         mainAxisAlignment:
-                              //             MainAxisAlignment.spaceBetween,
-                              //         children: [
-                              //           Column(
-                              //             crossAxisAlignment:
-                              //                 CrossAxisAlignment.start,
-                              //             children: <Widget>[
-                              //               Text(
-                              //                 "Setting",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 1.5)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //  color: Colors.white,
-                              //                     fontWeight: FontWeight.w700,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         4),
-                              //               ),
-                              //               SizedBox(height: 5),
-                              //               Text(
-                              //                 "Categories , Languages",
-                              //                 textScaleFactor: mediaQueryData
-                              //                     .textScaleFactor
-                              //                     .clamp(0.5, 0.8)
-                              //                     .toDouble(),
-                              //                 style: TextStyle(
-                              //                     //       color: Colors.white70,
-                              //                     fontWeight: FontWeight.w300,
-                              //                     fontSize: SizeConfig
-                              //                             .safeBlockHorizontal *
-                              //                         3.4),
-                              //               )
-                              //             ],
-                              //           ),
-                              //           Icon(
-                              //             Icons.arrow_forward_ios_rounded,
-                              //             size: 15,
-                              //           )
-                              //         ],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ]),
-                          ),
+                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(15.0),
+                            //   child: GestureDetector(
+                            //     onTap: () {
+                            //       Navigator.push(context,
+                            //           CupertinoPageRoute(widget: Settings()));
+                            //     },
+                            //     child: Container(
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           Column(
+                            //             crossAxisAlignment:
+                            //                 CrossAxisAlignment.start,
+                            //             children: <Widget>[
+                            //               Text(
+                            //                 "Setting",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 1.5)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //  color: Colors.white,
+                            //                     fontWeight: FontWeight.w700,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         4),
+                            //               ),
+                            //               SizedBox(height: 5),
+                            //               Text(
+                            //                 "Categories , Languages",
+                            //                 textScaleFactor: mediaQueryData
+                            //                     .textScaleFactor
+                            //                     .clamp(0.5, 0.8)
+                            //                     .toDouble(),
+                            //                 style: TextStyle(
+                            //                     //       color: Colors.white70,
+                            //                     fontWeight: FontWeight.w300,
+                            //                     fontSize: SizeConfig
+                            //                             .safeBlockHorizontal *
+                            //                         3.4),
+                            //               )
+                            //             ],
+                            //           ),
+                            //           Icon(
+                            //             Icons.arrow_forward_ios_rounded,
+                            //             size: 15,
+                            //           )
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+                          ]),
                         ),
                         // child: Container(
                         //   height: MediaQuery.of(context).size.height,
