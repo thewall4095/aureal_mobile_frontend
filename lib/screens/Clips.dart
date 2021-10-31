@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'dart:isolate';
@@ -73,11 +74,6 @@ class _ClipsState extends State<Clips> {
 
   List<PaletteGenerator> backgroundColorList = [];
 
-  // void setColor() async {
-  //   for(var v in recentlyPlayed )
-  //   backgroundColorList.add(await PaletteGenerator.fromImageProvider(CachedNetworkImageProvider(url)))
-  // }
-
   CustomLayoutOption customLayoutOption;
 
   void init(BuildContext context) async {
@@ -109,6 +105,8 @@ class _ClipsState extends State<Clips> {
     }
   }
 
+  void getMySnippets() async {}
+
   List<Color> tileColor = [];
 
   PageController _pageController = PageController(viewportFraction: 0.8);
@@ -133,6 +131,10 @@ class _ClipsState extends State<Clips> {
   Future<PaletteGenerator> getColor(String url) async {
     return (await PaletteGenerator.fromImageProvider(NetworkImage(url),
         size: Size(20, 20)));
+  }
+
+  void getSnippets() async {
+    String url = 'https://api.aureal.one/public/';
   }
 
   @override
@@ -190,6 +192,72 @@ class _ClipsState extends State<Clips> {
                         children: [
                           Row(
                             children: [
+                              GestureDetector(
+                                onTap: () {},
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: kSecondaryColor),
+                                        // color: Color(0xff3a3a3a),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 3),
+                                      child: Center(
+                                        child: Text(
+                                          "My Snippets",
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                              //  color:
+                                              // Color(0xffe8e8e8),
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                  2.5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Navigator.push(
+                                  //     context,
+                                  //     CupertinoPageRoute(
+                                  //         widget: CategoryView(
+                                  //             categoryObject: v)));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: kSecondaryColor),
+                                        // color: Color(0xff3a3a3a),
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 3),
+                                      child: Center(
+                                        child: Text(
+                                          "All",
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                              //  color:
+                                              // Color(0xffe8e8e8),
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                  2.5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               for (var v in categories.categoryList)
                                 GestureDetector(
                                   onTap: () {
@@ -1251,10 +1319,16 @@ class _SnippetEditorState extends State<SnippetEditor> {
     super.initState();
   }
 
+  void stop() {
+    preview.stop();
+  }
+
   @override
   void dispose() {
     player.stop();
     player.dispose();
+    preview.stop();
+    preview.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -1279,33 +1353,45 @@ class _SnippetEditorState extends State<SnippetEditor> {
     return "${H < 1 ? '00' : H.toStringAsFixed(0)} : ${min.toStringAsFixed(0)} : ${sec.toStringAsFixed(0)}";
   }
 
+  TextEditingController _startTimeController = TextEditingController();
+  TextEditingController _endTimeController = TextEditingController();
+
+  AssetsAudioPlayer preview = AssetsAudioPlayer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
       ),
       body: SafeArea(
         child: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: widget.episodeObject['image'],
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          height: MediaQuery.of(context).size.width / 2.5,
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover)),
-                        );
-                      },
+                    Stack(
+                      children: [
+                        Center(
+                          child: CachedNetworkImage(
+                            imageUrl: widget.episodeObject['image'],
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                height: MediaQuery.of(context).size.width / 2.5,
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover)),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15),
@@ -1322,6 +1408,73 @@ class _SnippetEditorState extends State<SnippetEditor> {
                     ),
                   ],
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: Color(0xffe8e8e8)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: player.builderRealtimePlayingInfos(
+                        builder: (context, infos) {
+                      if (infos == null) {
+                        return Container();
+                      } else {
+                        if (infos.isBuffering) {
+                          return Icon(Icons.radio_button_off);
+                        }
+                        if (infos.isPlaying) {
+                          return InkWell(
+                              onTap: () {
+                                player.pause();
+                              },
+                              child: Text("PAUSE"));
+                        } else {
+                          return InkWell(
+                              onTap: () {
+                                player.play();
+                              },
+                              child: Text("PLAY"));
+                        }
+                      }
+                    }),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        enabled: false,
+                        textAlign: TextAlign.center,
+                        controller: _startTimeController,
+                        decoration: InputDecoration(
+                            hintText:
+                                '${DurationCalculation(_values.start.round())}'),
+                      ),
+                    ),
+                  )),
+                  Expanded(
+                      child: TextField(
+                    enabled: false,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                        hintText:
+                            '${DurationCalculation(_values.end.round())}'),
+                    controller: _endTimeController,
+                  ))
+                ],
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -1365,7 +1518,11 @@ class _SnippetEditorState extends State<SnippetEditor> {
                                 : player.realtimePlayingInfos.valueOrNull
                                     .duration.inSeconds
                                     .toDouble(),
-                            divisions: 100,
+                            divisions:
+                                player.realtimePlayingInfos.hasValue == false
+                                    ? 1000
+                                    : player.realtimePlayingInfos.valueOrNull
+                                        .duration.inSeconds,
                             labels: RangeLabels(
                                 '${DurationCalculation(_values.start.round())}',
                                 '${DurationCalculation(_values.end.round())}'),
@@ -1380,43 +1537,6 @@ class _SnippetEditorState extends State<SnippetEditor> {
                         ),
                       ),
                     ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                              colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
-                      child: player.builderRealtimePlayingInfos(
-                          builder: (context, infos) {
-                        if (infos == null) {
-                          return Container();
-                        } else {
-                          if (infos.isBuffering) {
-                            return Icon(Icons.radio_button_off);
-                          }
-                          if (infos.isPlaying) {
-                            return InkWell(
-                                onTap: () {
-                                  player.pause();
-                                },
-                                child: Icon(Icons.pause, color: Colors.white));
-                          } else {
-                            return InkWell(
-                                onTap: () {
-                                  player.play();
-                                },
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  color: Colors.white,
-                                ));
-                          }
-                        }
-                      }),
-                    ),
                   ),
                   player.builderRealtimePlayingInfos(builder: (context, infos) {
                     if (infos == null) {
@@ -1443,23 +1563,68 @@ class _SnippetEditorState extends State<SnippetEditor> {
                       );
                     }
                   }),
-                  GestureDetector(
-                    onTap: () {
-                      createSnippet();
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      color: Color(0xff3F67F6),
-                      child: Center(
-                        child: Text(
-                          'CREATE CLIP',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeConfig.blockSizeHorizontal * 4),
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            preview
+                                .open(
+                                  Audio.network(widget.episodeObject['url']),
+                                  seek: Duration(
+                                    seconds: _values.start.floor(),
+                                  ),
+                                )
+                                .then((value) => {
+                                      Future.delayed(
+                                          Duration(
+                                              seconds: _values.end.round()),
+                                          stop)
+                                    });
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: Color(0xffe8e8e8))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 8),
+                                child: Center(
+                                    child: preview.isPlaying == true
+                                        ? Text(
+                                            "${preview.realtimePlayingInfos.valueOrNull.currentPosition}")
+                                        : Text("PREVIEW")),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              gradient: LinearGradient(colors: [
+                                Color(0xff5d5da8),
+                                Color(0xff5bc3ef)
+                              ]),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 8),
+                                child: Center(child: Text("SAVE")),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 ],
