@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'dart:isolate';
 
+import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/recorderApp/recorderpages/SoundEditor/customThumbSelector.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 import 'package:line_icons/line_icons.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 import 'dart:ui';
 
@@ -105,7 +107,30 @@ class _ClipsState extends State<Clips> {
     }
   }
 
-  void getMySnippets() async {}
+  int page = 0;
+
+  void getMySnippets(int categoryId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/getSnippet?category_id=$categoryId&user_id=${prefs.getString('userId')}&page=$page";
+
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          snippets = jsonDecode(response.body)['snippets'];
+        });
+      } else {
+        print(response.statusCode);
+      }
+
+      print(response.body);
+    } catch (e) {
+      print(e);
+    }
+  }
 
   List<Color> tileColor = [];
 
@@ -116,10 +141,16 @@ class _ClipsState extends State<Clips> {
     customLayoutOption = new CustomLayoutOption(startIndex: 0, stateCount: 10);
 
     // TODO: implement initState
+
+    getAllSnippets(null);
     init(context);
     audioPlayer = AssetsAudioPlayer();
     _controller = SwiperController();
     super.initState();
+  }
+
+  void getClips() async {
+    String url = "https://api.aureal.one/public/";
   }
 
   @override
@@ -133,31 +164,41 @@ class _ClipsState extends State<Clips> {
         size: Size(20, 20)));
   }
 
-  void getSnippets() async {
-    String url = 'https://api.aureal.one/public/';
+  var snippets = [];
+
+  bool isLoading = false;
+
+  void getAllSnippets(var categoryId) async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/discoverSnippets?user_id=${prefs.getString('userId')}&page=$page&category_id=$categoryId";
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(response.body);
+        setState(() {
+          snippets = jsonDecode(response.body)['snippets'];
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
+
+  Map<String, dynamic> selectedCategory;
 
   @override
   Widget build(BuildContext context) {
-    DiscoverProvider discoverData = Provider.of<DiscoverProvider>(context);
-    if (discoverData.isFetcheddiscoverList == false) {
-      discoverData.getDiscoverProvider();
-    }
-
-    setState(() {
-      homeData = discoverData.discoverList;
-    });
-    for (var v in homeData) {
-      if (v['Key'] == 'general_episode') {
-        setState(() {
-          recentlyPlayed = v['data'];
-          for (var v in recentlyPlayed) {
-            v['isLoading'] = false;
-          }
-        });
-      }
-    }
-
     var categories = Provider.of<CategoriesProvider>(context);
 
     return Scaffold(
@@ -193,42 +234,9 @@ class _ClipsState extends State<Clips> {
                           Row(
                             children: [
                               GestureDetector(
-                                onTap: () {},
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: kSecondaryColor),
-                                        // color: Color(0xff3a3a3a),
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 3),
-                                      child: Center(
-                                        child: Text(
-                                          "My Snippets",
-                                          textScaleFactor: 1.0,
-                                          style: TextStyle(
-                                              //  color:
-                                              // Color(0xffe8e8e8),
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                  2.5),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     CupertinoPageRoute(
-                                  //         widget: CategoryView(
-                                  //             categoryObject: v)));
+                                  audioPlayer.stop();
+                                  getAllSnippets(null);
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(2.0),
@@ -236,7 +244,9 @@ class _ClipsState extends State<Clips> {
                                     decoration: BoxDecoration(
                                         border:
                                             Border.all(color: kSecondaryColor),
-                                        // color: Color(0xff3a3a3a),
+                                        color: selectedCategory == null
+                                            ? Color(0xff3a3a3a)
+                                            : Colors.transparent,
                                         borderRadius:
                                             BorderRadius.circular(20)),
                                     child: Padding(
@@ -261,11 +271,11 @@ class _ClipsState extends State<Clips> {
                               for (var v in categories.categoryList)
                                 GestureDetector(
                                   onTap: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     CupertinoPageRoute(
-                                    //         widget: CategoryView(
-                                    //             categoryObject: v)));
+                                    audioPlayer.stop();
+                                    setState(() {
+                                      selectedCategory = v;
+                                    });
+                                    getAllSnippets(v['id']);
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
@@ -273,7 +283,10 @@ class _ClipsState extends State<Clips> {
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               color: kSecondaryColor),
-                                          // color: Color(0xff3a3a3a),
+                                          color:
+                                              selectedCategory['id'] == v['id']
+                                                  ? Color(0xff3a3a3a)
+                                                  : Colors.transparent,
                                           borderRadius:
                                               BorderRadius.circular(20)),
                                       child: Padding(
@@ -306,64 +319,54 @@ class _ClipsState extends State<Clips> {
             ),
           ];
         },
-        body: Stack(
-          children: [
-            // PageView.builder(
-            //     onPageChanged: (int index) async {
-            //       setState(() {
-            //         currentIndex = index;
-            //       });
-            //       audioPlayer.open(Audio.network(recentlyPlayed[index]['url']));
-            //     },
-            //     pageSnapping: true,
-            //     controller: _pageController,
-            //     itemCount: recentlyPlayed.length,
-            //     scrollDirection: Axis.vertical,
-            //     itemBuilder: (context, int index) {
-            //       return SwipeCard(
-            //         clipObject: recentlyPlayed[index],
-            //         audioPlayer: audioPlayer,
-            //         play: true,
-            //       );
-            //     }),
-            PageView(
-              scrollDirection: Axis.vertical,
-              onPageChanged: (int index) async {
-                setState(() {
-                  currentIndex = index;
-                });
-                audioPlayer.open(Audio.network(recentlyPlayed[index]['url']));
-              },
-              pageSnapping: true,
-              controller: _pageController,
-              children: [
-                for (var v in recentlyPlayed)
-                  SwipeCard(
-                    clipObject: v,
-                    audioPlayer: audioPlayer,
-                    play: true,
-                  ),
-              ],
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height / 12,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                        Colors.black,
-                        Colors.black.withOpacity(0.8),
-                        Colors.transparent
-                      ])),
-                )
-              ],
-            ),
-          ],
+        body: ModalProgressHUD(
+          color: Color(0xff161616),
+          inAsyncCall: isLoading,
+          child: Stack(
+            children: [
+              isLoading == true
+                  ? Container(
+                      color: Colors.black,
+                    )
+                  : PageView(
+                      scrollDirection: Axis.vertical,
+                      onPageChanged: (int index) async {
+                        setState(() {
+                          currentIndex = index;
+                        });
+                        audioPlayer.open(Audio.network(snippets[index]['url']));
+                      },
+                      pageSnapping: true,
+                      controller: _pageController,
+                      children: [
+                        for (var v in snippets)
+                          SwipeCard(
+                            clipObject: v,
+                            audioPlayer: audioPlayer,
+                            play: true,
+                          ),
+                      ],
+                    ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height / 12,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                          Colors.black,
+                          Colors.black.withOpacity(0.8),
+                          Colors.transparent
+                        ])),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -531,7 +534,7 @@ class _SwipeCardState extends State<SwipeCard> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        "${widget.clipObject['name']}",
+                        "${widget.clipObject['episode_name']}",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -661,7 +664,7 @@ class _SwipeCardState extends State<SwipeCard> {
                     },
                     memCacheHeight:
                         (MediaQuery.of(context).size.hashCode / 2).floor(),
-                    imageUrl: widget.clipObject['image'],
+                    imageUrl: widget.clipObject['podcast_image'],
                     imageBuilder: (context, imageProvider) {
                       return Container(
                         width: MediaQuery.of(context).size.width * 0.6,
@@ -680,7 +683,7 @@ class _SwipeCardState extends State<SwipeCard> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: Text(
-                        "${widget.clipObject['name']}",
+                        "${widget.clipObject['episode_name']}",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -1260,6 +1263,10 @@ class _SnippetEditorState extends State<SnippetEditor> {
     try {
       var response = await intercept.postRequest(formData, url);
       print(response.toString());
+      preview.stop();
+      Navigator.push(context, CupertinoPageRoute(builder: (context) {
+        return ClipScreen();
+      }));
     } catch (e) {
       print(e);
     }
@@ -1301,6 +1308,8 @@ class _SnippetEditorState extends State<SnippetEditor> {
       loading = false;
     });
   }
+
+  bool isPlaying = false;
 
   AssetsAudioPlayer player = AssetsAudioPlayer();
 
@@ -1568,43 +1577,79 @@ class _SnippetEditorState extends State<SnippetEditor> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        isPlaying == true
+                            ? InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isPlaying = !isPlaying;
+                                  });
+                                  preview.stop();
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      border:
+                                          Border.all(color: Color(0xffe8e8e8))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 8),
+                                      child: Center(
+                                          child: preview.isPlaying == true
+                                              ? Text(
+                                                  "${preview.realtimePlayingInfos.valueOrNull.currentPosition}")
+                                              : Text("STOP")),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    isPlaying = !isPlaying;
+                                  });
+                                  preview
+                                      .open(
+                                        Audio.network(
+                                            widget.episodeObject['url']),
+                                        seek: Duration(
+                                          seconds: _values.start.floor(),
+                                        ),
+                                      )
+                                      .then((value) => {
+                                            Future.delayed(
+                                                Duration(
+                                                    seconds:
+                                                        _values.end.round()),
+                                                stop)
+                                          });
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      border:
+                                          Border.all(color: Color(0xffe8e8e8))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 8),
+                                      child: Center(
+                                          child: preview.isPlaying == true
+                                              ? Text(
+                                                  "${preview.realtimePlayingInfos.valueOrNull.currentPosition}")
+                                              : Text("PREVIEW")),
+                                    ),
+                                  ),
+                                ),
+                              ),
                         InkWell(
                           onTap: () {
-                            preview
-                                .open(
-                                  Audio.network(widget.episodeObject['url']),
-                                  seek: Duration(
-                                    seconds: _values.start.floor(),
-                                  ),
-                                )
-                                .then((value) => {
-                                      Future.delayed(
-                                          Duration(
-                                              seconds: _values.end.round()),
-                                          stop)
-                                    });
+                            createSnippet();
                           },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Color(0xffe8e8e8))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 8),
-                                child: Center(
-                                    child: preview.isPlaying == true
-                                        ? Text(
-                                            "${preview.realtimePlayingInfos.valueOrNull.currentPosition}")
-                                        : Text("PREVIEW")),
-                              ),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {},
                           child: Container(
                             width: MediaQuery.of(context).size.width / 3,
                             decoration: BoxDecoration(

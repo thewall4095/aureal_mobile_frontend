@@ -43,6 +43,7 @@ import 'dart:math' as math;
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import '../Clips.dart';
 import '../FollowingPage.dart';
 import '../Home.dart';
 import 'PlayerElements/Seekbar.dart';
@@ -2474,6 +2475,11 @@ class _ClipScreenState extends State<ClipScreen> {
       if (response.statusCode == 200) {
         setState(() {
           clips = jsonDecode(response.body)['snippets'];
+          for (var v in clips) {
+            for (var a in v['snippet']) {
+              a['isPlaying'] = false;
+            }
+          }
         });
       }
     } catch (e) {
@@ -2488,251 +2494,83 @@ class _ClipScreenState extends State<ClipScreen> {
     getClips();
   }
 
+  int currentIndex = 0;
+
+  ScrollController controller = ScrollController();
+
+  AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "Your Clips",
+          "Your Snippets",
           style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
           textScaleFactor: 1.0,
         ),
       ),
-      body: clips.length == 0
-      ?Container(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.width / 2,
-                    child: Image.asset('assets/images/Mascot.png'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No Clips..!",
-                        style: TextStyle(
-                            fontSize:
-                            SizeConfig.safeBlockHorizontal * 5),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Icon(Icons.download_outlined),
-                  ),
-                  Text("You can now add your favrate Clips.")
-                ],
-              ),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return FollowingPage();
-                      });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: kSecondaryColor)
-                    //  color: kSecondaryColor,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.arrow_forward_ios),
-                        SizedBox(
-                          width: 8.0,
-                        ),
-                        Text(
-                          'Browse',
-                          style: TextStyle(
-                              fontSize:
-                              SizeConfig.safeBlockHorizontal * 4),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 100,
-              )
-            ],
-          ),
-        ),
-      )
-      :Container(
+      body: Container(
         height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
         child: ListView(
           children: [
             for (var v in clips)
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Container(
-                    child: Column(
-                      children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: CachedNetworkImage(
+                          imageUrl: v['episode']['episode_image'],
+                          imageBuilder: (context, imageProvider) {
+                            return Container(
+                              height: MediaQuery.of(context).size.width / 7,
+                              width: MediaQuery.of(context).size.width / 7,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover)),
+                            );
+                          },
+                        ),
+                        title: Text(
+                          "${v['episode']['episode_name']}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          // textAlign: TextAlign.center,
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 3,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      for (var a in v['snippet'])
                         ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: SizedBox(
-                            height: MediaQuery.of(context).size.width / 7,
-                            width: MediaQuery.of(context).size.width / 7,
-                            child: CachedNetworkImage(
-                              imageUrl: v['episode']['episode_image'],
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  height: MediaQuery.of(context).size.width / 7,
-                                  width: MediaQuery.of(context).size.width / 7,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover)),
-                                );
+                          leading: InkWell(
+                              onTap: () {
+                                if (a['isPlaying'] == false) {
+                                  audioPlayer.open(Audio.network(a['url']));
+                                  setState(() {
+                                    a['isPlaying'] = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    a['isPlaying'] = false;
+                                  });
+                                  audioPlayer.stop();
+                                }
                               },
-                            ),
-                          ),
-                          title: Text("${v['episode']['episode_name']}"),
-                          subtitle: Text(
-                            "${v['episode']["podcast_name"]}",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 2.5),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (var a in v['snippet'])
-                              Container(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  color: Color(0xffe8e8e8)
-                                                      .withOpacity(0.5),
-                                                  width: 0.5))),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 20),
-                                            child: ListTile(
-                                              contentPadding: EdgeInsets.zero,
-                                              title: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 10),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "${a['title'] == null ? "" : a['title']}",
-                                                      textScaleFactor: 1.0,
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3.5,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                    Text("${a["start_time"]}")
-                                                  ],
-                                                ),
-                                              ),
-                                              subtitle: Text(
-                                                "${a['words'].toString().trimRight().trimLeft()}",
-                                                textScaleFactor: 1.0,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              InkWell(
-                                                onTap: () async {
-                                                  await delete(a['id']);
-                                                  getClips();
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 15),
-                                                  child: Icon(Icons
-                                                      .remove_circle_outline),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  showBarModalBottomSheet(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return EditClip(
-                                                          episodeDetails: v,
-                                                          clipDetails: a,
-                                                        );
-                                                      }).then((value) {
-                                                    getClips();
-                                                  });
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Icon(Icons.edit),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  Navigator.push(context,
-                                                      CupertinoPageRoute(
-                                                          builder: (context) {
-                                                    return SnippetShare(
-                                                      snippet: a,
-                                                      episodeDetails:
-                                                          v['episode'],
-                                                    );
-                                                  }));
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(15),
-                                                  child: Icon(Icons.ios_share),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
+                              child: Icon(a['isPlaying'] == true
+                                  ? Icons.pause
+                                  : Icons.play_circle_fill)),
+                        )
+                    ],
                   ),
                 ),
               )
