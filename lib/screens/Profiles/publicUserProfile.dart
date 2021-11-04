@@ -142,8 +142,6 @@ class _PublicProfileState extends State<PublicProfile>
   @override
   Widget build(BuildContext context) {
     final mediaQueryData = MediaQuery.of(context);
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
-    var episodeObject = Provider.of<PlayerChange>(context);
     print(widget.userId);
     return Scaffold(
       body: NestedScrollView(
@@ -204,7 +202,7 @@ class _PublicProfileState extends State<PublicProfile>
                                 ],
                               ),
                             ),
-                            for (var v in podcastList)
+                           for (var v in podcastList)
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 10),
@@ -443,7 +441,7 @@ class _PublicProfileState extends State<PublicProfile>
                 ),
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(50),
+                 preferredSize: Size.fromHeight(50),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Container(
@@ -499,9 +497,28 @@ class _PublicProfileState extends State<PublicProfile>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: podcastList.length == 0
-                  ? Center(
-                      child: Container(child: Text("No Podcast yet..")),
-                    )
+                  ?
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [  for (var v in podcastList)
+                    Container(
+                      child: ListTile(
+                        title:   Transform.translate(
+                            offset: Offset(-16, 0),
+                            child: Text("${v['author']} hasn't published podcast yet.!")),
+                        leading:  Icon(FontAwesomeIcons.podcast),
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: MediaQuery.of(context).size.height/15,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  ],
+                ),
+              )
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -693,9 +710,29 @@ class _PublicProfileState extends State<PublicProfile>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: userRoom == null
-                  ? Center(
-                      child: Container(child: Text("No Room yet..")),
-                    )
+                  ?
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [  for (var v in podcastList)
+                    Container(
+                      child: ListTile(
+                        title:   Transform.translate(
+                        offset: Offset(-16, 0),
+                        child: Text("${v['author']} has no Live Room yet.!")),
+                        leading:  Icon(Icons.stream,color: Colors.blue,),
+
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: MediaQuery.of(context).size.height/15,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  ],
+                ),
+              )
                   : ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
@@ -805,7 +842,7 @@ class _PublicProfileState extends State<PublicProfile>
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                5,
+                                                5.2,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
@@ -943,9 +980,34 @@ class _PublicProfileState extends State<PublicProfile>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: getSnippet.length == 0
-                  ? Center(
-                      child: Container(child: Text("No Snippets..")),
-                    )
+                  ?
+              Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          child: ListTile(
+                            onTap: (){
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          Clips()));
+                            },
+                            title:   Transform.translate(
+                                offset: Offset(-16, 0),child: Text("No Snippet's. Browse for more... ")),
+                            leading:  Icon(Icons.library_books_outlined),
+                          ),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: MediaQuery.of(context).size.height/15,
+                          width: MediaQuery.of(context).size.width,
+              ),
+                      ],
+                    ),
+                  )
                   : ListView(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
@@ -1081,40 +1143,6 @@ class _PublicProfileState extends State<PublicProfile>
                                                       ),
                                                     )),
                                               ),
-
-                                            // Padding(
-                                            //   padding: const EdgeInsets.symmetric(
-                                            //       horizontal: 20, vertical: 10),
-                                            //   child: Column(
-                                            //     mainAxisAlignment:
-                                            //     MainAxisAlignment.spaceBetween,
-                                            //     crossAxisAlignment:
-                                            //     CrossAxisAlignment.start,
-                                            //     children: [
-                                            //       Text(
-                                            //         "${g['episode']['episode_name'].toString()}",
-                                            //         style: TextStyle(
-                                            //             fontWeight:
-                                            //             FontWeight.bold),
-                                            //       ),
-                                            //       Padding(
-                                            //         padding: const EdgeInsets.only(
-                                            //             top: 10),
-                                            //         child: Text(
-                                            //           "${g['episode']['podcast_name'].toString()}",
-                                            //           style: TextStyle(
-                                            //             color: Colors.white
-                                            //                 .withOpacity(0.5),
-                                            //           ),
-                                            //         ),
-                                            //       ),
-                                            //       SizedBox(
-                                            //         height: 15,
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
-
                                           ],
                                         ),
                                       ),

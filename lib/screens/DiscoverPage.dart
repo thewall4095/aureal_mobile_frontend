@@ -839,23 +839,27 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                       ),
                                                     )
                                                 ],
-                                              ):Center(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Color(
-                                                        0xff222222),
-                                                  ),
-                                                  height: MediaQuery.of(context).size.height/3.5,
-                                                  width: MediaQuery.of(context).size.width/1.1,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Text("Start listening now",style: TextStyle(fontSize: MediaQuery.of(context).size.height/25),),
-                                                      SizedBox(height: 15,),
-                                                      Icon(Icons.add,size: 20,)
-                                                    ],
-                                                  ),
+                                              ):
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      child: ListTile(
+                                                        title:   Transform.translate(
+                                                            offset: Offset(-16, 0),child: Text("Your recently played episodes will be visible here..")),
+                                                        leading:  Icon(FontAwesomeIcons.headphones),
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(color: Colors.white),
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      color:Color(
+                                                          0xff777777),
+                                                      height: MediaQuery.of(context).size.height/15,
+                                                      width: MediaQuery.of(context).size.width,
+                                                    ),
+                                                  ],
                                                 ),
                                               )
                                             )
