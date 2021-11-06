@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -42,6 +43,8 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+
+import 'Profiles/EpisodeView.dart';
 
 enum PlayerState { stopped, playing, paused }
 
@@ -142,15 +145,11 @@ class _ClipsState extends State<Clips> {
 
     // TODO: implement initState
 
-    getAllSnippets(null);
+    getAllSnippetsWOCategory();
     init(context);
     audioPlayer = AssetsAudioPlayer();
     _controller = SwiperController();
     super.initState();
-  }
-
-  void getClips() async {
-    String url = "https://api.aureal.one/public/";
   }
 
   @override
@@ -167,6 +166,33 @@ class _ClipsState extends State<Clips> {
   var snippets = [];
 
   bool isLoading = false;
+
+  void getAllSnippetsWOCategory() async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/discoverSnippets?user_id=${prefs.getString('userId')}&page=$page";
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        print(response.body);
+        setState(() {
+          snippets = jsonDecode(response.body)['snippets'];
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   void getAllSnippets(var categoryId) async {
     setState(() {
@@ -195,7 +221,7 @@ class _ClipsState extends State<Clips> {
     });
   }
 
-  Map<String, dynamic> selectedCategory;
+  int selectedCategory = 30;
 
   @override
   Widget build(BuildContext context) {
@@ -235,8 +261,11 @@ class _ClipsState extends State<Clips> {
                             children: [
                               GestureDetector(
                                 onTap: () {
+                                  setState(() {
+                                    selectedCategory = 30;
+                                  });
                                   audioPlayer.stop();
-                                  getAllSnippets(null);
+                                  getAllSnippetsWOCategory();
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(2.0),
@@ -244,7 +273,7 @@ class _ClipsState extends State<Clips> {
                                     decoration: BoxDecoration(
                                         border:
                                             Border.all(color: kSecondaryColor),
-                                        color: selectedCategory == null
+                                        color: selectedCategory == 30
                                             ? Color(0xff3a3a3a)
                                             : Colors.transparent,
                                         borderRadius:
@@ -273,7 +302,7 @@ class _ClipsState extends State<Clips> {
                                   onTap: () {
                                     audioPlayer.stop();
                                     setState(() {
-                                      selectedCategory = v;
+                                      selectedCategory = v['id'];
                                     });
                                     getAllSnippets(v['id']);
                                   },
@@ -283,10 +312,9 @@ class _ClipsState extends State<Clips> {
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               color: kSecondaryColor),
-                                          color:
-                                              selectedCategory['id'] == v['id']
-                                                  ? Color(0xff3a3a3a)
-                                                  : Colors.transparent,
+                                          color: selectedCategory == v['id']
+                                              ? Color(0xff3a3a3a)
+                                              : Colors.transparent,
                                           borderRadius:
                                               BorderRadius.circular(20)),
                                       child: Padding(
@@ -444,8 +472,17 @@ class _SwipeCardState extends State<SwipeCard> {
     // createComputeFunction();
 
     // addColor(widget.clipObject);
+    setState(() {
+      isLiked = widget.clipObject['isLiked'];
+      ifFollowed = widget.clipObject['ifFollowed'];
+    });
     super.initState();
   }
+
+  void share() async {}
+
+  bool isLiked;
+  bool ifFollowed;
 
   void createComputeFunction() async {
     palette = await compute(computeFunction, widget.clipObject);
@@ -494,249 +531,154 @@ class _SwipeCardState extends State<SwipeCard> {
     // widget.audioPlayer.stop();
   }
 
+  Dio dio = Dio();
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = widget.clipObject['podcast_id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  void like() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/likeSnippet";
+
+    var map = Map<String, dynamic>();
+    map['snippet_id'] = widget.clipObject['id'];
+    map['user_id'] = prefs.getString('userId');
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    try {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
-              borderRadius: BorderRadius.circular(10),
-              color: bgColor),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CachedNetworkImage(
-                    memCacheHeight:
-                        (MediaQuery.of(context).size.hashCode / 2).floor(),
-                    imageUrl: widget.clipObject['image'],
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: MediaQuery.of(context).size.width * 0.6,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover)),
-                      );
-                    },
-                  ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+            gradient:
+                LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
+            borderRadius: BorderRadius.circular(10),
+            color: Color(0xff222222)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 30),
+                child: CachedNetworkImage(
+                  placeholder: (context, url) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.width * 0.6,
+                    );
+                  },
+                  memCacheHeight:
+                      (MediaQuery.of(context).size.hashCode / 2).floor(),
+                  imageUrl: widget.clipObject['podcast_image'],
+                  imageBuilder: (context, imageProvider) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      height: MediaQuery.of(context).size.width * 0.6,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover)),
+                    );
+                  },
                 ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "${widget.clipObject['episode_name']}",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: palette.dominantColor.bodyTextColor),
-                      ),
-                      subtitle: Text(
-                        "${widget.clipObject['podcast_name']}",
-                        style: TextStyle(
-                          color: palette.dominantColor.bodyTextColor,
-                        ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      "${widget.clipObject['episode_name']}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xffe8e8e8)),
+                    ),
+                    subtitle: Text(
+                      "${widget.clipObject['podcast_name']}",
+                      style: TextStyle(
+                        color: Color(0xffe8e8e8),
                       ),
                     ),
-                    ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                widget.audioPlayer.builderRealtimePlayingInfos(
-                                    builder: (context, infos) {
-                                  if (infos.isPlaying == true) {
-                                    return InkWell(
-                                        onTap: () {
-                                          widget.audioPlayer.pause();
-                                        },
-                                        child: Icon(Icons.pause_circle_filled,
-                                            color: palette
-                                                .dominantColor.bodyTextColor));
-                                  }
-                                  if (infos.isBuffering == true) {
-                                    return SizedBox(
-                                        width: 15,
-                                        height: 15,
-                                        child: CircularProgressIndicator(
-                                          color: palette
-                                              .dominantColor.bodyTextColor,
-                                          strokeWidth: 1,
-                                        ));
-                                  } else {
-                                    return InkWell(
-                                        onTap: () {
-                                          widget.audioPlayer.play();
-                                        },
-                                        child: Icon(Icons.play_circle_fill,
-                                            color: palette
-                                                .dominantColor.bodyTextColor));
-                                  }
-                                }),
-                                // Text(
-                                //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
-                              ],
-                            ),
-                            Text(
-                              "CONTINUE LISTENING",
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                  color: palette.dominantColor.bodyTextColor,
-                                  fontSize:
-                                      SizeConfig.safeBlockHorizontal * 2.5,
-                                  fontWeight: FontWeight.w600),
-                            )
-                          ],
-                        ),
-                        subtitle: widget.audioPlayer
-                            .builderRealtimePlayingInfos(
-                                builder: (context, infos) {
-                          if (infos != null) {
-                            return ClipSeekBar(
-                              currentPosition: infos.currentPosition,
-                              duration: infos.duration,
-                              audioplayer: widget.audioPlayer,
-                              color: palette.dominantColor.bodyTextColor,
-                            );
-                          } else {
-                            return SizedBox();
-                          }
-                        })),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(LineIcons.heart,
-                            color: palette.dominantColor.bodyTextColor),
-                        Text(
-                          "SUBSCRIBE",
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                              color: palette.dominantColor.bodyTextColor,
-                              fontWeight: FontWeight.w700,
-                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                        ),
-                        Icon(Icons.ios_share,
-                            color: palette.dominantColor.bodyTextColor)
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      );
-    } catch (e) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xff222222)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
-                  child: CachedNetworkImage(
-                    placeholder: (context, url) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: MediaQuery.of(context).size.width * 0.6,
-                      );
-                    },
-                    memCacheHeight:
-                        (MediaQuery.of(context).size.hashCode / 2).floor(),
-                    imageUrl: widget.clipObject['podcast_image'],
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        height: MediaQuery.of(context).size.width * 0.6,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover)),
-                      );
-                    },
                   ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
+                  ListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        "${widget.clipObject['episode_name']}",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xffe8e8e8)),
-                      ),
-                      subtitle: Text(
-                        "${widget.clipObject['podcast_name']}",
-                        style: TextStyle(
-                          color: Color(0xffe8e8e8),
-                        ),
-                      ),
-                    ),
-                    ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                widget.audioPlayer.builderRealtimePlayingInfos(
-                                    builder: (context, infos) {
-                                  if (infos.isPlaying == true) {
-                                    return InkWell(
-                                        onTap: () {
-                                          widget.audioPlayer.pause();
-                                        },
-                                        child: Icon(Icons.pause_circle_filled,
-                                            color: Color(0xffe8e8e8)));
-                                  }
-                                  if (infos.isBuffering == true) {
-                                    return SizedBox(
-                                        width: 15,
-                                        height: 15,
-                                        child: CircularProgressIndicator(
-                                          color: Color(0xffe8e8e8),
-                                          strokeWidth: 1,
-                                        ));
-                                  } else {
-                                    return InkWell(
-                                        onTap: () {
-                                          widget.audioPlayer.play();
-                                        },
-                                        child: Icon(Icons.play_circle_fill,
-                                            color: Color(0xffe8e8e8)));
-                                  }
-                                }),
-                                // Text(
-                                //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
-                              ],
-                            ),
-                            Text(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              widget.audioPlayer.builderRealtimePlayingInfos(
+                                  builder: (context, infos) {
+                                if (infos.isPlaying == true) {
+                                  return InkWell(
+                                      onTap: () {
+                                        widget.audioPlayer.pause();
+                                      },
+                                      child: Icon(Icons.pause_circle_filled,
+                                          color: Color(0xffe8e8e8)));
+                                }
+                                if (infos.isBuffering == true) {
+                                  return SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child: CircularProgressIndicator(
+                                        color: Color(0xffe8e8e8),
+                                        strokeWidth: 1,
+                                      ));
+                                } else {
+                                  return InkWell(
+                                      onTap: () {
+                                        widget.audioPlayer.play();
+                                      },
+                                      child: Icon(Icons.play_circle_fill,
+                                          color: Color(0xffe8e8e8)));
+                                }
+                              }),
+                              // Text(
+                              //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
+                            ],
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  CupertinoPageRoute(builder: (context) {
+                                return EpisodeView(
+                                    episodeId: widget.clipObject['episode_id']);
+                              }));
+                            },
+                            child: Text(
                               "CONTINUE LISTENING",
                               textScaleFactor: 1.0,
                               style: TextStyle(
@@ -744,44 +686,75 @@ class _SwipeCardState extends State<SwipeCard> {
                                   fontSize:
                                       SizeConfig.safeBlockHorizontal * 2.5,
                                   fontWeight: FontWeight.w600),
-                            )
-                          ],
-                        ),
-                        subtitle: widget.audioPlayer
-                            .builderRealtimePlayingInfos(
-                                builder: (context, infos) {
-                          if (infos != null) {
-                            return ClipSeekBar(
-                                currentPosition: infos.currentPosition,
-                                duration: infos.duration,
-                                audioplayer: widget.audioPlayer);
-                          } else {
-                            return SizedBox();
-                          }
-                        })),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(LineIcons.heart, color: Color(0xffe8e8e8)),
-                        Text(
-                          "SUBSCRIBE",
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                              color: Color(0xffe8e8e8),
-                              fontWeight: FontWeight.w700,
-                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                        ),
-                        Icon(Icons.ios_share, color: Color(0xffe8e8e8))
-                      ],
-                    )
-                  ],
-                )
-              ],
-            ),
+                            ),
+                          )
+                        ],
+                      ),
+                      subtitle: widget.audioPlayer.builderRealtimePlayingInfos(
+                          builder: (context, infos) {
+                        if (infos != null) {
+                          return ClipSeekBar(
+                              currentPosition: infos.currentPosition,
+                              duration: infos.duration,
+                              audioplayer: widget.audioPlayer);
+                        } else {
+                          return SizedBox();
+                        }
+                      })),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            setState(() {
+                              isLiked = !isLiked;
+                            });
+                            like();
+                          },
+                          child: isLiked == true
+                              ? Icon(
+                                  FontAwesomeIcons.solidHeart,
+                                  color: Colors.red,
+                                )
+                              : Icon(LineIcons.heart,
+                                  color: Color(0xffe8e8e8))),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            ifFollowed = true;
+                          });
+                          follow();
+                        },
+                        child: ifFollowed == true
+                            ? Text(
+                                "SUBSCRIBED",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    color: Color(0xffe8e8e8),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3),
+                              )
+                            : Text(
+                                "SUBSCRIBE",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    color: Color(0xffe8e8e8),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3),
+                              ),
+                      ),
+                      // Icon(Icons.ios_share, color: Color(0xffe8e8e8))
+                    ],
+                  )
+                ],
+              )
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 }
 
@@ -941,9 +914,49 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
     }
   }
 
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  bool isPodcastListLoading = false;
+
+  var podcastList = [];
+
+  void getPodcasts() async {
+    setState(() {
+      isPodcastListLoading = true;
+    });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/private/getSubmittedRssFeeds?user_id=${prefs.getString('userId')}';
+    try {
+      print('came here too');
+      print(url);
+
+      var response = await intercept.getRequest(url);
+      print(url);
+      setState(() {
+        print('came here too');
+
+        isPodcastListLoading = false;
+      });
+      print('came here too');
+
+      var data = response['podcasts'];
+      print('came here too');
+      print(data.toString());
+
+      setState(() {
+        podcastList = data;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
-    _tabControler = TabController(length: 3, vsync: this);
+    _tabControler = TabController(length: 2, vsync: this);
+    getPodcasts();
 
     // TODO: implement initState
     super.initState();
@@ -974,7 +987,6 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
               Tab(
                 text: "Search",
               ),
-              Tab(text: "Explore"),
               Tab(
                 text: "Your Shows",
               )
@@ -1052,8 +1064,47 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
               ],
             ),
           ),
-          Container(),
-          Container()
+          ModalProgressHUD(
+            inAsyncCall: isPodcastListLoading,
+            child: isPodcastListLoading == true
+                ? Container()
+                : Container(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (var v in podcastList)
+                          ListTile(
+                            onTap: () {
+                              Navigator.push(context,
+                                  CupertinoPageRoute(builder: (context) {
+                                return PodcastDetailsSnippets(
+                                  podcastObject: v,
+                                );
+                              }));
+                            },
+                            leading: SizedBox(
+                              height: 60,
+                              width: 60,
+                              child: CachedNetworkImage(
+                                imageUrl: v['image'],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            title: Text("${v['name']}"),
+                          )
+                      ],
+                    ),
+                  ),
+          )
         ],
       ),
     );
@@ -1563,7 +1614,7 @@ class _SnippetEditorState extends State<SnippetEditor> {
                           child: Slider(
                             value: infos.currentPosition.inSeconds.toDouble(),
                             onChanged: (double value) {
-                              // return player.seek((value / 1000).roundToDouble());
+                              player.seek(Duration(seconds: value.floor()));
                             },
                             min: 0.0,
                             max: infos.duration.inSeconds.toDouble(),
