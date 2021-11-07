@@ -2043,12 +2043,12 @@ class _EpisodeViewState extends State<EpisodeView>
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               child: ListTile(
                                 onTap: () {
-                                  Navigator.push(context,
-                                      CupertinoPageRoute(builder: (context) {
-                                    return PublicProfile(
-                                      userId: episodeContent['user_id'],
-                                    );
-                                  }));
+                                  // Navigator.push(context,
+                                  //     CupertinoPageRoute(builder: (context) {
+                                  //   return PublicProfile(
+                                  //     userId: episodeContent['user_id'],
+                                  //   );
+                                  // }));
                                 },
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(

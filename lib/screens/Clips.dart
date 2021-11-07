@@ -146,10 +146,16 @@ class _ClipsState extends State<Clips> {
     // TODO: implement initState
 
     getAllSnippetsWOCategory();
-    init(context);
+    // init(context);
     audioPlayer = AssetsAudioPlayer();
-    _controller = SwiperController();
+
     super.initState();
+
+    _pageController.addListener(() {
+      if (currentIndex == snippets.length) {
+        getAllSnippetsWOCategory();
+      }
+    });
   }
 
   @override
@@ -180,9 +186,15 @@ class _ClipsState extends State<Clips> {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         print(response.body);
-        setState(() {
-          snippets = jsonDecode(response.body)['snippets'];
-        });
+        if (page == 0) {
+          setState(() {
+            snippets = jsonDecode(response.body)['snippets'];
+          });
+        } else {
+          setState(() {
+            snippets = snippets + jsonDecode(response.body)['snippets'];
+          });
+        }
       } else {
         print(response.statusCode);
       }
@@ -472,6 +484,7 @@ class _SwipeCardState extends State<SwipeCard> {
     // createComputeFunction();
 
     // addColor(widget.clipObject);
+
     setState(() {
       isLiked = widget.clipObject['isLiked'];
       ifFollowed = widget.clipObject['ifFollowed'];

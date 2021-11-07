@@ -1385,23 +1385,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
       appBar: AppBar(
         shadowColor: Color(0xff161616),
         toolbarHeight: MediaQuery.of(context).size.height / 10,
-
         automaticallyImplyLeading: false,
-        // leading: CachedNetworkImage(
-        //   imageUrl: episodeObject.episodeObject['image'] == null
-        //       ? episodeObject.episodeObject['podcast_image']
-        //       : episodeObject.episodeObject['image'],
-        //   imageBuilder: (context, imageProvider) {
-        //     return Container(
-        //       decoration: BoxDecoration(
-        //           borderRadius: BorderRadius.circular(10),
-        //           image:
-        //               DecorationImage(image: imageProvider, fit: BoxFit.cover)),
-        //       width: MediaQuery.of(context).size.width / 2,
-        //       height: MediaQuery.of(context).size.width / 2,
-        //     );
-        //   },
-        // ),
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CachedNetworkImage(
@@ -1509,8 +1493,6 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                       );
                     }
                   }
-
-                  // return SelectableText("${widget.transcript}");
                 },
                 itemScrollController: itemScrollController,
                 itemPositionsListener: itemPositionsListener,
@@ -2739,59 +2721,6 @@ class _ClipScreenState extends State<ClipScreen> {
     );
   }
 }
-
-// class SnippetScreen extends StatefulWidget {
-//   var snippetObject;
-//
-//   SnippetScreen({@required this.snippetObject});
-//
-//   @override
-//   _SnippetScreenState createState() => _SnippetScreenState();
-// }
-
-// class _SnippetScreenState extends State<SnippetScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: NestedScrollView(
-//           physics: BouncingScrollPhysics(),
-//           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-//             return <Widget>[
-//               SliverAppBar(
-//                 pinned: true,
-//                 leading: IconButton(
-//                   icon: Icon(Icons.close),
-//                 ),
-//               )
-//             ];
-//           },
-//           body: Padding(
-//             padding: const EdgeInsets.all(15),
-//             child: Container(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(vertical: 20),
-//                     child: Text(
-//                       "Title Come here",
-//                       textScaleFactor: 1.0,
-//                       style: TextStyle(
-//                           fontSize: SizeConfig.safeBlockHorizontal * 7),
-//                     ),
-//                   ),
-//                   Text(
-//                     "Snippet",
-//                     style: TextStyle(color: Color(0xffe8e8e8).withOpacity(0.5)),
-//                   ),
-//                   Text("${widget.snippetObject['']}")
-//                 ],
-//               ),
-//             ),
-//           )),
-//     );
-//   }
-// }
 
 class EditClip extends StatefulWidget {
   var episodeDetails;

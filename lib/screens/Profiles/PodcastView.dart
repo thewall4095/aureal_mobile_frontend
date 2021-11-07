@@ -547,14 +547,14 @@ class _PodcastViewState extends State<PodcastView> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: InkWell(
                                             onTap: () {
-                                              Navigator.push(context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) {
-                                                return PublicProfile(
-                                                  userId:
-                                                      podcastData['user_id'],
-                                                );
-                                              }));
+                                              // Navigator.push(context,
+                                              //     CupertinoPageRoute(
+                                              //         builder: (context) {
+                                              //   return PublicProfile(
+                                              //     userId:
+                                              //         podcastData['user_id'],
+                                              //   );
+                                              // }));
                                             },
                                             child: Text(
                                               podcastData['author'],
