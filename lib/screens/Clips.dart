@@ -153,7 +153,11 @@ class _ClipsState extends State<Clips> {
 
     _pageController.addListener(() {
       if (currentIndex == snippets.length) {
-        getAllSnippetsWOCategory();
+        if (selectedCategory == 30) {
+          getAllSnippetsWOCategory();
+        } else {
+          getAllSnippets(selectedCategory);
+        }
       }
     });
   }
@@ -179,7 +183,7 @@ class _ClipsState extends State<Clips> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/discoverSnippets?user_id=${prefs.getString('userId')}&page=$page";
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page";
     print(url);
 
     try {
@@ -212,16 +216,22 @@ class _ClipsState extends State<Clips> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/discoverSnippets?user_id=${prefs.getString('userId')}&page=$page&category_id=$categoryId";
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&category_id=$categoryId";
     print(url);
 
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
+        if (page == 0) {
+          setState(() {
+            snippets = jsonDecode(response.body)['snippets'];
+          });
+        } else {
+          setState(() {
+            snippets = snippets + jsonDecode(response.body)['snippets'];
+          });
+        }
         print(response.body);
-        setState(() {
-          snippets = jsonDecode(response.body)['snippets'];
-        });
       } else {
         print(response.statusCode);
       }
@@ -487,7 +497,7 @@ class _SwipeCardState extends State<SwipeCard> {
 
     setState(() {
       isLiked = widget.clipObject['isLiked'];
-      ifFollowed = widget.clipObject['ifFollowed'];
+      ifFollowed = widget.clipObject['ifFollows'];
     });
     super.initState();
   }
@@ -503,18 +513,6 @@ class _SwipeCardState extends State<SwipeCard> {
 
   PaletteGenerator palette;
   int index;
-
-  // Future addColor(clipObject) async {
-  //   final PaletteGenerator pg = await PaletteGenerator.fromImageProvider(
-  //       NetworkImage(widget.clipObject['image']),
-  //       size: Size(20, 20));
-  //
-  //   setState(() {
-  //     palette = pg;
-  //   });
-  // }
-
-  // Isolate implementation for Color Calculation
 
   Future createIsolate() async {
     ReceivePort receiveport = ReceivePort();
