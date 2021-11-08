@@ -170,6 +170,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "double_back_to_close_app",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/double_back_to_close_app-2.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "expandable",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/expandable-5.0.1",
       "packageUri": "lib/",
@@ -1124,7 +1130,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-10-25T18:22:30.535976Z",
+  "generated": "2021-11-08T20:43:58.069672Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }

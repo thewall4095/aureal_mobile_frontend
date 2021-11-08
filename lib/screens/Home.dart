@@ -14,6 +14,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -713,7 +714,11 @@ class _HomeState extends State<Home> {
       ),
       bottomSheet: _selectedIndex == 0 ? SizedBox() : BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      body: _createPage(context, _selectedIndex),
+      body: DoubleBackToCloseApp(
+          snackBar: const SnackBar(
+            content: Text('Tap back again to leave'),
+          ),
+          child: _createPage(context, _selectedIndex)),
     );
   }
 }

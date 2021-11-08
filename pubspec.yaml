@@ -74,6 +74,7 @@ dependencies:
   share:  any
   scrollable_positioned_list: any
   animated_text_kit: ^4.2.1
+  double_back_to_close_app: ^2.0.1
 #  in_app_update: any
 #  flutter_image_compress: ^1.0.0
   webview_flutter: ^2.0.12
