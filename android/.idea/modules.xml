@@ -58,7 +58,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/439600407/android.wakelock.iml" filepath="$PROJECT_DIR$/.idea/modules/439600407/android.wakelock.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1031168579/android.wakelock_macos.iml" filepath="$PROJECT_DIR$/.idea/modules/1031168579/android.wakelock_macos.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1556493595/android.wakelock_web.iml" filepath="$PROJECT_DIR$/.idea/modules/-1556493595/android.wakelock_web.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/699311011/android.webview_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/699311011/android.webview_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2143720561/android.webview_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/2143720561/android.webview_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/91481313/android.webview_flutter_android.iml" filepath="$PROJECT_DIR$/.idea/modules/91481313/android.webview_flutter_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1159654934/android.webview_flutter_wkwebview.iml" filepath="$PROJECT_DIR$/.idea/modules/1159654934/android.webview_flutter_wkwebview.iml" />
     </modules>
   </component>
 </project>

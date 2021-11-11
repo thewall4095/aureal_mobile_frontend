@@ -313,6 +313,7 @@ class _PodcastViewState extends State<PodcastView> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
+      backgroundColor: Color(0xff161616),
       body: CustomScrollView(
         controller: _controller,
         physics: const BouncingScrollPhysics(),
@@ -400,7 +401,7 @@ class _PodcastViewState extends State<PodcastView> {
                 decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
                   Color(dominantColor == null ? 0xff3a3a3a : dominantColor),
-                  Colors.transparent
+                  Color(0xff161616)
                 ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
                 child: podcastData == null
                     ? Padding(

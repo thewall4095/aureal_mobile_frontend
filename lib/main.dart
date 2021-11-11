@@ -228,8 +228,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-    ));
+        // statusBarColor: Colors.transparent,
+        ));
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);

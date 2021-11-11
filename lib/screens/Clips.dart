@@ -36,8 +36,6 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
-import 'dart:ui';
-
 import 'package:assets_audio_player/assets_audio_player.dart';
 
 import 'package:flutter/rendering.dart';
@@ -974,6 +972,12 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -1080,6 +1084,7 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
             child: isPodcastListLoading == true
                 ? Container()
                 : Container(
+                    height: MediaQuery.of(context).size.height,
                     child: ListView(
                       shrinkWrap: true,
                       children: [
@@ -1207,6 +1212,7 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
       ),
       body: Container(
         child: ListView(
+          shrinkWrap: true,
           controller: _controller,
           children: [
             for (var v in episodeList)

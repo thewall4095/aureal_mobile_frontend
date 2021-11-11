@@ -5,6 +5,7 @@ import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_twitter/flutter_twitter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -289,11 +290,15 @@ class _WelcomeState extends State<Welcome> {
                   InkWell(
                     onTap: () {
                       print("Hive Signer Activated");
-                      showBarModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return HiveAccount();
-                          });
+                      // showBarModalBottomSheet(
+                      //     context: context,
+                      //     builder: (context) {
+                      //       return HiveAccount();
+                      //     });
+                      Navigator.push(context,
+                          CupertinoPageRoute(builder: (context) {
+                        return HiveAccount();
+                      }));
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.7,
