@@ -709,29 +709,26 @@ class _PublicProfileState extends State<PublicProfile>
             ///LiveRoom
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: userRoom == null
-                  ?
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [  for (var v in podcastList)
-                    Container(
-                      child: ListTile(
-                        title:   Transform.translate(
-                        offset: Offset(-16, 0),
-                        child: Text("${v['author']} has no Live Room yet.!")),
-                        leading:  Icon(Icons.stream,color: Colors.blue,),
-
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      height: MediaQuery.of(context).size.height/15,
-                      width: MediaQuery.of(context).size.width,
+              child: userRoom == null ?
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [  for (var v in podcastList)
+                  Container(
+                    child: ListTile(
+                      title:   Transform.translate(
+                      offset: Offset(-16, 0),
+                      child: Text("${v['author']} has no Live Room yet.!")),
+                      leading:  Icon(Icons.stream,color: Colors.blue,),
                     ),
-                  ],
-                ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: MediaQuery.of(context).size.height/15,
+                    width: MediaQuery.of(context).size.width,
+                  ),
+                ],
               )
                   : ListView(
                       scrollDirection: Axis.vertical,
@@ -806,9 +803,7 @@ class _PublicProfileState extends State<PublicProfile>
                                                     ),
                                                 ],
                                               ),
-                                              SizedBox(
-                                                height: 20,
-                                              )
+
                                             ],
                                           ),
                                         );
@@ -827,7 +822,7 @@ class _PublicProfileState extends State<PublicProfile>
                                 ),
                                 width: double.infinity,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(5.0),
                                   child: Row(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
@@ -838,11 +833,11 @@ class _PublicProfileState extends State<PublicProfile>
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height /
-                                                12,
+                                                15,
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width /
-                                                5.2,
+                                                5,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
@@ -877,7 +872,7 @@ class _PublicProfileState extends State<PublicProfile>
                                         },
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 20 ,vertical: 10),
+                                        padding: const EdgeInsets.symmetric(horizontal:5 ,vertical: 10),
                                         child: Container(
                                           width: MediaQuery.of(context)
                                                   .size
