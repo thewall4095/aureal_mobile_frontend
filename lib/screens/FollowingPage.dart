@@ -283,11 +283,6 @@ class _FollowingPageState extends State<FollowingPage>
                                 for (var v in categories.categoryList)
                                   GestureDetector(
                                     onTap: () {
-                                      // Navigator.push(
-                                      //     context,
-                                      //     CupertinoPageRoute(
-                                      //         widget: CategoryView(
-                                      //             categoryObject: v)));
                                       Navigator.push(context,
                                           CupertinoPageRoute(
                                               builder: (context) {
@@ -344,7 +339,25 @@ class _FollowingPageState extends State<FollowingPage>
                 Container(
                   child: WidgetANimator(
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Your Favourites",
+                            textScaleFactor: mediaQueryData
+                                .textScaleFactor
+                                .clamp(0.5, 1.3)
+                                .toDouble(),
+                            style: TextStyle(
+                              //    color: Color(0xffe8e8e8),
+                                fontSize:
+                                SizeConfig.safeBlockHorizontal *
+                                    7,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                         favPodcast.length == 0 || favPodcast.length == null
                             ? Container(
                           width: double.infinity,
@@ -360,11 +373,14 @@ class _FollowingPageState extends State<FollowingPage>
                                     child: Column(
                                       children: [
                                         Container(
-                                          decoration: BoxDecoration(
+                                         child:Icon(Icons.add),
+                                          decoration:
+                                          BoxDecoration(
                                               borderRadius:
                                               BorderRadius.circular(
                                                   10),
-                                              color: Color(0xff222222)),
+                                              color: Color(0xff222222),
+                                          ),
                                           width: MediaQuery.of(context)
                                               .size
                                               .width /
@@ -373,6 +389,7 @@ class _FollowingPageState extends State<FollowingPage>
                                               .size
                                               .width /
                                               4,
+
                                         ),
                                         Padding(
                                           padding:
