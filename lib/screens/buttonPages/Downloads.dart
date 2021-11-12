@@ -8,7 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,8 +42,8 @@ class _DownloadPageState extends State<DownloadPage>
   var storedepisodes = [];
   var tasks = [];
   void getDownloadTasks() async {
-    tasks = await FlutterDownloader.loadTasks();
-    print(tasks.toString());
+    // tasks = await FlutterDownloader.loadTasks();
+    // print(tasks.toString());
     // print(tasks[0].progress);
     print('aaaaaaaaaaa');
   }
