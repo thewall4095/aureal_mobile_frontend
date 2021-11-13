@@ -342,22 +342,6 @@ class _FollowingPageState extends State<FollowingPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Your Favourites",
-                            textScaleFactor: mediaQueryData
-                                .textScaleFactor
-                                .clamp(0.5, 1.3)
-                                .toDouble(),
-                            style: TextStyle(
-                              //    color: Color(0xffe8e8e8),
-                                fontSize:
-                                SizeConfig.safeBlockHorizontal *
-                                    7,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
                         favPodcast.length == 0 || favPodcast.length == null
                             ? Container(
                           width: double.infinity,
@@ -433,7 +417,8 @@ class _FollowingPageState extends State<FollowingPage>
                                     ),
                                   ),
                                 )
-                        ): Container(
+                        ):
+                        Container(
                           width: double.infinity,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
