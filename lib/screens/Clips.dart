@@ -89,23 +89,23 @@ class _ClipsState extends State<Clips> {
     setState(() {
       homeData = discoverData.discoverList;
     });
-    for (var v in homeData) {
-      if (v['Key'] == 'general_episode') {
-        setState(() {
-          recentlyPlayed = v['data'];
-          print(recentlyPlayed);
-          for (var v in recentlyPlayed) {
-            getColor(v['image']).then((value) {
-              setState(() {
-                tileColor.add(value.dominantColor.color);
-              });
-            });
-            v['isLoading'] = false;
-          }
-          print(tileColor);
-        });
-      }
-    }
+    // for (var v in homeData) {
+    //   if (v['Key'] == 'general_episode') {
+    //     setState(() {
+    //       recentlyPlayed = v['data'];
+    //       print(recentlyPlayed);
+    //       for (var v in recentlyPlayed) {
+    //         getColor(v['image']).then((value) {
+    //           setState(() {
+    //             tileColor.add(value.dominantColor.color);
+    //           });
+    //         });
+    //         v['isLoading'] = false;
+    //       }
+    //       print(tileColor);
+    //     });
+    //   }
+    // }
   }
 
   int page = 0;
@@ -120,9 +120,15 @@ class _ClipsState extends State<Clips> {
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        setState(() {
-          snippets = jsonDecode(response.body)['snippets'];
-        });
+        if (page == 0) {
+          setState(() {
+            snippets = jsonDecode(response.body)['snippets'];
+          });
+        } else {
+          setState(() {
+            snippets = snippets + jsonDecode(response.body)['snippets'];
+          });
+        }
       } else {
         print(response.statusCode);
       }
@@ -150,7 +156,7 @@ class _ClipsState extends State<Clips> {
     super.initState();
 
     _pageController.addListener(() {
-      if (currentIndex == snippets.length) {
+      if (currentIndex == snippets.length - 1) {
         if (selectedCategory == 30) {
           getAllSnippetsWOCategory();
         } else {
@@ -191,10 +197,12 @@ class _ClipsState extends State<Clips> {
         if (page == 0) {
           setState(() {
             snippets = jsonDecode(response.body)['snippets'];
+            page = page + 1;
           });
         } else {
           setState(() {
             snippets = snippets + jsonDecode(response.body)['snippets'];
+            page = page + 1;
           });
         }
       } else {
@@ -223,10 +231,12 @@ class _ClipsState extends State<Clips> {
         if (page == 0) {
           setState(() {
             snippets = jsonDecode(response.body)['snippets'];
+            page = page + 1;
           });
         } else {
           setState(() {
             snippets = snippets + jsonDecode(response.body)['snippets'];
+            page = page + 1;
           });
         }
         print(response.body);
@@ -595,6 +605,7 @@ class _SwipeCardState extends State<SwipeCard> {
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
@@ -648,33 +659,37 @@ class _SwipeCardState extends State<SwipeCard> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              widget.audioPlayer.builderRealtimePlayingInfos(
-                                  builder: (context, infos) {
-                                if (infos.isPlaying == true) {
-                                  return InkWell(
-                                      onTap: () {
-                                        widget.audioPlayer.pause();
-                                      },
-                                      child: Icon(Icons.pause_circle_filled,
-                                          color: Color(0xffe8e8e8)));
-                                }
-                                if (infos.isBuffering == true) {
-                                  return SizedBox(
-                                      width: 15,
-                                      height: 15,
-                                      child: CircularProgressIndicator(
-                                        color: Color(0xffe8e8e8),
-                                        strokeWidth: 1,
-                                      ));
-                                } else {
-                                  return InkWell(
-                                      onTap: () {
-                                        widget.audioPlayer.play();
-                                      },
-                                      child: Icon(Icons.play_circle_fill,
-                                          color: Color(0xffe8e8e8)));
-                                }
-                              }),
+                              widget.play != true
+                                  ? SizedBox()
+                                  : widget.audioPlayer
+                                      .builderRealtimePlayingInfos(
+                                          builder: (context, infos) {
+                                      if (infos.isPlaying == true) {
+                                        return InkWell(
+                                            onTap: () {
+                                              widget.audioPlayer.pause();
+                                            },
+                                            child: Icon(
+                                                Icons.pause_circle_filled,
+                                                color: Color(0xffe8e8e8)));
+                                      }
+                                      if (infos.isBuffering == true) {
+                                        return SizedBox(
+                                            width: 15,
+                                            height: 15,
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xffe8e8e8),
+                                              strokeWidth: 1,
+                                            ));
+                                      } else {
+                                        return InkWell(
+                                            onTap: () {
+                                              widget.audioPlayer.play();
+                                            },
+                                            child: Icon(Icons.play_circle_fill,
+                                                color: Color(0xffe8e8e8)));
+                                      }
+                                    }),
                               // Text(
                               //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
                             ],
@@ -1045,51 +1060,9 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
                     shrinkWrap: true,
                     children: [
                       for (var v in searchResults.toSet().toList())
-                        ListTile(
-                          onTap: () {
-                            Navigator.push(context,
-                                CupertinoPageRoute(builder: (context) {
-                              return PodcastDetailsSnippets(
-                                podcastObject: v,
-                              );
-                            }));
-                          },
-                          leading: SizedBox(
-                            height: 60,
-                            width: 60,
-                            child: CachedNetworkImage(
-                              imageUrl: v['image'],
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          title: Text("${v['name']}"),
-                        ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          ModalProgressHUD(
-            inAsyncCall: isPodcastListLoading,
-            child: isPodcastListLoading == true
-                ? Container()
-                : Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        for (var v in podcastList)
-                          ListTile(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: ListTile(
                             onTap: () {
                               Navigator.push(context,
                                   CupertinoPageRoute(builder: (context) {
@@ -1116,6 +1089,57 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
                               ),
                             ),
                             title: Text("${v['name']}"),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          ModalProgressHUD(
+            inAsyncCall: isPodcastListLoading,
+            child: isPodcastListLoading == true
+                ? Container()
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (var v in podcastList)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return PodcastDetailsSnippets(
+                                    podcastObject: v,
+                                  );
+                                }));
+                              },
+                              leading: SizedBox(
+                                height: 60,
+                                width: 60,
+                                child: CachedNetworkImage(
+                                  memCacheHeight:
+                                      (MediaQuery.of(context).size.width / 2)
+                                          .floor(),
+                                  imageUrl: v['image'],
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              title: Text("${v['name']}"),
+                            ),
                           )
                       ],
                     ),
@@ -1139,11 +1163,14 @@ class PodcastDetailsSnippets extends StatefulWidget {
 class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
   int pageNumber = 0;
   List episodeList = [];
-  bool episodeListLoading;
+  bool episodeListLoading = true;
 
   ScrollController _controller;
 
   void getEpisodes() async {
+    setState(() {
+      episodeListLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/episode?podcast_id=${widget.podcastObject['id']}&user_id=${prefs.getString('userId')}&page=$pageNumber';
@@ -1188,6 +1215,7 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.close_rounded),
@@ -1210,90 +1238,103 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
           ),
         ),
       ),
-      body: Container(
-        child: ListView(
-          shrinkWrap: true,
-          controller: _controller,
+      body: ModalProgressHUD(
+        inAsyncCall: episodeListLoading,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            for (var v in episodeList)
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                width: double.infinity,
-                child: ListTile(
-                  leading: SizedBox(
-                    child: CachedNetworkImage(
-                      imageUrl: v['image'],
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover)),
-                        );
-                      },
-                    ),
-                  ),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                controller: _controller,
+                children: [
+                  for (var v in episodeList)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      width: double.infinity,
+                      child: ListTile(
+                        leading: SizedBox(
+                          child: CachedNetworkImage(
+                            memCacheHeight:
+                                (MediaQuery.of(context).size.height / 3)
+                                    .floor(),
+                            imageUrl: v['image'],
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover)),
+                              );
+                            },
+                          ),
+                        ),
 
-                  onTap: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) {
-                      return SnippetEditor(
-                        episodeObject: v,
-                      );
-                    }));
-                  },
-                  //
-                  title: Text(
-                    v['name'],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    textScaleFactor: 1.0,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        //       color: Colors.white,
-                        fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                  ),
-                  subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        v['summary'] == null
-                            ? SizedBox(
-                                height: 20,
-                              )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: htmlMatch.hasMatch(v['summary']) == true
-                                    ? Text(
-                                        '${(parse(v['summary']).body.text)}',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            //       color: Colors.grey,
-                                            fontSize:
-                                                SizeConfig.blockSizeHorizontal *
-                                                    3),
-                                      )
-                                    : Text(
-                                        v['summary'],
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            //         color: Colors.grey,
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    3),
-                                      ),
-                              ),
-                      ]),
-                ),
+                        onTap: () {
+                          Navigator.push(context,
+                              CupertinoPageRoute(builder: (context) {
+                            return SnippetEditor(
+                              episodeObject: v,
+                            );
+                          }));
+                        },
+                        //
+                        title: Text(
+                          v['name'],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              //       color: Colors.white,
+                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                        ),
+                        subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              v['summary'] == null
+                                  ? SizedBox(
+                                      height: 20,
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
+                                      child: htmlMatch.hasMatch(v['summary']) ==
+                                              true
+                                          ? Text(
+                                              '${(parse(v['summary']).body.text)}',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  //       color: Colors.grey,
+                                                  fontSize: SizeConfig
+                                                          .blockSizeHorizontal *
+                                                      3),
+                                            )
+                                          : Text(
+                                              v['summary'],
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  //         color: Colors.grey,
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      3),
+                                            ),
+                                    ),
+                            ]),
+                      ),
+                    ),
+                ],
               ),
+            ),
           ],
         ),
       ),
