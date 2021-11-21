@@ -115,15 +115,15 @@ class _FollowingPageState extends State<FollowingPage>
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
+        print(response.body);
         if (followedPodPageNumber == 0) {
           setState(() {
-            favPodcast = jsonDecode(response.body)['PodcastResult'];
+            favPodcast = jsonDecode(response.body)['podcasts'];
             followedPodPageNumber = followedPodPageNumber + 1;
           });
         } else {
           setState(() {
-            favPodcast =
-                favPodcast + jsonDecode(response.body)['PodcastResult'];
+            favPodcast = favPodcast + jsonDecode(response.body)['podcasts'];
             followedPodPageNumber = followedPodPageNumber + 1;
           });
         }
@@ -358,7 +358,7 @@ class _FollowingPageState extends State<FollowingPage>
                         //         fontWeight: FontWeight.bold),
                         //   ),
                         // ),
-                        favPodcast.length == 0 || favPodcast.length == null
+                        favPodcast == null
                             ? Container(
                                 width: double.infinity,
                                 height: MediaQuery.of(context).size.height / 5,
