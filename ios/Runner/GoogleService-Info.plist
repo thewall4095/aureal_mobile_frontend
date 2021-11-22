@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>206317282199-usl7l3csgnke0qqsjp82tqevtt5hnqvs.apps.googleusercontent.com</string>
+	<string>206317282199-thakjh70n7sjt09i1rgpt2uuqdthm9ul.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.206317282199-usl7l3csgnke0qqsjp82tqevtt5hnqvs</string>
+	<string>com.googleusercontent.apps.206317282199-thakjh70n7sjt09i1rgpt2uuqdthm9ul</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>206317282199-8tq5n5ocan2roc6r2vaig9kj11hquca1.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.titandlt.auditory</string>
+	<string>co.titandlt.aureal</string>
 	<key>PROJECT_ID</key>
 	<string>aureal-3a2b1</string>
 	<key>STORAGE_BUCKET</key>
