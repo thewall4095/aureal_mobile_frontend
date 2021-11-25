@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/buttonPages/search.dart';
+import 'package:auditory/utilities/Share.dart';
 import 'dart:io';
 import 'package:html/parser.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
@@ -64,38 +66,6 @@ class _PublicProfileState extends State<PublicProfile>
   postreq.Interceptor intercept = postreq.Interceptor();
 
   bool ifFollowed;
-
-  List following = [];
-
-  void getUserFollowing() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String url =
-    //     "https://api.aureal.one/public/getUserFollowers?user_id=${widget.userId}&loggedinuser=${prefs.getString('userId')}&page=$followingPage";
-
-    String url =
-        "https://api.aureal.one/public/getUserFollowing?user_id=f1ed5945e452fb48eee81acee66658c1&loggedinuser=${prefs.getString('userId')}";
-    try {
-      var response = await dio.get(url);
-      print(response.data);
-      if (response.statusCode == 200) {
-        if (followingPage == 0) {
-          setState(() {
-            following = response.data['users'];
-            followingPage += 1;
-          });
-        } else {
-          setState(() {
-            following = following + response.data['users'];
-            followingPage += 1;
-          });
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  int followingPage = 0;
 
   void follow() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -311,7 +281,9 @@ class _PublicProfileState extends State<PublicProfile>
                                     showBarModalBottomSheet(
                                         context: context,
                                         builder: (context) {
-                                          return Followers();
+                                          return Followers(
+                                            userId: widget.userId,
+                                          );
                                         });
                                   },
                                   child: Column(
@@ -346,17 +318,8 @@ class _PublicProfileState extends State<PublicProfile>
                                     showBarModalBottomSheet(
                                         context: context,
                                         builder: (context) {
-                                          return Scaffold(
-                                            appBar: AppBar(
-                                              title: Text(
-                                                "Followers",
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        4),
-                                              ),
-                                            ),
+                                          return Folllowing(
+                                            userId: widget.userId,
                                           );
                                         });
                                   },
@@ -427,7 +390,7 @@ class _PublicProfileState extends State<PublicProfile>
     // TODO: implement initState
 
     // getUserFollowers();
-    getUserFollowing();
+    // getUserFollowing();
 
     _episodeScrollController = ScrollController();
     subscriptionController = ScrollController();
@@ -1250,7 +1213,7 @@ class _PublicProfileState extends State<PublicProfile>
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                // share(episodeObject: v);
+                                                share(episodeObject: v);
                                               },
                                               child: Icon(
                                                 Icons.ios_share,
@@ -1533,6 +1496,10 @@ void addRoomParticipant({String roomid}) async {
 }
 
 class Followers extends StatefulWidget {
+  String userId;
+
+  Followers({@required this.userId});
+
   @override
   _FollowersState createState() => _FollowersState();
 }
@@ -1548,7 +1515,7 @@ class _FollowersState extends State<Followers> {
     // String url =
     //     "https://api.aureal.one/public/getUserFollowers?user_id=${widget.userId}&loggedinuser=${prefs.getString('userId')}&page=$followerPage";
     String url =
-        "https://api.aureal.one/public/getUserFollowers?user_id=92f9f9109e34c5dadc1874f0272ae0ee&loggedinuser=${prefs.getString("userId")}";
+        "https://api.aureal.one/public/getUserFollowers?user_id=${widget.userId}&loggedinuser=${prefs.getString("userId")}&page=$followerPage";
 
     try {
       var response = await dio.get(url);
@@ -1571,11 +1538,22 @@ class _FollowersState extends State<Followers> {
     }
   }
 
+  ScrollController followerController;
+
   @override
   void initState() {
+    followerController = ScrollController();
+
     getUserFollowers();
     // TODO: implement initState
     super.initState();
+
+    followerController.addListener(() {
+      if (followerController.position.pixels ==
+          followerController.position.maxScrollExtent) {
+        getUserFollowers();
+      }
+    });
   }
 
   @override
@@ -1593,7 +1571,284 @@ class _FollowersState extends State<Followers> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: ListView(
-          children: [],
+          controller: followerController,
+          children: [
+            for (var v in followers)
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
+                      return PublicProfile(
+                        userId: v['id'],
+                      );
+                    }));
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: v['img'] == null
+                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  : v['img'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.width / 6,
+                                  width: MediaQuery.of(context).size.width / 6,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
+                                );
+                              },
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${v['username']}",
+                                      textScaleFactor: 1.0,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    v['fullname'] == null
+                                        ? SizedBox()
+                                        : Text(
+                                            "${v['fullname']}",
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8)
+                                                    .withOpacity(0.5),
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3),
+                                          )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          followUser(authorUserId: v['id']);
+                          setState(() {
+                            v['ifFollowsAuthor'] = !v['ifFollowsAuthor'];
+                          });
+                        },
+                        icon: v['ifFollowsAuthor'] == true
+                            ? Icon(
+                                Icons.verified_user,
+                                color: Color(0xffe8e8e8),
+                              )
+                            : Icon(
+                                Icons.person_add,
+                                color: Color(0xffe8e8e8),
+                              ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Folllowing extends StatefulWidget {
+  String userId;
+
+  Folllowing({@required this.userId});
+
+  @override
+  _FolllowingState createState() => _FolllowingState();
+}
+
+class _FolllowingState extends State<Folllowing> {
+  Dio dio = Dio();
+
+  List following = [];
+
+  void getUserFollowing() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String url =
+    //     "https://api.aureal.one/public/getUserFollowers?user_id=${widget.userId}&loggedinuser=${prefs.getString('userId')}&page=$followingPage";
+
+    String url =
+        "https://api.aureal.one/public/getUserFollowing?user_id=${widget.userId}&loggedinuser=${prefs.getString('userId')}&page=$followingPage";
+    try {
+      var response = await dio.get(url);
+      print(response.data);
+      if (response.statusCode == 200) {
+        if (followingPage == 0) {
+          setState(() {
+            following = response.data['users'];
+            followingPage += 1;
+          });
+        } else {
+          setState(() {
+            following = following + response.data['users'];
+            followingPage += 1;
+          });
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  int followingPage = 0;
+
+  ScrollController followingController;
+
+  @override
+  void initState() {
+    followingController = ScrollController();
+    // TODO: implement initState
+    getUserFollowing();
+    super.initState();
+
+    followingController.addListener(() {
+      if (followingController.position.pixels ==
+          followingController.position.maxScrollExtent) {
+        getUserFollowing();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          "Following",
+          textScaleFactor: 1.0,
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+        ),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: ListView(
+          controller: followingController,
+          children: [
+            for (var v in following)
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        CupertinoPageRoute(builder: (context) {
+                      return PublicProfile(
+                        userId: v['id'],
+                      );
+                    }));
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: v['img'] == null
+                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  : v['img'],
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  height: MediaQuery.of(context).size.width / 6,
+                                  width: MediaQuery.of(context).size.width / 6,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover)),
+                                );
+                              },
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${v['username']}",
+                                      textScaleFactor: 1.0,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Color(0xffe8e8e8),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    v['fullname'] == null
+                                        ? SizedBox()
+                                        : Text(
+                                            "${v['fullname']}",
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8)
+                                                    .withOpacity(0.5),
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3),
+                                          )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          followUser(authorUserId: v['id']);
+                          setState(() {
+                            v['ifFollowsAuthor'] = !v['ifFollowsAuthor'];
+                          });
+                        },
+                        icon: v['ifFollowsAuthor'] == true
+                            ? Icon(
+                                Icons.verified_user,
+                                color: Color(0xffe8e8e8),
+                              )
+                            : Icon(
+                                Icons.person_add,
+                                color: Color(0xffe8e8e8),
+                              ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+          ],
         ),
       ),
     );
