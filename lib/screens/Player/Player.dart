@@ -13,6 +13,7 @@ import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -419,11 +420,22 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8),
-                              child: Text(
-                                '${episodeObject.episodeObject['author']}',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return PublicProfile(
+                                      userId: episodeObject
+                                          .episodeObject['user_id'],
+                                    );
+                                  }));
+                                },
+                                child: Text(
+                                  '${episodeObject.episodeObject['author']}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                             ),
