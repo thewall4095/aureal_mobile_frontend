@@ -235,102 +235,109 @@ class _MyAppState extends State<MyApp> {
     ]);
 
     return ChangeNotifierProvider(
-        create: (context) => SearchProvider(),
-        child: ChangeNotifierProvider(
-          create: (context) => SelectedCommunityProvider(),
-          // child:   ChangeNotifierProvider(
-          //    create: (context) => FileDownloaderProvider(),
+      create: (context) => SearchResultProvider(),
+      child: ChangeNotifierProvider(
+          create: (context) => SearchProvider(),
           child: ChangeNotifierProvider(
-            create: (context) => CommunityProvider(),
+            create: (context) => SelectedCommunityProvider(),
+            // child:   ChangeNotifierProvider(
+            //    create: (context) => FileDownloaderProvider(),
             child: ChangeNotifierProvider(
-                create: (context) => CategoriesProvider(),
-                child: ChangeNotifierProvider(
-                    create: (context) => DiscoverProvider(),
-                    child: ChangeNotifierProvider(
-                      create: (context) => BrowseProvider(),
+              create: (context) => CommunityProvider(),
+              child: ChangeNotifierProvider(
+                  create: (context) => CategoriesProvider(),
+                  child: ChangeNotifierProvider(
+                      create: (context) => DiscoverProvider(),
                       child: ChangeNotifierProvider(
-                          create: (context) => PlayerChange(),
-                          child: Provider(
-                              create: (context) => AuthBloc(),
-                              child: ChangeNotifierProvider(
-                                create: (context) => SortFilterPreferences(),
-                                child: MaterialApp(
-                                  debugShowCheckedModeBanner: false,
-                                  navigatorKey: navigatorKey,
+                        create: (context) => BrowseProvider(),
+                        child: ChangeNotifierProvider(
+                            create: (context) => PlayerChange(),
+                            child: Provider(
+                                create: (context) => AuthBloc(),
+                                child: ChangeNotifierProvider(
+                                  create: (context) => SortFilterPreferences(),
+                                  child: MaterialApp(
+                                    debugShowCheckedModeBanner: false,
+                                    navigatorKey: navigatorKey,
 
-                                  title: 'Aureal',
-                                  theme: widget.themeProvider.themeData(),
-                                  home: SplashScreenPage(),
-                                  // home: TemporaryError(),
-                                  // initialRoute: HiveAccount.id,
-                                  routes: {
-                                    PostRSSFeed.id: (context) => PostRSSFeed(),
-                                    //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
-                                    PopError.id: (context) => PopError(),
+                                    title: 'Aureal',
+                                    theme: widget.themeProvider.themeData(),
+                                    home: SplashScreenPage(),
+                                    // home: TemporaryError(),
+                                    // initialRoute: HiveAccount.id,
+                                    routes: {
+                                      PostRSSFeed.id: (context) =>
+                                          PostRSSFeed(),
+                                      //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
+                                      PopError.id: (context) => PopError(),
 
-                                    // Recorder.id: (context) => Recorder(),
-                                    Home.id: (context) => Home(),
-                                    RecorderDashboard.id: (context) =>
-                                        RecorderDashboard(),
-                                    Messages.id: (context) => Messages(),
-                                    Search.id: (context) => Search(),
-                                    Profile.id: (context) => Profile(),
-                                    DownloadPage.id: (context) =>
-                                        DownloadPage(),
-                                    NotificationPage.id: (context) =>
-                                        NotificationPage(),
-                                    Login.id: (context) => Login(),
-                                    SignUp.id: (context) => SignUp(),
-                                    Player.id: (context) => Player(),
-                                    Welcome.id: (context) => Welcome(),
-                                    Profile.id: (context) => Profile(),
-                                    Settings.id: (context) => Settings(),
-                                    AccountSettings.id: (context) =>
-                                        AccountSettings(),
-                                    Notifications.id: (context) =>
-                                        Notifications(),
-                                    MobileNotifications.id: (context) =>
-                                        MobileNotifications(),
-                                    EmailNotifications.id: (context) =>
-                                        EmailNotifications(),
-                                    Security.id: (context) => Security(),
-                                    SoundEditor.id: (context) => SoundEditor(),
-                                    CreatePodcast.id: (context) =>
-                                        CreatePodcast(),
+                                      // Recorder.id: (context) => Recorder(),
+                                      Home.id: (context) => Home(),
+                                      RecorderDashboard.id: (context) =>
+                                          RecorderDashboard(),
+                                      Messages.id: (context) => Messages(),
+                                      // Search.id: (context) => Search(),
+                                      Profile.id: (context) => Profile(),
+                                      DownloadPage.id: (context) =>
+                                          DownloadPage(),
+                                      NotificationPage.id: (context) =>
+                                          NotificationPage(),
+                                      Login.id: (context) => Login(),
+                                      SignUp.id: (context) => SignUp(),
+                                      Player.id: (context) => Player(),
+                                      Welcome.id: (context) => Welcome(),
+                                      Profile.id: (context) => Profile(),
+                                      Settings.id: (context) => Settings(),
+                                      AccountSettings.id: (context) =>
+                                          AccountSettings(),
+                                      Notifications.id: (context) =>
+                                          Notifications(),
+                                      MobileNotifications.id: (context) =>
+                                          MobileNotifications(),
+                                      EmailNotifications.id: (context) =>
+                                          EmailNotifications(),
+                                      Security.id: (context) => Security(),
+                                      SoundEditor.id: (context) =>
+                                          SoundEditor(),
+                                      CreatePodcast.id: (context) =>
+                                          CreatePodcast(),
 
-                                    Wrapper.id: (context) => Wrapper(),
-                                    Bio.id: (context) => Bio(),
-                                    Presence.id: (context) => Presence(),
-                                    SelectLanguage.id: (context) =>
-                                        SelectLanguage(),
-                                    OnboardingCategories.id: (context) =>
-                                        OnboardingCategories(),
-                                    SelectPodcast.id: (context) =>
-                                        SelectPodcast(),
-                                    TemporaryError.id: (context) =>
-                                        TemporaryError(),
-                                    HiveAccount.id: (context) => HiveAccount(),
-                                    TagSearch.id: (context) => TagSearch(),
-                                    Wallet.id: (context) => Wallet(),
-                                    // CommunityView.id: (context) =>
-                                    //     CommunityView(),
-                                    //      Noti.id: (context) => Noti(),
-                                    HiveDetails.id: (context) => HiveDetails(),
-                                    CommunitySearch.id: (context) =>
-                                        CommunitySearch(),
-                                    Prefrences.id: (context) => Prefrences(),
-                                    // HomePage.id: (context) =>
-                                    //  HomePage(),
+                                      Wrapper.id: (context) => Wrapper(),
+                                      Bio.id: (context) => Bio(),
+                                      Presence.id: (context) => Presence(),
+                                      SelectLanguage.id: (context) =>
+                                          SelectLanguage(),
+                                      OnboardingCategories.id: (context) =>
+                                          OnboardingCategories(),
+                                      SelectPodcast.id: (context) =>
+                                          SelectPodcast(),
+                                      TemporaryError.id: (context) =>
+                                          TemporaryError(),
+                                      HiveAccount.id: (context) =>
+                                          HiveAccount(),
+                                      TagSearch.id: (context) => TagSearch(),
+                                      Wallet.id: (context) => Wallet(),
+                                      // CommunityView.id: (context) =>
+                                      //     CommunityView(),
+                                      //      Noti.id: (context) => Noti(),
+                                      HiveDetails.id: (context) =>
+                                          HiveDetails(),
+                                      CommunitySearch.id: (context) =>
+                                          CommunitySearch(),
+                                      Prefrences.id: (context) => Prefrences(),
+                                      // HomePage.id: (context) =>
+                                      //  HomePage(),
 
-                                    // Download.id: (context) =>
-                                    //     Download(),
-                                  },
-                                ),
-                              ))),
-                    ))),
-          ),
-          // ),
-        ));
+                                      // Download.id: (context) =>
+                                      //     Download(),
+                                    },
+                                  ),
+                                ))),
+                      ))),
+            ),
+            // ),
+          )),
+    );
   }
 }
 

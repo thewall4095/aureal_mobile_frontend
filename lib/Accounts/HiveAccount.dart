@@ -222,11 +222,9 @@ class _HiveAccountState extends State<HiveAccount> {
                           prefs.getString('access_token') != null &&
                           prefs.getString('code') != null) {
                         prefs.setString('HiveUserName', value);
-                        print(
-                            "*************************************************************************************");
+
                         print(prefs.getString('code'));
-                        print(
-                            '*************************************************************************************');
+
 // registerHiveUser();
 
                       } else {

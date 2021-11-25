@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -36,6 +37,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../PlayerState.dart';
 import '../../main.dart';
+import '../Clips.dart';
 import '../RouteAnimation.dart';
 // import 'package:hive_flutter/hive_flutter.dart';
 
@@ -268,10 +270,40 @@ class _PodcastViewState extends State<PodcastView> {
     });
   }
 
+  void _showBottomSheet() {
+    setState(() {
+      _showPersistantBottomSheetCallBack = null;
+    });
+
+    _scaffoldKey.currentState
+        .showBottomSheet((context) {
+          return new Container(
+            height: 200.0,
+            color: Colors.teal[100],
+            child: Center(
+              child: Text(
+                "Drag Downwards Or Back To Dismiss Sheet",
+                style: TextStyle(fontSize: 18, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        })
+        .closed
+        .whenComplete(() {
+          if (mounted) {
+            setState(() {
+              _showPersistantBottomSheetCallBack = _showBottomSheet;
+            });
+          }
+        });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
 //    setEpisodes();
+    _showPersistantBottomSheetCallBack = _showBottomSheet;
 
     getPodcastData();
     getEpisodes();
@@ -295,6 +327,9 @@ class _PodcastViewState extends State<PodcastView> {
     // FlutterDownloader.registerCallback(downloadCallback);
   }
 
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  VoidCallback _showPersistantBottomSheetCallBack;
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -313,6 +348,7 @@ class _PodcastViewState extends State<PodcastView> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Color(0xff161616),
       body: CustomScrollView(
         controller: _controller,
@@ -548,14 +584,14 @@ class _PodcastViewState extends State<PodcastView> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: InkWell(
                                             onTap: () {
-                                              // Navigator.push(context,
-                                              //     CupertinoPageRoute(
-                                              //         builder: (context) {
-                                              //   return PublicProfile(
-                                              //     userId:
-                                              //         podcastData['user_id'],
-                                              //   );
-                                              // }));
+                                              Navigator.push(context,
+                                                  CupertinoPageRoute(
+                                                      builder: (context) {
+                                                return PublicProfile(
+                                                  userId:
+                                                      podcastData['user_id'],
+                                                );
+                                              }));
                                             },
                                             child: Text(
                                               podcastData['author'],
@@ -844,9 +880,41 @@ class _PodcastViewState extends State<PodcastView> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        "All Episodes (${podcastData['total_count']})")
+                                        "All Episodes (${podcastData['total_count']})"),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: ShaderMask(
+                                          shaderCallback: (Rect bounds) {
+                                            return LinearGradient(colors: [
+                                              Color(0xff5d5da8),
+                                              Color(0xff5bc3ef)
+                                            ]).createShader(bounds);
+                                          },
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showMaterialModalBottomSheet(
+                                                  enableDrag: false,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return SnippetDisplay(
+                                                      podcastObject:
+                                                          podcastData,
+                                                    );
+                                                  });
+                                            },
+                                            child: Text(
+                                              "Snippets",
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          )),
+                                    )
                                   ],
                                 ),
                               )
@@ -1155,12 +1223,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                           }).then((value) async {
                                                         print(value);
                                                       });
-                                                      // await upvoteEpisode(
-                                                      //     permlink: episodeList[
-                                                      //             index - 1]
-                                                      //         ['permlink'],
-                                                      //     episode_id: episodeList[
-                                                      //         index - 1]['id']);
+
                                                       setState(() {
                                                         episodeList[index - 1]
                                                                 ['ifVoted'] =
@@ -1497,17 +1560,7 @@ class _PodcastViewState extends State<PodcastView> {
                                                       showBarModalBottomSheet(
                                                           context: context,
                                                           builder: (context) {
-                                                            // return Container(
-                                                            //   child:
-                                                            //   AddToCommunity(
-                                                            //     episodeObject:
-                                                            //     episodeList[
-                                                            //     index -
-                                                            //         1],
-                                                            //   ),
-                                                            //   // color:
-                                                            //   //     kSecondaryColor,
-                                                            // );
+                                                            return null;
                                                           });
                                                     },
                                                   )
@@ -1515,33 +1568,6 @@ class _PodcastViewState extends State<PodcastView> {
                                                     width: 0,
                                                     height: 0,
                                                   )),
-
-                                        // IconButton(
-                                        //   onPressed: () async {
-                                        //     final status = await Permission.storage.request();
-                                        //
-                                        //     if (status.isGranted) {
-                                        //       final externalDir = await getExternalStorageDirectory();
-                                        //
-                                        //       final id = await FlutterDownloader.enqueue(
-                                        //         url:
-                                        //         "https://firebasestorage.googleapis.com/v0/b/storage-3cff8.appspot.com/o/2020-05-29%2007-18-34.mp4?alt=media&token=841fffde-2b83-430c-87c3-2d2fd658fd41",
-                                        //
-                                        //
-                                        //         savedDir: externalDir.path,
-                                        //         fileName: "download",
-                                        //         showNotification: true,
-                                        //         openFileFromNotification: true,
-                                        //       );
-                                        //
-                                        //
-                                        //     } else {
-                                        //       print("Permission deined");
-                                        //     }
-                                        //   },
-                                        //   icon: Icon(
-                                        //       Icons.arrow_circle_down_outlined),
-                                        // ),
                                       ],
                                     ),
                                   ],
@@ -1977,6 +2003,120 @@ class _FollowButtonState extends State<FollowButton> {
           ),
         )
       ],
+    );
+  }
+}
+
+class SnippetDisplay extends StatefulWidget {
+  var podcastObject;
+
+  SnippetDisplay({@required this.podcastObject});
+
+  @override
+  _SnippetDisplayState createState() => _SnippetDisplayState();
+}
+
+class _SnippetDisplayState extends State<SnippetDisplay> {
+  int currentIndex = 0;
+
+  AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+
+  PageController _pageController = PageController(viewportFraction: 0.7);
+
+  List snippets = [];
+
+  bool isLoading;
+
+  int page = 0;
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  void getAllSnippets() async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&podcast_id=${widget.podcastObject['id']}";
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        if (page == 0) {
+          setState(() {
+            snippets = jsonDecode(response.body)['snippets'];
+            page = page + 1;
+          });
+        } else {
+          setState(() {
+            snippets = snippets + jsonDecode(response.body)['snippets'];
+            page = page + 1;
+          });
+        }
+        print(response.body);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getAllSnippets();
+
+    super.initState();
+    _pageController.addListener(() {
+      print(_pageController.page);
+      if (_pageController.page == snippets.length - 1) {
+        getAllSnippets();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    audioPlayer.stop();
+    audioPlayer.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Stack(
+        children: [
+          Container(
+            child: PageView(
+              scrollDirection: Axis.vertical,
+              onPageChanged: (int index) async {
+                setState(() {
+                  currentIndex = index;
+                });
+                audioPlayer.open(Audio.network(snippets[index]['url']));
+              },
+              pageSnapping: true,
+              controller: _pageController,
+              children: [
+                for (var v in snippets)
+                  SwipeCard(
+                    clipObject: v,
+                    audioPlayer: audioPlayer,
+                    play: true,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

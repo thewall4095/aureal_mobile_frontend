@@ -129,12 +129,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
     }
 
     Future<bool> _onBackPressed() async {
-     SystemNavigator.pop();
+      SystemNavigator.pop();
       return true; // return true if the route to be popped
     }
 
     final mediaQueryData = MediaQuery.of(context);
-    return  WillPopScope(
+    return WillPopScope(
       onWillPop: _onBackPressed,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -176,14 +176,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: ListTile(
                                       title: Padding(
-                                        padding: const EdgeInsets.only(bottom: 5),
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
                                         child: Text(
                                           "Help us spread the word!",
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
-                                              fontSize:
-                                                  SizeConfig.safeBlockHorizontal *
-                                                      4,
+                                              fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                  4,
                                               fontWeight: FontWeight.w700),
                                         ),
                                       ),
@@ -237,8 +238,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                   ),
                                   v['topic'] == 'Featured Podcasts'
                                       ? v['isLoaded'] == false
-                                          ?
-                                          Container()
+                                          ? Container()
                                           : Padding(
                                               padding: const EdgeInsets.only(
                                                   bottom: 20),
@@ -256,18 +256,20 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   .height *
                                                               0.9,
                                                       autoPlay: true,
-                                                      enableInfiniteScroll: true,
+                                                      enableInfiniteScroll:
+                                                          true,
                                                       viewportFraction: 0.9,
 //
                                                       aspectRatio: 4 / 3,
-                                                      pauseAutoPlayOnTouch: true,
+                                                      pauseAutoPlayOnTouch:
+                                                          true,
                                                       enlargeCenterPage: false),
                                                   items: <Widget>[
                                                     for (var v in featured)
                                                       Padding(
                                                         padding:
-                                                            const EdgeInsets.all(
-                                                                5),
+                                                            const EdgeInsets
+                                                                .all(5),
                                                         child: Container(
                                                           decoration:
                                                               BoxDecoration(
@@ -277,7 +279,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     .black54
                                                                     .withOpacity(
                                                                         0.2),
-                                                                blurRadius: 10.0,
+                                                                blurRadius:
+                                                                    10.0,
                                                               ),
                                                             ],
                                                             color: themeProvider
@@ -288,7 +291,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                     0xff222222),
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(15),
+                                                                    .circular(
+                                                                        15),
                                                           ),
                                                           child: Column(
                                                             crossAxisAlignment:
@@ -313,7 +317,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         v['id']);
                                                                   }));
                                                                 },
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   height: MediaQuery.of(
                                                                               context)
                                                                           .size
@@ -338,9 +343,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                               BoxDecoration(
                                                                             borderRadius:
                                                                                 BorderRadius.circular(10),
-                                                                            image: DecorationImage(
-                                                                                image: imageProvider,
-                                                                                fit: BoxFit.cover),
+                                                                            image:
+                                                                                DecorationImage(image: imageProvider, fit: BoxFit.cover),
                                                                           ),
                                                                           height: MediaQuery.of(context)
                                                                               .size
@@ -352,15 +356,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                       },
                                                                       placeholder:
                                                                           (context,
-                                                                              String
-                                                                                  url) {
+                                                                              String url) {
                                                                         return Container(
                                                                           width:
-                                                                              MediaQuery.of(context).size.width /
-                                                                                  4,
+                                                                              MediaQuery.of(context).size.width / 4,
                                                                           height:
-                                                                              MediaQuery.of(context).size.width /
-                                                                                  4,
+                                                                              MediaQuery.of(context).size.width / 4,
                                                                         );
                                                                       },
                                                                       memCacheHeight: (MediaQuery.of(context)
@@ -406,22 +407,24 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           : ' ',
                                                                       textScaleFactor:
                                                                           1.0,
-                                                                      maxLines: 1,
+                                                                      maxLines:
+                                                                          1,
                                                                       overflow:
                                                                           TextOverflow
                                                                               .ellipsis,
                                                                       style: TextStyle(
-                                                                          fontSize:
-                                                                              SizeConfig.blockSizeHorizontal *
-                                                                                  4.7,
+                                                                          fontSize: SizeConfig.blockSizeHorizontal *
+                                                                              4.7,
                                                                           fontWeight:
                                                                               FontWeight.normal),
                                                                     ),
                                                                     Padding(
                                                                       padding: const EdgeInsets
                                                                               .only(
-                                                                          top: 5),
-                                                                      child: Text(
+                                                                          top:
+                                                                              5),
+                                                                      child:
+                                                                          Text(
                                                                         v['author'] !=
                                                                                 null
                                                                             ? v['author']
@@ -431,22 +434,21 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         maxLines:
                                                                             1,
                                                                         overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
+                                                                            TextOverflow.ellipsis,
                                                                         style:
                                                                             TextStyle(
-                                                                          color: Color(
-                                                                              0xff777777),
+                                                                          color:
+                                                                              Color(0xff777777),
                                                                           fontSize:
-                                                                              SizeConfig.safeBlockHorizontal *
-                                                                                  3,
+                                                                              SizeConfig.safeBlockHorizontal * 3,
                                                                           //   color: Colors
                                                                           //     .grey
                                                                         ),
                                                                       ),
                                                                     ),
                                                                     SizedBox(
-                                                                      height: 5.0,
+                                                                      height:
+                                                                          5.0,
                                                                     )
                                                                   ],
                                                                 ),
@@ -460,405 +462,387 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                               ),
                                             )
                                       : v['topic'] == 'Recently Played'
-                                      ? Container(
+                                          ? Container(
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height /
                                                   2.9,
-                                              child:v['topic']== 'Recently Played'?
-                                              GridView(
-                                                scrollDirection: Axis.horizontal,
-                                                gridDelegate:
-                                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount: 2,
-                                                        mainAxisSpacing: 10,
-                                                        crossAxisSpacing: 1,
-                                                        childAspectRatio:
-                                                            1 / 2.6),
-                                                children: [
-                                                  for (var a in recentlyPlayed)
-                                                    InkWell(
-                                                      onTap: () {
-                                                        print(a
-                                                            .toString()
-                                                            .contains('.mp4'));
-                                                        if (a.toString().contains('.mp4') == true ||
-                                                            a.toString().contains(
-                                                                    '.m4v') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.flv') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.f4v') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.ogv') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.ogx') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.wmv') ==
-                                                                true ||
-                                                            a.toString().contains(
-                                                                    '.webm') ==
-                                                                true) {
-                                                          currentlyPlaying.stop();
-                                                          Navigator.push(context,
-                                                              CupertinoPageRoute(
-                                                                  builder:
-                                                                      (context) {
-                                                            return PodcastVideoPlayer(
-                                                                episodeObject: a);
-                                                          }));
-                                                        } else {
-                                                          if (a
-                                                                  .toString()
-                                                                  .contains(
-                                                                      '.pdf') ==
-                                                              true) {
-                                                          } else {
-                                                            currentlyPlaying
-                                                                .stop();
-                                                            currentlyPlaying
-                                                                .episodeObject = a;
-                                                            print(currentlyPlaying
-                                                                .episodeObject
-                                                                .toString());
-                                                            currentlyPlaying
-                                                                .play();
-                                                            Navigator.push(
-                                                                context,
-                                                                CupertinoPageRoute(
-                                                                    builder:
-                                                                        (context) {
-                                                              return Player();
-                                                            }));
-                                                          }
-                                                        }
-                                                      },
-                                                      child: Container(
-                                                        width:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width *
-                                                                0.85,
-                                                        decoration: BoxDecoration(
-
-                                                            // color: Color(
-                                                            //     0xff222222),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          child: Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4.5,
-                                                                height: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    4.5,
-                                                                child: Stack(
-                                                                  children: [
-                                                                    CachedNetworkImage(
-                                                                      imageBuilder:
-                                                                          (context,
-                                                                              imageProvider) {
-                                                                        return Container(
-                                                                          height: MediaQuery.of(context).size.width /
-                                                                              4.5,
-                                                                          width: MediaQuery.of(context).size.width /
-                                                                              4.5,
-                                                                          decoration:
-                                                                              BoxDecoration(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(8),
-                                                                            image: DecorationImage(
-                                                                                image: imageProvider,
-                                                                                fit: BoxFit.cover),
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                      memCacheHeight: (MediaQuery.of(context)
-                                                                              .size
-                                                                              .height)
-                                                                          .floor(),
-                                                                      imageUrl: a['image'] !=
-                                                                              null
-                                                                          ? a['image']
-                                                                          : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                                      placeholder:
-                                                                          (context,
-                                                                              imageProvider) {
-                                                                        return Container(
-                                                                          decoration:
-                                                                              BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
-                                                                          height: MediaQuery.of(context).size.width *
-                                                                              0.38,
-                                                                          width: MediaQuery.of(context).size.width *
-                                                                              0.38,
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                    Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
-                                                                      children: [
-                                                                        FutureBuilder(
-                                                                            future: dursaver.percentageDone(a[
-                                                                                'id']),
-                                                                            builder:
-                                                                                (context, snapshot) {
-                                                                              if (snapshot.data.toString() ==
-                                                                                  'null') {
-                                                                                return Container();
-                                                                              } else {
-                                                                                // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
-                                                                                return Stack(
-                                                                                  children: [
-                                                                                    Container(
-                                                                                      decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-                                                                                      width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
-                                                                                      height: 5,
-                                                                                    ),
-                                                                                    Container(
-                                                                                      width: MediaQuery.of(context).size.width / 4.5,
-                                                                                      height: 2,
-                                                                                    )
-                                                                                  ],
-                                                                                );
-                                                                              }
-                                                                            }),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        15),
-                                                                child: SizedBox(
+                                              child:
+                                                  v['topic'] ==
+                                                          'Recently Played'
+                                                      ? GridView(
+                                                          scrollDirection:
+                                                              Axis.horizontal,
+                                                          gridDelegate:
+                                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                                  crossAxisCount:
+                                                                      2,
+                                                                  mainAxisSpacing:
+                                                                      10,
+                                                                  crossAxisSpacing:
+                                                                      1,
+                                                                  childAspectRatio:
+                                                                      1 / 2.6),
+                                                          children: [
+                                                            for (var a
+                                                                in recentlyPlayed)
+                                                              InkWell(
+                                                                onTap: () {
+                                                                  print(a
+                                                                      .toString()
+                                                                      .contains(
+                                                                          '.mp4'));
+                                                                  if (a.toString().contains('.mp4') == true ||
+                                                                      a.toString().contains(
+                                                                              '.m4v') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.flv') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.f4v') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.ogv') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.ogx') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.wmv') ==
+                                                                          true ||
+                                                                      a.toString().contains(
+                                                                              '.webm') ==
+                                                                          true) {
+                                                                    currentlyPlaying
+                                                                        .stop();
+                                                                    Navigator.push(
+                                                                        context,
+                                                                        CupertinoPageRoute(builder:
+                                                                            (context) {
+                                                                      return PodcastVideoPlayer(
+                                                                          episodeObject:
+                                                                              a);
+                                                                    }));
+                                                                  } else {
+                                                                    if (a.toString().contains(
+                                                                            '.pdf') ==
+                                                                        true) {
+                                                                    } else {
+                                                                      currentlyPlaying
+                                                                          .stop();
+                                                                      currentlyPlaying
+                                                                          .episodeObject = a;
+                                                                      print(currentlyPlaying
+                                                                          .episodeObject
+                                                                          .toString());
+                                                                      currentlyPlaying
+                                                                          .play();
+                                                                      Navigator.push(
+                                                                          context,
+                                                                          CupertinoPageRoute(builder:
+                                                                              (context) {
+                                                                        return Player();
+                                                                      }));
+                                                                    }
+                                                                  }
+                                                                },
+                                                                child:
+                                                                    Container(
                                                                   width: MediaQuery.of(
                                                                               context)
                                                                           .size
-                                                                          .width /
-                                                                      2,
-                                                                  height: MediaQuery.of(
-                                                                              context)
-                                                                          .size
-                                                                          .width /
-                                                                      4.5,
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment
-                                                                                .start,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(bottom: 5),
-                                                                            child:
-                                                                                GestureDetector(
-                                                                              onTap:
-                                                                                  () {
-                                                                                // Navigator.push(context, CupertinoPageRoute(widget: EpisodeView(episodeId: a['id'])));
-                                                                                Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                                                                                  return EpisodeView(
-                                                                                    episodeId: a['id'],
+                                                                          .width *
+                                                                      0.85,
+                                                                  decoration: BoxDecoration(
+
+                                                                      // color: Color(
+                                                                      //     0xff222222),
+                                                                      borderRadius: BorderRadius.circular(10)),
+                                                                  child:
+                                                                      Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            15),
+                                                                    child: Row(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Container(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width / 4.5,
+                                                                          height:
+                                                                              MediaQuery.of(context).size.width / 4.5,
+                                                                          child:
+                                                                              Stack(
+                                                                            children: [
+                                                                              CachedNetworkImage(
+                                                                                imageBuilder: (context, imageProvider) {
+                                                                                  return Container(
+                                                                                    height: MediaQuery.of(context).size.width / 4.5,
+                                                                                    width: MediaQuery.of(context).size.width / 4.5,
+                                                                                    decoration: BoxDecoration(
+                                                                                      borderRadius: BorderRadius.circular(8),
+                                                                                      image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                                                                                    ),
                                                                                   );
-                                                                                }));
-                                                                              },
-                                                                              child:
-                                                                                  GestureDetector(
-                                                                                onTap: () {
-                                                                                  Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                                                                                    return PodcastView(a['podcast_id']);
-                                                                                  }));
                                                                                 },
-                                                                                child: Text(
-                                                                                  a['name'].toString(),
-                                                                                  overflow: TextOverflow.clip,
-                                                                                  maxLines: 2,
-                                                                                  textScaleFactor: 1.0,
-                                                                                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                                                                                ),
+                                                                                memCacheHeight: (MediaQuery.of(context).size.height).floor(),
+                                                                                imageUrl: a['image'] != null ? a['image'] : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                                                placeholder: (context, imageProvider) {
+                                                                                  return Container(
+                                                                                    decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover)),
+                                                                                    height: MediaQuery.of(context).size.width * 0.38,
+                                                                                    width: MediaQuery.of(context).size.width * 0.38,
+                                                                                  );
+                                                                                },
                                                                               ),
+                                                                              Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                                children: [
+                                                                                  // FutureBuilder(
+                                                                                  //     future: dursaver.percentageDone(a[
+                                                                                  //         'id']),
+                                                                                  //     builder:
+                                                                                  //         (context, snapshot) {
+                                                                                  //       if (snapshot.data.toString() ==
+                                                                                  //           'null') {
+                                                                                  //         return Container();
+                                                                                  //       } else {
+                                                                                  //         // return Text(double.parse(snapshot.data.toString()).toStringAsFixed(2).toString());
+                                                                                  //         return Stack(
+                                                                                  //           children: [
+                                                                                  //             Container(
+                                                                                  //               decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+                                                                                  //               width: MediaQuery.of(context).size.width / 4.5 * double.parse(double.parse(snapshot.data.toString()).toStringAsFixed(2)),
+                                                                                  //               height: 5,
+                                                                                  //             ),
+                                                                                  //             Container(
+                                                                                  //               width: MediaQuery.of(context).size.width / 4.5,
+                                                                                  //               height: 2,
+                                                                                  //             )
+                                                                                  //           ],
+                                                                                  //         );
+                                                                                  //       }
+                                                                                  //     }),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.symmetric(horizontal: 15),
+                                                                          child:
+                                                                              SizedBox(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width / 2,
+                                                                            height:
+                                                                                MediaQuery.of(context).size.width / 4.5,
+                                                                            child:
+                                                                                Column(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(bottom: 5),
+                                                                                      child: GestureDetector(
+                                                                                        onTap: () {
+                                                                                          // Navigator.push(context, CupertinoPageRoute(widget: EpisodeView(episodeId: a['id'])));
+                                                                                          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                                                                                            return EpisodeView(
+                                                                                              episodeId: a['id'],
+                                                                                            );
+                                                                                          }));
+                                                                                        },
+                                                                                        child: GestureDetector(
+                                                                                          onTap: () {
+                                                                                            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                                                                                              return PodcastView(a['podcast_id']);
+                                                                                            }));
+                                                                                          },
+                                                                                          child: Text(
+                                                                                            a['name'].toString(),
+                                                                                            overflow: TextOverflow.clip,
+                                                                                            maxLines: 2,
+                                                                                            textScaleFactor: 1.0,
+                                                                                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                    Text(
+                                                                                      a['podcast_name'].toString(),
+                                                                                      textScaleFactor: 1.0,
+                                                                                      maxLines: 1,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      style: TextStyle(color: Color(0xff777777), fontSize: SizeConfig.safeBlockHorizontal * 2.8),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                a['permlink'] == null
+                                                                                    ? SizedBox()
+                                                                                    : Row(
+                                                                                        children: [
+                                                                                          InkWell(
+                                                                                            onTap: () async {
+                                                                                              if (pref.getString('HiveUserName') != null) {
+                                                                                                setState(() {
+                                                                                                  v['isLoading'] = true;
+                                                                                                });
+                                                                                                double _value = 50.0;
+                                                                                                showDialog(
+                                                                                                    context: context,
+                                                                                                    builder: (context) {
+                                                                                                      return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: a['permlink'], episode_id: a['id']));
+                                                                                                    }).then((value) async {
+                                                                                                  print(value);
+                                                                                                });
+                                                                                                setState(() {
+                                                                                                  a['ifVoted'] = !a['ifVoted'];
+                                                                                                });
+                                                                                                setState(() {
+                                                                                                  a['isLoading'] = false;
+                                                                                                });
+                                                                                              } else {
+                                                                                                showBarModalBottomSheet(
+                                                                                                    context: context,
+                                                                                                    builder: (context) {
+                                                                                                      return HiveDetails();
+                                                                                                    });
+                                                                                              }
+                                                                                            },
+                                                                                            child: Container(
+                                                                                              decoration: a['ifVoted'] == true ? BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: LinearGradient(colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])) : BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                                                                child: Row(
+                                                                                                  children: [
+                                                                                                    a['isLoading'] == true
+                                                                                                        ? SpinKitCircle(
+                                                                                                            color: Colors.white,
+                                                                                                            size: 10,
+                                                                                                          )
+                                                                                                        : Icon(
+                                                                                                            FontAwesomeIcons.chevronCircleUp,
+                                                                                                            size: 15,
+                                                                                                          ),
+                                                                                                    SizedBox(
+                                                                                                      width: 5,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      "${a['payout_value'].toString().split(' ')[0]}",
+                                                                                                      textScaleFactor: 1.0,
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                          SizedBox(
+                                                                                            width: 10,
+                                                                                          ),
+                                                                                          InkWell(
+                                                                                            onTap: () {
+                                                                                              if (pref.getString('HiveUserName') != null) {
+                                                                                                Navigator.push(
+                                                                                                    context,
+                                                                                                    CupertinoPageRoute(
+                                                                                                        builder: (context) => Comments(
+                                                                                                              episodeObject: a,
+                                                                                                            )));
+                                                                                              } else {
+                                                                                                showBarModalBottomSheet(
+                                                                                                    context: context,
+                                                                                                    builder: (context) {
+                                                                                                      return HiveDetails();
+                                                                                                    });
+                                                                                              }
+                                                                                            },
+                                                                                            child: Container(
+                                                                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                                                                child: Row(
+                                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                                  children: [
+                                                                                                    Icon(
+                                                                                                      Icons.mode_comment_outlined,
+                                                                                                      size: 15,
+                                                                                                    ),
+                                                                                                    SizedBox(
+                                                                                                      width: 5,
+                                                                                                    ),
+                                                                                                    Text(
+                                                                                                      '${a['comments_count'].toString()}',
+                                                                                                      textScaleFactor: 1.0,
+                                                                                                    )
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      )
+                                                                              ],
                                                                             ),
                                                                           ),
-                                                                          Text(
-                                                                            a['podcast_name']
-                                                                                .toString(),
-                                                                            textScaleFactor:
-                                                                                1.0,
-                                                                            maxLines:
-                                                                                1,
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                            style: TextStyle(
-                                                                                color: Color(0xff777777),
-                                                                                fontSize: SizeConfig.safeBlockHorizontal * 2.8),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      a['permlink'] ==
-                                                                              null
-                                                                          ? SizedBox()
-                                                                          : Row(
-                                                                              children: [
-                                                                                InkWell(
-                                                                                  onTap: () async {
-                                                                                    if (pref.getString('HiveUserName') != null) {
-                                                                                      setState(() {
-                                                                                        v['isLoading'] = true;
-                                                                                      });
-                                                                                      double _value = 50.0;
-                                                                                      showDialog(
-                                                                                          context: context,
-                                                                                          builder: (context) {
-                                                                                            return Dialog(backgroundColor: Colors.transparent, child: UpvoteEpisode(permlink: a['permlink'], episode_id: a['id']));
-                                                                                          }).then((value) async {
-                                                                                        print(value);
-                                                                                      });
-                                                                                      setState(() {
-                                                                                        a['ifVoted'] = !a['ifVoted'];
-                                                                                      });
-                                                                                      setState(() {
-                                                                                        a['isLoading'] = false;
-                                                                                      });
-                                                                                    } else {
-                                                                                      showBarModalBottomSheet(
-                                                                                          context: context,
-                                                                                          builder: (context) {
-                                                                                            return HiveDetails();
-                                                                                          });
-                                                                                    }
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    decoration: a['ifVoted'] == true ? BoxDecoration(borderRadius: BorderRadius.circular(20), gradient: LinearGradient(colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])) : BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                                                      child: Row(
-                                                                                        children: [
-                                                                                          a['isLoading'] == true
-                                                                                              ? SpinKitCircle(
-                                                                                                  color: Colors.white,
-                                                                                                  size: 10,
-                                                                                                )
-                                                                                              : Icon(
-                                                                                                  FontAwesomeIcons.chevronCircleUp,
-                                                                                                  size: 15,
-                                                                                                ),
-                                                                                          SizedBox(
-                                                                                            width: 5,
-                                                                                          ),
-                                                                                          Text(
-                                                                                            "${a['payout_value'].toString().split(' ')[0]}",
-                                                                                            textScaleFactor: 1.0,
-                                                                                          ),
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 10,
-                                                                                ),
-                                                                                InkWell(
-                                                                                  onTap: () {
-                                                                                    if (pref.getString('HiveUserName') != null) {
-                                                                                      Navigator.push(
-                                                                                          context,
-                                                                                          CupertinoPageRoute(
-                                                                                              builder: (context) => Comments(
-                                                                                                    episodeObject: a,
-                                                                                                  )));
-                                                                                    } else {
-                                                                                      showBarModalBottomSheet(
-                                                                                          context: context,
-                                                                                          builder: (context) {
-                                                                                            return HiveDetails();
-                                                                                          });
-                                                                                    }
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Color(0xff222222))),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                                                      child: Row(
-                                                                                        mainAxisSize: MainAxisSize.min,
-                                                                                        children: [
-                                                                                          Icon(
-                                                                                            Icons.mode_comment_outlined,
-                                                                                            size: 15,
-                                                                                          ),
-                                                                                          SizedBox(
-                                                                                            width: 5,
-                                                                                          ),
-                                                                                          Text(
-                                                                                            '${a['comments_count'].toString()}',
-                                                                                            textScaleFactor: 1.0,
-                                                                                          )
-                                                                                        ],
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            )
-                                                                    ],
+                                                                        )
+                                                                      ],
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               )
+                                                          ],
+                                                        )
+                                                      : Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                child: ListTile(
+                                                                  title: Transform.translate(
+                                                                      offset:
+                                                                          Offset(
+                                                                              -16,
+                                                                              0),
+                                                                      child: Text(
+                                                                          "Your recently played episodes will be visible here..")),
+                                                                  leading: Icon(
+                                                                      FontAwesomeIcons
+                                                                          .headphones),
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  border: Border.all(
+                                                                      color: Colors
+                                                                          .white),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                ),
+                                                                color: Color(
+                                                                    0xff777777),
+                                                                height: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .height /
+                                                                    15,
+                                                                width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width,
+                                                              ),
                                                             ],
                                                           ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                ],
-                                              ):Center(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Color(
-                                                        0xff222222),
-                                                  ),
-                                                  height: MediaQuery.of(context).size.height/3.5,
-                                                  width: MediaQuery.of(context).size.width/1.1,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Text("Start listening now",style: TextStyle(fontSize: MediaQuery.of(context).size.height/25),),
-                                                      SizedBox(height: 15,),
-                                                      Icon(Icons.add,size: 20,)
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            )
+                                                        ))
                                           : v['topic'] == 'Recommended for you'
                                               ? Container(
                                                   width: double.infinity,
@@ -877,7 +861,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          for (var a in v['data'])
+                                                          for (var a
+                                                              in v['data'])
                                                             Padding(
                                                               padding:
                                                                   const EdgeInsets
@@ -891,34 +876,31 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                   Navigator.push(
                                                                       context,
                                                                       CupertinoPageRoute(
-                                                                          builder:
-                                                                              (context) =>
-                                                                                  PodcastView(a['id'])));
+                                                                          builder: (context) =>
+                                                                              PodcastView(a['id'])));
                                                                 },
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   decoration:
                                                                       BoxDecoration(
                                                                     boxShadow: [
                                                                       new BoxShadow(
                                                                         color: Colors
                                                                             .black54
-                                                                            .withOpacity(
-                                                                                0.2),
+                                                                            .withOpacity(0.2),
                                                                         blurRadius:
                                                                             10.0,
                                                                       ),
                                                                     ],
-                                                                    color: themeProvider
-                                                                                .isLightTheme ==
+                                                                    color: themeProvider.isLightTheme ==
                                                                             true
                                                                         ? Colors
                                                                             .white
                                                                         : Color(
                                                                             0xff222222),
                                                                     borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(
-                                                                                15),
+                                                                        BorderRadius.circular(
+                                                                            15),
                                                                   ),
                                                                   width: MediaQuery.of(
                                                                               context)
@@ -938,19 +920,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             (context,
                                                                                 imageProvider) {
                                                                           return Container(
-                                                                            decoration: BoxDecoration(
-                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                                                                borderRadius: BorderRadius.circular(8)),
+                                                                            decoration:
+                                                                                BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
                                                                             width:
                                                                                 MediaQuery.of(context).size.width * 0.38,
                                                                             height:
                                                                                 MediaQuery.of(context).size.width * 0.38,
                                                                           );
                                                                         },
-                                                                        memCacheHeight: (MediaQuery.of(context)
-                                                                                .size
-                                                                                .height)
-                                                                            .floor(),
+                                                                        memCacheHeight:
+                                                                            (MediaQuery.of(context).size.height).floor(),
                                                                         imageUrl: a['image'] !=
                                                                                 null
                                                                             ? a['image']
@@ -969,12 +948,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         },
                                                                       ),
                                                                       Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.fromLTRB(
-                                                                                8,
-                                                                                8,
-                                                                                8,
-                                                                                0),
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            8,
+                                                                            8,
+                                                                            8,
+                                                                            0),
                                                                         child:
                                                                             Text(
                                                                           a['name'],
@@ -989,12 +967,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         ),
                                                                       ),
                                                                       Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.fromLTRB(
-                                                                                8,
-                                                                                0,
-                                                                                8,
-                                                                                8),
+                                                                        padding: const EdgeInsets.fromLTRB(
+                                                                            8,
+                                                                            0,
+                                                                            8,
+                                                                            8),
                                                                         child:
                                                                             Text(
                                                                           a['author'],
@@ -1003,10 +980,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           textScaleFactor:
                                                                               1.0,
                                                                           style: TextStyle(
-                                                                              fontSize: SizeConfig.safeBlockHorizontal *
-                                                                                  2.5,
-                                                                              color:
-                                                                                  Color(0xffe777777)),
+                                                                              fontSize: SizeConfig.safeBlockHorizontal * 2.5,
+                                                                              color: Color(0xffe777777)),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1047,13 +1022,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         8,
                                                                         0,
                                                                         8),
-                                                                child: Container(
+                                                                child:
+                                                                    Container(
                                                                   decoration:
                                                                       BoxDecoration(
                                                                     borderRadius:
                                                                         BorderRadius
-                                                                            .circular(
-                                                                                8),
+                                                                            .circular(8),
                                                                   ),
                                                                   child: Column(
                                                                     mainAxisSize:
@@ -1069,15 +1044,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             () {
                                                                           if (a['duration'] !=
                                                                               null) {
-                                                                            currentlyPlaying
-                                                                                .stop();
+                                                                            currentlyPlaying.stop();
                                                                             currentlyPlaying.episodeObject =
                                                                                 a;
-                                                                            currentlyPlaying
-                                                                                .play();
+                                                                            currentlyPlaying.play();
                                                                           } else {
-                                                                            Navigator.push(
-                                                                                context,
+                                                                            Navigator.push(context,
                                                                                 CupertinoPageRoute(builder: (context) {
                                                                               return PodcastView(a['id']);
                                                                             }));
@@ -1086,43 +1058,32 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                         child:
                                                                             CachedNetworkImage(
                                                                           imageBuilder:
-                                                                              (context,
-                                                                                  imageProvider) {
+                                                                              (context, imageProvider) {
                                                                             return Container(
-                                                                              decoration:
-                                                                                  BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
-                                                                              width:
-                                                                                  MediaQuery.of(context).size.width / 4,
-                                                                              height:
-                                                                                  MediaQuery.of(context).size.width / 4,
+                                                                              decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
+                                                                              width: MediaQuery.of(context).size.width / 4,
+                                                                              height: MediaQuery.of(context).size.width / 4,
                                                                             );
                                                                           },
                                                                           placeholder:
-                                                                              (context,
-                                                                                  String url) {
+                                                                              (context, String url) {
                                                                             return Container(
-                                                                              decoration:
-                                                                                  BoxDecoration(
+                                                                              decoration: BoxDecoration(
                                                                                 image: DecorationImage(image: AssetImage('assets/images/Thumbnail.png'), fit: BoxFit.cover),
                                                                               ),
-                                                                              width:
-                                                                                  MediaQuery.of(context).size.width / 4,
-                                                                              height:
-                                                                                  MediaQuery.of(context).size.width / 4,
+                                                                              width: MediaQuery.of(context).size.width / 4,
+                                                                              height: MediaQuery.of(context).size.width / 4,
                                                                             );
                                                                           },
                                                                           memCacheHeight:
                                                                               (MediaQuery.of(context).size.height).floor(),
-                                                                          imageUrl: a['image'] !=
-                                                                                  null
+                                                                          imageUrl: a['image'] != null
                                                                               ? a['image']
                                                                               : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
                                                                         ),
                                                                       ),
                                                                       SizedBox(
-                                                                        height: MediaQuery.of(context)
-                                                                                .size
-                                                                                .height /
+                                                                        height: MediaQuery.of(context).size.height /
                                                                             120,
                                                                       ),
                                                                       Flexible(
@@ -1136,8 +1097,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 MediaQuery.of(context).size.width / 4,
                                                                             child:
                                                                                 Column(
-                                                                              crossAxisAlignment:
-                                                                                  CrossAxisAlignment.start,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: <Widget>[
                                                                                 Text(
                                                                                   a['name'] != null ? a['name'] : ' ',
