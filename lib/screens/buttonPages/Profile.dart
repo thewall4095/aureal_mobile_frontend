@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/Services/EmailVerificationDialog.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
@@ -18,7 +17,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -37,9 +35,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Home.dart';
 import '../RewardsScreen.dart';
-import '../RouteAnimation.dart';
 import 'Bio.dart';
-import 'Downloads.dart';
 import 'Settings.dart';
 
 class SecondScreen extends StatelessWidget {
@@ -157,7 +153,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   void share() async {
     String sharableLink =
-        "https://play.google.com/store/apps/details?id=com.titandlt.auditory";
+        "https://play.google.com/store/apps/details?id=co.titandlt.aureal";
 
     await FlutterShare.share(
         title: "I downloaded Aureal you can too",
@@ -439,7 +435,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   children: [
                                     Positioned(
                                       top: MediaQuery.of(context).size.height /
-                                      6.5,
+                                          6.5,
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -451,23 +447,20 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                               blurRadius: 10.0,
                                             ),
                                           ],
-                                          color: themeProvider.isLightTheme ==
-                                                  true
-                                              ? Colors.white
-                                              : Color(0xff222222),
+                                          color:
+                                              themeProvider.isLightTheme == true
+                                                  ? Colors.white
+                                                  : Color(0xff222222),
                                         ),
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height /
-                                            3.8,
-                                        width: MediaQuery.of(context)
-                                                .size
-                                                .width /
-                                            1.2,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                3.8,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.2,
                                         child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
@@ -534,8 +527,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                       MainAxisAlignment
                                                           .spaceEvenly,
                                                   children: [
-                                                    data['instagram'] ==
-                                                                null ||
+                                                    data['instagram'] == null ||
                                                             data['instagram'] ==
                                                                 ''
                                                         ? SizedBox()
@@ -567,8 +559,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                       'twitter']);
                                                             },
                                                           ),
-                                                    data['linkedin'] ==
-                                                                null ||
+                                                    data['linkedin'] == null ||
                                                             data['linkedin'] ==
                                                                 ''
                                                         ? SizedBox()
@@ -629,12 +620,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         ),
                                       ),
                                     )
-
                                   ],
                                 ),
                               )),
                             ),
-
                           ];
                         },
                         body: RefreshIndicator(
@@ -643,8 +632,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
@@ -652,75 +640,65 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                         fontSize:
-                                            SizeConfig.safeBlockHorizontal *
-                                                5),
+                                            SizeConfig.safeBlockHorizontal * 5),
                                   ),
                                   Container(
-                                    height:
-                                        MediaQuery.of(context).size.height /6.2,
+                                    height: MediaQuery.of(context).size.height /
+                                        6.2,
                                     child: ListView(
                                       scrollDirection: Axis.horizontal,
                                       children: [
                                         for (var v in podcastList)
                                           Padding(
-                                            padding:
-                                                const EdgeInsets.fromLTRB(
-                                                    15, 8, 0, 8),
+                                            padding: const EdgeInsets.fromLTRB(
+                                                15, 8, 0, 8),
                                             child: InkWell(
                                               onTap: () {
                                                 Navigator.push(context,
                                                     CupertinoPageRoute(
                                                         builder: (context) {
-                                                  return PodcastView(
-                                                      v['id']);
+                                                  return PodcastView(v['id']);
                                                 }));
                                               },
                                               child: Container(
-                                                width:
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        4.5,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    4.5,
                                                 child: Column(
                                                   children: [
                                                     Container(
-                                                      decoration:
-                                                          BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         boxShadow: [
                                                           new BoxShadow(
                                                             color: Colors
                                                                 .black54
                                                                 .withOpacity(
                                                                     0.2),
-                                                            blurRadius:
-                                                                10.0,
+                                                            blurRadius: 10.0,
                                                           ),
                                                         ],
                                                         color: themeProvider
                                                                     .isLightTheme ==
                                                                 true
                                                             ? Colors.white
-                                                            : Color(
-                                                                0xff222222),
+                                                            : Color(0xff222222),
                                                         borderRadius:
                                                             BorderRadius
-                                                                .circular(
-                                                                    15),
+                                                                .circular(15),
                                                       ),
-                                                      width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
-                                                      height: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
-                                                      child:
-                                                          CachedNetworkImage(
-                                                        imageUrl:
-                                                            v['image'],
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4.5,
+                                                      child: CachedNetworkImage(
+                                                        imageUrl: v['image'],
                                                         imageBuilder: (context,
                                                             imageProvider) {
                                                           return Container(
@@ -736,8 +714,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                 4.5,
                                                             decoration: BoxDecoration(
                                                                 borderRadius:
-                                                                    BorderRadius.circular(
-                                                                        10),
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
                                                                 image: DecorationImage(
                                                                     image:
                                                                         imageProvider,
@@ -748,12 +727,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                       ),
                                                     ),
                                                     Padding(
-                                                      padding:
-                                                          const EdgeInsets
-                                                                  .symmetric(
-                                                              vertical: 8),
-                                                      child: Text(
-                                                          "${v['name']}"),
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 8),
+                                                      child:
+                                                          Text("${v['name']}"),
                                                     )
                                                   ],
                                                 ),
@@ -762,9 +740,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           ),
 
                                         Padding(
-                                          padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  15, 8, 0, 8),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              15, 8, 0, 8),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -784,8 +761,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                         context: context,
                                                         builder: (context) {
                                                           return EmailVerificationDialog(
-                                                            username: prefs
-                                                                .getString(
+                                                            username:
+                                                                prefs.getString(
                                                                     'userName'),
                                                           );
                                                         });
@@ -795,10 +772,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                   decoration: BoxDecoration(
                                                     boxShadow: [
                                                       new BoxShadow(
-                                                        color: Colors
-                                                            .black54
-                                                            .withOpacity(
-                                                                0.2),
+                                                        color: Colors.black54
+                                                            .withOpacity(0.2),
                                                         blurRadius: 10.0,
                                                       ),
                                                     ],
@@ -808,19 +783,17 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                         ? Colors.white
                                                         : Color(0xff222222),
                                                     borderRadius:
-                                                        BorderRadius
-                                                            .circular(15),
+                                                        BorderRadius.circular(
+                                                            15),
                                                   ),
-                                                  width:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
-                                                  height:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width /
-                                                          4.5,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      4.5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      4.5,
                                                   child: Center(
                                                     child: Column(
                                                       mainAxisAlignment:
@@ -836,12 +809,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                 ),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets
-                                                        .symmetric(
-                                                    vertical: 8,
-                                                    horizontal: 5),
-                                                child:
-                                                    Text("Add a podcast"),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 5),
+                                                child: Text("Add a podcast"),
                                               ),
                                             ],
                                           ),
@@ -1021,69 +993,61 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         builder: (context) =>
                                             ReferralProgram()));
                               },
-                              title:   Text(
+                              title: Text(
                                 "Invite ",
-                                textScaleFactor: mediaQueryData
-                                    .textScaleFactor
+                                textScaleFactor: mediaQueryData.textScaleFactor
                                     .clamp(0.5, 1.5)
                                     .toDouble(),
                                 style: TextStyle(
-                                  //  color: Colors.white,
+                                    //  color: Colors.white,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: SizeConfig
-                                        .safeBlockHorizontal *
-                                        4),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4),
                               ),
-                              trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                              trailing: Icon(Icons.arrow_forward_ios_rounded,
                                   size: 15),
-                              subtitle:   Text(
+                              subtitle: Text(
                                 "Invite friends and earn rewards",
-                                textScaleFactor: mediaQueryData
-                                    .textScaleFactor
+                                textScaleFactor: mediaQueryData.textScaleFactor
                                     .clamp(0.5, 0.8)
                                     .toDouble(),
                                 style: TextStyle(
-                                  //       color: Colors.white70,
+                                    //       color: Colors.white70,
                                     fontWeight: FontWeight.w300,
-                                    fontSize: SizeConfig
-                                        .safeBlockHorizontal *
-                                        3.4),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.4),
                               ),
                             ),
                             ListTile(
-                              onTap: (){
+                              onTap: () {
                                 Navigator.push(
                                     context,
                                     CupertinoPageRoute(
                                         builder: (context) => Rewards()));
                               },
-                              title:   Text(
+                              title: Text(
                                 "Your rewards",
-                                textScaleFactor: mediaQueryData
-                                    .textScaleFactor
+                                textScaleFactor: mediaQueryData.textScaleFactor
                                     .clamp(0.5, 1.5)
                                     .toDouble(),
                                 style: TextStyle(
-                                  //  color: Colors.white,
+                                    //  color: Colors.white,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: SizeConfig
-                                        .safeBlockHorizontal *
-                                        4),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4),
                               ),
-                              trailing:   Icon(Icons.arrow_forward_ios_rounded,
+                              trailing: Icon(Icons.arrow_forward_ios_rounded,
                                   size: 15),
-                              subtitle:   Text(
+                              subtitle: Text(
                                 "Check your rewards",
-                                textScaleFactor: mediaQueryData
-                                    .textScaleFactor
+                                textScaleFactor: mediaQueryData.textScaleFactor
                                     .clamp(0.5, 0.8)
                                     .toDouble(),
                                 style: TextStyle(
-                                  //       color: Colors.white70,
+                                    //       color: Colors.white70,
                                     fontWeight: FontWeight.w300,
-                                    fontSize: SizeConfig
-                                        .safeBlockHorizontal *
-                                        3.4),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.4),
                               ),
                             ),
 
