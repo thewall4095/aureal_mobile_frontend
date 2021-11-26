@@ -361,7 +361,7 @@ class _FollowingPageState extends State<FollowingPage>
                         favPodcast == null
                             ? Container(
                                 width: double.infinity,
-                                height: MediaQuery.of(context).size.height / 5,
+                                height: MediaQuery.of(context).size.height / 4,
                                 child: ListView(
                                   scrollDirection: Axis.horizontal,
                                   controller: _podcastScrollController,
@@ -432,7 +432,7 @@ class _FollowingPageState extends State<FollowingPage>
                                     Container(
                                         height:
                                             MediaQuery.of(context).size.height /
-                                                4.2,
+                                                4,
                                         child: ListView(
                                           scrollDirection: Axis.horizontal,
                                           children: [
@@ -561,7 +561,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             0.5,
                                                                             0.9)
                                                                         .toDouble(),
-                                                                maxLines: 2,
+                                                                maxLines: 1,
                                                                 style: TextStyle(
                                                                     // color:
                                                                     //     Colors.white,

@@ -8,8 +8,8 @@
 		<string>AurealTests</string>
 		<key>BundleIdentifiersForCrashReportEmphasis</key>
 		<array>
-			<string>com.titandlt.auditory</string>
-			<string>com.titandlt.auditory.AurealTests</string>
+			<string>co.titandlt.aureal</string>
+			<string>co.titandlt.aureal.AurealTests</string>
 		</array>
 		<key>CommandLineArguments</key>
 		<array/>
@@ -38,7 +38,7 @@
 		<key>TestBundlePath</key>
 		<string>__TESTROOT__/Debug-iphonesimulator/Runner.app/PlugIns/AurealTests.xctest</string>
 		<key>TestHostBundleIdentifier</key>
-		<string>com.titandlt.auditory</string>
+		<string>co.titandlt.aureal</string>
 		<key>TestHostPath</key>
 		<string>/Users/shubhamupadhyay/AndroidStudioProjects/Auditory/build/ios/Debug-iphonesimulator/Runner.app</string>
 		<key>TestLanguage</key>

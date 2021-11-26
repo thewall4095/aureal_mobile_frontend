@@ -27,7 +27,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -231,15 +231,15 @@ class _EpisodeViewState extends State<EpisodeView>
       print(widget.episodeId);
       var fileextension = getFileExtension(episodeContent['url']);
       if (!r) {
-        final id = await FlutterDownloader.enqueue(
-          url: episodeContent['url'],
-          savedDir: externalDir.path,
-          fileName: '${episodeContent['name'] + fileextension.toString()}',
-          showNotification: true,
-          openFileFromNotification: true,
-        );
-        print(id);
-        await _episodeBloc.addEpisode(_getFinalEpisode(id));
+        // final id = await FlutterDownloader.enqueue(
+        //   url: episodeContent['url'],
+        //   savedDir: externalDir.path,
+        //   fileName: '${episodeContent['name'] + fileextension.toString()}',
+        //   showNotification: true,
+        //   openFileFromNotification: true,
+        // );
+        // print(id);
+        // await _episodeBloc.addEpisode(_getFinalEpisode(id));
       }
     } else {
       print("Permission denied");
@@ -291,7 +291,7 @@ class _EpisodeViewState extends State<EpisodeView>
       print(progress);
     });
 
-    FlutterDownloader.registerCallback(downloadingCallback);
+    // FlutterDownloader.registerCallback(downloadingCallback);
   }
 
   @override

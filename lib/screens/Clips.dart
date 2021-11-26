@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+// import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:line_icons/line_icons.dart';
@@ -141,7 +141,8 @@ class _ClipsState extends State<Clips> {
 
   List<Color> tileColor = [];
 
-  PageController _pageController = PageController(viewportFraction: 0.8);
+  PageController _pageController =
+      PageController(viewportFraction: io.Platform.isIOS ? 1.0 : 0.8);
 
   @override
   void initState() {
@@ -258,15 +259,17 @@ class _ClipsState extends State<Clips> {
     var categories = Provider.of<CategoriesProvider>(context);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, CupertinoPageRoute(builder: (context) {
-            return CreateClipSnippet();
-          }));
-        },
-        isExtended: true,
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: io.Platform.isIOS
+          ? SizedBox()
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context, CupertinoPageRoute(builder: (context) {
+                  return CreateClipSnippet();
+                }));
+              },
+              isExtended: true,
+              child: Icon(Icons.add),
+            ),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
           return <Widget>[
@@ -408,19 +411,21 @@ class _ClipsState extends State<Clips> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height / 12,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [
-                          Colors.black,
-                          Colors.black.withOpacity(0.8),
-                          Colors.transparent
-                        ])),
-                  )
+                  io.Platform.isIOS
+                      ? Container()
+                      : Container(
+                          height: MediaQuery.of(context).size.height / 13,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                Colors.black,
+                                Colors.black.withOpacity(0.8),
+                                Colors.transparent
+                              ])),
+                        )
                 ],
               ),
             ],
@@ -594,7 +599,7 @@ class _SwipeCardState extends State<SwipeCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
       child: Container(
         decoration: BoxDecoration(
             gradient:
@@ -604,11 +609,11 @@ class _SwipeCardState extends State<SwipeCard> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            // mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 30),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 child: CachedNetworkImage(
                   placeholder: (context, url) {
                     return Container(
@@ -641,12 +646,14 @@ class _SwipeCardState extends State<SwipeCard> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3.5,
                           fontWeight: FontWeight.w800,
                           color: Color(0xffe8e8e8)),
                     ),
                     subtitle: Text(
                       "${widget.clipObject['podcast_name']}",
                       style: TextStyle(
+                        fontSize: SizeConfig.safeBlockHorizontal * 3,
                         color: Color(0xffe8e8e8),
                       ),
                     ),
@@ -1356,7 +1363,7 @@ class _SnippetEditorState extends State<SnippetEditor> {
 
   String imagePath;
 
-  final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
+  // final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
 
   void createSnippet() async {
     String url = 'https://api.aureal.one/private/createSnippet';
@@ -1404,14 +1411,14 @@ class _SnippetEditorState extends State<SnippetEditor> {
         customPath +
         DateTime.now().millisecondsSinceEpoch.toString();
 
-    _fFmpeg
-        .execute(
-            '-i ${audioUrl} -filter_complex showwavespic=s=1280x720:colors=ffffff -frames:v 1 ${customPath}.png')
-        .then((value) {
-      setState(() {
-        imagePath = '${customPath}.png';
-      });
-    });
+    // _fFmpeg
+    //     .execute(
+    //         '-i ${audioUrl} -filter_complex showwavespic=s=1280x720:colors=ffffff -frames:v 1 ${customPath}.png')
+    //     .then((value) {
+    //   setState(() {
+    //     imagePath = '${customPath}.png';
+    //   });
+    // });
 
     setState(() {
       loading = false;

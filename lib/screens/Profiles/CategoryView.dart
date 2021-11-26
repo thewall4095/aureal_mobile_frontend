@@ -263,7 +263,7 @@ class _CategoryViewState extends State<CategoryView>
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-          title: Text( "${widget.categoryObject['name']}"),
+          title: Text("${widget.categoryObject['name']}"),
           centerTitle: true,
           elevation: 1,
           // bottom: PreferredSize(
@@ -294,17 +294,16 @@ class _CategoryViewState extends State<CategoryView>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
-
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height/35),
+                      SizedBox(height: MediaQuery.of(context).size.height / 35),
                       Text(
                         "Top Podcasts",
-                        style:
-                            TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(
-                        height:  MediaQuery.of(context).size.height/35,
+                        height: MediaQuery.of(context).size.height / 35,
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height / 4,
@@ -333,14 +332,12 @@ class _CategoryViewState extends State<CategoryView>
                                               BorderRadius.circular(10),
                                           color: kSecondaryColor,
                                         ),
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height /
-                                            8,
-                                        width: MediaQuery.of(context)
-                                                .size
-                                                .width /
-                                            4,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                8,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
                                       ),
                                     ),
                                     SizedBox(width: 30),
@@ -389,64 +386,53 @@ class _CategoryViewState extends State<CategoryView>
                                 children: <Widget>[
                                   Padding(
                                     padding: const EdgeInsets.all(15.0),
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height / 8,
-                                      width:
-                                          MediaQuery.of(context).size.width / 4,
-                                      child: Container(
-                                        child: CachedNetworkImage(
-                                          imageBuilder: (context, imageProvider) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                            );
-                                          },
-                                          imageUrl: explorePodcasts[index]
-                                              ['image'],
-                                          memCacheWidth:
-                                              (MediaQuery.of(context).size.width)
-                                                  .floor(),
-                                          memCacheHeight:
-                                              (MediaQuery.of(context).size.width)
-                                                  .floor(),
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                4,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                4,
-                                            child: Image.asset(
-                                                'assets/images/Thumbnail.png'),
+                                    child: CachedNetworkImage(
+                                      imageBuilder: (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
                                           ),
-                                          errorWidget: (context, url, error) =>
-                                              Icon(Icons.error),
-                                        ),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              4,
+                                        );
+                                      },
+                                      imageUrl: explorePodcasts[index]['image'],
+                                      memCacheWidth:
+                                          (MediaQuery.of(context).size.width)
+                                              .floor(),
+                                      memCacheHeight:
+                                          (MediaQuery.of(context).size.width)
+                                              .floor(),
+                                      placeholder: (context, url) => Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                        child: Image.asset(
+                                            'assets/images/Thumbnail.png'),
                                       ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     ),
                                   ),
                                   SizedBox(width: 30),
                                   Expanded(
                                     child: Container(
                                       height:
-                                          MediaQuery.of(context).size.height / 8,
+                                          MediaQuery.of(context).size.height /
+                                              8,
                                       width:
                                           MediaQuery.of(context).size.width / 4,
                                       child: Column(
@@ -503,23 +489,23 @@ class _CategoryViewState extends State<CategoryView>
               SliverList(
                   delegate: SliverChildListDelegate([
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(20),
                   child: Text(
                     'New Podcasts',
                     style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
                   ),
                 ),
                 SizedBox(
-                  height:  MediaQuery.of(context).size.height/35,
+                  height: MediaQuery.of(context).size.height / 35,
                 )
               ])),
               // Text("Greed"),
               SliverGrid(
                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent:MediaQuery.of(context).size.height/3,
-                  mainAxisSpacing:0,
+                  maxCrossAxisExtent: MediaQuery.of(context).size.height / 3,
+                  mainAxisSpacing: 0,
                   crossAxisSpacing: 0,
-                  childAspectRatio: 0.9,
+                  childAspectRatio: 1,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
@@ -587,45 +573,39 @@ class _CategoryViewState extends State<CategoryView>
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(15.0),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height / 6,
-                              width: MediaQuery.of(context).size.width / 2.8,
-                              child: CachedNetworkImage(
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover),
-                                    ),
-                                    width:
-                                        MediaQuery.of(context).size.width / 4,
-                                    height:
-                                        MediaQuery.of(context).size.width / 4,
-                                  );
-                                },
-                                imageUrl: newPodcasts[index]['image'],
-                                memCacheWidth:
-                                    (MediaQuery.of(context).size.width).floor(),
-                                memCacheHeight:
-                                    (MediaQuery.of(context).size.width).floor(),
-                                placeholder: (context, url) => Container(
+                            child: CachedNetworkImage(
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover),
+                                  ),
                                   width: MediaQuery.of(context).size.width / 4,
                                   height: MediaQuery.of(context).size.width / 4,
-                                  child: Image.asset(
-                                      'assets/images/Thumbnail.png'),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                );
+                              },
+                              imageUrl: newPodcasts[index]['image'],
+                              memCacheWidth:
+                                  (MediaQuery.of(context).size.width).floor(),
+                              memCacheHeight:
+                                  (MediaQuery.of(context).size.width).floor(),
+                              placeholder: (context, url) => Container(
+                                width: MediaQuery.of(context).size.width / 4,
+                                height: MediaQuery.of(context).size.width / 4,
+                                child:
+                                    Image.asset('assets/images/Thumbnail.png'),
                               ),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
                             ),
                           ),
                           SizedBox(width: 30),
                           Expanded(
                             child: Container(
                               height: MediaQuery.of(context).size.height / 7,
-                              width: MediaQuery.of(context).size.width / 3,
+                              width: MediaQuery.of(context).size.width / 4.5,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[

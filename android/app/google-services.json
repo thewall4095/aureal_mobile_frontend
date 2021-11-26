@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "206317282199-usl7l3csgnke0qqsjp82tqevtt5hnqvs.apps.googleusercontent.com",
+              "client_id": "206317282199-thakjh70n7sjt09i1rgpt2uuqdthm9ul.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.titandlt.auditory"
+                "bundle_id": "co.titandlt.aureal"
               }
             }
           ]

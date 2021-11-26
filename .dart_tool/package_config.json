@@ -314,26 +314,8 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "flutter_downloader",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_downloader-1.6.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_ffmpeg",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_ffmpeg-0.2.10",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
       "name": "flutter_html",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_html-2.1.2",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "flutter_inappwebview",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_inappwebview-5.3.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -532,24 +514,6 @@
     {
       "name": "intl_phone_field",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/intl_phone_field-2.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet-4.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet_platform_interface",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_platform_interface-2.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet_web_plugin",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_web_plugin-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1095,7 +1059,7 @@
     },
     {
       "name": "webview_flutter",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-2.3.0",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-2.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -1113,7 +1077,7 @@
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.2.0",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.3.0",
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
@@ -1148,7 +1112,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-11-11T11:12:57.216173Z",
+  "generated": "2021-11-26T11:22:47.985722Z",
   "generator": "pub",
   "generatorVersion": "2.14.4"
 }

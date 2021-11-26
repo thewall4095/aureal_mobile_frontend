@@ -2,7 +2,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -45,7 +45,7 @@ class _DownloadState extends State<Download> {
       print(progress);
     });
 
-    FlutterDownloader.registerCallback(downloadingCallback);
+    // FlutterDownloader.registerCallback(downloadingCallback);
   }
 
   @override
@@ -78,14 +78,14 @@ class _DownloadState extends State<Download> {
                 if (status.isGranted) {
                   final externalDir = await getExternalStorageDirectory();
 
-                  final id = await FlutterDownloader.enqueue(
-                    url:
-                        "https://firebasestorage.googleapis.com/v0/b/storage-3cff8.appspot.com/o/2020-05-29%2007-18-34.mp4?alt=media&token=841fffde-2b83-430c-87c3-2d2fd658fd41",
-                    savedDir: externalDir.path,
-                    fileName: "Aureal",
-                    showNotification: true,
-                    openFileFromNotification: true,
-                  );
+                  // final id = await FlutterDownloader.enqueue(
+                  //   url:
+                  //       "https://firebasestorage.googleapis.com/v0/b/storage-3cff8.appspot.com/o/2020-05-29%2007-18-34.mp4?alt=media&token=841fffde-2b83-430c-87c3-2d2fd658fd41",
+                  //   savedDir: externalDir.path,
+                  //   fileName: "Aureal",
+                  //   showNotification: true,
+                  //   openFileFromNotification: true,
+                  // );
                 } else {
                   print("Permission deined");
                 }

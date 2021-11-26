@@ -31,12 +31,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as feature;
-import 'package:jitsi_meet/jitsi_meet.dart';
+// import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as feature;
+// import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -111,9 +111,9 @@ Future main() async {
 
   final appDocumentDirectory =
       await pathProvider.getApplicationDocumentsDirectory();
-  await FlutterDownloader.initialize(
-      debug: true // optional: set false to disable printing logs to console
-      );
+  // await FlutterDownloader.initialize(
+  //     debug: true // optional: set false to disable printing logs to console
+  //     );
 
   Hive.init(appDocumentDirectory.path);
 
@@ -364,78 +364,78 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   postreq.Interceptor intercept = postreq.Interceptor();
 
-  _joinMeeting({String roomId, String roomName, String hostUserId}) async {
-    // Enable or disable any feature flag here
-    // If feature flag are not provided, default values will be used
-    // Full list of feature flags (and defaults) available in the README
-    Map<FeatureFlagEnum, bool> featureFlags = {
-      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-      FeatureFlagEnum.CHAT_ENABLED: false,
-    };
-    if (!kIsWeb) {
-      // Here is an example, disabling features for each platform
-      if (Platform.isAndroid) {
-        // Disable ConnectionService usage on Android to avoid issues (see README)
-        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-      } else if (Platform.isIOS) {
-        // Disable PIP on iOS as it looks weird
-        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-      }
-    }
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    bool isAudioMuted = true;
-    bool isVideoMuted = true;
-
-    var options = JitsiMeetingOptions(room: roomId)
-      ..serverURL = 'https://sessions.aureal.one'
-      ..subject = roomName
-      ..userDisplayName = prefs.getString("HiveUserName")
-      ..userEmail = 'emailText.text'
-      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-      ..audioOnly = true
-      ..audioMuted = isAudioMuted
-      ..videoMuted = isVideoMuted
-      ..featureFlags.addAll(featureFlags)
-      ..webOptions = {
-        "roomName": roomName,
-        "width": "100%",
-        "height": "100%",
-        "enableWelcomePage": false,
-        "chromeExtensionBanner": null,
-        "userInfo": {
-          "displayName": prefs.getString('userName'),
-          'avatarUrl': prefs.getString('displayPicture')
-        }
-      };
-
-    debugPrint("JitsiMeetingOptions: $options");
-
-    await JitsiMeet.joinMeeting(
-      options,
-      listener: JitsiMeetingListener(
-          onConferenceWillJoin: (message) {
-            debugPrint("${options.room} will join with message: $message");
-          },
-          onConferenceJoined: (message) {
-            debugPrint("${options.room} joined with message: $message");
-          },
-          onConferenceTerminated: (message) {
-            debugPrint("${options.room} terminated with message: $message");
-          },
-          genericListeners: [
-            JitsiGenericListener(
-                eventName: 'onConferenceTerminated',
-                callback: (dynamic message) {
-                  if (hostUserId == prefs.getString("userId")) {
-                    hostLeft(roomId);
-                  }
-                  debugPrint("readyToClose callback");
-                }),
-          ]),
-    );
-  }
+  // _joinMeeting({String roomId, String roomName, String hostUserId}) async {
+  //   // Enable or disable any feature flag here
+  //   // If feature flag are not provided, default values will be used
+  //   // Full list of feature flags (and defaults) available in the README
+  //   Map<FeatureFlagEnum, bool> featureFlags = {
+  //     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+  //     FeatureFlagEnum.CHAT_ENABLED: false,
+  //   };
+  //   if (!kIsWeb) {
+  //     // Here is an example, disabling features for each platform
+  //     if (Platform.isAndroid) {
+  //       // Disable ConnectionService usage on Android to avoid issues (see README)
+  //       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+  //     } else if (Platform.isIOS) {
+  //       // Disable PIP on iOS as it looks weird
+  //       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+  //     }
+  //   }
+  //
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //
+  //   bool isAudioMuted = true;
+  //   bool isVideoMuted = true;
+  //
+  //   var options = JitsiMeetingOptions(room: roomId)
+  //     ..serverURL = 'https://sessions.aureal.one'
+  //     ..subject = roomName
+  //     ..userDisplayName = prefs.getString("HiveUserName")
+  //     ..userEmail = 'emailText.text'
+  //     // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+  //     ..audioOnly = true
+  //     ..audioMuted = isAudioMuted
+  //     ..videoMuted = isVideoMuted
+  //     ..featureFlags.addAll(featureFlags)
+  //     ..webOptions = {
+  //       "roomName": roomName,
+  //       "width": "100%",
+  //       "height": "100%",
+  //       "enableWelcomePage": false,
+  //       "chromeExtensionBanner": null,
+  //       "userInfo": {
+  //         "displayName": prefs.getString('userName'),
+  //         'avatarUrl': prefs.getString('displayPicture')
+  //       }
+  //     };
+  //
+  //   debugPrint("JitsiMeetingOptions: $options");
+  //
+  //   await JitsiMeet.joinMeeting(
+  //     options,
+  //     listener: JitsiMeetingListener(
+  //         onConferenceWillJoin: (message) {
+  //           debugPrint("${options.room} will join with message: $message");
+  //         },
+  //         onConferenceJoined: (message) {
+  //           debugPrint("${options.room} joined with message: $message");
+  //         },
+  //         onConferenceTerminated: (message) {
+  //           debugPrint("${options.room} terminated with message: $message");
+  //         },
+  //         genericListeners: [
+  //           JitsiGenericListener(
+  //               eventName: 'onConferenceTerminated',
+  //               callback: (dynamic message) {
+  //                 if (hostUserId == prefs.getString("userId")) {
+  //                   hostLeft(roomId);
+  //                 }
+  //                 debugPrint("readyToClose callback");
+  //               }),
+  //         ]),
+  //   );
+  // }
 
   void addRoomParticipant({String roomid}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -569,10 +569,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
               } else {
                 hostJoined(value['roomid']);
               }
-              _joinMeeting(
-                  roomId: value['roomid'],
-                  roomName: value['title'],
-                  hostUserId: value['hostuserid']);
+              // _joinMeeting(
+              //     roomId: value['roomid'],
+              //     roomName: value['title'],
+              //     hostUserId: value['hostuserid']);
             });
           }
         } else {

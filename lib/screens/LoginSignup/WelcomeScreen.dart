@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_twitter/flutter_twitter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 import 'Auth.dart';
@@ -265,74 +264,77 @@ class _WelcomeState extends State<Welcome> {
                             ),
                           ),
                         ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   child: InkWell(
+                  //     onTap: () {
+                  //       authBloc.loginGoogle(context);
+                  //     },
+                  //     child: Container(
+                  //       height: 50,
+                  //       width: 50,
+                  //       decoration: BoxDecoration(
+                  //           color: Colors.white,
+                  //           borderRadius: BorderRadius.circular(30)),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.all(8.0),
+                  //         child: Icon(
+                  //           FontAwesomeIcons.google,
+                  //           color: Colors.black,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                       onTap: () {
-                        authBloc.loginGoogle(context);
+                        print("Hive Signer Activated");
+                        // showBarModalBottomSheet(
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return HiveAccount();
+                        //     });
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (context) {
+                          return HiveAccount();
+                        }));
                       },
                       child: Container(
-                        height: 50,
-                        width: 50,
+                        width: MediaQuery.of(context).size.width / 2.7,
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.red,
                             borderRadius: BorderRadius.circular(30)),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(
-                            FontAwesomeIcons.google,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      print("Hive Signer Activated");
-                      // showBarModalBottomSheet(
-                      //     context: context,
-                      //     builder: (context) {
-                      //       return HiveAccount();
-                      //     });
-                      Navigator.push(context,
-                          CupertinoPageRoute(builder: (context) {
-                        return HiveAccount();
-                      }));
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 2.7,
-                      decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 15),
-                        child: Row(
-                          children: [
-                            // Icon(
-                            //   FontAwesomeIcons.hive,
-                            //   color: Colors.white,
-                            // ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  child: Image.asset(
-                                      'assets/images/hivesigner.png')),
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 15),
+                          child: Row(
+                            children: [
+                              // Icon(
+                              //   FontAwesomeIcons.hive,
+                              //   color: Colors.white,
+                              // ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: Image.asset(
+                                        'assets/images/hivesigner.png')),
+                              ),
 
-                            Text(
-                              "HiveSigner",
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                  color: Color(0xffe8e8e8),
-                                  fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3.2),
-                            ),
-                          ],
+                              Text(
+                                "HiveSigner",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    color: Color(0xffe8e8e8),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.2),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
