@@ -1484,14 +1484,24 @@ class _EpisodeViewState extends State<EpisodeView>
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                '${episodeContent['podcast_name']}',
-                                textAlign: TextAlign.center,
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 3,
-                                    color: Color(0xffe8e8e8).withOpacity(0.5)),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return PodcastView(
+                                        episodeContent['podcast_id']);
+                                  }));
+                                },
+                                child: Text(
+                                  '${episodeContent['podcast_name']}',
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3,
+                                      color:
+                                          Color(0xffe8e8e8).withOpacity(0.5)),
+                                ),
                               ),
                             ),
                             Row(
@@ -2043,12 +2053,12 @@ class _EpisodeViewState extends State<EpisodeView>
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               child: ListTile(
                                 onTap: () {
-                                  // Navigator.push(context,
-                                  //     CupertinoPageRoute(builder: (context) {
-                                  //   return PublicProfile(
-                                  //     userId: episodeContent['user_id'],
-                                  //   );
-                                  // }));
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return PublicProfile(
+                                      userId: episodeContent['user_id'],
+                                    );
+                                  }));
                                 },
                                 contentPadding: EdgeInsets.zero,
                                 leading: CircleAvatar(
