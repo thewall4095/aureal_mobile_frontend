@@ -392,6 +392,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             onWillPop: _onBackPressed,
             child: Scaffold(
               appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
                 title: Text(
                   "Profile",
                   textScaleFactor: 1.0,
@@ -646,6 +648,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 20),
                                     child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            CupertinoPageRoute(
+                                                builder: (context) {
+                                          return Bio();
+                                        }));
+                                      },
                                       contentPadding: EdgeInsets.zero,
                                       leading: CircleAvatar(
                                         radius: 55,
