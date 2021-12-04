@@ -191,6 +191,7 @@ class _PodcastViewState extends State<PodcastView> {
       http.Response response = await http.get(Uri.parse(url));
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
+        print(response.body);
         // episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
 
         setState(() {
@@ -584,14 +585,18 @@ class _PodcastViewState extends State<PodcastView> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: InkWell(
                                             onTap: () {
-                                              Navigator.push(context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) {
-                                                return PublicProfile(
-                                                  userId:
-                                                      podcastData['user_id'],
-                                                );
-                                              }));
+                                              if (podcastData[
+                                                      'author_hiveusername'] !=
+                                                  null) {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                  return PublicProfile(
+                                                    userId:
+                                                        podcastData['user_id'],
+                                                  );
+                                                }));
+                                              }
                                             },
                                             child: Text(
                                               podcastData['author'],

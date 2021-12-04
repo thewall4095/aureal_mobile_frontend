@@ -645,6 +645,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           );
         }));
       }
+      // Navigator.push(context, CupertinoPageRoute(builder: (context) {
+      //   return Profile();
+      // }));
     });
   }
 
