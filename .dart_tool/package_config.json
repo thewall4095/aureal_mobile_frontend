@@ -518,6 +518,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "in_app_review",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_review-2.0.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "in_app_review_platform_interface",
+      "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_review_platform_interface-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "in_app_update",
       "rootUri": "file:///Users/vrushalshravane/Development/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_update-2.0.0",
       "packageUri": "lib/",
@@ -1148,7 +1160,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2021-11-27T19:44:46.825663Z",
+  "generated": "2021-12-07T11:32:50.447792Z",
   "generator": "pub",
   "generatorVersion": "2.14.4"
 }
