@@ -39,10 +39,9 @@ import 'PodcastView.dart';
 
 class PublicProfile extends StatefulWidget {
   String userId;
-  AssetsAudioPlayer audioPlayer;
+
   PublicProfile({
     @required this.userId,
-    this.audioPlayer,
   });
 
   @override

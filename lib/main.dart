@@ -16,6 +16,7 @@ import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/Bio.dart';
 import 'package:auditory/screens/buttonPages/HiveWallet.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
@@ -630,7 +631,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
       }
-      if (message.data['type'] == 'reply_comment') {
+      if (message.data['type'] == 'comment_reply') {
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
@@ -657,9 +658,39 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           );
         }));
       }
-      // Navigator.push(context, CupertinoPageRoute(builder: (context) {
-      //   return Profile();
-      // }));
+      if (message.data['type'] == 'publish_first_episode') {}
+      if (message.data['type'] == 'episode_published') {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: message.data['episode_id'],
+          );
+        }));
+      }
+
+      if (message.data['type'] == "used_referral_code") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(
+            userId: message.data['user_id'],
+          );
+        }));
+      }
+      if (message.data['type'] == "followed_podcast") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PodcastView(message.data['podcast_id']);
+        }));
+      }
+      if (message.data['type'] == "followed_user") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(userId: message.data['user_id']);
+        }));
+      }
+      if (message.data['type'] == "used_referral_code") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(
+            userId: message.data['user_id'],
+          );
+        }));
+      }
     });
   }
 
