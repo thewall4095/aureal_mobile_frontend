@@ -157,8 +157,8 @@ class PlayerChange extends ChangeNotifier {
       seek: dur,
       showNotification: true,
       notificationSettings: NotificationSettings(
-          customNextAction: customNextAction,
-          customPrevAction: customPreviousAction,
+          // customNextAction: customNextAction,
+          // customPrevAction: customPreviousAction,
           nextEnabled: true,
           prevEnabled: true,
           seekBarEnabled: true),
