@@ -1799,7 +1799,7 @@ class _CommunitySelectorState extends State<CommunitySelector>
               ),
               centerTitle: true,
               title: Text(
-                "Select a group",
+                "Select a Community",
                 textScaleFactor: 1.0,
                 style:
                     TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
@@ -1819,7 +1819,7 @@ class _CommunitySelectorState extends State<CommunitySelector>
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("Select an audience for this room"),
+                            child: Text("Select an audience"),
                           ),
                         ),
                         SizedBox(
