@@ -1111,40 +1111,46 @@ class _EpisodeViewState extends State<EpisodeView>
                 ],
               ),
       ),
-      bottomSheet: Container(
-        decoration: BoxDecoration(
-            gradient:
-                LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            onTap: () {
-              showBarModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return CommunitySelector();
-                  }).then((value) async {
-                setState(() {
-                  var navigatorValue = value;
-                  if (navigatorValue[1] == true) {
-                    selectedCommunity['title'] = navigatorValue[0][1];
-                    selectedCommunity['id'] = navigatorValue[0][0];
-                    print(selectedCommunity);
-                  } else {
-                    selectedCommunity = navigatorValue[0];
-                    print(selectedCommunity);
-                  }
-                });
-                updateEpisode();
-              });
-            },
-            title: Text("Your Episode is Live on Hive, you can cross post now"),
-            subtitle: Text(
-                "Use the relevant communities to increase the visibility of your episode and podcast"),
-            trailing: Icon(Icons.close),
-          ),
-        ),
-      ),
+      bottomSheet: widget.notificationData == null
+          ? SizedBox()
+          : Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  onTap: () {
+                    showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return CommunitySelector();
+                        }).then((value) async {
+                      setState(() {
+                        var navigatorValue = value;
+                        if (navigatorValue[1] == true) {
+                          selectedCommunity['title'] = navigatorValue[0][1];
+                          selectedCommunity['id'] = navigatorValue[0][0];
+                          print(selectedCommunity);
+                        } else {
+                          selectedCommunity = navigatorValue[0];
+                          print(selectedCommunity);
+                        }
+                      });
+                      updateEpisode();
+                      setState(() {
+                        widget.notificationData = null;
+                      });
+                    });
+                  },
+                  title: Text(
+                      "Your Episode is Live on Hive, you can cross post now"),
+                  subtitle: Text(
+                      "Use the relevant communities to increase the visibility of your episode and podcast"),
+                  trailing: Icon(Icons.close),
+                ),
+              ),
+            ),
     );
   }
 }
