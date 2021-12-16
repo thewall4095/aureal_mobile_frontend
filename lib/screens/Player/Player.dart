@@ -232,20 +232,48 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
         '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
   }
 
-  void getColor(String url) async {
+  // void getColor(String url) async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   hiveUsername = prefs.getString('HiveUserName');
+  //
+  //   getColorFromUrl(url).then((value) {
+  //     setState(() {
+  //       dominantColor = hexOfRGBA(value[0], value[1], value[2]);
+  //       print(dominantColor.toString());
+  //
+  //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //         statusBarColor: Color(dominantColor),
+  //       ));
+  //     });
+  //   });
+  // }
+
+  void getEpisode(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    hiveUsername = prefs.getString('HiveUserName');
-
-    getColorFromUrl(url).then((value) {
-      setState(() {
-        dominantColor = hexOfRGBA(value[0], value[1], value[2]);
-        print(dominantColor.toString());
-
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          statusBarColor: Color(dominantColor),
-        ));
-      });
-    });
+    var playerState = Provider.of<PlayerChange>(context, listen: false);
+    String url =
+        'https://api.aureal.one/public/episode?episode_id=${playerState.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id}&user_id=${prefs.getString('userId')}';
+    print(url);
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        if (this.mounted) {
+          setState(() {
+            episodeContent = jsonDecode(response.body)['episode'];
+            print(episodeContent);
+          });
+        }
+        // await getColor(episodeContent['image']);
+        setState(() {
+          // isLoading = false;
+        });
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    // getRecommendations();
   }
 
   @override
@@ -259,6 +287,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
     _tabController = TabController(vsync: this, length: 2);
 
     var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    getEpisode(context);
     print('abc');
     print(episodeObject.id);
     Transcription(episodeObject.id);
@@ -288,16 +317,16 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
       }
     });
 
-    episodeObject.audioPlayer.currentPosition.listen((event) {
-      if (episodeObject.audioPlayer.currentPosition.value ==
-          episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
-        episodeObject.customNextAction(episodeObject.audioPlayer);
-      }
-    });
+    // episodeObject.audioPlayer.currentPosition.listen((event) {
+    //   if (episodeObject.audioPlayer.currentPosition.value ==
+    //       episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+    //     episodeObject.customNextAction(episodeObject.audioPlayer);
+    //   }
+    // });
 
-    getColor(episodeObject.episodeObject['image'] == null
-        ? episodeObject.episodeObject['podcast_image']
-        : episodeObject.episodeObject['image']);
+    // getColor(episodeObject.episodeObject['image'] == null
+    //     ? episodeObject.episodeObject['podcast_image']
+    //     : episodeObject.episodeObject['image']);
     if (counter < 1) {
       getComments(episodeObject.episodeObject);
     }
@@ -307,6 +336,8 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
     _subscriptions
         .add(episodeObject.audioPlayer.playlistAudioFinished.listen((data) {
       print("playlistAudioFinished : $data");
+      print("///////////////////This is the data");
+      getEpisode(context);
     }));
     // _subscriptions
     //     .add(episodeObject.audioPlayer.((sessionId) {
@@ -328,13 +359,16 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
         SystemUiOverlayStyle(statusBarColor: Color(0xff161616)));
   }
 
-  void share({var episodeObject}) async {
+  void share() async {
+    var playerProvider = Provider.of<PlayerChange>(context, listen: false);
+
     // String sharableLink;
 
     await FlutterShare.share(
-        title: '${episodeObject['podcast_name']}',
+        title:
+            '${playerProvider.audioPlayer.current.value.audio.audio.metas.album}',
         text:
-            "Hey There, I'm listening to ${episodeObject['name']} from ${episodeObject['podcast_name']} on Aureal, \n \nhere's the link for you https://aureal.one/episode/${episodeObject['id']}");
+            "Hey There, I'm listening to ${playerProvider.audioPlayer.current.value.audio.audio.metas.title} from ${playerProvider.audioPlayer.current.value.audio.audio.metas.album} on : Aureal, \n \nhere's the link for you https://aureal.one/episode/${playerProvider.audioPlayer.current.value.audio.audio.metas.id}");
   }
 
   //
@@ -352,104 +386,314 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
     SizeConfig().init(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: CustomScrollView(
-          shrinkWrap: true,
-          slivers: [
-            SliverList(
-                delegate: SliverChildListDelegate([
-              Container(
+        child: ListView(
+          children: [
+            Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
-                child: ListView(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 15.5,
-                            ),
-                            CachedNetworkImage(
-                              imageUrl: episodeObject.episodeObject['image'] ==
-                                      null
-                                  ? episodeObject.episodeObject['podcast_image']
-                                  : episodeObject.episodeObject['image'],
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover)),
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  height: MediaQuery.of(context).size.width / 2,
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 48,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      CupertinoPageRoute(builder: (context) {
-                                    return EpisodeView(
-                                        episodeId:
-                                            episodeObject.episodeObject['id']);
-                                  }));
-                                },
-                                child: Text(
-                                  '${episodeObject.episodeName}',
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  textScaleFactor: 1.0,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize:
-                                          SizeConfig.blockSizeHorizontal * 4,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                    builder: (context, infos) {
+                  return Column(
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: infos.current.audio.audio.metas.image.path,
+                        imageBuilder: (context, imageProvider) {
+                          return Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover)),
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.width,
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      CupertinoPageRoute(builder: (context) {
-                                    return PublicProfile(
-                                      userId: episodeObject
-                                          .episodeObject['user_id'],
-                                    );
-                                  }));
-                                },
-                                child: Text(
-                                  '${episodeObject.episodeObject['author']}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
+                              Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ListTile(
+                                        title: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context,
+                                                CupertinoPageRoute(
+                                                    builder: (context) {
+                                              return EpisodeView(
+                                                  episodeId: episodeObject
+                                                      .episodeObject['id']);
+                                            }));
+                                          },
+                                          child: Text(
+                                            '${infos.current.audio.audio.metas.title}',
+                                            maxLines: 2,
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .blockSizeHorizontal *
+                                                    3.4,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        subtitle: InkWell(
+                                          onTap: () {
+                                            Navigator.push(context,
+                                                CupertinoPageRoute(
+                                                    builder: (context) {
+                                              return PublicProfile(
+                                                userId: episodeObject
+                                                    .episodeObject['user_id'],
+                                              );
+                                            }));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            child: Text(
+                                              '${infos.current.audio.audio.metas.artist}',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
+                                  height: MediaQuery.of(context).size.width / 2,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [
+                                        Colors.black,
+                                        Colors.transparent
+                                      ],
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter)),
                                 ),
                               ),
-                            ),
+                            ],
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Builder(
+                          builder: (context) {
+                            try {
+                              return episodeContent['permlink'] == null
+                                  ? SizedBox()
+                                  : Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              if (hiveUsername != null) {
+                                                setState(() {
+                                                  isUpvoteLoading = true;
+                                                });
+                                                double _value = 50.0;
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Dialog(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          child: UpvoteEpisode(
+                                                              permlink:
+                                                                  episodeContent[
+                                                                      'permlink'],
+                                                              episode_id: int.parse(
+                                                                  episodeObject
+                                                                      .audioPlayer
+                                                                      .current
+                                                                      .value
+                                                                      .audio
+                                                                      .audio
+                                                                      .metas
+                                                                      .id)));
+                                                    }).then((value) async {
+                                                  print(value);
+                                                });
+                                                setState(() {
+                                                  if (episodeObject.ifVoted !=
+                                                      true) {
+                                                    episodeObject.ifVoted =
+                                                        true;
+                                                  }
+                                                });
+                                                setState(() {
+                                                  isUpvoteLoading = false;
+                                                });
+                                              } else {
+                                                showBarModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return HiveDetails();
+                                                    });
+                                              }
+                                            },
+                                            child: Container(
+                                              decoration: episodeContent[
+                                                          'ifVoted'] ==
+                                                      true
+                                                  ? BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                          colors: [
+                                                            Color(0xff5bc3ef),
+                                                            Color(0xff5d5da8)
+                                                          ]),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30))
+                                                  : BoxDecoration(
+                                                      border: Border.all(
+                                                          color:
+                                                              kSecondaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 10),
+                                                child: Row(
+                                                  children: [
+                                                    isUpvoteLoading == true
+                                                        ? Container(
+                                                            height: 17,
+                                                            width: 18,
+                                                            child: SpinKitPulse(
+                                                              color:
+                                                                  Colors.blue,
+                                                            ),
+                                                          )
+                                                        : Icon(
+                                                            FontAwesomeIcons
+                                                                .chevronCircleUp,
+                                                            size: 15,
+                                                            // color:
+                                                            //     Color(0xffe8e8e8),
+                                                          ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 8),
+                                                      child: Text(
+                                                        episodeContent['votes']
+                                                            .toString(),
+                                                        textScaleFactor: 1.0,
+                                                        style: TextStyle(
+                                                            fontSize: 15
+                                                            // color:
+                                                            //     Color(0xffe8e8e8)
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: 15,
+                                                      width: 10,
+                                                      decoration: BoxDecoration(
+                                                        border: Border(
+                                                            left: BorderSide(
+                                                          color: themeProvider
+                                                                      .isLightTheme ==
+                                                                  false
+                                                              ? Colors.white
+                                                              : kPrimaryColor,
+                                                        )),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 4),
+                                                      child: Text(
+                                                        '\$${episodeContent['payout_value'].toString().split(' ')[0]}',
+                                                        textScaleFactor: 1.0,
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+
+                                                          // color:
+                                                          //     Color(0xffe8e8e8)
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                            } catch (e) {
+                              print("API call still Happening");
+                              return SizedBox();
+                            }
+                          },
+                        ),
+                      ),
+                      Container(
+                        // height: MediaQuery.of(context).size.height / 1.5,
+                        decoration: BoxDecoration(
+                          // boxShadow: [
+                          //   new BoxShadow(
+                          //     color: Colors.black54.withOpacity(0.2),
+                          //     blurRadius: 10.0,
+                          //   ),
+                          // ],
+                          // color: Color(0xff222222),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            episodeObject.audioPlayer
+                                .builderRealtimePlayingInfos(
+                                    builder: (context, infos) {
+                              if (infos == null) {
+                                return SizedBox(
+                                  height: 0,
+                                );
+                              } else {
+                                return Seekbar(
+                                  dominantColor: dominantColor == null
+                                      ? 0xff222222
+                                      : dominantColor,
+                                  currentPosition: infos.currentPosition,
+                                  duration: infos.duration,
+                                  episodeName: episodeObject.episodeName,
+                                  seekTo: (to) {
+                                    episodeObject.audioPlayer.seek(to);
+                                  },
+                                );
+                              }
+                            }),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height / 50,
+                              height: MediaQuery.of(context).size.height / 35,
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(15),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 10),
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
+                                children: <Widget>[
                                   IconButton(
-                                    icon: Icon(FontAwesomeIcons.fighterJet),
+                                    icon: Icon(
+                                      FontAwesomeIcons.fighterJet,
+                                      size: 18,
+                                    ),
                                     onPressed: () {
                                       showDialog(
                                           context: context,
@@ -651,377 +895,216 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                           });
                                     },
                                   ),
-                                  episodeObject.episodeObject['permlink'] ==
-                                          null
-                                      ? SizedBox(
-                                          width: 50,
-                                        )
-                                      : Container(
-                                          child: Row(
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.replay_10,
+                                      //  color: Colors.white,
+                                      size: 40,
+                                    ),
+                                    onPressed: () {
+                                      episodeObject.audioPlayer
+                                          .seekBy(Duration(seconds: -10));
+                                    },
+                                  ),
+                                  episodeObject.audioPlayer
+                                      .builderRealtimePlayingInfos(
+                                          builder: (context, infos) {
+                                    if (infos == null) {
+                                      return SpinKitPulse(
+                                        color: Colors.white,
+                                      );
+                                    } else {
+                                      if (infos.isBuffering == true) {
+                                        return SpinKitCircle(
+                                          size: 15,
+                                          color: Colors.white,
+                                        );
+                                      } else {
+                                        if (infos.isPlaying == true) {
+                                          return FloatingActionButton(
+                                              child: Icon(Icons.pause),
+                                              backgroundColor:
+                                                  Color(dominantColor) == null
+                                                      ? Colors.blue
+                                                      : Color(dominantColor),
+                                              onPressed: () {
+                                                episodeObject.pause();
+                                                setState(() {
+                                                  playerState =
+                                                      PlayerState.paused;
+                                                });
+                                              });
+                                        } else {
+                                          return FloatingActionButton(
+                                              backgroundColor:
+                                                  Color(dominantColor) == null
+                                                      ? Colors.blue
+                                                      : Color(dominantColor),
+                                              child: Icon(
+                                                  Icons.play_arrow_rounded),
+                                              onPressed: () {
+                                                // play(url);
+                                                episodeObject.resume();
+                                                setState(() {
+                                                  playerState =
+                                                      PlayerState.playing;
+                                                });
+                                              });
+                                        }
+                                      }
+                                    }
+                                  }),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.forward_10,
+                                      //  color: Colors.white,
+                                      size: 40,
+                                    ),
+                                    onPressed: () {
+                                      episodeObject.audioPlayer.seekBy(
+                                        Duration(seconds: 10),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      share();
+                                    },
+                                    icon: Icon(
+                                      Icons.ios_share,
+                                      size: 18,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            transcript == null
+                                ? SizedBox()
+                                : Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            CupertinoPageRoute(
+                                                builder: (context) {
+                                          print(transcript);
+                                          print(transcript.runtimeType);
+                                          return TrancriptionPlayer(
+                                            transcript: transcript,
+                                          );
+                                        }));
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Color(0xff161616),
+                                        ),
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                4,
+                                        width: double.infinity,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              InkWell(
-                                                onTap: () async {
-                                                  if (hiveUsername != null) {
-                                                    setState(() {
-                                                      isUpvoteLoading = true;
-                                                    });
-                                                    double _value = 50.0;
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                              backgroundColor: Colors
-                                                                  .transparent,
-                                                              child: UpvoteEpisode(
-                                                                  permlink: episodeObject
-                                                                          .episodeObject[
-                                                                      'permlink'],
-                                                                  episode_id:
-                                                                      episodeObject
-                                                                              .episodeObject[
-                                                                          'id']));
-                                                        }).then((value) async {
-                                                      print(value);
-                                                    });
-                                                    setState(() {
-                                                      if (episodeObject
-                                                              .ifVoted !=
-                                                          true) {
-                                                        episodeObject.ifVoted =
-                                                            true;
-                                                      }
-                                                    });
-                                                    setState(() {
-                                                      isUpvoteLoading = false;
-                                                    });
-                                                  } else {
-                                                    showBarModalBottomSheet(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return HiveDetails();
-                                                        });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  decoration: episodeObject
-                                                              .ifVoted ==
-                                                          true
-                                                      ? BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                              colors: [
-                                                                Color(
-                                                                    0xff5bc3ef),
-                                                                Color(
-                                                                    0xff5d5da8)
-                                                              ]),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30))
-                                                      : BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  kSecondaryColor),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      30)),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
-                                                        vertical: 5,
-                                                        horizontal: 10),
-                                                    child: Row(
-                                                      children: [
-                                                        isUpvoteLoading == true
-                                                            ? Container(
-                                                                height: 17,
-                                                                width: 18,
-                                                                child:
-                                                                    SpinKitPulse(
-                                                                  color: Colors
-                                                                      .blue,
-                                                                ),
-                                                              )
-                                                            : Icon(
-                                                                FontAwesomeIcons
-                                                                    .chevronCircleUp,
-                                                                size: 15,
-                                                                // color:
-                                                                //     Color(0xffe8e8e8),
-                                                              ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                          child: Text(
-                                                            episodeObject
-                                                                .episodeObject[
-                                                                    'votes']
-                                                                .toString(),
-                                                            textScaleFactor:
-                                                                1.0,
-                                                            style: TextStyle(
-                                                                fontSize: 15
-                                                                // color:
-                                                                //     Color(0xffe8e8e8)
-                                                                ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          height: 15,
-                                                          width: 10,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            border: Border(
-                                                                left:
-                                                                    BorderSide(
-                                                              color: themeProvider
-                                                                          .isLightTheme ==
-                                                                      false
-                                                                  ? Colors.white
-                                                                  : kPrimaryColor,
-                                                            )),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 4),
-                                                          child: Text(
-                                                            '\$${episodeObject.episodeObject['payout_value'].toString().split(' ')[0]}',
-                                                            textScaleFactor:
-                                                                1.0,
-                                                            style: TextStyle(
-                                                              fontSize: 15,
-
-                                                              // color:
-                                                              //     Color(0xffe8e8e8)
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          4),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                          4,
+                                                      color: Colors.white
+                                                          .withOpacity(0.5)),
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                  IconButton(
-                                    onPressed: () {
-                                      share(
-                                          episodeObject:
-                                              episodeObject.episodeObject);
-                                    },
-                                    icon: Icon(FontAwesomeIcons.share),
-                                  )
-                                ],
-                              ),
+                                      ),
+                                    ),
+                                  ),
+                            SizedBox(
+                              height: 50,
                             ),
                           ],
                         ),
-                        Container(
-                          height: MediaQuery.of(context).size.height / 1.5,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              new BoxShadow(
-                                color: Colors.black54.withOpacity(0.2),
-                                blurRadius: 10.0,
-                              ),
-                            ],
-                            color: Color(0xff222222),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: episodeObject.audioPlayer
-                                    .builderRealtimePlayingInfos(
-                                        builder: (context, infos) {
-                                  if (infos == null) {
-                                    return SizedBox(
-                                      height: 0,
-                                    );
-                                  } else {
-                                    return Seekbar(
-                                      dominantColor: dominantColor,
-                                      currentPosition: infos.currentPosition,
-                                      duration: infos.duration,
-                                      episodeName: episodeObject.episodeName,
-                                      seekTo: (to) {
-                                        episodeObject.audioPlayer.seek(to);
-                                      },
-                                    );
-                                  }
-                                }),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.replay_10,
-                                        //  color: Colors.white,
-                                        size: 40,
-                                      ),
-                                      onPressed: () {
-                                        episodeObject.audioPlayer
-                                            .seekBy(Duration(seconds: -10));
-                                      },
+                      ),
+                      episodeObject.audioPlayer.builderCurrent(
+                          builder: (context, Playing playing) {
+                        return SongSelector(
+                          audios:
+                              episodeObject.audioPlayer.playlist.audios == null
+                                  ? <Audio>[]
+                                  : episodeObject.audioPlayer.playlist.audios,
+                          onPlaylistSelected: (myAudios) {
+                            episodeObject.audioPlayer.open(
+                              Playlist(audios: myAudios),
+                              showNotification: true,
+                              headPhoneStrategy:
+                                  HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
+                              audioFocusStrategy: AudioFocusStrategy.request(
+                                  resumeAfterInterruption: true),
+                            );
+                          },
+                          onSelected: (myAudio) async {
+                            try {
+                              await episodeObject.audioPlayer.open(
+                                myAudio,
+                                autoStart: true,
+                                showNotification: true,
+                                playInBackground: PlayInBackground.enabled,
+                                audioFocusStrategy: AudioFocusStrategy.request(
+                                    resumeAfterInterruption: true,
+                                    resumeOthersPlayersAfterDone: true),
+                                headPhoneStrategy:
+                                    HeadPhoneStrategy.pauseOnUnplug,
+                                notificationSettings: NotificationSettings(
+                                    //seekBarEnabled: false,
+                                    //stopEnabled: true,
+                                    //customStopAction: (player){
+                                    //  player.stop();
+                                    //}
+                                    //prevEnabled: false,
+                                    //customNextAction: (player) {
+                                    //  print('next');
+                                    //}
+                                    //customStopIcon: AndroidResDrawable(name: 'ic_stop_custom'),
+                                    //customPauseIcon: AndroidResDrawable(name:'ic_pause_custom'),
+                                    //customPlayIcon: AndroidResDrawable(name:'ic_play_custom'),
                                     ),
-                                    episodeObject.audioPlayer
-                                        .builderRealtimePlayingInfos(
-                                            builder: (context, infos) {
-                                      if (infos == null) {
-                                        return SpinKitPulse(
-                                          color: Colors.white,
-                                        );
-                                      } else {
-                                        if (infos.isBuffering == true) {
-                                          return SpinKitCircle(
-                                            size: 15,
-                                            color: Colors.white,
-                                          );
-                                        } else {
-                                          if (infos.isPlaying == true) {
-                                            return FloatingActionButton(
-                                                child: Icon(Icons.pause),
-                                                backgroundColor:
-                                                    Color(dominantColor) == null
-                                                        ? Colors.blue
-                                                        : Color(dominantColor),
-                                                onPressed: () {
-                                                  episodeObject.pause();
-                                                  setState(() {
-                                                    playerState =
-                                                        PlayerState.paused;
-                                                  });
-                                                });
-                                          } else {
-                                            return FloatingActionButton(
-                                                backgroundColor:
-                                                    Color(dominantColor) == null
-                                                        ? Colors.blue
-                                                        : Color(dominantColor),
-                                                child: Icon(
-                                                    Icons.play_arrow_rounded),
-                                                onPressed: () {
-                                                  // play(url);
-                                                  episodeObject.resume();
-                                                  setState(() {
-                                                    playerState =
-                                                        PlayerState.playing;
-                                                  });
-                                                });
-                                          }
-                                        }
-                                      }
-                                    }),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.forward_10,
-                                        //  color: Colors.white,
-                                        size: 40,
-                                      ),
-                                      onPressed: () {
-                                        episodeObject.audioPlayer.seekBy(
-                                          Duration(seconds: 10),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              transcript == null
-                                  ? SizedBox()
-                                  : Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) {
-                                            print(transcript);
-                                            print(transcript.runtimeType);
-                                            return TrancriptionPlayer(
-                                              transcript: transcript,
-                                            );
-                                          }));
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: Color(0xff161616),
-                                          ),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              4,
-                                          width: double.infinity,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            4),
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            4,
-                                                        color: Colors.white
-                                                            .withOpacity(0.5)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                              SizedBox(
-                                height: 50,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ])),
+                              );
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          playing: playing,
+                        );
+                      })
+                    ],
+                  );
+                })),
           ],
         ),
       ),
@@ -2954,6 +3037,72 @@ class _EditClipState extends State<EditClip> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class SongSelector extends StatelessWidget {
+  final Playing playing;
+  final List<Audio> audios;
+  final Function(Audio) onSelected;
+  final Function(List<Audio>) onPlaylistSelected;
+
+  const SongSelector(
+      {this.playing, this.audios, this.onSelected, this.onPlaylistSelected});
+
+  Widget _image(Audio item) {
+    if (item.metas.image == null) {
+      return SizedBox(height: 40, width: 40);
+    }
+
+    return item.metas.image?.type == ImageType.network
+        ? Image.network(
+            item.metas.image.path,
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          )
+        : Image.asset(
+            item.metas.image.path,
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SizedBox(
+          height: 10,
+        ),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, position) {
+              final item = audios[position];
+              final isPlaying = item.path == playing?.audio.assetAudioPath;
+              return ListTile(
+                  leading: Material(
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    child: _image(item),
+                  ),
+                  title: Text(item.metas.title.toString(),
+                      style: TextStyle(
+                        color: isPlaying ? Colors.blue : Colors.black,
+                      )),
+                  onTap: () {
+                    onSelected(item);
+                  });
+            },
+            itemCount: audios.length,
+          ),
+        ),
+      ],
     );
   }
 }

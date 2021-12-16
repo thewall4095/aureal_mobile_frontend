@@ -25,7 +25,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:jitsi_meet/jitsi_meet.dart';
+// import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -39,10 +39,9 @@ import 'PodcastView.dart';
 
 class PublicProfile extends StatefulWidget {
   String userId;
-  AssetsAudioPlayer audioPlayer;
+
   PublicProfile({
     @required this.userId,
-    this.audioPlayer,
   });
 
   @override

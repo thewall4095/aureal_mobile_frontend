@@ -40,6 +40,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../RoomsPage.dart';
 import 'PodcastView.dart';
 
 enum Like {
@@ -51,9 +52,9 @@ class EpisodeView extends StatefulWidget {
   static const String id = "EpisodeView";
 
   final episodeId;
-  String podcastName;
+  var notificationData;
 
-  EpisodeView({@required this.episodeId});
+  EpisodeView({@required this.episodeId, this.notificationData});
 
   @override
   _EpisodeViewState createState() => _EpisodeViewState();
@@ -329,6 +330,8 @@ class _EpisodeViewState extends State<EpisodeView>
 
   var dominantColor = 0xff222222;
 
+  var selectedCommunity = Map<String, dynamic>();
+
   int hexOfRGBA(int r, int g, int b, {double opacity = 1}) {
     r = (r < 0) ? -r : r;
     g = (g < 0) ? -g : g;
@@ -356,6 +359,29 @@ class _EpisodeViewState extends State<EpisodeView>
   }
 
   ScrollController _controller = ScrollController();
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  void updateEpisode() async {
+    String url = 'https://api.aureal.one/private/updateEpisode';
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString('userId');
+    map['episode_id'] = widget.notificationData['episode_id'];
+
+    map['community_ids'] = selectedCommunity['id'] + ',';
+
+    FormData formData = FormData.fromMap(map);
+
+    print(map.toString());
+
+    var response = await intercept.postRequest(formData, url);
+    print(response.toString());
+
+    // await publishEpisode(status: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1085,6 +1111,46 @@ class _EpisodeViewState extends State<EpisodeView>
                 ],
               ),
       ),
+      bottomSheet: widget.notificationData == null
+          ? SizedBox()
+          : Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  onTap: () {
+                    showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return CommunitySelector();
+                        }).then((value) async {
+                      setState(() {
+                        var navigatorValue = value;
+                        if (navigatorValue[1] == true) {
+                          selectedCommunity['title'] = navigatorValue[0][1];
+                          selectedCommunity['id'] = navigatorValue[0][0];
+                          print(selectedCommunity);
+                        } else {
+                          selectedCommunity = navigatorValue[0];
+                          print(selectedCommunity);
+                        }
+                      });
+                      updateEpisode();
+                      setState(() {
+                        widget.notificationData = null;
+                      });
+                    });
+                  },
+                  title: Text(
+                      "Your Episode is Live on Hive, you can cross post now"),
+                  subtitle: Text(
+                      "Use the relevant communities to increase the visibility of your episode and podcast"),
+                  trailing: Icon(Icons.close),
+                ),
+              ),
+            ),
     );
   }
 }
