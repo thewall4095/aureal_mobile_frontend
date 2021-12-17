@@ -347,7 +347,11 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
         .add(AssetsAudioPlayer.addNotificationOpenAction((notification) {
       return false;
     }));
+
+    _playListTabController = TabController(vsync: this, length: 3);
   }
+
+  TabController _playListTabController;
 
   @override
   void dispose() {
@@ -381,6 +385,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
     SizeConfig().init(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+        backgroundColor: Color(0xff161616),
         resizeToAvoidBottomInset: false,
         // body: SafeArea(
         //   child: Container(
@@ -1067,6 +1072,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
               expandedHeight: MediaQuery.of(context).size.height / 1.2,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
+                    color: Color(0xff161616),
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                     child: episodeObject.audioPlayer
@@ -1818,14 +1824,29 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                       );
                     })),
               ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(50),
+                child: Container(
+                  color: Color(0xff161616),
+                  child: TabBar(controller: _playListTabController, tabs: [
+                    Tab(
+                      text: "UP NEXT",
+                    ),
+                    Tab(
+                      text: "TRANSCRIPT",
+                    ),
+                    Tab(
+                      text: "RELATED",
+                    )
+                  ]),
+                ),
+              ),
             )
           ];
         }, body: episodeObject.audioPlayer.builderCurrent(
             builder: (context, Playing playing) {
           return SongSelector(
-            audios: episodeObject.audioPlayer.playlist.audios == null
-                ? <Audio>[]
-                : episodeObject.audioPlayer.playlist.audios,
+            audios: episodeObject.playList,
             onPlaylistSelected: (myAudios) {
               episodeObject.audioPlayer.open(
                 Playlist(audios: myAudios),
@@ -3831,35 +3852,36 @@ class SongSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          height: MediaQuery.of(context).size.height,
-          child: ListView.builder(
-            shrinkWrap: true,
-            // physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, position) {
-              final item = audios[position];
-              final isPlaying = item.path == playing?.audio.assetAudioPath;
-              return ListTile(
-                  leading: Material(
-                    shape: CircleBorder(),
-                    clipBehavior: Clip.antiAlias,
-                    child: _image(item),
-                  ),
-                  title: Text(item.metas.title.toString(),
-                      style: TextStyle(
-                        color: isPlaying ? Colors.blue : Colors.black,
-                      )),
-                  onTap: () {
-                    onSelected(item);
-                  });
-            },
-            itemCount: audios.length,
-          ),
-        ),
-      ],
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      child: ListView.builder(
+        shrinkWrap: true,
+        // physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, position) {
+          final item = audios[position];
+          final isPlaying = item.path == playing?.audio.assetAudioPath;
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: ListTile(
+                selectedTileColor: Color(0xff222222),
+                selected: isPlaying ? true : false,
+                leading: Material(
+                  clipBehavior: Clip.antiAlias,
+                  child: _image(item),
+                ),
+                title: Text(item.metas.title.toString(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Color(0xffe8e8e8),
+                    )),
+                onTap: () {
+                  onSelected(item);
+                }),
+          );
+        },
+        itemCount: audios.length,
+      ),
     );
   }
 }

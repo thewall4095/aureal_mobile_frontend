@@ -297,7 +297,7 @@ class _MyAppState extends State<MyApp> {
                                           NotificationPage(),
                                       Login.id: (context) => Login(),
                                       SignUp.id: (context) => SignUp(),
-                                      Player.id: (context) => Player(),
+
                                       Welcome.id: (context) => Welcome(),
                                       Profile.id: (context) => Profile(),
                                       Settings.id: (context) => Settings(),

@@ -685,6 +685,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                       ),
                                                     ));
                                                   }
+                                                  currentlyPlaying.playList =
+                                                      audioPlaylist;
                                                   currentlyPlaying.audioPlayer
                                                       .open(
                                                           Playlist(
