@@ -1,16 +1,21 @@
 import 'dart:convert';
-
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
-import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:auditory/Services/LaunchUrl.dart';
-import 'package:auditory/screens/Onboarding/HiveDetails.dart';
-import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/utilities/Share.dart';
+import 'dart:io';
+import 'package:html/parser.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/Services/LaunchUrl.dart';
+import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
+import 'package:auditory/screens/Player/VideoPlayer.dart';
+import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,22 +24,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+// import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:line_icons/line_icon.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+import '../Clips.dart';
 import 'Comments.dart';
 import 'PodcastView.dart';
 
 class PublicProfile extends StatefulWidget {
   String userId;
-  AssetsAudioPlayer audioPlayer;
+
   PublicProfile({
     @required this.userId,
-    this.audioPlayer,
   });
 
   @override
