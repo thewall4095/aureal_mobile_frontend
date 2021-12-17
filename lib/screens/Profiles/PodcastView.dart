@@ -685,11 +685,14 @@ class _PodcastViewState extends State<PodcastView> {
                                                       ),
                                                     ));
                                                   }
+                                                  currentlyPlaying.playList =
+                                                      audioPlaylist;
                                                   currentlyPlaying.audioPlayer
                                                       .open(
                                                           Playlist(
                                                               audios:
-                                                                  audioPlaylist,
+                                                                  currentlyPlaying
+                                                                      .playList,
                                                               startIndex: 0),
                                                           showNotification:
                                                               true);

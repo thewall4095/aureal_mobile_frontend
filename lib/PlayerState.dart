@@ -22,7 +22,7 @@ class PlayerChange extends ChangeNotifier {
   var _episodeObject;
   var _currentPosition;
 
-  List _playList;
+  List<Audio> _playList;
 
   bool _ifVoted;
 
@@ -65,7 +65,7 @@ class PlayerChange extends ChangeNotifier {
 //    print(_musicPlaylist.runtimeType);
 //  }
 
-  List<dynamic> get playList => _playList;
+  List<Audio> get playList => _playList;
 
   set playList(var newValue) {
     _playList = newValue;
