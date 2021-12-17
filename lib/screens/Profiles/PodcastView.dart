@@ -691,7 +691,8 @@ class _PodcastViewState extends State<PodcastView> {
                                                       .open(
                                                           Playlist(
                                                               audios:
-                                                                  audioPlaylist,
+                                                                  currentlyPlaying
+                                                                      .playList,
                                                               startIndex: 0),
                                                           showNotification:
                                                               true);

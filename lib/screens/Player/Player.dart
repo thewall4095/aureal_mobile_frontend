@@ -1827,7 +1827,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(50),
                 child: Container(
-                  color: Color(0xff161616),
+                  color: Color(0xff222222),
                   child: TabBar(controller: _playListTabController, tabs: [
                     Tab(
                       text: "UP NEXT",
@@ -3853,6 +3853,7 @@ class SongSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Color(0xff222222),
       height: MediaQuery.of(context).size.height,
       child: ListView.builder(
         shrinkWrap: true,
@@ -3863,7 +3864,7 @@ class SongSelector extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: ListTile(
-                selectedTileColor: Color(0xff222222),
+                selectedTileColor: Color(0xff161616),
                 selected: isPlaying ? true : false,
                 leading: Material(
                   clipBehavior: Clip.antiAlias,
