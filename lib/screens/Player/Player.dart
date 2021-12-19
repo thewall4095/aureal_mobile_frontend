@@ -12,6 +12,7 @@ import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
@@ -1329,6 +1330,80 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                           ),
                                                         )
                                                       ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              InkWell(
+                                                onTap: () async {
+                                                  SharedPreferences prefs =
+                                                      await SharedPreferences
+                                                          .getInstance();
+                                                  if (prefs.getString(
+                                                          'HiveUserName') !=
+                                                      null) {
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    Comments(
+                                                                      episodeObject:
+                                                                          episodeContent,
+                                                                    )));
+                                                  } else {
+                                                    showBarModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return HiveDetails();
+                                                        });
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 5),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color:
+                                                                kSecondaryColor),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(30)),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              5.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .mode_comment_outlined,
+                                                            size: 15,
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        8),
+                                                            child: Text(
+                                                              episodeContent[
+                                                                      'comments_count']
+                                                                  .toString(),
+                                                              textScaleFactor:
+                                                                  1.0,
+                                                              // style: TextStyle(
+                                                              //      color: Color(0xffe8e8e8)
+                                                              //     ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -3864,6 +3939,7 @@ class SongSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
     return Container(
       color: Color(0xff222222),
       height: MediaQuery.of(context).size.height,
@@ -3877,7 +3953,11 @@ class SongSelector extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: ListTile(
                 selectedTileColor: Color(0xff161616),
-                selected: isPlaying ? true : false,
+                selected: currentlyPlaying
+                            .audioPlayer.current.value.audio.audio.metas.id ==
+                        currentlyPlaying.playList[position].metas.id
+                    ? true
+                    : false,
                 leading: Material(
                   clipBehavior: Clip.antiAlias,
                   child: _image(item),

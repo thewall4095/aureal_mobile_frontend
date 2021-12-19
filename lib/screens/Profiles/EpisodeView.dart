@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:auditory/Services/audioEditor.dart';
+import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
@@ -406,54 +407,7 @@ class _EpisodeViewState extends State<EpisodeView>
             Icons.arrow_back,
           ),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.crop),
-            onPressed: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                return AudioEditor(
-                  episodeObject: episodeContent,
-                );
-              }));
-            },
-          ),
-          Platform.isAndroid == true
-              ? GestureDetector(
-                  onTap: () {
-                    startDownload();
-                    setState(() {
-                      _loading = !_loading;
-                      _updateProgress();
-                    });
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(15.0),
-                      child: _loading
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                CircularProgressIndicator(
-                                  value: _progressValue,
-                                ),
-                                Text('${(_progressValue * 100).round()}%'),
-                              ],
-                            )
-                          : Icon(Icons.arrow_circle_down,
-                              color: isDownloading == true
-                                  ? Colors.blue
-                                  : Colors.white)),
-                )
-              : SizedBox(
-                  height: 0,
-                  width: 0,
-                ),
-          IconButton(
-            onPressed: () {
-              share1(episodeObject: episodeObject.episodeObject);
-            },
-            icon: Icon(Icons.ios_share),
-          )
-        ],
+        actions: <Widget>[],
       ),
       body: ModalProgressHUD(
         color: Colors.black,
@@ -548,6 +502,74 @@ class _EpisodeViewState extends State<EpisodeView>
                                       color:
                                           Color(0xffe8e8e8).withOpacity(0.5)),
                                 ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.crop),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        CupertinoPageRoute(builder: (context) {
+                                      return AudioEditor(
+                                        episodeObject: episodeContent,
+                                      );
+                                    }));
+                                  },
+                                ),
+                                Platform.isAndroid == true
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          startDownload();
+                                          setState(() {
+                                            _loading = !_loading;
+                                            _updateProgress();
+                                          });
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.all(15.0),
+                                            child: _loading
+                                                ? Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      CircularProgressIndicator(
+                                                        value: _progressValue,
+                                                      ),
+                                                      Text(
+                                                          '${(_progressValue * 100).round()}%'),
+                                                    ],
+                                                  )
+                                                : Icon(Icons.arrow_circle_down,
+                                                    color: isDownloading == true
+                                                        ? Colors.blue
+                                                        : Colors.white)),
+                                      )
+                                    : SizedBox(
+                                        height: 0,
+                                        width: 0,
+                                      ),
+                                IconButton(
+                                  onPressed: () {
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Createplaylist(
+                                              episodeId: widget.episodeId);
+                                        });
+                                  },
+                                  icon: Icon(Icons.playlist_add),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    share1(
+                                        episodeObject:
+                                            episodeObject.episodeObject);
+                                  },
+                                  icon: Icon(Icons.ios_share),
+                                )
                               ],
                             ),
                             SizedBox(
