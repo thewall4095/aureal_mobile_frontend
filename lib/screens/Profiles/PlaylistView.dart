@@ -298,12 +298,17 @@ class _PlaylistViewState extends State<PlaylistView> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             child: Row(
                               children: [
-                                InkWell(
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 20,
-                                  ),
-                                ),
+                                playlistDetails['id'] ==
+                                        prefs.getString('userId')
+                                    ? InkWell(
+                                        child: Icon(
+                                          Icons.edit,
+                                          size: 20,
+                                        ),
+                                      )
+                                    : InkWell(
+                                        child:
+                                            Icon(Icons.add_to_photos_outlined)),
                                 SizedBox(
                                   width: 20,
                                 ),
@@ -443,6 +448,26 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                   height: 8,
                                                 ),
                                                 Divider(),
+                                                ListTile(
+                                                  leading: Icon(Icons.shuffle),
+                                                  title: Text("Shuffle play"),
+                                                ),
+                                                ListTile(
+                                                  leading:
+                                                      Icon(Icons.playlist_add),
+                                                  title:
+                                                      Text("Add to Playlist"),
+                                                ),
+                                                ListTile(
+                                                  leading:
+                                                      Icon(Icons.ios_share),
+                                                  title: Text("Share"),
+                                                ),
+                                                ListTile(
+                                                  leading: Icon(Icons.delete),
+                                                  title:
+                                                      Text("Delete playlist"),
+                                                )
                                               ],
                                             ),
                                           );
@@ -544,7 +569,47 @@ class _PlaylistViewState extends State<PlaylistView> {
                                     return Container(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: [],
+                                        children: [
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              radius: 25,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              child: CachedNetworkImage(
+                                                imageUrl: v['image'],
+                                              ),
+                                            ),
+                                            title: Text(
+                                              "${v['name']}",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            subtitle: Text(
+                                                "${v['podcast_name']} • ${DurationCalculator(v['duration'])}"),
+                                          ),
+                                          Divider(),
+                                          ListTile(
+                                            leading:
+                                                Icon(Icons.play_circle_fill),
+                                            title: Text("Play"),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.playlist_add),
+                                            title: Text("Add to playlist"),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.delete),
+                                            title: Text("Remove from playlist"),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.podcasts),
+                                            title: Text("Go to podcast"),
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.ios_share),
+                                            title: Text("Share"),
+                                          )
+                                        ],
                                       ),
                                     );
                                   });
