@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icon.dart';
@@ -26,6 +27,7 @@ import 'EpisodeView.dart';
 import 'PodcastView.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:html/parser.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 
 class PlaylistView extends StatefulWidget {
   final playlistId;
@@ -83,6 +85,70 @@ class _PlaylistViewState extends State<PlaylistView> {
     }
   }
 
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future updatePlaylist() async {
+    String url = "https://api.aureal.one/private/updatePlaylist";
+
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString("userId");
+    map['playlist_id'] = widget.playlistId;
+    map['playlist_name'] = playlistName;
+    map['isPublic'] = isPublic;
+    if (description != null || description.length == 0) {
+      map['description'] = description;
+    }
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future followPlaylist() async {
+    String url = "https://api.aureal.one/private/followPlaylist";
+
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString('user_id');
+    map['playlist_id'] = widget.playlistId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+      return response;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  void deleteEpisode(int episodeId) async {}
+
+  Future deletePlaylist() async {
+    String url = "https://api.aureal.one/private/deletePlaylist";
+
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString('userId');
+    map['playlist_id'] = widget.playlistId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void addFullPlaylist() async {}
+
   RegExp htmlMatch = RegExp(r'(\w+)');
 
   @override
@@ -97,6 +163,8 @@ class _PlaylistViewState extends State<PlaylistView> {
       }
     });
   }
+
+  void sharePlaylist() async {}
 
   bool isEditing = false;
   bool isPublic = true;
@@ -123,8 +191,11 @@ class _PlaylistViewState extends State<PlaylistView> {
                       color: Colors.blue,
                     ),
                     onPressed: () {
-                      setState(() {
-                        isEditing = false;
+                      updatePlaylist().then((value) {
+                        getPlaylistData();
+                        setState(() {
+                          isEditing = false;
+                        });
                       });
                     },
                   )
@@ -517,6 +588,17 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                                   prefs.getString(
                                                                       "userId")
                                                               ? ListTile(
+                                                                  onTap:
+                                                                      () async {
+                                                                    await deletePlaylist()
+                                                                        .then(
+                                                                            (value) {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    });
+                                                                  },
                                                                   leading: Icon(
                                                                       Icons
                                                                           .delete),
@@ -605,10 +687,20 @@ class _PlaylistViewState extends State<PlaylistView> {
                       child: Column(
                         children: [
                           TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                playlistName = value;
+                              });
+                            },
                             controller: nameController..text = playlistName,
                             decoration: InputDecoration(labelText: "Title"),
                           ),
                           TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                description = value;
+                              });
+                            },
                             controller: descriptionController
                               ..text = description,
                             decoration: InputDecoration(
