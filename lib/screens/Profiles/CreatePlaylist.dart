@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:fluttertoast/fluttertoast.dart' as toast;
 
 class Createplaylist extends StatefulWidget {
   int episodeId;
@@ -22,6 +25,8 @@ class _CreateplaylistState extends State<Createplaylist> {
   postreq.Interceptor intercept = postreq.Interceptor();
 
   void getPlaylist() async {
+    print("/////////////// This is get Playlist");
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/getPlaylist/${prefs.getString("userId")}";
@@ -30,6 +35,9 @@ class _CreateplaylistState extends State<Createplaylist> {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
         print(response.data);
+        setState(() {
+          playlist = response.data['playlists'];
+        });
       } else {
         print(response.statusCode);
       }
@@ -38,38 +46,25 @@ class _CreateplaylistState extends State<Createplaylist> {
     }
   }
 
-  Future createPlaylist({String playlistName}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/private/createPlaylist";
-
-    var map = Map<String, dynamic>();
-    map['user_id'] = prefs.getString('userId');
-    map['playlist_name'] = playlistName;
-
-    FormData formData = FormData.fromMap(map);
-
-    try {
-      var response = await intercept.postRequest(formData, url);
-      return response;
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
   Future addToPlaylist({int id, episodeId}) async {
+    print("/////////////////This is add to Playlist");
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/private/addToPlayist";
+    String url = "https://api.aureal.one/private/addToPlaylist";
 
     var map = Map<String, dynamic>();
     map['playlist_id'] = id;
     map['episode_id'] = episodeId;
     map['userId'] = prefs.getString('userId');
 
+    print(map);
+
     FormData formData = FormData.fromMap(map);
 
     try {
       var response = await intercept.postRequest(formData, url);
+      print(response);
+      toast.Fluttertoast.showToast(msg: "Added to playlist");
     } catch (e) {
       print(e);
     }
@@ -101,7 +96,21 @@ class _CreateplaylistState extends State<Createplaylist> {
             Expanded(
                 child: Container(
               child: ListView(
-                children: [],
+                children: [
+                  for (var v in playlist)
+                    ListTile(
+                      onTap: () {
+                        addToPlaylist(id: v['id'], episodeId: widget.episodeId)
+                            .then((value) {
+                          Navigator.pop(context);
+                        });
+                      },
+                      title: Text("${v['playlist_name']}"),
+                      trailing: v['ispublic'] == true
+                          ? Icon(Icons.public)
+                          : Icon(Icons.lock),
+                    ),
+                ],
               ),
             )),
             ListTile(
@@ -111,44 +120,19 @@ class _CreateplaylistState extends State<Createplaylist> {
                     context: context,
                     barrierDismissible: true,
                     builder: (context) {
-                      return Dialog(
-                        insetPadding: EdgeInsets.all(20),
-                        backgroundColor: Color(0xff161616),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Create a new playlist",
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        SizeConfig.safeBlockHorizontal * 4),
-                              ),
-                              TextField(
-                                decoration: InputDecoration(
-                                  labelText: "Title",
-                                  labelStyle: TextStyle(
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal * 3.6),
-                                ),
-                              ),
-                              SwitchListTile(
-                                  title: Text("Public"),
-                                  value: isPublic,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      isPublic = value;
-                                    });
-                                  })
-                            ],
-                          ),
-                        ),
-                      );
+                      return CreatePlaylistDialog();
+                    }).then((value) async {
+                  if (value != null) {
+                    print("/////////////////////////////////////// $value");
+                    print(value.runtimeType);
+                    await addToPlaylist(
+                            episodeId: widget.episodeId,
+                            id: jsonDecode(value.toString())['data'][0]['id'])
+                        .then((value) {
+                      Navigator.pop(context);
                     });
+                  }
+                });
               },
               selected: true,
               selectedTileColor: Color(0xff222222),
@@ -166,6 +150,129 @@ class _CreateplaylistState extends State<Createplaylist> {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CreatePlaylistDialog extends StatefulWidget {
+  @override
+  _CreatePlaylistDialogState createState() => _CreatePlaylistDialogState();
+}
+
+class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
+  bool isPublic = true;
+
+  String name;
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future createPlaylist() async {
+    print("///////////////////this is create Playlist");
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/createPlaylist";
+
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString('userId');
+    map['playlist_name'] = name;
+    map['ispublic'] = isPublic;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+      Navigator.pop(context, response);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: EdgeInsets.all(20),
+      backgroundColor: Color(0xff161616),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Create a new playlist",
+              textScaleFactor: 1.0,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: SizeConfig.safeBlockHorizontal * 4),
+            ),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  name = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: "Title",
+                labelStyle:
+                    TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text("Public"),
+                value: isPublic,
+                onChanged: (value) {
+                  setState(() {
+                    isPublic = value;
+                  });
+                }),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "CANCEL",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    createPlaylist();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "CREATE",
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                    ),
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),

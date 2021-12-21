@@ -178,9 +178,9 @@ class _HomeState extends State<Home> {
         return Clips();
         break;
 
-      case 4:
-        return RoomsPage();
-        break;
+      // case 4:
+      //   return RoomsPage();
+      //   break;
     }
   }
 
@@ -663,13 +663,13 @@ class _HomeState extends State<Home> {
         //Color(0xff5bc3ef),
         // backgroundColor: Colors.transparent,
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.stream,
-            ),
-            activeIcon: Icon(Icons.stream),
-            label: '',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.stream,
+          //   ),
+          //   activeIcon: Icon(Icons.stream),
+          //   label: '',
+          // ),
 
           BottomNavigationBarItem(
             label: "",
