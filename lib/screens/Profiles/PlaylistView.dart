@@ -1,5 +1,8 @@
+// import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
@@ -23,6 +26,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
 import 'Comments.dart';
+import 'CreatePlaylist.dart';
 import 'EpisodeView.dart';
 import 'PodcastView.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -128,7 +132,22 @@ class _PlaylistViewState extends State<PlaylistView> {
     }
   }
 
-  void deleteEpisode(int episodeId) async {}
+  Future removeFromPlaylist(int episodeId) async {
+    String url = "https://api.aureal.one/private/removeFromPlaylist";
+    var map = Map<String, dynamic>();
+    map['user_id'] = prefs.getString('userId');
+    map['playlist_id'] = widget.playlistId;
+    map['episode_id'] = episodeId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      return response;
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future deletePlaylist() async {
     String url = "https://api.aureal.one/private/deletePlaylist";
@@ -147,7 +166,17 @@ class _PlaylistViewState extends State<PlaylistView> {
     }
   }
 
-  void addFullPlaylist() async {}
+  void addFullPlaylist() async {
+    String url = "https://api.aureal.one/private/addToPlaylist";
+    var map = Map<String, dynamic>();
+    map['playlist_id'] = widget.playlistId;
+    map['user_id'] = prefs.getString('userId');
+    String episodeId = '';
+    for (var v in playlistData) {
+      episodeId = episodeId + '${v['id']}' + ",";
+    }
+    print(episodeId);
+  }
 
   RegExp htmlMatch = RegExp(r'(\w+)');
 
@@ -164,6 +193,11 @@ class _PlaylistViewState extends State<PlaylistView> {
     });
   }
 
+  //TODO: Share your playlist function
+  //TODO: add complete playlist to other playlist has to be worked upon
+  //TODO: Downloads for playlist
+  //TODO: ModalProgress HUD when the data is not here yet
+  //TODO: Add to Library (Follow playlist API implementing)
   void sharePlaylist() async {}
 
   bool isEditing = false;
@@ -180,6 +214,8 @@ class _PlaylistViewState extends State<PlaylistView> {
     var currentlyPlaying = Provider.of<PlayerChange>(context);
     final mediaQueryData = MediaQuery.of(context);
     return Scaffold(
+        bottomSheet: BottomPlayer(),
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -219,508 +255,543 @@ class _PlaylistViewState extends State<PlaylistView> {
           child: ListView(
             physics: BouncingScrollPhysics(),
             children: [
-              isEditing == false
-                  ? Column(
-                      children: [
-                        Container(
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: playlistData.length < 4
-                                    ? CachedNetworkImage(
-                                        imageUrl: playlistData[0]['image'],
-                                        imageBuilder: (context, imageProvider) {
-                                          return Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2.5,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2.5,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover)),
-                                          );
-                                        },
-                                      )
-                                    : Container(
+              if (isEditing == false)
+                Column(
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: playlistData.length < 4
+                                ? CachedNetworkImage(
+                                    imageUrl: playlistData[0]['image'],
+                                    imageBuilder: (context, imageProvider) {
+                                      return Container(
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 2.5,
                                         height:
                                             MediaQuery.of(context).size.width /
                                                 2.5,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover)),
+                                      );
+                                    },
+                                  )
+                                : Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.5,
+                                    height:
+                                        MediaQuery.of(context).size.width / 2.5,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
                                           children: [
-                                            Row(
-                                              children: [
-                                                CachedNetworkImage(
-                                                  imageUrl: playlistData[0]
-                                                      ['image'],
-                                                  imageBuilder:
-                                                      (context, imageProvider) {
-                                                    return Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit: BoxFit
-                                                                  .cover)),
-                                                    );
-                                                  },
-                                                ),
-                                                CachedNetworkImage(
-                                                  imageUrl: playlistData[1]
-                                                      ['image'],
-                                                  imageBuilder:
-                                                      (context, imageProvider) {
-                                                    return Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit: BoxFit
-                                                                  .cover)),
-                                                    );
-                                                  },
-                                                ),
-                                              ],
+                                            CachedNetworkImage(
+                                              imageUrl: playlistData[0]
+                                                  ['image'],
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                );
+                                              },
                                             ),
-                                            Row(
-                                              children: [
-                                                CachedNetworkImage(
-                                                  imageUrl: playlistData[2]
-                                                      ['image'],
-                                                  imageBuilder:
-                                                      (context, imageProvider) {
-                                                    return Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit: BoxFit
-                                                                  .cover)),
-                                                    );
-                                                  },
-                                                ),
-                                                CachedNetworkImage(
-                                                  imageUrl: playlistData[3]
-                                                      ['image'],
-                                                  imageBuilder:
-                                                      (context, imageProvider) {
-                                                    return Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              5,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image:
-                                                                  imageProvider,
-                                                              fit: BoxFit
-                                                                  .cover)),
-                                                    );
-                                                  },
-                                                ),
-                                              ],
+                                            CachedNetworkImage(
+                                              imageUrl: playlistData[1]
+                                                  ['image'],
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                );
+                                              },
                                             ),
                                           ],
                                         ),
-                                      ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${playlistDetails['playlist_name']}",
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 0.9)
-                                          .toDouble(),
+                                        Row(
+                                          children: [
+                                            CachedNetworkImage(
+                                              imageUrl: playlistData[2]
+                                                  ['image'],
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                );
+                                              },
+                                            ),
+                                            CachedNetworkImage(
+                                              imageUrl: playlistData[3]
+                                                  ['image'],
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      5,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: imageProvider,
+                                                          fit: BoxFit.cover)),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${playlistDetails['playlist_name']}",
+                                  textScaleFactor: mediaQueryData
+                                      .textScaleFactor
+                                      .clamp(0.5, 0.9)
+                                      .toDouble(),
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 5,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                      text: "by  ",
                                       style: TextStyle(
                                           fontSize:
                                               SizeConfig.safeBlockHorizontal *
-                                                  5,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    RichText(
-                                      text: TextSpan(
-                                          text: "by  ",
-                                          style: TextStyle(
-                                              fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
                                                   3,
-                                              color: Color(0xffe8e8e8)
-                                                  .withOpacity(0.5)),
-                                          children: [
-                                            TextSpan(
-                                                text:
-                                                    "${playlistDetails['username']}",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    color: Color(0xffe8e8e8),
-                                                    decoration: TextDecoration
-                                                        .underline,
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        3))
-                                          ]),
-                                    ),
-                                    RichText(
-                                      text: TextSpan(
-                                          text: "Playlist",
+                                          color: Color(0xffe8e8e8)
+                                              .withOpacity(0.5)),
+                                      children: [
+                                        TextSpan(
+                                            text:
+                                                "${playlistDetails['username']}",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Color(0xffe8e8e8),
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3))
+                                      ]),
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                      text: "Playlist",
+                                      style: TextStyle(
+                                          color: Color(0xffe8e8e8)
+                                              .withOpacity(0.5),
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  3),
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                              " . ${playlistRawData['episodes_count']} episodes",
                                           style: TextStyle(
                                               color: Color(0xffe8e8e8)
                                                   .withOpacity(0.5),
                                               fontSize: SizeConfig
                                                       .safeBlockHorizontal *
                                                   3),
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  " . ${playlistRawData['episodes_count']} episodes",
-                                              style: TextStyle(
-                                                  color: Color(0xffe8e8e8)
-                                                      .withOpacity(0.5),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      3),
+                                        )
+                                      ]),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Row(
+                                    children: [
+                                      playlistDetails['id'] ==
+                                              prefs.getString('userId')
+                                          ? InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  isEditing = true;
+                                                });
+                                              },
+                                              child: Icon(
+                                                Icons.edit,
+                                                size: 20,
+                                              ),
                                             )
-                                          ]),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15),
-                                      child: Row(
-                                        children: [
-                                          playlistDetails['id'] ==
-                                                  prefs.getString('userId')
-                                              ? InkWell(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      isEditing = true;
-                                                    });
-                                                  },
-                                                  child: Icon(
-                                                    Icons.edit,
-                                                    size: 20,
-                                                  ),
-                                                )
-                                              : InkWell(
-                                                  child: Icon(Icons
-                                                      .add_to_photos_outlined)),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          InkWell(
-                                            child: Icon(
-                                              LineIcons.download,
-                                              size: 20,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              showBarModalBottomSheet(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Container(
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          ListTile(
-                                                            leading: playlistRawData[
-                                                                            'episodes_images']
-                                                                        .length <
-                                                                    4
-                                                                ? CircleAvatar(
-                                                                    radius: 25,
-                                                                    child:
-                                                                        CachedNetworkImage(
-                                                                      imageUrl:
-                                                                          playlistRawData['episodes_images']
-                                                                              [
-                                                                              0],
-                                                                    ),
-                                                                  )
-                                                                : CircleAvatar(
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    radius: 25,
-                                                                    child:
-                                                                        Container(
-                                                                      child:
-                                                                          Column(
+                                          : InkWell(
+                                              child: Icon(Icons
+                                                  .add_to_photos_outlined)),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      InkWell(
+                                        child: Icon(
+                                          LineIcons.download,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          showBarModalBottomSheet(
+                                              context: context,
+                                              builder: (context) {
+                                                return Container(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      ListTile(
+                                                        leading: playlistRawData[
+                                                                        'episodes_images']
+                                                                    .length <
+                                                                4
+                                                            ? CircleAvatar(
+                                                                radius: 25,
+                                                                child:
+                                                                    CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      playlistRawData[
+                                                                          'episodes_images'][0],
+                                                                ),
+                                                              )
+                                                            : CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                radius: 25,
+                                                                child:
+                                                                    Container(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Row(
                                                                         children: [
-                                                                          Row(
-                                                                            children: [
-                                                                              CachedNetworkImage(
-                                                                                imageUrl: playlistRawData['episodes_images'][0],
-                                                                                imageBuilder: (context, imageProvider) {
-                                                                                  return Container(
-                                                                                    width: 25,
-                                                                                    height: 25,
-                                                                                    decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                              CachedNetworkImage(
-                                                                                imageUrl: playlistRawData['episodes_images'][1],
-                                                                                imageBuilder: (context, imageProvider) {
-                                                                                  return Container(
-                                                                                    width: 25,
-                                                                                    height: 25,
-                                                                                    decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ],
+                                                                          CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                playlistRawData['episodes_images'][0],
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                width: 25,
+                                                                                height: 25,
+                                                                                decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+                                                                              );
+                                                                            },
                                                                           ),
-                                                                          Row(
-                                                                            children: [
-                                                                              CachedNetworkImage(
-                                                                                imageUrl: playlistRawData['episodes_images'][2],
-                                                                                imageBuilder: (context, imageProvider) {
-                                                                                  return Container(
-                                                                                    width: 25,
-                                                                                    height: 25,
-                                                                                    decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                              CachedNetworkImage(
-                                                                                imageUrl: playlistRawData['episodes_images'][3],
-                                                                                imageBuilder: (context, imageProvider) {
-                                                                                  return Container(
-                                                                                    width: 25,
-                                                                                    height: 25,
-                                                                                    decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ],
-                                                                          )
+                                                                          CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                playlistRawData['episodes_images'][1],
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                width: 25,
+                                                                                height: 25,
+                                                                                decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+                                                                              );
+                                                                            },
+                                                                          ),
                                                                         ],
                                                                       ),
-                                                                    ),
+                                                                      Row(
+                                                                        children: [
+                                                                          CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                playlistRawData['episodes_images'][2],
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                width: 25,
+                                                                                height: 25,
+                                                                                decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                          CachedNetworkImage(
+                                                                            imageUrl:
+                                                                                playlistRawData['episodes_images'][3],
+                                                                            imageBuilder:
+                                                                                (context, imageProvider) {
+                                                                              return Container(
+                                                                                width: 25,
+                                                                                height: 25,
+                                                                                decoration: BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover)),
+                                                                              );
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    ],
                                                                   ),
-                                                            title: Text(
-                                                                "${playlistDetails['playlist_name']}"),
-                                                            subtitle: Text(
-                                                                "${playlistRawData['episodes_count']} episodes"),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Divider(),
-                                                          ListTile(
-                                                            leading: Icon(
-                                                                Icons.shuffle),
-                                                            title: Text(
-                                                                "Shuffle play"),
-                                                          ),
-                                                          ListTile(
-                                                            leading: Icon(Icons
-                                                                .playlist_add),
-                                                            title: Text(
-                                                                "Add to Playlist"),
-                                                          ),
-                                                          ListTile(
-                                                            leading: Icon(Icons
-                                                                .ios_share),
-                                                            title:
-                                                                Text("Share"),
-                                                          ),
-                                                          playlistDetails[
-                                                                      'id'] ==
-                                                                  prefs.getString(
-                                                                      "userId")
-                                                              ? ListTile(
-                                                                  onTap:
-                                                                      () async {
-                                                                    await deletePlaylist()
-                                                                        .then(
-                                                                            (value) {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    });
-                                                                  },
-                                                                  leading: Icon(
-                                                                      Icons
-                                                                          .delete),
-                                                                  title: Text(
-                                                                      "Delete playlist"),
-                                                                )
-                                                              : SizedBox(),
-                                                        ],
+                                                                ),
+                                                              ),
+                                                        title: Text(
+                                                            "${playlistDetails['playlist_name']}"),
+                                                        subtitle: Text(
+                                                            "${playlistRawData['episodes_count']} episodes"),
                                                       ),
-                                                    );
-                                                  });
-                                            },
-                                            child: Icon(
-                                              Icons.more_vert,
-                                              size: 20,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Container(
-                            height: 40,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration:
-                                        BoxDecoration(color: Color(0xffe8e8e8)),
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Center(
-                                        child: Text.rich(TextSpan(children: [
-                                          // WidgetSpan(
-                                          //   child: Icon(Icons.play_arrow),
-                                          // ),
-                                          TextSpan(
-                                              text: "SHUFFLE",
-                                              style: TextStyle(
-                                                  color: Color(0xff161616)))
-                                        ])),
-                                      ),
-                                    ),
+                                                      SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      Divider(),
+                                                      ListTile(
+                                                        leading:
+                                                            Icon(Icons.shuffle),
+                                                        title: Text(
+                                                            "Shuffle play"),
+                                                      ),
+                                                      ListTile(
+                                                        onTap: () {
+                                                          addFullPlaylist();
+                                                        },
+                                                        leading: Icon(
+                                                            Icons.playlist_add),
+                                                        title: Text(
+                                                            "Add to Playlist"),
+                                                      ),
+                                                      ListTile(
+                                                        leading: Icon(
+                                                            Icons.ios_share),
+                                                        title: Text("Share"),
+                                                      ),
+                                                      playlistDetails['id'] ==
+                                                              prefs.getString(
+                                                                  "userId")
+                                                          ? ListTile(
+                                                              onTap: () async {
+                                                                await deletePlaylist()
+                                                                    .then(
+                                                                        (value) {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                });
+                                                              },
+                                                              leading: Icon(
+                                                                  Icons.delete),
+                                                              title: Text(
+                                                                  "Delete playlist"),
+                                                            )
+                                                          : SizedBox(),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          size: 20,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Color(0xffe8e8e8))),
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Center(
-                                        child: Text.rich(TextSpan(children: [
-                                          // WidgetSpan(child: Icon(Icons.play_arrow)),
-                                          TextSpan(
-                                              text: "PLAY", style: TextStyle())
-                                        ])),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                )
                               ],
                             ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        children: [
-                          TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                playlistName = value;
-                              });
-                            },
-                            controller: nameController..text = playlistName,
-                            decoration: InputDecoration(labelText: "Title"),
-                          ),
-                          TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                description = value;
-                              });
-                            },
-                            controller: descriptionController
-                              ..text = description,
-                            decoration: InputDecoration(
-                                labelText: "Description(optional)"),
-                          ),
-                          SwitchListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text("Is public"),
-                              value: isPublic,
-                              onChanged: (value) {
-                                setState(() {
-                                  isPublic = value;
-                                });
-                              })
-                          // Row(
-                          //   children: [TextField(), TextField()],
-                          // ),
+                          )
                         ],
                       ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        height: 40,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  List<Audio> playable = [];
+                                  for (var v in playlistData) {
+                                    playable.add(Audio.network(
+                                      v['url'],
+                                      metas: Metas(
+                                        id: '${v['id']}',
+                                        title: '${v['name']}',
+                                        artist: '${v['author']}',
+                                        album: '${v['podcast_name']}',
+                                        // image: MetasImage.network('https://www.google.com')
+                                        image: MetasImage.network(
+                                            '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                      ),
+                                    ));
+                                  }
+                                  playable.shuffle();
+                                  currentlyPlaying.playList = playable;
+                                  currentlyPlaying.audioPlayer.open(
+                                      Playlist(
+                                          audios: currentlyPlaying.playList,
+                                          startIndex: 0),
+                                      showNotification: true);
+                                },
+                                child: Container(
+                                  decoration:
+                                      BoxDecoration(color: Color(0xffe8e8e8)),
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Center(
+                                      child: Text.rich(TextSpan(children: [
+                                        // WidgetSpan(
+                                        //   child: Icon(Icons.play_arrow),
+                                        // ),
+                                        TextSpan(
+                                            text: "SHUFFLE",
+                                            style: TextStyle(
+                                                color: Color(0xff161616)))
+                                      ])),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  List<Audio> playable = [];
+                                  for (var v in playlistData) {
+                                    playable.add(Audio.network(
+                                      v['url'],
+                                      metas: Metas(
+                                        id: '${v['id']}',
+                                        title: '${v['name']}',
+                                        artist: '${v['author']}',
+                                        album: '${v['podcast_name']}',
+                                        // image: MetasImage.network('https://www.google.com')
+                                        image: MetasImage.network(
+                                            '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                      ),
+                                    ));
+                                  }
+                                  currentlyPlaying.playList = playable;
+                                  currentlyPlaying.audioPlayer.open(
+                                      Playlist(
+                                          audios: currentlyPlaying.playList,
+                                          startIndex: 0),
+                                      showNotification: true);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border:
+                                          Border.all(color: Color(0xffe8e8e8))),
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Center(
+                                      child: Text.rich(TextSpan(children: [
+                                        // WidgetSpan(child: Icon(Icons.play_arrow)),
+                                        TextSpan(
+                                            text: "PLAY", style: TextStyle())
+                                      ])),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            playlistName = value;
+                          });
+                        },
+                        controller: nameController..text = playlistName,
+                        decoration: InputDecoration(labelText: "Title"),
+                      ),
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            description = value;
+                          });
+                        },
+                        controller: descriptionController..text = description,
+                        decoration:
+                            InputDecoration(labelText: "Description(optional)"),
+                      ),
+                      SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text("Is public"),
+                          value: isPublic,
+                          onChanged: (value) {
+                            setState(() {
+                              isPublic = value;
+                            });
+                          })
+                      // Row(
+                      //   children: [TextField(), TextField()],
+                      // ),
+                    ],
+                  ),
+                ),
               SizedBox(
                 height: 10,
               ),
@@ -731,6 +802,29 @@ class _PlaylistViewState extends State<PlaylistView> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
+                        onTap: () {
+                          List<Audio> playable = [];
+                          for (var v in playlistData) {
+                            playable.add(Audio.network(
+                              v['url'],
+                              metas: Metas(
+                                id: '${v['id']}',
+                                title: '${v['name']}',
+                                artist: '${v['author']}',
+                                album: '${v['podcast_name']}',
+                                // image: MetasImage.network('https://www.google.com')
+                                image: MetasImage.network(
+                                    '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                              ),
+                            ));
+                          }
+                          currentlyPlaying.playList = playable;
+                          currentlyPlaying.audioPlayer.open(
+                              Playlist(
+                                  audios: currentlyPlaying.playList,
+                                  startIndex: playlistData.indexOf(v)),
+                              showNotification: true);
+                        },
                         leading: CircleAvatar(
                           radius: 25,
                           child: CachedNetworkImage(
@@ -772,23 +866,77 @@ class _PlaylistViewState extends State<PlaylistView> {
                                           ),
                                           Divider(),
                                           ListTile(
+                                            onTap: () {
+                                              List<Audio> playable = [];
+                                              for (var v in playlistData) {
+                                                playable.add(Audio.network(
+                                                  v['url'],
+                                                  metas: Metas(
+                                                    id: '${v['id']}',
+                                                    title: '${v['name']}',
+                                                    artist: '${v['author']}',
+                                                    album:
+                                                        '${v['podcast_name']}',
+                                                    // image: MetasImage.network('https://www.google.com')
+                                                    image: MetasImage.network(
+                                                        '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                  ),
+                                                ));
+                                              }
+                                              currentlyPlaying.playList =
+                                                  playable;
+                                              currentlyPlaying.audioPlayer.open(
+                                                  Playlist(
+                                                      audios: currentlyPlaying
+                                                          .playList,
+                                                      startIndex: playlistData
+                                                          .indexOf(v)),
+                                                  showNotification: true);
+                                            },
                                             leading:
                                                 Icon(Icons.play_circle_fill),
                                             title: Text("Play"),
                                           ),
                                           ListTile(
+                                            onTap: () {
+                                              showBarModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Createplaylist(
+                                                        episodeId: v['id']);
+                                                  });
+                                            },
                                             leading: Icon(Icons.playlist_add),
                                             title: Text("Add to playlist"),
                                           ),
                                           playlistDetails['id'] ==
                                                   prefs.getString('userId')
                                               ? ListTile(
+                                                  onTap: () async {
+                                                    await removeFromPlaylist(
+                                                            v['id'])
+                                                        .then((value) {
+                                                      setState(() {
+                                                        page = 0;
+                                                      });
+                                                      getPlaylistData();
+                                                      Navigator.pop(context);
+                                                    });
+                                                  },
                                                   leading: Icon(Icons.delete),
                                                   title: Text(
                                                       "Remove from playlist"),
                                                 )
                                               : SizedBox(),
                                           ListTile(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  CupertinoPageRoute(
+                                                      builder: (context) {
+                                                return PodcastView(
+                                                    v['podcast_id']);
+                                              }));
+                                            },
                                             leading: Icon(Icons.podcasts),
                                             title: Text("Go to podcast"),
                                           ),
@@ -804,6 +952,9 @@ class _PlaylistViewState extends State<PlaylistView> {
                             child: Icon(Icons.more_vert)),
                       ),
                     ),
+                  SizedBox(
+                    height: 100,
+                  ),
                 ],
               )
             ],
