@@ -10,8 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart' as toast;
 
 class Createplaylist extends StatefulWidget {
   int episodeId;
-
-  Createplaylist({@required this.episodeId});
+  int playlist_id;
+  Createplaylist({this.episodeId, this.playlist_id});
 
   @override
   _CreateplaylistState createState() => _CreateplaylistState();
@@ -23,6 +23,28 @@ class _CreateplaylistState extends State<Createplaylist> {
   List playlist = [];
 
   postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future addFullPlaylist(int toPlaylistId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String url = "https://api.aureal.one/private/addToPlaylist";
+    var map = Map<String, dynamic>();
+    map['playlist_id'] = toPlaylistId;
+    map['user_id'] = prefs.getString('userId');
+    map['from_playlist_id'] = widget.playlist_id;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+      toast.Fluttertoast.showToast(msg: "Added to playlist");
+      return response;
+    } catch (e) {
+      print(e);
+      return true;
+    }
+  }
 
   void getPlaylist() async {
     print("/////////////// This is get Playlist");
@@ -100,10 +122,15 @@ class _CreateplaylistState extends State<Createplaylist> {
                   for (var v in playlist)
                     ListTile(
                       onTap: () {
-                        addToPlaylist(id: v['id'], episodeId: widget.episodeId)
-                            .then((value) {
-                          Navigator.pop(context);
-                        });
+                        if (widget.playlist_id == null) {
+                          addToPlaylist(
+                                  id: v['id'], episodeId: widget.episodeId)
+                              .then((value) {
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          addFullPlaylist(v['id']);
+                        }
                       },
                       title: Text("${v['playlist_name']}"),
                       trailing: v['ispublic'] == true
@@ -125,12 +152,20 @@ class _CreateplaylistState extends State<Createplaylist> {
                   if (value != null) {
                     print("/////////////////////////////////////// $value");
                     print(value.runtimeType);
-                    await addToPlaylist(
-                            episodeId: widget.episodeId,
-                            id: jsonDecode(value.toString())['data'][0]['id'])
-                        .then((value) {
-                      Navigator.pop(context);
-                    });
+                    if (widget.playlist_id == null) {
+                      await addToPlaylist(
+                              episodeId: widget.episodeId,
+                              id: jsonDecode(value.toString())['data'][0]['id'])
+                          .then((value) {
+                        Navigator.pop(context);
+                      });
+                    } else {
+                      addFullPlaylist(
+                              jsonDecode(value.toString())['data'][0]['id'])
+                          .then((value) {
+                        Navigator.pop(context);
+                      });
+                    }
                   }
                 });
               },

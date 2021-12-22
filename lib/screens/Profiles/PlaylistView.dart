@@ -166,18 +166,6 @@ class _PlaylistViewState extends State<PlaylistView> {
     }
   }
 
-  void addFullPlaylist() async {
-    String url = "https://api.aureal.one/private/addToPlaylist";
-    var map = Map<String, dynamic>();
-    map['playlist_id'] = widget.playlistId;
-    map['user_id'] = prefs.getString('userId');
-    String episodeId = '';
-    for (var v in playlistData) {
-      episodeId = episodeId + '${v['id']}' + ",";
-    }
-    print(episodeId);
-  }
-
   RegExp htmlMatch = RegExp(r'(\w+)');
 
   @override
@@ -194,11 +182,16 @@ class _PlaylistViewState extends State<PlaylistView> {
   }
 
   //TODO: Share your playlist function
+  void sharePlaylist() async {
+    await FlutterShare.share(
+        title: '${playlistDetails['playlist_name']}',
+        text:
+            "Here's my playlist for you https://aureal.one/playlist/${widget.playlistId}");
+  }
   //TODO: add complete playlist to other playlist has to be worked upon
   //TODO: Downloads for playlist
   //TODO: ModalProgress HUD when the data is not here yet
   //TODO: Add to Library (Follow playlist API implementing)
-  void sharePlaylist() async {}
 
   bool isEditing = false;
   bool isPublic = true;
@@ -587,6 +580,42 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                       ),
                                                       Divider(),
                                                       ListTile(
+                                                        onTap: () {
+                                                          List<Audio> playable =
+                                                              [];
+                                                          for (var v
+                                                              in playlistData) {
+                                                            playable.add(
+                                                                Audio.network(
+                                                              v['url'],
+                                                              metas: Metas(
+                                                                id: '${v['id']}',
+                                                                title:
+                                                                    '${v['name']}',
+                                                                artist:
+                                                                    '${v['author']}',
+                                                                album:
+                                                                    '${v['podcast_name']}',
+                                                                // image: MetasImage.network('https://www.google.com')
+                                                                image: MetasImage
+                                                                    .network(
+                                                                        '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                              ),
+                                                            ));
+                                                          }
+                                                          playable.shuffle();
+                                                          currentlyPlaying
+                                                                  .playList =
+                                                              playable;
+                                                          currentlyPlaying.audioPlayer.open(
+                                                              Playlist(
+                                                                  audios: currentlyPlaying
+                                                                      .playList,
+                                                                  startIndex:
+                                                                      0),
+                                                              showNotification:
+                                                                  true);
+                                                        },
                                                         leading:
                                                             Icon(Icons.shuffle),
                                                         title: Text(
@@ -594,7 +623,15 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                       ),
                                                       ListTile(
                                                         onTap: () {
-                                                          addFullPlaylist();
+                                                          showBarModalBottomSheet(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return Createplaylist(
+                                                                    playlist_id:
+                                                                        widget
+                                                                            .playlistId);
+                                                              });
                                                         },
                                                         leading: Icon(
                                                             Icons.playlist_add),
@@ -602,6 +639,9 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                             "Add to Playlist"),
                                                       ),
                                                       ListTile(
+                                                        onTap: () {
+                                                          sharePlaylist();
+                                                        },
                                                         leading: Icon(
                                                             Icons.ios_share),
                                                         title: Text("Share"),

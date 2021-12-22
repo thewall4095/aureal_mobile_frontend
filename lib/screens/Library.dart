@@ -102,10 +102,12 @@ class _PlayListScreenState extends State<PlayListScreen> {
     try {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
-        print(response.data);
         setState(() {
           playlist = response.data['playlists'];
         });
+        print(playlist.runtimeType);
+        print(playlist);
+        print(playlist[0]['episodes_images'].length);
       } else {
         print(response.statusCode);
       }
@@ -165,88 +167,94 @@ class _PlayListScreenState extends State<PlayListScreen> {
                   },
                   leading: CircleAvatar(
                     radius: 25,
-                    child: v['episodes_images'].length < 4
-                        ? CachedNetworkImage(
-                            imageUrl: v['episodes_images'][0],
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover)),
-                              );
-                            },
-                          )
-                        : Container(
-                            child: Column(
-                              children: [
-                                Row(
+                    child: int.parse(v['episodes_count']) != 0
+                        ? (int.parse(v['episodes_count']) < 4
+                            ? CachedNetworkImage(
+                                imageUrl: v['episodes_images'][0],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover)),
+                                  );
+                                },
+                              )
+                            : Container(
+                                child: Column(
                                   children: [
-                                    CachedNetworkImage(
-                                      imageUrl: v['episodes_images'][0],
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 25,
-                                          width: 25,
-                                          // color: Colors.white,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: v['episodes_images'][0],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              height: 25,
+                                              width: 25,
+                                              // color: Colors.white,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover)),
+                                            );
+                                          },
+                                        ),
+                                        CachedNetworkImage(
+                                          imageUrl: v['episodes_images'][1],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              height: 25,
+                                              width: 25,
+                                              // color: Colors.white,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover)),
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                    CachedNetworkImage(
-                                      imageUrl: v['episodes_images'][1],
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 25,
-                                          width: 25,
-                                          // color: Colors.white,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: v['episodes_images'][2],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              height: 25,
+                                              width: 25,
+                                              // color: Colors.white,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover)),
+                                            );
+                                          },
+                                        ),
+                                        CachedNetworkImage(
+                                          imageUrl: v['episodes_images'][3],
+                                          imageBuilder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              height: 25,
+                                              width: 25,
+                                              // color: Colors.white,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover)),
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    CachedNetworkImage(
-                                      imageUrl: v['episodes_images'][2],
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 25,
-                                          width: 25,
-                                          // color: Colors.white,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
-                                    ),
-                                    CachedNetworkImage(
-                                      imageUrl: v['episodes_images'][3],
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 25,
-                                          width: 25,
-                                          // color: Colors.white,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                              ))
+                        : SizedBox(),
                   ),
                   title: Text("${v['playlist_name']}"),
                   subtitle: Text("${v['episodes_count']} episodes"),
