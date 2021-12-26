@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/CommunityService.dart';
@@ -235,7 +236,6 @@ class _FollowingPageState extends State<FollowingPage>
     SizeConfig().init(context);
 
     var categories = Provider.of<CategoriesProvider>(context);
-    currentlyPlaying = Provider.of<PlayerChange>(context);
 
     Future<void> _pullRefreshEpisodes() async {
       getFollowedPodcasts();
@@ -252,7 +252,7 @@ class _FollowingPageState extends State<FollowingPage>
 
     final themeProvider = Provider.of<ThemeProvider>(context);
     RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
-
+    var episodeObject = Provider.of<PlayerChange>(context);
     final mediaQueryData = MediaQuery.of(context);
     return WillPopScope(
       onWillPop: _onBackPressed,
@@ -1259,21 +1259,32 @@ class _FollowingPageState extends State<FollowingPage>
                                                                         //           v);
                                                                         // }));
                                                                       } else {
-                                                                        currentlyPlaying
-                                                                            .stop();
-                                                                        currentlyPlaying
-                                                                            .episodeObject = v;
-                                                                        print(currentlyPlaying
-                                                                            .episodeObject
-                                                                            .toString());
-                                                                        currentlyPlaying
-                                                                            .play();
-                                                                        Navigator.push(
-                                                                            context,
-                                                                            CupertinoPageRoute(builder:
-                                                                                (context) {
-                                                                          return Player();
-                                                                        }));
+                                                                        List<Audio>
+                                                                            playable =
+                                                                            [];
+                                                                        for (var v
+                                                                            in hiveEpisodes) {
+                                                                          playable
+                                                                              .add(Audio.network(
+                                                                            v['url'],
+                                                                            metas:
+                                                                                Metas(
+                                                                              id: '${v['id']}',
+                                                                              title: '${v['name']}',
+                                                                              artist: '${v['author']}',
+                                                                              album: '${v['podcast_name']}',
+                                                                              // image: MetasImage.network('https://www.google.com')
+                                                                              image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                                            ),
+                                                                          ));
+                                                                        }
+                                                                        episodeObject.playList =
+                                                                            playable;
+                                                                        episodeObject.audioPlayer.open(
+                                                                            Playlist(
+                                                                                audios: episodeObject.playList,
+                                                                                startIndex: hiveEpisodes.indexOf(v)),
+                                                                            showNotification: true);
                                                                       }
                                                                     }
                                                                   },
@@ -1338,48 +1349,6 @@ class _FollowingPageState extends State<FollowingPage>
                                                   ),
                                                 ),
                                               ),
-                                              Builder(builder: (context) {
-                                                if (currentlyPlaying
-                                                        .episodeName !=
-                                                    null) {
-                                                  return v['id'] ==
-                                                              currentlyPlaying
-                                                                      .episodeObject[
-                                                                  'id'] &&
-                                                          currentlyPlaying
-                                                                      .episodeObject[
-                                                                  'id'] !=
-                                                              null
-                                                      ? Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      7),
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            30),
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                        colors: [
-                                                                      Color(
-                                                                          0xff5d5da8),
-                                                                      Color(
-                                                                          0xff5bc3ef)
-                                                                    ])),
-                                                            width:
-                                                                double.infinity,
-                                                            height: 4,
-                                                          ),
-                                                        )
-                                                      : SizedBox();
-                                                } else {
-                                                  return SizedBox();
-                                                }
-                                              }),
                                             ],
                                           ),
                                         ),

@@ -1456,87 +1456,30 @@ class _PodcastViewState extends State<PodcastView> {
                                                 ),
                                           InkWell(
                                             onTap: () {
-                                              print(episodeList[index - 1]
-                                                      ['url']
-                                                  .toString()
-                                                  .contains('.mp4'));
-                                              if (episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.mp4') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.m4v') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.flv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.f4v') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.ogv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.ogx') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.wmv') ==
-                                                      true ||
-                                                  episodeList[index - 1]['url']
-                                                          .toString()
-                                                          .contains('.webm') ==
-                                                      true) {
-                                                currentlyPlaying.stop();
-                                                Navigator.push(context,
-                                                    CupertinoPageRoute(
-                                                        builder: (context) {
-                                                  return PodcastVideoPlayer(
-                                                    episodeObject:
-                                                        episodeList[index - 1],
-                                                  );
-                                                }));
-                                              } else {
-                                                if (episodeList[index - 1]
-                                                            ['url']
-                                                        .toString()
-                                                        .contains('.pdf') ==
-                                                    true) {
-                                                  // Navigator.push(context,
-                                                  //     CupertinoPageRoute(
-                                                  //         builder: (context) {
-                                                  //   return PDFviewer(
-                                                  //     episodeObject:
-                                                  //         episodeList[index - 1],
-                                                  //   );
-                                                  // }));
-                                                } else {
-                                                  currentlyPlaying.stop();
-
-                                                  currentlyPlaying
-                                                          .episodeObject =
-                                                      episodeList[index - 1];
-                                                  currentlyPlaying.playList =
-                                                      episodeList;
-                                                  print(currentlyPlaying
-                                                      .playList);
-                                                  print(currentlyPlaying
-                                                      .episodeObject
-                                                      .toString());
-                                                  currentlyPlaying.play();
-                                                  // _pullRefreshEpisodes();
-                                                  Navigator.push(context,
-                                                      CupertinoPageRoute(
-                                                          builder: (context) {
-                                                    return Player();
-                                                  }));
-                                                }
+                                              List<Audio> playable = [];
+                                              for (var v in episodeList) {
+                                                playable.add(Audio.network(
+                                                  v['url'],
+                                                  metas: Metas(
+                                                    id: '${v['id']}',
+                                                    title: '${v['name']}',
+                                                    artist: '${v['author']}',
+                                                    album:
+                                                        '${v['podcast_name']}',
+                                                    // image: MetasImage.network('https://www.google.com')
+                                                    image: MetasImage.network(
+                                                        '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                  ),
+                                                ));
                                               }
+                                              currentlyPlaying.playList =
+                                                  playable;
+                                              currentlyPlaying.audioPlayer.open(
+                                                  Playlist(
+                                                      audios: currentlyPlaying
+                                                          .playList,
+                                                      startIndex: index - 1),
+                                                  showNotification: true);
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(

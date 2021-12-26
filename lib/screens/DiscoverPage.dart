@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/DiscoverProvider.dart';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -529,21 +530,37 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             '.pdf') ==
                                                                         true) {
                                                                     } else {
+                                                                      List<Audio>
+                                                                          playable =
+                                                                          [];
+                                                                      for (var v
+                                                                          in recentlyPlayed) {
+                                                                        playable
+                                                                            .add(Audio.network(
+                                                                          v['url'],
+                                                                          metas:
+                                                                              Metas(
+                                                                            id: '${v['id']}',
+                                                                            title:
+                                                                                '${v['name']}',
+                                                                            artist:
+                                                                                '${v['author']}',
+                                                                            album:
+                                                                                '${v['podcast_name']}',
+                                                                            // image: MetasImage.network('https://www.google.com')
+                                                                            image:
+                                                                                MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                                          ),
+                                                                        ));
+                                                                      }
                                                                       currentlyPlaying
-                                                                          .stop();
-                                                                      currentlyPlaying
-                                                                          .episodeObject = a;
-                                                                      print(currentlyPlaying
-                                                                          .episodeObject
-                                                                          .toString());
-                                                                      currentlyPlaying
-                                                                          .play();
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          CupertinoPageRoute(builder:
-                                                                              (context) {
-                                                                        return Player();
-                                                                      }));
+                                                                              .playList =
+                                                                          playable;
+                                                                      currentlyPlaying.audioPlayer.open(
+                                                                          Playlist(
+                                                                              audios: currentlyPlaying.playList,
+                                                                              startIndex: recentlyPlayed.indexOf(a)),
+                                                                          showNotification: true);
                                                                     }
                                                                   }
                                                                 },

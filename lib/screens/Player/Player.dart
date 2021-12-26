@@ -261,7 +261,8 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
         if (this.mounted) {
           setState(() {
             episodeContent = jsonDecode(response.body)['episode'];
-            print(episodeContent);
+
+            hiveUsername = prefs.getString('HiveUserName');
           });
         }
         // await getColor(episodeContent['image']);
@@ -1064,11 +1065,13 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
       //           ],
       //         );
       //       })),
-      // ),
+      // ),a
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Color(0xff161616),
               pinned: true,
               expandedHeight: MediaQuery.of(context).size.height / 1.2,
               flexibleSpace: FlexibleSpaceBar(
