@@ -355,6 +355,10 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
 
   TabController _playListTabController;
 
+  Audio find(List<Audio> source, String fromPath) {
+    return source.firstWhere((element) => element.path == fromPath);
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -1763,77 +1767,77 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                                transcript == null
-                                    ? SizedBox()
-                                    : Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(context,
-                                                CupertinoPageRoute(
-                                                    builder: (context) {
-                                              print(transcript);
-                                              print(transcript.runtimeType);
-                                              return TrancriptionPlayer(
-                                                transcript: transcript,
-                                              );
-                                            }));
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Color(0xff161616),
-                                            ),
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
-                                                4,
-                                            width: double.infinity,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(20),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Text(
-                                                      "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
-                                                      textScaleFactor: 1.0,
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              4),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Text(
-                                                      "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
-                                                      textScaleFactor: 1.0,
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              4,
-                                                          color: Colors.white
-                                                              .withOpacity(
-                                                                  0.5)),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
+                                // transcript == null
+                                //     ? SizedBox()
+                                //     : Padding(
+                                //         padding: const EdgeInsets.all(20),
+                                //         child: GestureDetector(
+                                //           onTap: () {
+                                //             Navigator.push(context,
+                                //                 CupertinoPageRoute(
+                                //                     builder: (context) {
+                                //               print(transcript);
+                                //               print(transcript.runtimeType);
+                                //               return TrancriptionPlayer(
+                                //                 transcript: transcript,
+                                //               );
+                                //             }));
+                                //           },
+                                //           child: Container(
+                                //             decoration: BoxDecoration(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(10),
+                                //               color: Color(0xff161616),
+                                //             ),
+                                //             height: MediaQuery.of(context)
+                                //                     .size
+                                //                     .height /
+                                //                 4,
+                                //             width: double.infinity,
+                                //             child: Padding(
+                                //               padding: const EdgeInsets.all(20),
+                                //               child: Column(
+                                //                 crossAxisAlignment:
+                                //                     CrossAxisAlignment.start,
+                                //                 mainAxisAlignment:
+                                //                     MainAxisAlignment.center,
+                                //                 children: [
+                                //                   Padding(
+                                //                     padding:
+                                //                         const EdgeInsets.all(
+                                //                             8.0),
+                                //                     child: Text(
+                                //                       "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
+                                //                       textScaleFactor: 1.0,
+                                //                       style: TextStyle(
+                                //                           color: Colors.white,
+                                //                           fontSize: SizeConfig
+                                //                                   .safeBlockHorizontal *
+                                //                               4),
+                                //                     ),
+                                //                   ),
+                                //                   Padding(
+                                //                     padding:
+                                //                         const EdgeInsets.all(
+                                //                             8.0),
+                                //                     child: Text(
+                                //                       "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
+                                //                       textScaleFactor: 1.0,
+                                //                       style: TextStyle(
+                                //                           fontSize: SizeConfig
+                                //                                   .safeBlockHorizontal *
+                                //                               4,
+                                //                           color: Colors.white
+                                //                               .withOpacity(
+                                //                                   0.5)),
+                                //                     ),
+                                //                   ),
+                                //                 ],
+                                //               ),
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
                                 SizedBox(
                                   height: 50,
                                 ),
@@ -2002,6 +2006,68 @@ Widget buildSheet({
       );
     },
   );
+}
+
+class SongSelector extends StatelessWidget {
+  final Playing playing;
+  final List<Audio> audios;
+  final Function(Audio) onSelected;
+  final Function(List<Audio>) onPlaylistSelected;
+
+  const SongSelector(
+      {this.playing, this.audios, this.onSelected, this.onPlaylistSelected});
+
+  Widget _image(Audio item) {
+    if (item.metas.image == null) {
+      return SizedBox(height: 40, width: 40);
+    }
+
+    return item.metas.image?.type == ImageType.network
+        ? CachedNetworkImage(
+            imageUrl: item.metas.image.path,
+            width: 40,
+            height: 40,
+          )
+        : Image.asset(
+            item.metas.image.path,
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
+    return Container(
+      // height: MediaQuery.of(context).size.height,
+      child: ListView.builder(
+        // shrinkWrap: true,
+        // physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (context, position) {
+          final item = audios[position];
+          final isPlaying = item.path == playing?.audio.assetAudioPath;
+          return ListTile(
+              selected: isPlaying,
+              selectedTileColor: Colors.black,
+              leading: Material(
+                clipBehavior: Clip.antiAlias,
+                child: _image(item),
+              ),
+              title: Text(item.metas.title.toString(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Color(0xffe8e8e8),
+                  )),
+              onTap: () {
+                onSelected(item);
+              });
+        },
+        itemCount: audios.length,
+      ),
+    );
+  }
 }
 
 class TrancriptionPlayer extends StatefulWidget {
@@ -3906,77 +3972,6 @@ class _EditClipState extends State<EditClip> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class SongSelector extends StatelessWidget {
-  final Playing playing;
-  final List<Audio> audios;
-  final Function(Audio) onSelected;
-  final Function(List<Audio>) onPlaylistSelected;
-
-  const SongSelector(
-      {this.playing, this.audios, this.onSelected, this.onPlaylistSelected});
-
-  Widget _image(Audio item) {
-    if (item.metas.image == null) {
-      return SizedBox(height: 40, width: 40);
-    }
-
-    return item.metas.image?.type == ImageType.network
-        ? Image.network(
-            item.metas.image.path,
-            height: 40,
-            width: 40,
-            fit: BoxFit.cover,
-          )
-        : Image.asset(
-            item.metas.image.path,
-            height: 40,
-            width: 40,
-            fit: BoxFit.cover,
-          );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
-    return Container(
-      color: Color(0xff222222),
-      height: MediaQuery.of(context).size.height,
-      child: ListView.builder(
-        shrinkWrap: true,
-        // physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, position) {
-          final item = audios[position];
-          final isPlaying = item.path == playing?.audio.assetAudioPath;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: ListTile(
-                selectedTileColor: Color(0xff161616),
-                selected: currentlyPlaying
-                            .audioPlayer.current.value.audio.audio.metas.id ==
-                        currentlyPlaying.playList[position].metas.id
-                    ? true
-                    : false,
-                leading: Material(
-                  clipBehavior: Clip.antiAlias,
-                  child: _image(item),
-                ),
-                title: Text(item.metas.title.toString(),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Color(0xffe8e8e8),
-                    )),
-                onTap: () {
-                  onSelected(item);
-                }),
-          );
-        },
-        itemCount: audios.length,
       ),
     );
   }
