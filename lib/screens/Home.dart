@@ -39,6 +39,7 @@ import 'DiscoverPage.dart';
 import 'FollowingPage.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
+import 'Player/PlayerElements/Seekbar.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
 import 'RoomsPage.dart';
@@ -178,9 +179,9 @@ class _HomeState extends State<Home> {
         return Clips();
         break;
 
-      case 4:
-        return RoomsPage();
-        break;
+      // case 4:
+      //   return RoomsPage();
+      //   break;
     }
   }
 
@@ -663,13 +664,13 @@ class _HomeState extends State<Home> {
         //Color(0xff5bc3ef),
         // backgroundColor: Colors.transparent,
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.stream,
-            ),
-            activeIcon: Icon(Icons.stream),
-            label: '',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.stream,
+          //   ),
+          //   activeIcon: Icon(Icons.stream),
+          //   label: '',
+          // ),
 
           BottomNavigationBarItem(
             label: "",
@@ -712,7 +713,7 @@ class _HomeState extends State<Home> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      bottomSheet: _selectedIndex == 0 ? SizedBox() : BottomPlayer(),
+      bottomSheet: BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
@@ -742,6 +743,30 @@ class _BottomPlayerState extends State<BottomPlayer> {
 
   getLocalData() async {
     prefs = await SharedPreferences.getInstance();
+  }
+
+  String changingDuration = '0.0';
+
+  Duration _visibleValue;
+  bool listenOnlyUserInteraction = false;
+  double get percent => duration.inMilliseconds == 0
+      ? 0
+      : _visibleValue.inMilliseconds / duration.inMilliseconds;
+
+  void durationToString(Duration duration) {
+    String twoDigits(int n) {
+      if (n >= 10) return "$n";
+      return "0$n";
+    }
+
+    String twoDigitMinutes =
+        twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+    String twoDigitSeconds =
+        twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+
+    setState(() {
+      changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+    });
   }
 
   @override
@@ -787,54 +812,61 @@ class _BottomPlayerState extends State<BottomPlayer> {
           // height: SizeConfig.safeBlockVertical * 6,
           // width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: Color(0xffe8e8e8), width: 0.3)),
             color: Colors.black,
           ),
-          child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-              builder: (context, infos) {
-            if (infos == null) {
-              return SizedBox(
-                height: 0,
-                width: 0,
-              );
-            } else {
-              if (infos.isBuffering == true) {
-                return SizedBox();
-              } else {
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: infos.isPlaying == true
-                      ? IconButton(
-                          splashColor: Colors.transparent,
-                          icon: Icon(
-                            Icons.pause,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.pause();
-                          },
-                        )
-                      : IconButton(
-                          splashColor: Colors.blue,
-                          icon: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.resume();
-                          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                  builder: (context, infos) {
+                if (infos == null) {
+                  return SizedBox(
+                    height: 0,
+                    width: 0,
+                  );
+                } else {
+                  if (infos.isBuffering == true) {
+                    return SizedBox();
+                  } else {
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: infos.isPlaying == true
+                          ? IconButton(
+                              splashColor: Colors.transparent,
+                              icon: Icon(
+                                Icons.pause,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.pause();
+                              },
+                            )
+                          : IconButton(
+                              splashColor: Colors.blue,
+                              icon: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.resume();
+                              },
+                            ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Text(
+                          "${infos.current.audio.audio.metas.title}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Text(
-                      "${infos.current.audio.audio.metas.title}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                );
-              }
-            }
-          }),
+                      ),
+                    );
+                  }
+                }
+              }),
+            ],
+          ),
         ),
       ),
     );
