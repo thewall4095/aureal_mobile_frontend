@@ -133,7 +133,7 @@ class SearchFunctionality extends SearchDelegate {
     final themeProvider = Provider.of<ThemeProvider>(context);
     // TODO: implement buildResults
     // throw UnimplementedError();
-    var search = Provider.of<SearchResultProvider>(context);
+    var search = Provider.of<SearchResultProvider>(context, listen: false);
 
     return Container(
       color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
@@ -371,13 +371,13 @@ class _ResultsSectionState extends State<ResultsSection>
 
   void getLocalData() async {
     prefs = await SharedPreferences.getInstance();
+    var search = Provider.of<SearchResultProvider>(context, listen: false);
+    search.query = widget.query;
   }
 
   @override
   void initState() {
     var search = Provider.of<SearchResultProvider>(context, listen: false);
-    search.query = widget.query;
-
     getLocalData();
     // TODO: implement initState
     _controller = TabController(length: 5, vsync: this);
@@ -466,6 +466,7 @@ class _ResultsSectionState extends State<ResultsSection>
           ),
         ),
         body: ModalProgressHUD(
+          color: Color(0xff161616),
           inAsyncCall: search.isLoading,
           child: search.isLoading == true
               ? Container()
@@ -3579,7 +3580,7 @@ class SearchResultProvider extends ChangeNotifier {
   List _communityResult = [];
   List _peopleResult = [];
 
-  bool _isLoading;
+  bool _isLoading = true;
 
   //All the getters
 
@@ -3605,6 +3606,7 @@ class SearchResultProvider extends ChangeNotifier {
 
   set isLoading(bool newValue) {
     _isLoading = newValue;
+    print("Loading parameter changed");
     notifyListeners();
   }
 
@@ -3624,7 +3626,7 @@ class SearchResultProvider extends ChangeNotifier {
 
     getInitialSearch();
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   set currentTabIndex(int newValue) {
@@ -3736,9 +3738,9 @@ class SearchResultProvider extends ChangeNotifier {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
         if (pageRoom == 0) {
-          roomResult = response.data['rooms'];
+          _roomResult = response.data['rooms'];
         } else {
-          roomResult = roomResult + response.data['rooms'];
+          _roomResult = _roomResult + response.data['rooms'];
         }
       } else {
         print(response.statusCode);
@@ -3746,6 +3748,7 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    print("Rooms Search Ended");
   }
 
   void getEpisode() async {
@@ -3759,9 +3762,9 @@ class SearchResultProvider extends ChangeNotifier {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
         if (pageEpisode == 0) {
-          episodeResult = response.data['episodes'];
+          _episodeResult = response.data['episodes'];
         } else {
-          episodeResult = episodeResult + response.data['episodes'];
+          _episodeResult = _episodeResult + response.data['episodes'];
         }
       } else {
         print(response.statusCode);
@@ -3769,6 +3772,7 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    print("Episode Search Ended");
   }
 
   void getPodcast() async {
@@ -3784,9 +3788,9 @@ class SearchResultProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         print(response.data);
         if (pagePodcast == 0) {
-          podcastResult = response.data['PodcastList'];
+          _podcastResult = response.data['PodcastList'];
         } else {
-          podcastResult = podcastResult + response.data['PodcastList'];
+          _podcastResult = _podcastResult + response.data['PodcastList'];
         }
       } else {
         print(response.statusCode);
@@ -3794,6 +3798,7 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    print("Podcast Search Ended");
   }
 
   void getPeople() async {
@@ -3809,9 +3814,9 @@ class SearchResultProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         print(response.data);
         if (pagePeople == 0) {
-          peopleResult = response.data['users'];
+          _peopleResult = response.data['users'];
         } else {
-          peopleResult = peopleResult + response.data['users'];
+          _peopleResult = _peopleResult + response.data['users'];
         }
       } else {
         print(response.statusCode);
@@ -3819,6 +3824,7 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    print("User Search Ended");
   }
 
   void getCommunities() async {
@@ -3833,9 +3839,9 @@ class SearchResultProvider extends ChangeNotifier {
       var response = await dio.get(url);
       if (response.statusCode == 200) {
         if (pageCommunity == 0) {
-          communityResult = response.data['allCommunity'];
+          _communityResult = response.data['allCommunity'];
         } else {
-          communityResult = communityResult + response.data['allCommunity'];
+          _communityResult = communityResult + response.data['allCommunity'];
         }
 
         print(response.data);
@@ -3843,6 +3849,7 @@ class SearchResultProvider extends ChangeNotifier {
         print(response.statusCode);
       }
     } catch (e) {}
+    print("Community Search Ended");
   }
 }
 
