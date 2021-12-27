@@ -82,7 +82,7 @@ class _PlaylistViewState extends State<PlaylistView> {
             description = response.data['playlist_details']['description'];
             playlistDetails = response.data['playlist_details'];
             playlistData = playlistData = response.data['episodes'];
-            playlistDetails['ifFollows'] = false;
+
             page += 1;
           });
         } else {
@@ -513,13 +513,13 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                             .then((value) {
                                                           setState(() {
                                                             playlistDetails[
-                                                                    'ifFollows'] =
+                                                                    'ifFollowed'] =
                                                                 true;
                                                           });
                                                         });
                                                       },
                                                       child: playlistDetails[
-                                                                  'ifFollows'] ==
+                                                                  'ifFollowed'] ==
                                                               true
                                                           ? Icon(
                                                               Icons
