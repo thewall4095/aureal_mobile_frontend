@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
+
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
@@ -14,6 +16,7 @@ import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/Bio.dart';
 import 'package:auditory/screens/buttonPages/HiveWallet.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
@@ -42,6 +45,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'SearchProvider.dart';
+import 'Services/rating_service.dart';
 import 'screens/Home.dart';
 import 'screens/LoginSignup/Auth.dart';
 import 'screens/LoginSignup/Login.dart';
@@ -206,8 +210,15 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     checkForUpdate();
     // TODO: implement initState
-
     super.initState();
+
+    Timer(const Duration(seconds: 2), () {
+      _ratingService.isSecondTimeOpen().then((secondOpen) {
+        if (secondOpen) {
+          _ratingService.showRating();
+        }
+      });
+    });
   }
 
   void _showSnackBar(String msg) {
@@ -224,6 +235,8 @@ class _MyAppState extends State<MyApp> {
   int _messageCount = 0;
 
   final navigatorKey = GlobalKey<NavigatorState>();
+
+  final RatingService _ratingService = RatingService();
 
   @override
   Widget build(BuildContext context) {
@@ -618,7 +631,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
       }
-      if (message.data['type'] == 'reply_comment') {
+      if (message.data['type'] == 'comment_reply') {
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(episodeId: message.data['episode_id']);
         }));
@@ -642,6 +655,39 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         Navigator.push(context, CupertinoPageRoute(builder: (context) {
           return EpisodeView(
             episodeId: message.data['episode_id'],
+          );
+        }));
+      }
+      if (message.data['type'] == 'publish_first_episode') {}
+      if (message.data['type'] == 'episode_published') {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: message.data['episode_id'],
+          );
+        }));
+      }
+
+      if (message.data['type'] == "used_referral_code") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(
+            userId: message.data['user_id'],
+          );
+        }));
+      }
+      if (message.data['type'] == "followed_podcast") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PodcastView(message.data['podcast_id']);
+        }));
+      }
+      if (message.data['type'] == "followed_user") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(userId: message.data['user_id']);
+        }));
+      }
+      if (message.data['type'] == "used_referral_code") {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(
+            userId: message.data['user_id'],
           );
         }));
       }

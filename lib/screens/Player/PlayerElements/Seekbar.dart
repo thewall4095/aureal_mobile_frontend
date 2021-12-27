@@ -76,20 +76,6 @@ class _SeekbarState extends State<Seekbar> {
                 textScaleFactor: 1.0,
                 style: TextStyle(fontSize: 10),
               ),
-              SizedBox(
-                width: 230,
-                // child: Text(
-                //   widget.episodeName,
-                //   textScaleFactor: 1.0,
-                //   maxLines: 1,
-                //   textAlign: TextAlign.center,
-                //   overflow: TextOverflow.ellipsis,
-                //   // textWidthBasis: TextWidthBasis.longestLine,
-                //   style: TextStyle(
-                //       //   color: Colors.white,
-                //       fontSize: SizeConfig.safeBlockHorizontal * 3),
-                // ),
-              ),
               Text(
                 widget.duration.toString().split('.')[0],
                 textScaleFactor: 1.0,
@@ -101,11 +87,14 @@ class _SeekbarState extends State<Seekbar> {
         SliderTheme(
           data: SliderThemeData(
               trackHeight: 3,
+
               // activeTrackColor: Color(0xff212121),
               //    inactiveTrackColor: Colors.black,
               thumbColor: themeProvider.isLightTheme == false
                   ? Colors.white
-                  : kPrimaryColor
+                  : kPrimaryColor,
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5)
+
               //  thumbShape: SliderComponentShape
               // thumbShape: RoundSliderThumbShape(
               //     pressedElevation: 1.0,

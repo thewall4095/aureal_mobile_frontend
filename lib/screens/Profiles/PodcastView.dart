@@ -191,6 +191,7 @@ class _PodcastViewState extends State<PodcastView> {
       http.Response response = await http.get(Uri.parse(url));
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
+        print(response.body);
         // episodeList = jsonDecode(response.body)['podcasts'][0]['Episodes'];
 
         setState(() {
@@ -340,6 +341,8 @@ class _PodcastViewState extends State<PodcastView> {
     ));
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
+
+  var audioPlaylist = <Audio>[];
 
   @override
   Widget build(BuildContext context) {
@@ -584,14 +587,18 @@ class _PodcastViewState extends State<PodcastView> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: InkWell(
                                             onTap: () {
-                                              Navigator.push(context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) {
-                                                return PublicProfile(
-                                                  userId:
-                                                      podcastData['user_id'],
-                                                );
-                                              }));
+                                              if (podcastData[
+                                                      'author_hiveusername'] !=
+                                                  null) {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                  return PublicProfile(
+                                                    userId:
+                                                        podcastData['user_id'],
+                                                  );
+                                                }));
+                                              }
                                             },
                                             child: Text(
                                               podcastData['author'],
@@ -624,19 +631,21 @@ class _PodcastViewState extends State<PodcastView> {
                                                 true
                                             ? InkWell(
                                                 onTap: () {
-                                                  setState(() {
-                                                    currentlyPlaying.playList =
-                                                        episodeList;
-                                                    currentlyPlaying.stop();
-                                                    currentlyPlaying
-                                                            .episodeObject =
-                                                        currentlyPlaying
-                                                            .playList[0];
-                                                    currentlyPlaying.play();
-                                                    currentlyPlaying
-                                                            .isPlaylistPlaying =
-                                                        true;
-                                                  });
+                                                  currentlyPlaying.audioPlayer
+                                                      .pause();
+                                                  // setState(() {
+                                                  //   currentlyPlaying.playList =
+                                                  //       episodeList;
+                                                  //   currentlyPlaying.stop();
+                                                  //   currentlyPlaying
+                                                  //           .episodeObject =
+                                                  //       currentlyPlaying
+                                                  //           .playList[0];
+                                                  //   currentlyPlaying.play();
+                                                  //   currentlyPlaying
+                                                  //           .isPlaylistPlaying =
+                                                  //       true;
+                                                  // });
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -659,20 +668,45 @@ class _PodcastViewState extends State<PodcastView> {
                                               )
                                             : InkWell(
                                                 onTap: () {
-                                                  setState(() {
-                                                    currentlyPlaying.stop();
-                                                    currentlyPlaying.playList =
-                                                        episodeList;
-
-                                                    currentlyPlaying
-                                                            .episodeObject =
-                                                        currentlyPlaying
-                                                            .playList[0];
-                                                    currentlyPlaying.play();
-                                                    currentlyPlaying
-                                                            .isPlaylistPlaying =
-                                                        true;
-                                                  });
+                                                  for (var v in episodeList) {
+                                                    audioPlaylist
+                                                        .add(Audio.network(
+                                                      v['url'],
+                                                      metas: Metas(
+                                                        id: '${v['id']}',
+                                                        title: '${v['name']}',
+                                                        artist:
+                                                            '${v['author']}',
+                                                        album:
+                                                            '${v['podcast_name']}',
+                                                        // image: MetasImage.network('https://www.google.com')
+                                                        image: MetasImage.network(
+                                                            '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                      ),
+                                                    ));
+                                                  }
+                                                  currentlyPlaying.audioPlayer
+                                                      .open(
+                                                          Playlist(
+                                                              audios:
+                                                                  audioPlaylist,
+                                                              startIndex: 0),
+                                                          showNotification:
+                                                              true);
+                                                  // setState(() {
+                                                  //   currentlyPlaying.stop();
+                                                  //   currentlyPlaying.playList =
+                                                  //       episodeList;
+                                                  //
+                                                  //   currentlyPlaying
+                                                  //           .episodeObject =
+                                                  //       currentlyPlaying
+                                                  //           .playList[0];
+                                                  //   currentlyPlaying.play();
+                                                  //   currentlyPlaying
+                                                  //           .isPlaylistPlaying =
+                                                  //       true;
+                                                  // });
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -1577,29 +1611,33 @@ class _PodcastViewState extends State<PodcastView> {
                       ),
                     ),
                     Builder(builder: (context) {
-                      if (Provider.of<PlayerChange>(context).episodeObject !=
-                          null) {
-                        return episodeList[index - 1]['id'] ==
-                                    currentlyPlaying.episodeObject['id'] &&
-                                currentlyPlaying.episodeObject['id'] != null
-                            ? Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 7),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      gradient: LinearGradient(colors: [
-                                        Color(0xff5d5da8),
-                                        Color(0xff5bc3ef)
-                                      ])),
-                                  width: double.infinity,
-                                  height: 4,
-                                ),
-                              )
-                            : SizedBox();
-                      } else {
-                        return SizedBox();
-                      }
+                      return currentlyPlaying.audioPlayer
+                          .builderRealtimePlayingInfos(
+                              builder: (context, infos) {
+                        if (infos == null) {
+                          return SizedBox();
+                        } else {
+                          if (infos.current.audio.audio.metas.id.toString() ==
+                              episodeList[index - 1]['id']) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 7),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    gradient: LinearGradient(colors: [
+                                      Color(0xff5d5da8),
+                                      Color(0xff5bc3ef)
+                                    ])),
+                                width: double.infinity,
+                                height: 4,
+                              ),
+                            );
+                          } else {
+                            return SizedBox();
+                          }
+                        }
+                      });
                     }),
                   ],
                 ),
