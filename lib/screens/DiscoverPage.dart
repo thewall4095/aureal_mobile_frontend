@@ -945,6 +945,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                                 MediaQuery.of(context).size.width * 0.38,
                                                                           );
                                                                         },
+                                                                        errorWidget: (context,
+                                                                            url,
+                                                                            error) {
+                                                                          return Container(
+                                                                            decoration:
+                                                                                BoxDecoration(image: DecorationImage(image: NetworkImage("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover), borderRadius: BorderRadius.circular(3)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                            height:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                          );
+                                                                        },
                                                                         memCacheHeight:
                                                                             (MediaQuery.of(context).size.height).floor(),
                                                                         imageUrl: a['image'] !=
