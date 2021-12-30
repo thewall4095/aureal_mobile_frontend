@@ -812,13 +812,18 @@ class _BottomPlayerState extends State<BottomPlayer> {
           // height: SizeConfig.safeBlockVertical * 6,
           // width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(color: Color(0xffe8e8e8), width: 0.3)),
-            color: Colors.black,
+            color: Color(0xff161616),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Container(
+                height: 2,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
+              ),
               episodeObject.audioPlayer.builderRealtimePlayingInfos(
                   builder: (context, infos) {
                 if (infos == null) {
@@ -831,28 +836,44 @@ class _BottomPlayerState extends State<BottomPlayer> {
                     return SizedBox();
                   } else {
                     return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: infos.isPlaying == true
-                          ? IconButton(
-                              splashColor: Colors.transparent,
-                              icon: Icon(
-                                Icons.pause,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                episodeObject.pause();
-                              },
-                            )
-                          : IconButton(
-                              splashColor: Colors.blue,
-                              icon: Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                episodeObject.resume();
-                              },
-                            ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          infos.isPlaying == true
+                              ? IconButton(
+                                  splashColor: Colors.transparent,
+                                  icon: Icon(
+                                    Icons.pause,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.pause();
+                                  },
+                                )
+                              : IconButton(
+                                  splashColor: Colors.blue,
+                                  icon: Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.resume();
+                                  },
+                                ),
+                        ],
+                      ),
+                      leading: CachedNetworkImage(
+                        imageUrl: infos.current.audio.audio.metas.image.path,
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover)),
+                          );
+                        },
+                      ),
                       title: Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: Text(

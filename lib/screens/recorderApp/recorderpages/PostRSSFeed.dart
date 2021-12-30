@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 
-//https://api.aureal.one/private/getSubmittedRssFeeds?user_id=925eaf6a6cfec06c058f922c6e6a9c15
+//https://api.aureal.one/private/getUserPodcast?user_id=925eaf6a6cfec06c058f922c6e6a9c15
 
 class PostRSSFeed extends StatefulWidget {
   static const String id = 'PostRSSFeed';
@@ -27,7 +27,7 @@ class _PostRSSFeedState extends State<PostRSSFeed> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/private/getSubmittedRssFeeds?user_id=${prefs.getString('userId')}";
+        "https://api.aureal.one/private/getUserPodcast?user_id=${prefs.getString('userId')}";
     var map = Map<String, dynamic>();
 
     FormData formData = FormData.fromMap(map);
