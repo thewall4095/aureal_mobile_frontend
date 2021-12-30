@@ -835,6 +835,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                   if (infos.isBuffering == true) {
                     return SizedBox();
                   } else {
+                    episodeObject.view(infos.current.audio.audio.metas.id);
                     return ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
