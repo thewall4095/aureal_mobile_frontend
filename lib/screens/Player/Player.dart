@@ -30,6 +30,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/src/foundation/diagnostics.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,6 +38,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -500,7 +502,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                     padding: const EdgeInsets
                                                         .symmetric(vertical: 8),
                                                     child: Text(
-                                                      '${infos.current.audio.audio.metas.artist}',
+                                                      '${infos.current.audio.audio.metas.album}',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                       ),
@@ -1325,7 +1327,7 @@ class Related extends StatefulWidget {
   State<Related> createState() => _RelatedState();
 }
 
-class _RelatedState extends State<Related> {
+class _RelatedState extends State<Related> with AutomaticKeepAliveClientMixin {
   Dio dio = Dio();
 
   List episodeRecommendations = [];
@@ -1411,16 +1413,28 @@ class _RelatedState extends State<Related> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    getEpisodeRecommendations();
-    getPodcastfromEpisodeId().then((value) {
+  bool isLoading = true;
+
+  void init() async {
+    setState(() {
+      isLoading = true;
+    });
+    await getPodcastfromEpisodeId().then((value) {
       if (value != null) {
+        getEpisodeRecommendations();
         getPodcastRecommendations(value['podcast_id']);
         getPeopleRecommendation(value['podcast_id']);
       }
     });
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
     super.initState();
   }
 
@@ -1428,419 +1442,485 @@ class _RelatedState extends State<Related> {
   Widget build(BuildContext context) {
     var currentlyPlaying = Provider.of<PlayerChange>(context);
     return Container(
-      child: ListView(
-        children: [
-          Column(
-            children: [
-              SizedBox(
-                height: 15,
-              ),
-              episodeRecommendations.length == 0
-                  ? SizedBox()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            "You might also like",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height / 2.8,
-                          child: GridView(
-                            scrollDirection: Axis.horizontal,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 4,
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 1,
-                                    childAspectRatio: 1.2 / 5.3),
-                            children: [
-                              for (var a in episodeRecommendations)
-                                ListTile(
-                                  onTap: () {
-                                    List<Audio> playable = [];
-                                    for (var v in episodeRecommendations) {
-                                      playable.add(Audio.network(
-                                        v['url'],
-                                        metas: Metas(
-                                          id: '${v['id']}',
-                                          title: '${v['name']}',
-                                          artist: '${v['author']}',
-                                          album: '${v['podcast_name']}',
-                                          // image: MetasImage.network('https://www.google.com')
-                                          image: MetasImage.network(
-                                              '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                        ),
-                                      ));
-                                    }
-                                    currentlyPlaying.playList = playable;
-                                    currentlyPlaying.audioPlayer.open(
-                                        Playlist(
-                                            audios: currentlyPlaying.playList,
-                                            startIndex: episodeRecommendations
-                                                .indexOf(a)),
-                                        showNotification: true);
-                                  },
-                                  leading: CircleAvatar(
-                                    radius: 25,
-                                    child: CachedNetworkImage(
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 60,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(3),
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                          ),
-                                        );
-                                      },
-                                      memCacheHeight:
-                                          (MediaQuery.of(context).size.height)
-                                              .floor(),
-                                      imageUrl: a['image'] != null
-                                          ? a['image']
-                                          : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                      placeholder: (context, imageProvider) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      'assets/images/Thumbnail.png'),
-                                                  fit: BoxFit.cover)),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.38,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.38,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  title: Text(
-                                    a['name'].toString(),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
+      child: ModalProgressHUD(
+        color: Color(0xff161616),
+        inAsyncCall: isLoading,
+        child: isLoading == true
+            ? SizedBox()
+            : ListView(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 15,
+                      ),
+                      episodeRecommendations.length == 0
+                          ? SizedBox()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "You might also like",
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                         fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3),
+                                            SizeConfig.safeBlockHorizontal * 4,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  trailing: Icon(Icons.more_vert),
                                 ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-              podcastRecommendations.length == 0
-                  ? SizedBox()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            "Recommended Podcasts",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: SizeConfig.blockSizeVertical * 28,
-                          constraints: BoxConstraints(
-                              minHeight:
-                                  MediaQuery.of(context).size.height * 0.17),
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              Row(
-                                children: [
-                                  for (var a in podcastRecommendations)
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          15, 0, 0, 8),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      PodcastView(a['id'])));
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            // x
-                                            borderRadius:
-                                                BorderRadius.circular(15),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 2.8,
+                                  child: GridView(
+                                    scrollDirection: Axis.horizontal,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4,
+                                            mainAxisSpacing: 10,
+                                            crossAxisSpacing: 1,
+                                            childAspectRatio: 1.2 / 5.3),
+                                    children: [
+                                      for (var a in episodeRecommendations)
+                                        ListTile(
+                                          onTap: () {
+                                            List<Audio> playable = [];
+                                            for (var v
+                                                in episodeRecommendations) {
+                                              playable.add(Audio.network(
+                                                v['url'],
+                                                metas: Metas(
+                                                  id: '${v['id']}',
+                                                  title: '${v['name']}',
+                                                  artist: '${v['author']}',
+                                                  album: '${v['podcast_name']}',
+                                                  // image: MetasImage.network('https://www.google.com')
+                                                  image: MetasImage.network(
+                                                      '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                ),
+                                              ));
+                                            }
+                                            currentlyPlaying.playList =
+                                                playable;
+                                            currentlyPlaying.audioPlayer.open(
+                                                Playlist(
+                                                    audios: currentlyPlaying
+                                                        .playList,
+                                                    startIndex:
+                                                        episodeRecommendations
+                                                            .indexOf(a)),
+                                                showNotification: true);
+                                          },
+                                          leading: CircleAvatar(
+                                            radius: 25,
+                                            child: CachedNetworkImage(
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  height: 60,
+                                                  width: 60,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3),
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover),
+                                                  ),
+                                                );
+                                              },
+                                              memCacheHeight:
+                                                  (MediaQuery.of(context)
+                                                          .size
+                                                          .height)
+                                                      .floor(),
+                                              imageUrl: a['image'] != null
+                                                  ? a['image']
+                                                  : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                              placeholder:
+                                                  (context, imageProvider) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: AssetImage(
+                                                              'assets/images/Thumbnail.png'),
+                                                          fit: BoxFit.cover)),
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.38,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.38,
+                                                );
+                                              },
+                                            ),
                                           ),
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.38,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CachedNetworkImage(
-                                                errorWidget:
-                                                    (context, url, error) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
-                                                            fit: BoxFit.cover),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(3)),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.38,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.38,
-                                                  );
+                                          title: Text(
+                                            a['name'].toString(),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3),
+                                          ),
+                                          trailing: Icon(Icons.more_vert),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                      podcastRecommendations.length == 0
+                          ? SizedBox()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "Recommended Podcasts",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: SizeConfig.blockSizeVertical * 28,
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          MediaQuery.of(context).size.height *
+                                              0.17),
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          for (var a in podcastRecommendations)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      15, 0, 0, 8),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      CupertinoPageRoute(
+                                                          builder: (context) =>
+                                                              PodcastView(
+                                                                  a['id'])));
                                                 },
-                                                imageBuilder:
-                                                    (context, imageProvider) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    // x
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                  ),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.38,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      CachedNetworkImage(
+                                                        errorWidget: (context,
+                                                            url, error) {
+                                                          return Container(
+                                                            decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: NetworkImage(
+                                                                        "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3)),
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                          );
+                                                        },
+                                                        imageBuilder: (context,
+                                                            imageProvider) {
+                                                          return Container(
+                                                            decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image:
+                                                                        imageProvider,
+                                                                    fit: BoxFit
+                                                                        .cover),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3)),
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                          );
+                                                        },
+                                                        memCacheHeight:
+                                                            (MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height)
+                                                                .floor(),
+                                                        imageUrl: a['image'] !=
+                                                                null
+                                                            ? a['image']
+                                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                        placeholder: (context,
+                                                            imageProvider) {
+                                                          return Container(
+                                                            decoration: BoxDecoration(
+                                                                image: DecorationImage(
+                                                                    image: AssetImage(
+                                                                        'assets/images/Thumbnail.png'),
+                                                                    fit: BoxFit
+                                                                        .cover)),
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.38,
+                                                          );
+                                                        },
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                        a['name'],
+                                                        maxLines: 1,
+                                                        textScaleFactor: 1.0,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        // style:
+                                                        //     TextStyle(color: Color(0xffe8e8e8)),
+                                                      ),
+                                                      Text(
+                                                        a['author'],
+                                                        maxLines: 2,
+                                                        textScaleFactor: 1.0,
+                                                        style: TextStyle(
+                                                            fontSize: SizeConfig
+                                                                    .safeBlockHorizontal *
+                                                                2.5,
+                                                            color: Color(
+                                                                0xffe777777)),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                      peopleRecommendation.length == 0
+                          ? SizedBox()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "Podcasters for you",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 5,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      for (var v in peopleRecommendation)
+                                        Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  CupertinoPageRoute(
+                                                      builder: (context) {
+                                                return PublicProfile(
+                                                  userId: v['id'],
+                                                );
+                                              }));
+                                            },
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageBuilder:
+                                                      (context, imageProvider) {
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
                                                         image: DecorationImage(
                                                             image:
                                                                 imageProvider,
                                                             fit: BoxFit.cover),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(3)),
+                                                      ),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              4,
+                                                    );
+                                                  },
+                                                  imageUrl: v['img'],
+                                                  memCacheWidth:
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width
+                                                          .floor(),
+                                                  memCacheHeight:
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width
+                                                          .floor(),
+                                                  placeholder: (context, url) =>
+                                                      Container(
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
-                                                                .width *
-                                                            0.38,
+                                                                .width /
+                                                            7,
                                                     height:
                                                         MediaQuery.of(context)
                                                                 .size
-                                                                .width *
-                                                            0.38,
-                                                  );
-                                                },
-                                                memCacheHeight:
-                                                    (MediaQuery.of(context)
-                                                            .size
-                                                            .height)
-                                                        .floor(),
-                                                imageUrl: a['image'] != null
-                                                    ? a['image']
-                                                    : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                placeholder:
-                                                    (context, imageProvider) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                            image: AssetImage(
-                                                                'assets/images/Thumbnail.png'),
-                                                            fit: BoxFit.cover)),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.38,
+                                                                .width /
+                                                            7,
+                                                    child: Image.asset(
+                                                        'assets/images/Thumbnail.png'),
+                                                  ),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Container(
+                                                          width:
+                                                              MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  4,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              4,
+                                                          child: Icon(
+                                                            Icons.error,
+                                                            color: Color(
+                                                                0xffe8e8e8),
+                                                          )),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 10),
+                                                  child: Container(
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
-                                                                .width *
-                                                            0.38,
-                                                  );
-                                                },
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                a['name'],
-                                                maxLines: 1,
-                                                textScaleFactor: 1.0,
-                                                overflow: TextOverflow.ellipsis,
-                                                // style:
-                                                //     TextStyle(color: Color(0xffe8e8e8)),
-                                              ),
-                                              Text(
-                                                a['author'],
-                                                maxLines: 2,
-                                                textScaleFactor: 1.0,
-                                                style: TextStyle(
-                                                    fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
-                                                        2.5,
-                                                    color: Color(0xffe777777)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-              peopleRecommendation.length == 0
-                  ? SizedBox()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            "Podcasters for you",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height / 5,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              for (var v in peopleRecommendation)
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(context,
-                                          CupertinoPageRoute(
-                                              builder: (context) {
-                                        return PublicProfile(
-                                          userId: v['id'],
-                                        );
-                                      }));
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                            );
-                                          },
-                                          imageUrl: v['img'],
-                                          memCacheWidth: MediaQuery.of(context)
-                                              .size
-                                              .width
-                                              .floor(),
-                                          memCacheHeight: MediaQuery.of(context)
-                                              .size
-                                              .width
-                                              .floor(),
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                7,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                7,
-                                            child: Image.asset(
-                                                'assets/images/Thumbnail.png'),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      4,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      4,
-                                                  child: Icon(
-                                                    Icons.error,
-                                                    color: Color(0xffe8e8e8),
-                                                  )),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 10),
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                4,
-                                            child: Text(
-                                              "${v['username']}",
-                                              textAlign: TextAlign.center,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  color: Color(0xffe8e8e8)),
+                                                                .width /
+                                                            4,
+                                                    child: Text(
+                                                      "${v['username']}",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          color: Color(
+                                                              0xffe8e8e8)),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
                                             ),
                                           ),
                                         )
-                                      ],
-                                    ),
+                                    ],
                                   ),
-                                )
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-            ],
-          ),
-        ],
+                                ),
+                              ],
+                            )
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }
+
+  @override
+  void didUpdateWidget(covariant Related oldWidget) {
+    // TODO: implement didUpdateWidget
+    if (oldWidget.episodeId != widget.episodeId) {
+      init();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class SongSelector extends StatelessWidget {
