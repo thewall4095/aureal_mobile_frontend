@@ -62,6 +62,10 @@ extension Pipe<T> on T {
 }
 
 class Player extends StatefulWidget {
+  final episodeId;
+
+  Player({@required this.episodeId});
+
   static const String id = "Player";
 
   @override
@@ -1244,6 +1248,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                           audioFocusStrategy: AudioFocusStrategy.request(
                               resumeAfterInterruption: true),
                         );
+                        getEpisode(context);
                       },
                       onSelected: (myAudio) async {
                         try {
@@ -1271,6 +1276,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                 //customPlayIcon: AndroidResDrawable(name:'ic_play_custom'),
                                 ),
                           );
+                          getEpisode(context);
                         } catch (e) {
                           print(e);
                         }
