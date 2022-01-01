@@ -958,7 +958,7 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        'https://api.aureal.one/private/getSubmittedRssFeeds?user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/private/getUserPodcast?user_id=${prefs.getString('userId')}';
     try {
       print('came here too');
       print(url);
