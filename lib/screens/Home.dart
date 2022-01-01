@@ -10,7 +10,9 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Clips.dart';
 import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/UserProfile.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -42,6 +44,7 @@ import 'Player/Player.dart';
 import 'Player/PlayerElements/Seekbar.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
+import 'Profiles/publicUserProfile.dart';
 import 'RoomsPage.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
@@ -477,6 +480,24 @@ class _HomeState extends State<Home> {
                   hostUserId: value['hostuserid']);
             });
           }
+          if (uri.toString().contains('playlist') == true) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return PlaylistView(
+                playlistId: uri
+                    .toString()
+                    .split('/')[uri.toString().split('/').length - 1],
+              );
+            }));
+          }
+          if (uri.toString().contains('user') == true) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return PublicProfile(
+                userId: uri
+                    .toString()
+                    .split('/')[uri.toString().split('/').length - 1],
+              );
+            }));
+          }
           // if (uri.toString().contains('episode') == true) {
           //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
           //     return EpisodeView(
@@ -772,9 +793,14 @@ class _BottomPlayerState extends State<BottomPlayer> {
   @override
   void initState() {
     // TODO: implement initState
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    // episodeObject.episodeViewed(
+    //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
 
     super.initState();
   }
+
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -809,86 +835,74 @@ class _BottomPlayerState extends State<BottomPlayer> {
           });
         },
         child: Container(
-          // height: SizeConfig.safeBlockVertical * 6,
-          // width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: Color(0xff161616),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                height: 2,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
-              ),
-              episodeObject.audioPlayer.builderRealtimePlayingInfos(
-                  builder: (context, infos) {
-                if (infos == null) {
-                  return SizedBox(
-                    height: 0,
-                    width: 0,
-                  );
-                } else {
-                  if (infos.isBuffering == true) {
-                    return SizedBox();
-                  } else {
-                    episodeObject.view(infos.current.audio.audio.metas.id);
-                    return ListTile(
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          infos.isPlaying == true
-                              ? IconButton(
-                                  splashColor: Colors.transparent,
-                                  icon: Icon(
-                                    Icons.pause,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    episodeObject.pause();
-                                  },
-                                )
-                              : IconButton(
-                                  splashColor: Colors.blue,
-                                  icon: Icon(
-                                    Icons.play_arrow,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    episodeObject.resume();
-                                  },
-                                ),
-                        ],
-                      ),
-                      leading: CachedNetworkImage(
-                        imageUrl: infos.current.audio.audio.metas.image.path,
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover)),
-                          );
-                        },
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(
-                          "${infos.current.audio.audio.metas.title}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    );
-                  }
+          child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+              builder: (context, infos) {
+            if (infos == null) {
+              return SizedBox(
+                height: 0,
+                width: 0,
+              );
+            } else {
+              if (infos.isBuffering == true) {
+                return SizedBox();
+              } else {
+                if (count == 0) {
+                  episodeObject
+                      .episodeViewed(infos.current.audio.audio.metas.id);
+                  count++;
                 }
-              }),
-            ],
-          ),
+
+                return ListTile(
+                  trailing: infos.isPlaying == true
+                      ? IconButton(
+                          splashColor: Colors.transparent,
+                          icon: Icon(
+                            Icons.pause,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            episodeObject.audioPlayer.pause();
+                          },
+                        )
+                      : IconButton(
+                          splashColor: Colors.blue,
+                          icon: Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            episodeObject.resume();
+                          },
+                        ),
+                  leading: CachedNetworkImage(
+                    width: 40,
+                    height: 40,
+                    imageUrl: infos.current.audio.audio.metas.image.path,
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.cover)),
+                      );
+                    },
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      "${infos.current.audio.audio.metas.title}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                );
+              }
+            }
+          }),
         ),
       ),
     );

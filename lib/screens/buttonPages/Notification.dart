@@ -15,6 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+
 import 'settings/Theme-.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -40,6 +42,25 @@ class _NotificationPageState extends State<NotificationPage>
     setState(() {
       displayPicture = prefs.getString('displayPicture');
     });
+  }
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future readNotification(var notificationId) async {
+    String url = "https://api.aureal.one/private/readNotification";
+
+    var map = Map<String, dynamic>();
+
+    map['notification_id'] = notificationId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getNotifications() async {
@@ -125,6 +146,12 @@ class _NotificationPageState extends State<NotificationPage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              title: Text(
+                "Your Notifications",
+                textScaleFactor: 1.0,
+                style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+              ),
+              backgroundColor: Color(0xff161616),
               elevation: 0,
               //  backgroundColor: Colors.transparent,
               // leading: IconButton(
@@ -187,6 +214,7 @@ class _NotificationPageState extends State<NotificationPage>
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: ListTile(
                             onTap: () {
+                              readNotification(v['id']);
                               if (v['data']['episode_id'] != null)
                                 Navigator.push(context,
                                     CupertinoPageRoute(builder: (context) {
@@ -196,8 +224,8 @@ class _NotificationPageState extends State<NotificationPage>
                                 }));
                             },
                             leading: Container(
-                              height: 65,
-                              width: 65,
+                              height: 40,
+                              width: 40,
                               child: CachedNetworkImage(
                                 imageBuilder: (context, imageProvider) {
                                   return Container(
@@ -207,8 +235,8 @@ class _NotificationPageState extends State<NotificationPage>
                                           image: imageProvider,
                                           fit: BoxFit.cover),
                                     ),
-                                    height: MediaQuery.of(context).size.width,
-                                    width: MediaQuery.of(context).size.width,
+                                    height: 40,
+                                    width: 40,
                                   );
                                 },
                                 imageUrl: v['data']['image'] == null
@@ -230,14 +258,14 @@ class _NotificationPageState extends State<NotificationPage>
                             ),
                             title: Text(
                               v['title'],
-                              textScaleFactor: 0.75,
+                              textScaleFactor: 1.0,
                               style: TextStyle(
                                   fontSize:
                                       SizeConfig.safeBlockHorizontal * 3.2),
                             ),
                             subtitle: Text(
                               v['body'],
-                              textScaleFactor: 0.75,
+                              textScaleFactor: 1.0,
                               style: TextStyle(
                                   fontSize:
                                       SizeConfig.safeBlockHorizontal * 3.2),
