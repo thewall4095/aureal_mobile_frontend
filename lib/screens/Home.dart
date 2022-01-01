@@ -394,6 +394,24 @@ class _HomeState extends State<Home> {
                 hostUserId: value['hostuserid']);
           });
         }
+        if (_latestUri.toString().contains('playlist') == true) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+            return PlaylistView(
+              playlistId: _latestUri
+                  .toString()
+                  .split('/')[uri.toString().split('/').length - 1],
+            );
+          }));
+        }
+        if (_latestUri.toString().contains('user') == true) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+            return PublicProfile(
+              userId: _latestUri
+                  .toString()
+                  .split('/')[uri.toString().split('/').length - 1],
+            );
+          }));
+        }
 
         // if (uri.toString().contains('episode') == true) {
         //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
