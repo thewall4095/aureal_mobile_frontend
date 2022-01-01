@@ -88,7 +88,7 @@ class PlayerChange extends ChangeNotifier {
     notifyListeners();
   }
 
-  void view(var episodeId) async {
+  void episodeViewed(var episodeId) async {
     // if (dursaver.getEpisode(episodeObject['id']) == false) {
     //   print(
     //       '${dursaver.getEpisodeDuration(episodeObject['id'])} /////////////////////////////////////////////////////////////////////');
