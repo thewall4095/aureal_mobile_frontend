@@ -13,6 +13,9 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 
 import 'settings/Theme-.dart';
 
@@ -39,6 +42,25 @@ class _NotificationPageState extends State<NotificationPage>
     setState(() {
       displayPicture = prefs.getString('displayPicture');
     });
+  }
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future readNotification(var notificationId) async {
+    String url = "https://api.aureal.one/private/readNotification";
+
+    var map = Map<String, dynamic>();
+
+    map['notification_id'] = notificationId;
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await intercept.postRequest(formData, url);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getNotifications() async {
@@ -124,6 +146,12 @@ class _NotificationPageState extends State<NotificationPage>
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              title: Text(
+                "Your Notifications",
+                textScaleFactor: 1.0,
+                style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+              ),
+              backgroundColor: Color(0xff161616),
               elevation: 0,
               //  backgroundColor: Colors.transparent,
               // leading: IconButton(
@@ -173,133 +201,81 @@ class _NotificationPageState extends State<NotificationPage>
             ),
           ];
         },
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Container(
-              child: notificationList.length == 0
-                  ? Text(
-                      "There is nothing here as of now",
-                      textScaleFactor: 0.75,
-                    )
-                  : ListView(
-                      children: <Widget>[
-                        for (var v in notificationList)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: Container(
-                              width: double.infinity,
-                              child: GestureDetector(
-                                onTap: () {
-                                  print(v['data']);
-                                  if (v['data']['episode_id'] != null)
-                                    Navigator.push(context,
-                                        CupertinoPageRoute(builder: (context) {
-                                      return EpisodeView(
-                                        episodeId: v['data']['episode_id'],
-                                      );
-                                    }));
+        body: Container(
+            child: notificationList.length == 0
+                ? Text(
+                    "There is nothing here as of now",
+                    textScaleFactor: 0.75,
+                  )
+                : ListView(
+                    children: <Widget>[
+                      for (var v in notificationList)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: ListTile(
+                            onTap: () {
+                              readNotification(v['id']);
+                              if (v['data']['episode_id'] != null)
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return EpisodeView(
+                                    episodeId: v['data']['episode_id'],
+                                  );
+                                }));
+                            },
+                            leading: Container(
+                              height: 40,
+                              width: 40,
+                              child: CachedNetworkImage(
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.cover),
+                                    ),
+                                    height: 40,
+                                    width: 40,
+                                  );
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: double.infinity,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Container(
-                                              height: 65,
-                                              width: 65,
-                                              child: CachedNetworkImage(
-                                                imageBuilder:
-                                                    (context, imageProvider) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      image: DecorationImage(
-                                                          image: imageProvider,
-                                                          fit: BoxFit.cover),
-                                                    ),
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                  );
-                                                },
-                                                imageUrl: v['data']['image'] ==
-                                                        null
-                                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                    : v['data']['image'],
-                                                fit: BoxFit.cover,
-                                                // memCacheHeight:
-                                                //     MediaQuery.of(
-                                                //             context)
-                                                //         .size
-                                                //         .width
-                                                //         .ceil(),
-                                                memCacheHeight:
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .height
-                                                        .floor(),
+                                imageUrl: v['data']['image'] == null
+                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                    : v['data']['image'],
+                                fit: BoxFit.cover,
+                                // memCacheHeight:
+                                //     MediaQuery.of(
+                                //             context)
+                                //         .size
+                                //         .width
+                                //         .ceil(),
+                                memCacheHeight:
+                                    MediaQuery.of(context).size.height.floor(),
 
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Icon(Icons.error),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  GestureDetector(
-                                                    child: Text(
-                                                      v['title'],
-                                                      textScaleFactor: 0.75,
-                                                      style: TextStyle(
-                                                          fontSize: SizeConfig
-                                                                  .safeBlockHorizontal *
-                                                              3.2),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text(
-                                                    v['body'],
-                                                    textScaleFactor: 0.75,
-                                                    style: TextStyle(
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            3.2),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                               ),
                             ),
-                          )
-                      ],
-                    )),
-        ),
+                            title: Text(
+                              v['title'],
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                  fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.2),
+                            ),
+                            subtitle: Text(
+                              v['body'],
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                  fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.2),
+                            ),
+                            trailing: Text(
+                                "${timeago.format(DateTime.parse(v['createdAt']))}"),
+                          ),
+                        )
+                    ],
+                  )),
       ),
     );
   }

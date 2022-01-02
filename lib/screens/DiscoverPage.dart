@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/DiscoverProvider.dart';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -529,21 +530,37 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                             '.pdf') ==
                                                                         true) {
                                                                     } else {
+                                                                      List<Audio>
+                                                                          playable =
+                                                                          [];
+                                                                      for (var v
+                                                                          in recentlyPlayed) {
+                                                                        playable
+                                                                            .add(Audio.network(
+                                                                          v['url'],
+                                                                          metas:
+                                                                              Metas(
+                                                                            id: '${v['id']}',
+                                                                            title:
+                                                                                '${v['name']}',
+                                                                            artist:
+                                                                                '${v['author']}',
+                                                                            album:
+                                                                                '${v['podcast_name']}',
+                                                                            // image: MetasImage.network('https://www.google.com')
+                                                                            image:
+                                                                                MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                                                          ),
+                                                                        ));
+                                                                      }
                                                                       currentlyPlaying
-                                                                          .stop();
-                                                                      currentlyPlaying
-                                                                          .episodeObject = a;
-                                                                      print(currentlyPlaying
-                                                                          .episodeObject
-                                                                          .toString());
-                                                                      currentlyPlaying
-                                                                          .play();
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          CupertinoPageRoute(builder:
-                                                                              (context) {
-                                                                        return Player();
-                                                                      }));
+                                                                              .playList =
+                                                                          playable;
+                                                                      currentlyPlaying.audioPlayer.open(
+                                                                          Playlist(
+                                                                              audios: currentlyPlaying.playList,
+                                                                              startIndex: recentlyPlayed.indexOf(a)),
+                                                                          showNotification: true);
                                                                     }
                                                                   }
                                                                 },
@@ -922,6 +939,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                                                           return Container(
                                                                             decoration:
                                                                                 BoxDecoration(image: DecorationImage(image: imageProvider, fit: BoxFit.cover), borderRadius: BorderRadius.circular(8)),
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                            height:
+                                                                                MediaQuery.of(context).size.width * 0.38,
+                                                                          );
+                                                                        },
+                                                                        errorWidget: (context,
+                                                                            url,
+                                                                            error) {
+                                                                          return Container(
+                                                                            decoration:
+                                                                                BoxDecoration(image: DecorationImage(image: NetworkImage("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover), borderRadius: BorderRadius.circular(3)),
                                                                             width:
                                                                                 MediaQuery.of(context).size.width * 0.38,
                                                                             height:

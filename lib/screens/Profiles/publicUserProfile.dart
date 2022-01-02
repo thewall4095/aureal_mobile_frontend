@@ -74,6 +74,8 @@ class _PublicProfileState extends State<PublicProfile>
     map['user_id'] = prefs.getString('userId');
     map['author_user_id'] = userData['id'];
 
+    print(map);
+
     FormData formData = FormData.fromMap(map);
 
     try {

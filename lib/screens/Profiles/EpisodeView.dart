@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/audioEditor.dart';
+import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
@@ -134,6 +136,32 @@ class _EpisodeViewState extends State<EpisodeView>
       print(e);
     }
     getRecommendations();
+    getPlaylistRecommendations(
+        podcastId: episodeContent['podcast_id'], episodeId: widget.episodeId);
+  }
+
+  List playlist = [];
+
+  void getPlaylistRecommendations({int podcastId, int episodeId}) async {
+    print("///////////////////////////////////////////////////////////");
+    String url =
+        "https://api.aureal.one/public/getPrevNextEpisode/$podcastId/$episodeId?type=prev";
+
+    print(url);
+
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        setState(() {
+          playlist = response.data['episodes'];
+        });
+        print(playlist);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getInitialComments(BuildContext context) {
@@ -298,6 +326,7 @@ class _EpisodeViewState extends State<EpisodeView>
   @override
   void initState() {
     super.initState();
+
     init();
   }
 
@@ -406,54 +435,7 @@ class _EpisodeViewState extends State<EpisodeView>
             Icons.arrow_back,
           ),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.crop),
-            onPressed: () {
-              Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                return AudioEditor(
-                  episodeObject: episodeContent,
-                );
-              }));
-            },
-          ),
-          Platform.isAndroid == true
-              ? GestureDetector(
-                  onTap: () {
-                    startDownload();
-                    setState(() {
-                      _loading = !_loading;
-                      _updateProgress();
-                    });
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(15.0),
-                      child: _loading
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                CircularProgressIndicator(
-                                  value: _progressValue,
-                                ),
-                                Text('${(_progressValue * 100).round()}%'),
-                              ],
-                            )
-                          : Icon(Icons.arrow_circle_down,
-                              color: isDownloading == true
-                                  ? Colors.blue
-                                  : Colors.white)),
-                )
-              : SizedBox(
-                  height: 0,
-                  width: 0,
-                ),
-          IconButton(
-            onPressed: () {
-              share1(episodeObject: episodeObject.episodeObject);
-            },
-            icon: Icon(Icons.ios_share),
-          )
-        ],
+        actions: <Widget>[],
       ),
       body: ModalProgressHUD(
         color: Colors.black,
@@ -550,6 +532,74 @@ class _EpisodeViewState extends State<EpisodeView>
                                 ),
                               ],
                             ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.crop),
+                                  onPressed: () {
+                                    Navigator.push(context,
+                                        CupertinoPageRoute(builder: (context) {
+                                      return AudioEditor(
+                                        episodeObject: episodeContent,
+                                      );
+                                    }));
+                                  },
+                                ),
+                                Platform.isAndroid == true
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          startDownload();
+                                          setState(() {
+                                            _loading = !_loading;
+                                            _updateProgress();
+                                          });
+                                        },
+                                        child: Container(
+                                            padding: EdgeInsets.all(15.0),
+                                            child: _loading
+                                                ? Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      CircularProgressIndicator(
+                                                        value: _progressValue,
+                                                      ),
+                                                      Text(
+                                                          '${(_progressValue * 100).round()}%'),
+                                                    ],
+                                                  )
+                                                : Icon(Icons.arrow_circle_down,
+                                                    color: isDownloading == true
+                                                        ? Colors.blue
+                                                        : Colors.white)),
+                                      )
+                                    : SizedBox(
+                                        height: 0,
+                                        width: 0,
+                                      ),
+                                IconButton(
+                                  onPressed: () {
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Createplaylist(
+                                              episodeId: widget.episodeId);
+                                        });
+                                  },
+                                  icon: Icon(Icons.playlist_add),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    share1(
+                                        episodeObject:
+                                            episodeObject.episodeObject);
+                                  },
+                                  icon: Icon(Icons.ios_share),
+                                )
+                              ],
+                            ),
                             SizedBox(
                               height: 20,
                             ),
@@ -613,17 +663,43 @@ class _EpisodeViewState extends State<EpisodeView>
                                           //   );
                                           // }));
                                         } else {
-                                          episodeObject.stop();
-                                          episodeObject.episodeObject =
-                                              episodeContent;
-                                          print(episodeObject.episodeObject
-                                              .toString());
-                                          episodeObject.play();
-                                          Navigator.push(context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) {
-                                            return Player();
-                                          }));
+                                          List<Audio> playable = [];
+                                          playable.add(Audio.network(
+                                              episodeContent['url'],
+                                              metas: Metas(
+                                                id: '${episodeContent['id']}',
+                                                title:
+                                                    '${episodeContent['name']}',
+                                                artist:
+                                                    '${episodeContent['author']}',
+                                                album:
+                                                    '${episodeContent['podcast_name']}',
+                                                // image: MetasImage.network('https://www.google.com')
+                                                image: MetasImage.network(
+                                                    '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
+                                              )));
+                                          for (var v in playlist) {
+                                            playable.add(Audio.network(
+                                              v['url'],
+                                              metas: Metas(
+                                                id: '${v['id']}',
+                                                title: '${v['name']}',
+                                                artist: '${v['author']}',
+                                                album: '${v['podcast_name']}',
+                                                // image: MetasImage.network('https://www.google.com')
+                                                image: MetasImage.network(
+                                                    '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                              ),
+                                            ));
+                                          }
+
+                                          episodeObject.playList = playable;
+                                          episodeObject.audioPlayer.open(
+                                              Playlist(
+                                                  audios:
+                                                      episodeObject.playList,
+                                                  startIndex: 0),
+                                              showNotification: true);
                                         }
                                       }
                                     },

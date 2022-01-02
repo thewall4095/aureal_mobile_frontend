@@ -10,7 +10,9 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Clips.dart';
 import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/UserProfile.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -39,8 +41,10 @@ import 'DiscoverPage.dart';
 import 'FollowingPage.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
+import 'Player/PlayerElements/Seekbar.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
+import 'Profiles/publicUserProfile.dart';
 import 'RoomsPage.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
@@ -178,9 +182,9 @@ class _HomeState extends State<Home> {
         return Clips();
         break;
 
-      case 4:
-        return RoomsPage();
-        break;
+      // case 4:
+      //   return RoomsPage();
+      //   break;
     }
   }
 
@@ -390,6 +394,24 @@ class _HomeState extends State<Home> {
             //     hostUserId: value['hostuserid']);
           });
         }
+        if (_latestUri.toString().contains('playlist') == true) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+            return PlaylistView(
+              playlistId: _latestUri
+                  .toString()
+                  .split('/')[uri.toString().split('/').length - 1],
+            );
+          }));
+        }
+        if (_latestUri.toString().contains('user') == true) {
+          Navigator.push(context, CupertinoPageRoute(builder: (context) {
+            return PublicProfile(
+              userId: _latestUri
+                  .toString()
+                  .split('/')[uri.toString().split('/').length - 1],
+            );
+          }));
+        }
 
         // if (uri.toString().contains('episode') == true) {
         //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
@@ -475,6 +497,24 @@ class _HomeState extends State<Home> {
               //     roomName: value['title'],
               //     hostUserId: value['hostuserid']);
             });
+          }
+          if (uri.toString().contains('playlist') == true) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return PlaylistView(
+                playlistId: uri
+                    .toString()
+                    .split('/')[uri.toString().split('/').length - 1],
+              );
+            }));
+          }
+          if (uri.toString().contains('user') == true) {
+            Navigator.push(context, CupertinoPageRoute(builder: (context) {
+              return PublicProfile(
+                userId: uri
+                    .toString()
+                    .split('/')[uri.toString().split('/').length - 1],
+              );
+            }));
           }
           // if (uri.toString().contains('episode') == true) {
           //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
@@ -663,13 +703,13 @@ class _HomeState extends State<Home> {
         //Color(0xff5bc3ef),
         // backgroundColor: Colors.transparent,
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.stream,
-            ),
-            activeIcon: Icon(Icons.stream),
-            label: '',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.stream,
+          //   ),
+          //   activeIcon: Icon(Icons.stream),
+          //   label: '',
+          // ),
 
           BottomNavigationBarItem(
             label: "",
@@ -712,7 +752,7 @@ class _HomeState extends State<Home> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      bottomSheet: _selectedIndex == 0 ? SizedBox() : BottomPlayer(),
+      bottomSheet: BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
@@ -744,12 +784,41 @@ class _BottomPlayerState extends State<BottomPlayer> {
     prefs = await SharedPreferences.getInstance();
   }
 
+  String changingDuration = '0.0';
+
+  Duration _visibleValue;
+  bool listenOnlyUserInteraction = false;
+  double get percent => duration.inMilliseconds == 0
+      ? 0
+      : _visibleValue.inMilliseconds / duration.inMilliseconds;
+
+  void durationToString(Duration duration) {
+    String twoDigits(int n) {
+      if (n >= 10) return "$n";
+      return "0$n";
+    }
+
+    String twoDigitMinutes =
+        twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+    String twoDigitSeconds =
+        twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+
+    setState(() {
+      changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    // episodeObject.episodeViewed(
+    //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
 
     super.initState();
   }
+
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -784,10 +853,8 @@ class _BottomPlayerState extends State<BottomPlayer> {
           });
         },
         child: Container(
-          // height: SizeConfig.safeBlockVertical * 6,
-          // width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: Colors.black,
+            color: Color(0xff161616),
           ),
           child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
               builder: (context, infos) {
@@ -800,9 +867,14 @@ class _BottomPlayerState extends State<BottomPlayer> {
               if (infos.isBuffering == true) {
                 return SizedBox();
               } else {
+                if (count == 0) {
+                  episodeObject
+                      .episodeViewed(infos.current.audio.audio.metas.id);
+                  count++;
+                }
+
                 return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: infos.isPlaying == true
+                  trailing: infos.isPlaying == true
                       ? IconButton(
                           splashColor: Colors.transparent,
                           icon: Icon(
@@ -810,7 +882,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            episodeObject.pause();
+                            episodeObject.audioPlayer.pause();
                           },
                         )
                       : IconButton(
@@ -823,6 +895,20 @@ class _BottomPlayerState extends State<BottomPlayer> {
                             episodeObject.resume();
                           },
                         ),
+                  leading: CachedNetworkImage(
+                    width: 40,
+                    height: 40,
+                    imageUrl: infos.current.audio.audio.metas.image.path,
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.cover)),
+                      );
+                    },
+                  ),
                   title: Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: Text(

@@ -88,7 +88,7 @@ class PlayerChange extends ChangeNotifier {
     notifyListeners();
   }
 
-  void view() async {
+  void episodeViewed(var episodeId) async {
     // if (dursaver.getEpisode(episodeObject['id']) == false) {
     //   print(
     //       '${dursaver.getEpisodeDuration(episodeObject['id'])} /////////////////////////////////////////////////////////////////////');
@@ -98,7 +98,7 @@ class PlayerChange extends ChangeNotifier {
 
     var map = Map<String, dynamic>();
     map['user_id'] = prefs.getString('userId');
-    map['episode_id'] = _episodeObject['id'];
+    map['episode_id'] = episodeId;
 
     FormData formData = FormData.fromMap(map);
 
@@ -197,8 +197,6 @@ class PlayerChange extends ChangeNotifier {
     //         nextEnabled: false, prevEnabled: false, seekBarEnabled: true),
     //   );
     // }
-
-    view();
   }
 
   void stop() {
