@@ -1,47 +1,35 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io' as io;
 import 'dart:isolate';
+import 'dart:ui';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Player/Player.dart';
-import 'package:auditory/screens/recorderApp/recorderpages/SoundEditor/customThumbSelector.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+import 'package:flutter/rendering.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-
-import 'dart:ui';
-
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:io' as io;
+
 import '../CategoriesProvider.dart';
 import '../DiscoverProvider.dart';
-
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:http/http.dart' as http;
-import 'package:html/parser.dart';
-
-import 'package:assets_audio_player/assets_audio_player.dart';
-
-import 'package:flutter/rendering.dart';
-
-import 'package:auditory/Services/Interceptor.dart' as postreq;
-
 import 'Profiles/EpisodeView.dart';
 
 enum PlayerState { stopped, playing, paused }
@@ -155,15 +143,15 @@ class _ClipsState extends State<Clips> {
 
     super.initState();
 
-    _pageController.addListener(() {
-      if (currentIndex == snippets.length - 1) {
-        if (selectedCategory == 30) {
-          getAllSnippetsWOCategory();
-        } else {
-          getAllSnippets(selectedCategory);
-        }
-      }
-    });
+    // _pageController.addListener(() {
+    //   if (currentIndex == snippets.length - 1) {
+    //     if (selectedCategory == 30) {
+    //       getAllSnippetsWOCategory();
+    //     } else {
+    //       getAllSnippets(selectedCategory);
+    //     }
+    //   }
+    // });
   }
 
   @override
@@ -393,6 +381,14 @@ class _ClipsState extends State<Clips> {
                           currentIndex = index;
                         });
                         audioPlayer.open(Audio.network(snippets[index]['url']));
+                        if (index == snippets.length - 1) {
+                          if (selectedCategory == 30) {
+                            getAllSnippetsWOCategory();
+                          } else {
+                            getAllSnippets(selectedCategory);
+                          }
+                        }
+
                       },
                       pageSnapping: true,
                       controller: _pageController,
@@ -597,8 +593,8 @@ class _SwipeCardState extends State<SwipeCard> {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Container(
         decoration: BoxDecoration(
-            gradient:
-                LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
+            // gradient:
+            //     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
             borderRadius: BorderRadius.circular(10),
             color: Color(0xff222222)),
         child: Padding(

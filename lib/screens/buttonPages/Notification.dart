@@ -1,21 +1,19 @@
 import 'dart:convert';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 
 import 'settings/Theme-.dart';
 
@@ -80,6 +78,58 @@ class _NotificationPageState extends State<NotificationPage>
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  void navigate(var notificationObject) {
+    switch (notificationObject['type']) {
+      case 'episode_published':
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: notificationObject['episode_id'],
+          );
+        }));
+        break;
+      case "new_episode":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: notificationObject['episode_id'],
+          );
+        }));
+        break;
+      case "new_podcast":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PodcastView(
+            notificationObject['podcast_id'],
+          );
+        }));
+        break;
+      case "comment_episode":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: notificationObject['episode_id'],
+          );
+        }));
+        break;
+      case "comment_reply":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return EpisodeView(
+            episodeId: notificationObject['episode_id'],
+          );
+        }));
+        break;
+      case "followed_podcast":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PodcastView(
+            notificationObject['podcast_id'],
+          );
+        }));
+        break;
+      case "followed_user":
+        Navigator.push(context, CupertinoPageRoute(builder: (context) {
+          return PublicProfile(userId: notificationObject['user_id']);
+        }));
+        break;
     }
   }
 
@@ -215,46 +265,58 @@ class _NotificationPageState extends State<NotificationPage>
                           child: ListTile(
                             onTap: () {
                               readNotification(v['id']);
-                              if (v['data']['episode_id'] != null)
-                                Navigator.push(context,
-                                    CupertinoPageRoute(builder: (context) {
-                                  return EpisodeView(
-                                    episodeId: v['data']['episode_id'],
-                                  );
-                                }));
+                              navigate(v['data']);
                             },
-                            leading: Container(
-                              height: 40,
-                              width: 40,
-                              child: CachedNetworkImage(
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover),
-                                    ),
-                                    height: 40,
-                                    width: 40,
-                                  );
-                                },
-                                imageUrl: v['data']['image'] == null
-                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                    : v['data']['image'],
-                                fit: BoxFit.cover,
-                                // memCacheHeight:
-                                //     MediaQuery.of(
-                                //             context)
-                                //         .size
-                                //         .width
-                                //         .ceil(),
-                                memCacheHeight:
-                                    MediaQuery.of(context).size.height.floor(),
+                            leading: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: Text(
+                                    "•",
+                                    style: TextStyle(
+                                        color: v['isread'] == true
+                                            ? Colors.transparent
+                                            : Colors.blue),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  child: CachedNetworkImage(
+                                    imageBuilder: (context, imageProvider) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover),
+                                        ),
+                                        height: 40,
+                                        width: 40,
+                                      );
+                                    },
+                                    imageUrl: v['data']['image'] == null
+                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                        : v['data']['image'],
+                                    fit: BoxFit.cover,
+                                    // memCacheHeight:
+                                    //     MediaQuery.of(
+                                    //             context)
+                                    //         .size
+                                    //         .width
+                                    //         .ceil(),
+                                    memCacheHeight: MediaQuery.of(context)
+                                        .size
+                                        .height
+                                        .floor(),
 
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                              ),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                  ),
+                                ),
+                              ],
                             ),
                             title: Text(
                               v['title'],
