@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/Services/EmailVerificationDialog.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
@@ -10,6 +9,7 @@ import 'package:auditory/screens/LoginSignup/Auth.dart';
 import 'package:auditory/screens/LoginSignup/WelcomeScreen.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -18,7 +18,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -37,9 +36,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Home.dart';
 import '../RewardsScreen.dart';
-import '../RouteAnimation.dart';
 import 'Bio.dart';
-import 'Downloads.dart';
 import 'Settings.dart';
 
 class SecondScreen extends StatelessWidget {
@@ -639,12 +636,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                    "Your Podcasts",
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 5),
+                                  ListTile(
+                                    title: Text(
+                                      "Your Podcasts",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4),
+                                    ),
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height /
@@ -654,8 +654,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       children: [
                                         for (var v in podcastList)
                                           Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                15, 8, 0, 8),
+                                            padding:
+                                                const EdgeInsets.only(left: 5),
                                             child: InkWell(
                                               onTap: () {
                                                 Navigator.push(context,
@@ -744,8 +744,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           ),
 
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              15, 8, 0, 8),
+                                          padding:
+                                              const EdgeInsets.only(left: 5),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -1044,6 +1044,40 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   size: 15),
                               subtitle: Text(
                                 "Check your rewards",
+                                textScaleFactor: mediaQueryData.textScaleFactor
+                                    .clamp(0.5, 0.8)
+                                    .toDouble(),
+                                style: TextStyle(
+                                    //       color: Colors.white70,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.4),
+                              ),
+                            ),
+                            ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) => PublicProfile(
+                                            userId:
+                                                prefs.getString("userId"))));
+                              },
+                              title: Text(
+                                "Public Profile",
+                                textScaleFactor: mediaQueryData.textScaleFactor
+                                    .clamp(0.5, 1.5)
+                                    .toDouble(),
+                                style: TextStyle(
+                                    //  color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 4),
+                              ),
+                              trailing: Icon(Icons.arrow_forward_ios_rounded,
+                                  size: 15),
+                              subtitle: Text(
+                                "See how others see you",
                                 textScaleFactor: mediaQueryData.textScaleFactor
                                     .clamp(0.5, 0.8)
                                     .toDouble(),
