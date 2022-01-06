@@ -175,7 +175,7 @@ class _ClipsState extends State<Clips> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page";
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&pageSize=50";
     print(url);
 
     try {
@@ -210,7 +210,7 @@ class _ClipsState extends State<Clips> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&category_id=$categoryId";
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&category_id=$categoryId&pageSize=50";
     print(url);
 
     try {
@@ -388,7 +388,6 @@ class _ClipsState extends State<Clips> {
                             getAllSnippets(selectedCategory);
                           }
                         }
-
                       },
                       pageSnapping: true,
                       controller: _pageController,
