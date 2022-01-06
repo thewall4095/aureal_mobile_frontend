@@ -141,60 +141,68 @@ class _MiniTranscriptState extends State<MiniTranscript>
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: transcript == null
-          ? SizedBox()
-          : Padding(
-              padding: const EdgeInsets.all(20),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) {
-                    print(transcript);
-                    print(transcript.runtimeType);
-                    return TrancriptionPlayer(
-                      transcript: transcript,
-                    );
-                  }));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color(0xff161616),
-                  ),
-                  height: MediaQuery.of(context).size.height / 4,
-                  width: double.infinity,
-                  child: Padding(
+      child: ListView(
+        children: [
+          Center(
+            child: transcript == null
+                ? SizedBox()
+                : Padding(
                     padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: SizeConfig.safeBlockHorizontal * 4),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (context) {
+                          print(transcript);
+                          print(transcript.runtimeType);
+                          return TrancriptionPlayer(
+                            transcript: transcript,
+                          );
+                        }));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xff161616),
+                        ),
+                        height: MediaQuery.of(context).size.height / 4,
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4,
+                                      color: Colors.white.withOpacity(0.5)),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                color: Colors.white.withOpacity(0.5)),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
+          ),
+        ],
+      ),
     );
   }
 
