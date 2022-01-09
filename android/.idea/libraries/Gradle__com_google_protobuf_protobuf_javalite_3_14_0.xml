@@ -5,8 +5,10 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-javalite/3.14.0/103d81b0e91d865fb52d45aee894ba04075fa1e2/protobuf-javalite-3.14.0-javadoc.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-javalite/3.14.0/103d81b0e91d865fb52d45aee894ba04075fa1e2/protobuf-javalite-3.14.0-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-javalite/3.14.0/4064303b90e583ac5fc477416ec82586f0670d4c/protobuf-javalite-3.14.0-sources.jar!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-javalite/3.14.0/4064303b90e583ac5fc477416ec82586f0670d4c/protobuf-javalite-3.14.0-sources.jar!/" />
     </SOURCES>
   </library>
