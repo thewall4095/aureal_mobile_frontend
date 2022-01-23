@@ -17,48 +17,198 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
-import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/foundation/diagnostics.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:social_share/social_share.dart';
-import 'dart:math' as math;
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import '../Clips.dart';
-import '../FollowingPage.dart';
-import '../Home.dart';
+
 import 'PlayerElements/Seekbar.dart';
-import 'package:screenshot/screenshot.dart';
 
 enum PlayerState { stopped, playing, paused }
 
 extension Pipe<T> on T {
   R pipe<R>(R f(T t)) => f(this);
+}
+
+class MiniTranscript extends StatefulWidget {
+  final episodeId;
+
+  MiniTranscript({@required this.episodeId});
+
+  @override
+  _MiniTranscriptState createState() => _MiniTranscriptState();
+}
+
+class _MiniTranscriptState extends State<MiniTranscript>
+    with AutomaticKeepAliveClientMixin {
+  var transcript;
+
+  void Transcription() async {
+    String url =
+        "https://api.aureal.one/public/getTranscription?episode_id=${widget.episodeId}";
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print(url);
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        setState(() {
+          transcript = jsonDecode(response.body)['data']['transcription'];
+        });
+        print(transcript);
+        print(transcript.runtimeType);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  int currentIndex = 0;
+  ItemScrollController itemScrollController;
+  ItemPositionsListener itemPositionsListener;
+
+  void init() {
+    Transcription();
+
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    episodeObject.audioPlayer.currentPosition.listen((event) {
+      var currentPositionSeconds = event.inMilliseconds / 1000;
+      if (transcript != null && transcript.length > 0) {
+        // print(event.inMilliseconds / 1000);
+        // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+        // setState(() {
+        if (transcript != null && transcript.length > 0) {
+          var count = (transcript.indexWhere((element) =>
+              element['start_time'] < currentPositionSeconds &&
+              element['end_time'] > currentPositionSeconds));
+          if (count >= 0) {
+            print(count);
+
+            setState(() {
+              currentIndex = count;
+            });
+
+            itemScrollController.jumpTo(
+              index: count,
+              // curve: Curves.easeInCirc,
+            );
+          }
+        }
+      }
+    });
+
+    itemScrollController = ItemScrollController();
+    itemPositionsListener = ItemPositionsListener.create();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    init();
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant MiniTranscript oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if (widget.episodeId != oldWidget.episodeId) {
+      init();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView(
+        children: [
+          Center(
+            child: transcript == null
+                ? SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(context,
+                            CupertinoPageRoute(builder: (context) {
+                          print(transcript);
+                          print(transcript.runtimeType);
+                          return TrancriptionPlayer(
+                            transcript: transcript,
+                          );
+                        }));
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xff161616),
+                        ),
+                        height: MediaQuery.of(context).size.height / 4,
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 4,
+                                      color: Colors.white.withOpacity(0.5)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class Player extends StatefulWidget {
@@ -108,11 +258,12 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
 
   TabController _tabController;
 
-  void Transcription(episode_id) async {
+  void Transcription() async {
+    var playerState = Provider.of<PlayerChange>(context, listen: false);
     String url =
-        "https://api.aureal.one/public/getTranscription?episode_id=${episode_id}";
+        "https://api.aureal.one/public/getTranscription?episode_id=${playerState.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id}";
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("sfjkab");
+
     print(url);
     try {
       http.Response response = await http.get(Uri.parse(url));
@@ -300,32 +451,32 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
     getEpisode(context);
     print('abc');
     print(episodeObject.id);
-    Transcription(episodeObject.id);
-    episodeObject.audioPlayer.currentPosition.listen((event) {
-      var currentPositionSeconds = event.inMilliseconds / 1000;
-      if (transcript != null && transcript.length > 0) {
-        // print(event.inMilliseconds / 1000);
-        // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
-        // setState(() {
-        if (transcript != null && transcript.length > 0) {
-          var count = (transcript.indexWhere((element) =>
-              element['start_time'] < currentPositionSeconds &&
-              element['end_time'] > currentPositionSeconds));
-          if (count >= 0) {
-            print(count);
-
-            setState(() {
-              currentIndex = count;
-            });
-
-            itemScrollController.jumpTo(
-              index: count,
-              // curve: Curves.easeInCirc,
-            );
-          }
-        }
-      }
-    });
+    // Transcription();
+    // episodeObject.audioPlayer.currentPosition.listen((event) {
+    //   var currentPositionSeconds = event.inMilliseconds / 1000;
+    //   if (transcript != null && transcript.length > 0) {
+    //     // print(event.inMilliseconds / 1000);
+    //     // print(transcript.indexWhere((element) => element['start_time'] < currentPositionSeconds && element['end_time'] > currentPositionSeconds));
+    //     // setState(() {
+    //     if (transcript != null && transcript.length > 0) {
+    //       var count = (transcript.indexWhere((element) =>
+    //           element['start_time'] < currentPositionSeconds &&
+    //           element['end_time'] > currentPositionSeconds));
+    //       if (count >= 0) {
+    //         print(count);
+    //
+    //         setState(() {
+    //           currentIndex = count;
+    //         });
+    //
+    //         itemScrollController.jumpTo(
+    //           index: count,
+    //           // curve: Curves.easeInCirc,
+    //         );
+    //       }
+    //     }
+    //   }
+    // });
 
     // episodeObject.audioPlayer.currentPosition.listen((event) {
     //   if (episodeObject.audioPlayer.currentPosition.value ==
@@ -1909,77 +2060,6 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                               ],
                                             ),
                                           ),
-                                          // transcript == null
-                                          //     ? SizedBox()
-                                          //     : Padding(
-                                          //         padding: const EdgeInsets.all(20),
-                                          //         child: GestureDetector(
-                                          //           onTap: () {
-                                          //             Navigator.push(context,
-                                          //                 CupertinoPageRoute(
-                                          //                     builder: (context) {
-                                          //               print(transcript);
-                                          //               print(transcript.runtimeType);
-                                          //               return TrancriptionPlayer(
-                                          //                 transcript: transcript,
-                                          //               );
-                                          //             }));
-                                          //           },
-                                          //           child: Container(
-                                          //             decoration: BoxDecoration(
-                                          //               borderRadius:
-                                          //                   BorderRadius.circular(10),
-                                          //               color: Color(0xff161616),
-                                          //             ),
-                                          //             height: MediaQuery.of(context)
-                                          //                     .size
-                                          //                     .height /
-                                          //                 4,
-                                          //             width: double.infinity,
-                                          //             child: Padding(
-                                          //               padding: const EdgeInsets.all(20),
-                                          //               child: Column(
-                                          //                 crossAxisAlignment:
-                                          //                     CrossAxisAlignment.start,
-                                          //                 mainAxisAlignment:
-                                          //                     MainAxisAlignment.center,
-                                          //                 children: [
-                                          //                   Padding(
-                                          //                     padding:
-                                          //                         const EdgeInsets.all(
-                                          //                             8.0),
-                                          //                     child: Text(
-                                          //                       "${transcript[currentIndex]['msg'].toString().trimLeft().trimRight()}",
-                                          //                       textScaleFactor: 1.0,
-                                          //                       style: TextStyle(
-                                          //                           color: Colors.white,
-                                          //                           fontSize: SizeConfig
-                                          //                                   .safeBlockHorizontal *
-                                          //                               4),
-                                          //                     ),
-                                          //                   ),
-                                          //                   Padding(
-                                          //                     padding:
-                                          //                         const EdgeInsets.all(
-                                          //                             8.0),
-                                          //                     child: Text(
-                                          //                       "${transcript[currentIndex + 1]['msg'].toString().trimLeft().trimRight()}",
-                                          //                       textScaleFactor: 1.0,
-                                          //                       style: TextStyle(
-                                          //                           fontSize: SizeConfig
-                                          //                                   .safeBlockHorizontal *
-                                          //                               4,
-                                          //                           color: Colors.white
-                                          //                               .withOpacity(
-                                          //                                   0.5)),
-                                          //                     ),
-                                          //                   ),
-                                          //                 ],
-                                          //               ),
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
                                           SizedBox(
                                             height: 50,
                                           ),
@@ -2124,7 +2204,10 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                     );
                   },
                 ),
-                Container(),
+                MiniTranscript(
+                  episodeId: episodeObject.audioPlayer.realtimePlayingInfos
+                      .valueOrNull.current.audio.audio.metas.id,
+                ),
                 episodeObject.audioPlayer.builderCurrent(
                     builder: (context, Playing playing) {
                   return Related(
@@ -3180,9 +3263,8 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
         title: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CachedNetworkImage(
-            imageUrl: episodeObject.episodeObject['image'] == null
-                ? episodeObject.episodeObject['podcast_image']
-                : episodeObject.episodeObject['image'],
+            imageUrl: episodeObject
+                .audioPlayer.current.value.audio.audio.metas.image.path,
             imageBuilder: (context, imageProvider) {
               return Container(
                 decoration: BoxDecoration(
@@ -3195,7 +3277,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
             },
           ),
           title: Text(
-            '${episodeObject.episodeName}',
+            '${episodeObject.audioPlayer.current.value.audio.audio.metas.title}',
             maxLines: 2,
             textScaleFactor: 1.0,
             overflow: TextOverflow.ellipsis,
@@ -3204,7 +3286,7 @@ class _TrancriptionPlayerState extends State<TrancriptionPlayer> {
                 fontWeight: FontWeight.bold),
           ),
           subtitle: Text(
-            "${episodeObject.episodeObject['podcast_name']}",
+            "${episodeObject.audioPlayer.current.value.audio.audio.metas.album}",
           ),
         ),
         actions: [
