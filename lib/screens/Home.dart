@@ -166,7 +166,7 @@ class _HomeState extends State<Home> {
   Widget _createPage(BuildContext context, int index) {
     switch (index) {
       case 0:
-        return FollowingPage();
+        return Feed();
         break;
 
       case 1:

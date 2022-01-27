@@ -221,13 +221,17 @@ class _UserCategoriesState extends State<UserCategories> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         'https://api.aureal.one/public/getCategory?user_id=${prefs.getString('userId')}';
+    print(url);
     try {
       http.Response response = await http.get(Uri.parse(url));
       // print(response.body);
       if (response.statusCode == 200) {
+
         setState(() {
+
           userselectedCategories =
               jsonDecode(response.body)['Categories_you_like'];
+          availableCategories = jsonDecode(response.body)['Rest_all_categories'];
         });
       }
     } catch (e) {
@@ -265,14 +269,16 @@ class _UserCategoriesState extends State<UserCategories> {
     map['Categories_you_like'] = key;
 
     FormData formData = FormData.fromMap(map);
+    print(map);
 
     try {
       var response = await intercept.postRequest(formData, url);
       print(response);
-      Navigator.pop(context);
+
     } catch (e) {
       print(e);
     }
+    Navigator.pop(context);
   }
 
   @override
@@ -307,8 +313,7 @@ class _UserCategoriesState extends State<UserCategories> {
 
   @override
   Widget build(BuildContext context) {
-    print(userselectedCategories);
-    print(availableCategories);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -357,38 +362,69 @@ class _UserCategoriesState extends State<UserCategories> {
           Expanded(
             child: availableCategories.length == 0
                 ? Container()
-                : ListView.builder(
-                    itemCount: _icons.length,
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemBuilder: (context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ListTile(
-                          onTap: () {
-                            setState(() {
-                              if (userselectedCategories
-                                  .contains(availableCategories[index]['id'])) {
-                                userselectedCategories
-                                    .remove(availableCategories[index]['id']);
-                              } else {
-                                userselectedCategories
-                                    .add(availableCategories[index]['id']);
-                              }
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          selectedTileColor: Color(0xff222222),
-                          selected: userselectedCategories
-                              .toSet()
-                              .toList()
-                              .contains(availableCategories[index]['id']),
-                          leading: Icon(_icons[index]),
-                          title: Text("${availableCategories[index]['name']}"),
-                        ),
-                      );
-                    }),
+                // : ListView.builder(
+                //     itemCount: _icons.length,
+                //     scrollDirection: Axis.vertical,
+                //     shrinkWrap: true,
+                //     itemBuilder: (context, int index) {
+                //       return Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: ListTile(
+                //           onTap: () {
+                //             setState(() {
+                //               if (userselectedCategories
+                //                   .contains(availableCategories[index]['id'])) {
+                //                 userselectedCategories
+                //                     .remove(availableCategories[index]['id']);
+                //               } else {
+                //                 userselectedCategories
+                //                     .add(availableCategories[index]['id']);
+                //               }
+                //             });
+                //           },
+                //           shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(8)),
+                //           selectedTileColor: Color(0xff222222),
+                //           selected: userselectedCategories
+                //               .toSet()
+                //               .toList()
+                //               .contains(availableCategories[index]['id']),
+                //           leading: Icon(_icons[index]),
+                //           title: Text("${availableCategories[index]['name']}"),
+                //         ),
+                //       );
+                //     }),
+            :ListView(
+              children: [
+                for(var v in availableCategories)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    onTap: () {
+                      setState(() {
+                        if (userselectedCategories
+                            .contains(v['id'])) {
+                          userselectedCategories
+                              .remove(v['id']);
+                        } else {
+                          userselectedCategories
+                              .add(v['id']);
+                        }
+                      });
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    selectedTileColor: Color(0xff222222),
+                    selected: userselectedCategories
+                        .toSet()
+                        .toList()
+                        .contains(v['id']),
+                    // leading: Icon(_icons[index]),
+                    title: Text("${v['name']}"),
+                  ),
+                )
+              ],
+            )
           ),
           Container(
             color: Color(0xff161616),
