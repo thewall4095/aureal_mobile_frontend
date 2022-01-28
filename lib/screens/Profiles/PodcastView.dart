@@ -2018,7 +2018,7 @@ class _PodcastViewState extends State<PodcastView>
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    // x
+
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             15),
