@@ -20,6 +20,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
@@ -30,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
+import 'Clips.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/VideoPlayer.dart';
 import 'Profiles/CategoryView.dart';
@@ -1487,12 +1489,66 @@ class SnippetWidget extends StatelessWidget {
                   child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: SizeConfig.blockSizeVertical * 32,
-                        width: MediaQuery.of(context).size.width /2,
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(5)
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, CupertinoPageRoute(builder: (context){
+                            return SnippetStoryView(data: snapshot.data,  index: index,);
+                          }));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: Stack(
+                            children: [
+                              Container(
+                                foregroundDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                  ),
+                                ),
+
+                                decoration: BoxDecoration(
+
+                                  borderRadius: BorderRadius.circular(5),
+
+                                  image: DecorationImage(
+                                      image: CachedNetworkImageProvider(
+                                          snapshot.data[index]['podcast_image']),
+                                      fit: BoxFit.cover),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ListTile(
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text("${snapshot.data[index]['episode_name']}", maxLines:  2, style: TextStyle(fontWeight: FontWeight.bold),),
+                                        subtitle: Text("${snapshot.data[index]['podcast_name']}", maxLines: 1,),
+                                      )
+
+
+                                    ],
+                                  ),
+                                ),
+                              )
+                              // ClipRect(
+                              //   child: BackdropFilter(
+                              //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                              //     child: Container(
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(10),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+
+                              ],
+
+                          ),
                         ),
                       ),
                     );
@@ -1515,6 +1571,77 @@ class SnippetWidget extends StatelessWidget {
     );
   }
 }
+
+class SnippetStoryView extends StatefulWidget {
+
+  final data;
+  int index;
+
+  SnippetStoryView({@required this.data, this.index});
+
+  @override
+  _SnippetStoryViewState createState() => _SnippetStoryViewState();
+}
+
+class _SnippetStoryViewState extends State<SnippetStoryView> {
+
+  PageController _pageController ;
+
+
+  AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
+  int currentIndex;
+
+  @override
+  void initState() {
+    _pageController =
+        PageController(viewportFraction: 1.0, keepPage: true, initialPage: widget.index);
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    audioplayer.stop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: PageView.builder(
+        scrollDirection: Axis.vertical,
+          itemCount: widget.data.length,
+          pageSnapping: true,
+          controller: _pageController,
+          // onPageChanged: (index) {
+          //   if (index == snippets.length - 1) {
+          //     if (selectedCategory == 30) {
+          //       getAllSnippetsWOCategory();
+          //     } else {
+          //       getAllSnippets(selectedCategory);
+          //     }
+          //   }
+          // },
+          itemBuilder: (context, int index) {
+            currentIndex = index;
+            return SwipeCard(
+              clipObject: widget.data[index],
+              audioPlayer: audioplayer,
+            );
+          }),
+    );
+  }
+}
+
+
 
 
 

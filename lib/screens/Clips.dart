@@ -368,6 +368,7 @@ class _ClipsState extends State<Clips> {
             ];
           },
           body: PageView.builder(
+            scrollDirection: Axis.vertical,
               itemCount: snippets.length,
               pageSnapping: true,
               controller: _pageController,
@@ -579,220 +580,225 @@ class _SwipeCardState extends State<SwipeCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+
+            // gradient:
+            //     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+                image: CachedNetworkImageProvider(
+                    widget.clipObject['podcast_image']),
+                fit: BoxFit.cover),
+          ),
+        ),
+        ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
               decoration: BoxDecoration(
-                // gradient:
-                //     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                        widget.clipObject['podcast_image']),
-                    fit: BoxFit.cover),
               ),
             ),
           ),
-          ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(1.0),
+            gradient: LinearGradient(
+                colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
             ),
           ),
-          Center(
-            child: Container(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            height: MediaQuery.of(context).size.width * 0.6,
-                          );
-                        },
-                        memCacheHeight:
-                            (MediaQuery.of(context).size.hashCode / 2).floor(),
-                        imageUrl: widget.clipObject['podcast_image'],
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            height: MediaQuery.of(context).size.width * 0.6,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover)),
-                          );
-                        },
-                      ),
+        ),
+
+        Center(
+          child: Container(
+
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: CachedNetworkImage(
+                      placeholder: (context, url) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          height: MediaQuery.of(context).size.width * 0.6,
+                        );
+                      },
+                      memCacheHeight:
+                          (MediaQuery.of(context).size.hashCode / 2).floor(),
+                      imageUrl: widget.clipObject['podcast_image'],
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          height: MediaQuery.of(context).size.width * 0.6,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover)),
+                        );
+                      },
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            "${widget.clipObject['episode_name']}",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xffe8e8e8)),
-                          ),
-                          subtitle: Text(
-                            "${widget.clipObject['podcast_name']}",
-                            style: TextStyle(
-                              color: Color(0xffe8e8e8),
-                            ),
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          "${widget.clipObject['episode_name']}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xffe8e8e8)),
+                        ),
+                        subtitle: Text(
+                          "${widget.clipObject['podcast_name']}",
+                          style: TextStyle(
+                            color: Color(0xffe8e8e8),
                           ),
                         ),
-                        ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    widget.audioPlayer
-                                        .builderRealtimePlayingInfos(
-                                            builder: (context, infos) {
-                                      if (infos.isPlaying == true) {
-                                        return InkWell(
-                                            onTap: () {
-                                              widget.audioPlayer.pause();
-                                            },
-                                            child: Icon(
-                                                Icons.pause_circle_filled,
-                                                color: Color(0xffe8e8e8)));
-                                      }
-                                      if (infos.isBuffering == true) {
-                                        return SizedBox(
-                                            width: 15,
-                                            height: 15,
-                                            child: CircularProgressIndicator(
-                                              color: Color(0xffe8e8e8),
-                                              strokeWidth: 1,
-                                            ));
-                                      } else {
-                                        return InkWell(
-                                            onTap: () {
-                                              widget.audioPlayer.play();
-                                            },
-                                            child: Icon(Icons.play_circle_fill,
-                                                color: Color(0xffe8e8e8)));
-                                      }
-                                    }),
-                                    // Text(
-                                    //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
-                                  ],
+                      ),
+                      ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  widget.audioPlayer
+                                      .builderRealtimePlayingInfos(
+                                          builder: (context, infos) {
+                                    if (infos.isPlaying == true) {
+                                      return InkWell(
+                                          onTap: () {
+                                            widget.audioPlayer.pause();
+                                          },
+                                          child: Icon(
+                                              Icons.pause_circle_filled,
+                                              color: Color(0xffe8e8e8)));
+                                    }
+                                    if (infos.isBuffering == true) {
+                                      return SizedBox(
+                                          width: 15,
+                                          height: 15,
+                                          child: CircularProgressIndicator(
+                                            color: Color(0xffe8e8e8),
+                                            strokeWidth: 1,
+                                          ));
+                                    } else {
+                                      return InkWell(
+                                          onTap: () {
+                                            widget.audioPlayer.play();
+                                          },
+                                          child: Icon(Icons.play_circle_fill,
+                                              color: Color(0xffe8e8e8)));
+                                    }
+                                  }),
+                                  // Text(
+                                  //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return EpisodeView(
+                                        episodeId:
+                                            widget.clipObject['episode_id']);
+                                  }));
+                                },
+                                child: Text(
+                                  "CONTINUE LISTENING",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      color: Color(0xffe8e8e8),
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              2.5,
+                                      fontWeight: FontWeight.w600),
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(context,
-                                        CupertinoPageRoute(builder: (context) {
-                                      return EpisodeView(
-                                          episodeId:
-                                              widget.clipObject['episode_id']);
-                                    }));
-                                  },
-                                  child: Text(
-                                    "CONTINUE LISTENING",
+                              )
+                            ],
+                          ),
+                          subtitle: widget.audioPlayer
+                              .builderRealtimePlayingInfos(
+                                  builder: (context, infos) {
+                            if (infos != null) {
+                              return ClipSeekBar(
+                                  currentPosition: infos.currentPosition,
+                                  duration: infos.duration,
+                                  audioplayer: widget.audioPlayer);
+                            } else {
+                              return SizedBox();
+                            }
+                          })),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                              onTap: () {
+                                setState(() {
+                                  isLiked = !isLiked;
+                                });
+                                like();
+                              },
+                              child: isLiked == true
+                                  ? Icon(
+                                      FontAwesomeIcons.solidHeart,
+                                      color: Colors.red,
+                                    )
+                                  : Icon(LineIcons.heart,
+                                      color: Color(0xffe8e8e8))),
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                ifFollowed = true;
+                              });
+                              follow();
+                            },
+                            child: ifFollowed == true
+                                ? Text(
+                                    "SUBSCRIBED",
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                         color: Color(0xffe8e8e8),
+                                        fontWeight: FontWeight.w700,
                                         fontSize:
                                             SizeConfig.safeBlockHorizontal *
-                                                2.5,
-                                        fontWeight: FontWeight.w600),
+                                                3),
+                                  )
+                                : Text(
+                                    "SUBSCRIBE",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                        color: Color(0xffe8e8e8),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal *
+                                                3),
                                   ),
-                                )
-                              ],
-                            ),
-                            subtitle: widget.audioPlayer
-                                .builderRealtimePlayingInfos(
-                                    builder: (context, infos) {
-                              if (infos != null) {
-                                return ClipSeekBar(
-                                    currentPosition: infos.currentPosition,
-                                    duration: infos.duration,
-                                    audioplayer: widget.audioPlayer);
-                              } else {
-                                return SizedBox();
-                              }
-                            })),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    isLiked = !isLiked;
-                                  });
-                                  like();
-                                },
-                                child: isLiked == true
-                                    ? Icon(
-                                        FontAwesomeIcons.solidHeart,
-                                        color: Colors.red,
-                                      )
-                                    : Icon(LineIcons.heart,
-                                        color: Color(0xffe8e8e8))),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  ifFollowed = true;
-                                });
-                                follow();
-                              },
-                              child: ifFollowed == true
-                                  ? Text(
-                                      "SUBSCRIBED",
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                          color: Color(0xffe8e8e8),
-                                          fontWeight: FontWeight.w700,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3),
-                                    )
-                                  : Text(
-                                      "SUBSCRIBE",
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                          color: Color(0xffe8e8e8),
-                                          fontWeight: FontWeight.w700,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3),
-                                    ),
-                            ),
-                            // Icon(Icons.ios_share, color: Color(0xffe8e8e8))
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                          ),
+                          // Icon(Icons.ios_share, color: Color(0xffe8e8e8))
+                        ],
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
