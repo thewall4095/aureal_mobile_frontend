@@ -250,7 +250,7 @@ class _SettingsState extends State<Settings> {
                         trailing:     Icon(Icons.arrow_forward_ios_rounded, size: 15),
                         subtitle:
                         Text(
-                                      "Let us know if you see anything troubling",
+                                      "Let us know if you see any bug",
                                       textScaleFactor: mediaQueryData
                                           .textScaleFactor
                                           .clamp(0.5, 0.8)
@@ -269,7 +269,7 @@ class _SettingsState extends State<Settings> {
                         Navigator.push(
                             context,
                             CupertinoPageRoute(
-                                builder: (context) => UserCategories()));
+                                builder: (context) => OnboardingCategories()));
                       },
                       title:   Text(
                         "Categories",

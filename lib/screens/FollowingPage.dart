@@ -10,6 +10,7 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/Share.dart';
@@ -1012,7 +1013,7 @@ class PodcastWidget extends StatelessWidget {
         }catch(e){
           return Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
@@ -1035,7 +1036,9 @@ class PodcastWidget extends StatelessWidget {
                     MediaQuery.of(context).size.height *
                         0.17),
                 child: ListView.builder(
+
                   addAutomaticKeepAlives: true,
+
                   itemCount: 10,
                   itemBuilder: (context, int index){
                     return Padding(
@@ -1224,99 +1227,106 @@ class PlaylistWidget extends StatelessWidget {
                         padding:
                         const EdgeInsets.fromLTRB(
                             15, 0, 0, 8),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              int.parse(snapshot.data[index]['episodes_count']) <= 4 ? CachedNetworkImage(imageUrl: snapshot.data[index]['episodes_images'][0], imageBuilder: (context, imageProvider){
-                                return Container(
-                                  height: MediaQuery.of(context).size.width / 3,
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: imageProvider, fit: BoxFit.cover
-                                      )
-                                  ),
-                                );
-                              },) : Container(child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      CachedNetworkImage(
-                                        imageBuilder: (context, imageProvider){
-                                          return Container(
-                                            height: MediaQuery.of(context).size.width / 6,
-                                            width: MediaQuery.of(context).size.width / 6,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover
-                                                )
-                                            ),
-                                          );
-                                        },
-                                        imageUrl: snapshot.data[index]['episodes_images'][0],
-                                      ),
-                                      CachedNetworkImage(
-                                        imageBuilder: (context, imageProvider){
-                                          return Container(
-                                            height: MediaQuery.of(context).size.width / 6,
-                                            width: MediaQuery.of(context).size.width / 6,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover
-                                                )
-                                            ),
-                                          );
-                                        },
-                                        imageUrl: snapshot.data[index]['episodes_images'][1],
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      CachedNetworkImage(
-                                        imageBuilder: (context, imageProvider){
-                                          return Container(
-                                            height: MediaQuery.of(context).size.width / 6,
-                                            width: MediaQuery.of(context).size.width / 6,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover
-                                                )
-                                            ),
-                                          );
-                                        },
-                                        imageUrl: snapshot.data[index]['episodes_images'][2],
-                                      ),
-                                      CachedNetworkImage(
-                                        imageBuilder: (context, imageProvider){
-                                          return Container(
-                                            height: MediaQuery.of(context).size.width / 6,
-                                            width: MediaQuery.of(context).size.width / 6,
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.cover
-                                                )
-                                            ),
-                                          );
-                                        },
-                                        imageUrl: snapshot.data[index]['episodes_images'][3],
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
-                              )
-                            ],
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, CupertinoPageRoute(builder: (context){
+                              return PlaylistView(playlistId: snapshot.data[index]['id']);
+                            }));
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                int.parse(snapshot.data[index]['episodes_count']) <= 4 ? CachedNetworkImage(imageUrl: snapshot.data[index]['episodes_images'][0], imageBuilder: (context, imageProvider){
+                                  return Container(
+                                    height: MediaQuery.of(context).size.width / 3,
+                                    width: MediaQuery.of(context).size.width / 3,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider, fit: BoxFit.cover
+                                        )
+                                    ),
+                                  );
+                                },) : Container(child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][0],
+                                        ),
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][1],
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][2],
+                                        ),
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][3],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 5),
+                                  child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -1558,13 +1568,73 @@ class SnippetWidget extends StatelessWidget {
             ),
           );
         }else{
-          return Container(
-            height: SizeConfig.blockSizeVertical * 32,
-            constraints:  BoxConstraints(
-                minHeight:
-                MediaQuery.of(context).size.height *
-                    0.17),
-            color: Colors.blue,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Text("${data['name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5, fontWeight: FontWeight.bold),),
+              ),
+              Container(
+                height: SizeConfig.blockSizeVertical * 32,
+                constraints:  BoxConstraints(
+                    minHeight:
+                    MediaQuery.of(context).size.height *
+                        0.17),
+
+                child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, CupertinoPageRoute(builder: (context){
+                          return SnippetStoryView(data: snapshot.data,  index: index,);
+                        }));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Stack(
+                          children: [
+                            Container(
+                              foregroundDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                gradient: LinearGradient(
+                                    colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                ),
+                              ),
+
+                              decoration: BoxDecoration(
+                                color: Color(0xff222222),
+
+                                borderRadius: BorderRadius.circular(5),
+
+
+                              ),
+                            ),
+
+                            // ClipRect(
+                            //   child: BackdropFilter(
+                            //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                            //     child: Container(
+                            //       decoration: BoxDecoration(
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+
+                          ],
+
+                        ),
+                      ),
+                    ),
+                  );
+                }, itemCount: 10 ,),
+
+              ),
+
+            ],
           );
         }
       },
