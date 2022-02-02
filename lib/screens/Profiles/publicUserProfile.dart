@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/buttonPages/Bio.dart';
+import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'dart:io';
@@ -34,6 +36,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
 import '../Clips.dart';
+import '../RewardsScreen.dart';
 import 'Comments.dart';
 import 'PodcastView.dart';
 
@@ -184,6 +187,7 @@ class _PublicProfileState extends State<PublicProfile>
   SharedPreferences prefs;
 
   Widget bodyContainer() {
+    final mediaQueryData = MediaQuery.of(context);
     return Container(
       color: Color(0xff161616),
       child: Column(
@@ -194,171 +198,309 @@ class _PublicProfileState extends State<PublicProfile>
                 gradient: LinearGradient(
                     colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
           ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: userData['img'] == null
-                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                              : userData['img'],
-                          imageBuilder: (context, imageProvider) {
-                            return Container(
-                              height: MediaQuery.of(context).size.width / 5,
-                              width: MediaQuery.of(context).size.width / 5,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Colors.blueAccent, width: 2),
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover)),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${userData['fullname']}",
-                              style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            Text("@${userData['username']}"),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: InkWell(
-                                onTap: () {
-                                  follow();
-                                },
-                                child: ifFollowed == true
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return LinearGradient(colors: [
-                                            Color(0xff5d5da8),
-                                            Color(0xff5bc3ef)
-                                          ]).createShader(bounds);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.check_circle),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
-                                              child: Text("Followed"),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.add_circle),
-                                          Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Text("Follow"),
-                                          ),
-                                        ],
-                                      ),
+          SizedBox(height: 20,),
+          ListTile(
+            title: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: userData['img'] == null
+                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                            : userData['img'],
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            height: MediaQuery.of(context).size.width / 5,
+                            width: MediaQuery.of(context).size.width / 5,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.blueAccent, width: 2),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover)),
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${userData['fullname']}",
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Text("@${userData['username']}"),
+                          widget.userId == prefs.getString('userId') ?
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(
+                                        builder: (context) {
+                                          return Bio();
+                                        })).then((value) {
+                                          if(value == "done"){
+                                            init();
+                                          }
+                                });
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.edit),
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text("Edit Profile"),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
+                          )
+                              :Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: InkWell(
+                              onTap: () {
+                                follow();
+                              },
+                              child: ifFollowed == true
+                                  ? ShaderMask(
+                                shaderCallback: (Rect bounds) {
+                                  return LinearGradient(colors: [
+                                    Color(0xff5d5da8),
+                                    Color(0xff5bc3ef)
+                                  ]).createShader(bounds);
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check_circle),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.all(5.0),
+                                      child: Text("Followed"),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.add_circle),
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text("Follow"),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Followers(
-                                            userId: widget.userId,
-                                          );
-                                        });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${userData['followers']}",
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    4.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Followers",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    2.5),
-                                      )
-                                    ],
-                                  ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Followers(
+                                          userId: widget.userId,
+                                        );
+                                      });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${userData['followers']}",
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              4.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Followers",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              2.5),
+                                    )
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 20,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Folllowing(
+                                          userId: widget.userId,
+                                        );
+                                      });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${userData['following']}",
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              4.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Following",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              2.5),
+                                    )
+                                  ],
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Folllowing(
-                                            userId: widget.userId,
-                                          );
-                                        });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${userData['following']}",
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    4.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Following",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    2.5),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ],
               ),
             ),
+            trailing: widget.userId == prefs.getString("userId")?IconButton(
+              onPressed: (){
+                showBarModalBottomSheet(context: context, builder: (context){
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      ReferralProgram()));
+                        },
+                        title: Text(
+                          "Invite ",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Invite friends and earn rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => Rewards()));
+                        },
+                        title: Text(
+                          "Your rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Check your rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
+                      // ListTile(
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         CupertinoPageRoute(
+                      //             builder: (context) => PublicProfile(
+                      //                 userId:
+                      //                 prefs.getString("userId"))));
+                      //   },
+                      //   title: Text(
+                      //     "Public Profile",
+                      //     textScaleFactor: mediaQueryData.textScaleFactor
+                      //         .clamp(0.5, 1.5)
+                      //         .toDouble(),
+                      //     style: TextStyle(
+                      //       //  color: Colors.white,
+                      //         fontWeight: FontWeight.w700,
+                      //         fontSize:
+                      //         SizeConfig.safeBlockHorizontal * 4),
+                      //   ),
+                      //   trailing: Icon(Icons.arrow_forward_ios_rounded,
+                      //       size: 15),
+                      //   subtitle: Text(
+                      //     "See how others see you",
+                      //     textScaleFactor: mediaQueryData.textScaleFactor
+                      //         .clamp(0.5, 0.8)
+                      //         .toDouble(),
+                      //     style: TextStyle(
+                      //       //       color: Colors.white70,
+                      //         fontWeight: FontWeight.w300,
+                      //         fontSize:
+                      //         SizeConfig.safeBlockHorizontal * 3.4),
+                      //   ),
+                      // ),
+                    ],
+                  );
+                });
+              },
+              icon: Icon(Icons.more_horiz_rounded),
+            ): SizedBox(),
           ),
+
         ],
       ),
     );
@@ -386,13 +528,7 @@ class _PublicProfileState extends State<PublicProfile>
 
   List subscriptions = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    // getUserFollowers();
-    // getUserFollowing();
-
+  void init(){
     _episodeScrollController = ScrollController();
     subscriptionController = ScrollController();
     getProfileData();
@@ -402,6 +538,16 @@ class _PublicProfileState extends State<PublicProfile>
     userSnippet(widget.userId);
     userSubscriptions();
     _controller = TabController(vsync: this, length: 6);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // getUserFollowers();
+    // getUserFollowing();
+
+    init();
     super.initState();
   }
 
@@ -438,6 +584,8 @@ class _PublicProfileState extends State<PublicProfile>
     }
   }
 
+
+
   ScrollController _episodeScrollController;
 
   PageController _pageController = PageController(viewportFraction: 0.8);
@@ -450,12 +598,14 @@ class _PublicProfileState extends State<PublicProfile>
       return Scaffold(
         backgroundColor: Color(0xff161616),
         body: NestedScrollView(
+          controller: _episodeScrollController,
           physics: BouncingScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
+
                   forceElevated: isInnerBoxScrolled,
-                  expandedHeight: MediaQuery.of(context).size.height / 2.8,
+                  expandedHeight: MediaQuery.of(context).size.height / 2.5,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(children: [
@@ -479,7 +629,7 @@ class _PublicProfileState extends State<PublicProfile>
                   ),
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(
-                      (MediaQuery.of(context).size.height / 3) * (0.15),
+                      (MediaQuery.of(context).size.height / 3) * (0.17),
                     ),
                     child: Container(
                       color: Color(0xff161616),
@@ -499,14 +649,15 @@ class _PublicProfileState extends State<PublicProfile>
                                     text: "About",
                                   ),
                                   Tab(
+                                    text: "Subscriptions",
+                                  ),
+                                  Tab(
                                     text: "Podcast",
                                   ),
                                   Tab(
                                     text: "Episode",
                                   ),
-                                  Tab(
-                                    text: "Subscriptions",
-                                  ),
+
                                   Tab(
                                     text: "Live",
                                   ),
@@ -530,6 +681,117 @@ class _PublicProfileState extends State<PublicProfile>
                 child: Padding(
                   padding: const EdgeInsets.all(15),
                   child: Text("${userData['bio']}"),
+                ),
+              ),
+              Container(
+                child: ListView(
+                  controller: subscriptionController,
+                  children: [
+                    Column(
+                      children: [
+                        for (var v in subscriptions)
+                          Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                      return PodcastView(v['id']);
+                                    }));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CachedNetworkImage(
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                6,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                6,
+                                            child: Icon(
+                                              Icons.error,
+                                              color: Color(0xffe8e8e8),
+                                            )),
+                                    placeholder: (context, url) {
+                                      return Container(
+                                        height:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        width:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff222222),
+                                          borderRadius:
+                                          BorderRadius.circular(5),
+                                        ),
+                                      );
+                                    },
+                                    imageUrl: v['image'],
+                                    imageBuilder: (context, imageProvider) {
+                                      return Container(
+                                        height:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        width:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover)),
+                                      );
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${v['name']}",
+                                            textScaleFactor: 1.0,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8),
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.5,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "${v['author']}",
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8)
+                                                    .withOpacity(0.5),
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -1236,117 +1498,7 @@ class _PublicProfileState extends State<PublicProfile>
                   ],
                 ),
               ),
-              Container(
-                child: ListView(
-                  controller: subscriptionController,
-                  children: [
-                    Column(
-                      children: [
-                        for (var v in subscriptions)
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context,
-                                    CupertinoPageRoute(builder: (context) {
-                                  return PodcastView(v['id']);
-                                }));
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CachedNetworkImage(
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                6,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                6,
-                                            child: Icon(
-                                              Icons.error,
-                                              color: Color(0xffe8e8e8),
-                                            )),
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff222222),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                      );
-                                    },
-                                    imageUrl: v['image'],
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover)),
-                                      );
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${v['name']}",
-                                            textScaleFactor: 1.0,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3.5,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "${v['author']}",
-                                            textScaleFactor: 1.0,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8)
-                                                    .withOpacity(0.5),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+
               Container(),
               Container(),
             ],

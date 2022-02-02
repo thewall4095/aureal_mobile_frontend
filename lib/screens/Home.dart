@@ -604,7 +604,7 @@ class _HomeState extends State<Home> {
           child: IconButton(
             onPressed: () {
               Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (context) => Profile()));
+                  .push(CupertinoPageRoute(builder: (context) => PublicProfile(userId: prefs.getString('userId'))));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
