@@ -5,7 +5,9 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -50,6 +52,12 @@ class Clips extends StatefulWidget {
 
 class _ClipsState extends State<Clips> {
   RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
+
+  var snippetPlayer;
+
+  void getSnippetPlayer(BuildContext context){
+    snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+  }
 
   PlayerState playerState = PlayerState.playing;
   var recentlyPlayed = [];
@@ -136,13 +144,13 @@ class _ClipsState extends State<Clips> {
 
   @override
   void initState() {
-    customLayoutOption = new CustomLayoutOption(startIndex: 0, stateCount: 10);
+
 
     // TODO: implement initState
 
     getAllSnippetsWOCategory();
     // init(context);
-    audioPlayer = AssetsAudioPlayer();
+    getSnippetPlayer(context);
 
     super.initState();
 
@@ -159,8 +167,11 @@ class _ClipsState extends State<Clips> {
 
   @override
   void dispose() {
-    audioPlayer.stop();
+print("dispose is getting called on Clips");
     super.dispose();
+    // var snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+    snippetPlayer.snippetPlayer.stop();
+
   }
 
   Future<PaletteGenerator> getColor(String url) async {
@@ -246,15 +257,15 @@ class _ClipsState extends State<Clips> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, CupertinoPageRoute(builder: (context) {
-            return CreateClipSnippet();
-          }));
-        },
-        isExtended: true,
-        child: Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(context, CupertinoPageRoute(builder: (context) {
+      //       return CreateClipSnippet();
+      //     }));
+      //   },
+      //   isExtended: true,
+      //   child: Icon(Icons.add),
+      // ),
       body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
@@ -367,27 +378,7 @@ class _ClipsState extends State<Clips> {
               ),
             ];
           },
-          body: PageView.builder(
-            scrollDirection: Axis.vertical,
-              itemCount: snippets.length,
-              pageSnapping: true,
-              controller: _pageController,
-              onPageChanged: (index) {
-                if (index == snippets.length - 1) {
-                  if (selectedCategory == 30) {
-                    getAllSnippetsWOCategory();
-                  } else {
-                    getAllSnippets(selectedCategory);
-                  }
-                }
-              },
-              itemBuilder: (context, int index) {
-                currentIndex = index;
-                return SwipeCard(
-                  clipObject: snippets[index],
-                  audioPlayer: audioPlayer,
-                );
-              })),
+          body: SnippetStoryView(data: snippets, index: 0,)),
     );
   }
 
@@ -404,7 +395,7 @@ class _ClipsState extends State<Clips> {
             child: Center(
               child: SwipeCard(
                 clipObject: snippets[index],
-                audioPlayer: audioPlayer,
+
               ),
             ),
           );
@@ -433,59 +424,58 @@ class _ClipsState extends State<Clips> {
         for (var v in snippets)
           SwipeCard(
             clipObject: v,
-            audioPlayer: audioPlayer,
+
           ),
       ],
     );
   }
 }
 
+
+
+
 class SwipeCard extends StatefulWidget {
   final clipObject;
-  final AssetsAudioPlayer audioPlayer;
+
+  final audioPlayer = AssetsAudioPlayer();
 
   SwipeCard({
     @required this.clipObject,
-    this.audioPlayer,
   });
 
   @override
   _SwipeCardState createState() => _SwipeCardState();
 }
 
-class _SwipeCardState extends State<SwipeCard> {
-  var dominantColor = 0xff222222;
+class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
+
+
+
+
   SharedPreferences pref;
 
-  Rect region;
-  Rect dragRegion;
-  Offset startDrag;
-  Offset currentDrag;
-  PaletteGenerator paletteGenerator;
 
-  Future<PaletteColor> _updatePaletteGenerator(Rect newRegion) async {
-    paletteGenerator = await PaletteGenerator.fromImageProvider(
-      CachedNetworkImageProvider(widget.clipObject['image']),
-      size: Size(256.0, 256.0),
-      region: newRegion,
-      maximumColorCount: 20,
-    );
-    return paletteGenerator.dominantColor;
+
+  void play(BuildContext context) async {
+    final snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+    snippetPlayer.snippetPlayer.open(Audio.network(widget.clipObject['url']));
   }
 
-  var color;
 
   @override
   void initState() {
     // TODO: implement initState
 
-    widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
+
+
+
 
     setState(() {
       isLiked = widget.clipObject['isLiked'];
       ifFollowed = widget.clipObject['ifFollows'];
     });
     super.initState();
+    play(context);
   }
 
   void share() async {}
@@ -493,11 +483,9 @@ class _SwipeCardState extends State<SwipeCard> {
   bool isLiked;
   bool ifFollowed;
 
-  void createComputeFunction() async {
-    palette = await compute(computeFunction, widget.clipObject);
-  }
 
-  PaletteGenerator palette;
+
+
   int index;
 
   Future createIsolate() async {
@@ -518,15 +506,28 @@ class _SwipeCardState extends State<SwipeCard> {
 
   Color bgColor = Color(0xff222222);
 
+
+
+
+
+
   @override
   void dispose() {
     // TODO: implement dispose
 
-    super.dispose();
 
     print("Dispose getting called right now");
-    widget.audioPlayer.stop();
+    super.dispose();
+
+
+
   }
+
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.paused) {
+  //     audioPlayer.stop();
+  //   }
+  // }
 
   Dio dio = Dio();
 
@@ -569,17 +570,11 @@ class _SwipeCardState extends State<SwipeCard> {
     }
   }
 
-  @override
-  void didUpdateWidget(covariant SwipeCard oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-    if (widget.clipObject != oldWidget.clipObject) {
-      widget.audioPlayer.open(Audio.network(widget.clipObject['url']));
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
+    var snippetPlayer = Provider.of<PlayerChange>(context);
     return Stack(
       children: [
         Container(
@@ -675,13 +670,13 @@ class _SwipeCardState extends State<SwipeCard> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  widget.audioPlayer
+                                  snippetPlayer.snippetPlayer
                                       .builderRealtimePlayingInfos(
                                           builder: (context, infos) {
                                     if (infos.isPlaying == true) {
                                       return InkWell(
                                           onTap: () {
-                                            widget.audioPlayer.pause();
+                                            snippetPlayer.snippetPlayer.pause();
                                           },
                                           child: Icon(
                                               Icons.pause_circle_filled,
@@ -698,7 +693,7 @@ class _SwipeCardState extends State<SwipeCard> {
                                     } else {
                                       return InkWell(
                                           onTap: () {
-                                            widget.audioPlayer.play();
+                                            snippetPlayer.snippetPlayer.play();
                                           },
                                           child: Icon(Icons.play_circle_fill,
                                               color: Color(0xffe8e8e8)));
@@ -730,18 +725,7 @@ class _SwipeCardState extends State<SwipeCard> {
                               )
                             ],
                           ),
-                          subtitle: widget.audioPlayer
-                              .builderRealtimePlayingInfos(
-                                  builder: (context, infos) {
-                            if (infos != null) {
-                              return ClipSeekBar(
-                                  currentPosition: infos.currentPosition,
-                                  duration: infos.duration,
-                                  audioplayer: widget.audioPlayer);
-                            } else {
-                              return SizedBox();
-                            }
-                          })),
+                          ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -798,6 +782,23 @@ class _SwipeCardState extends State<SwipeCard> {
             ),
           ),
         ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            snippetPlayer.snippetPlayer
+                .builderRealtimePlayingInfos(
+                builder: (context, infos) {
+                  if (infos != null) {
+                    return ClipSeekBar(
+                        currentPosition: infos.currentPosition,
+                        duration: infos.duration,
+                        audioplayer: snippetPlayer.snippetPlayer);
+                  } else {
+                    return SizedBox();
+                  }
+                }),
+          ],
+        )
       ],
     );
   }
@@ -881,7 +882,7 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
     return SliderTheme(
       data: SliderThemeData(
         trackShape: CustomTrackShape(),
-        trackHeight: 2,
+        trackHeight: 5,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0),
         // activeTrackColor: Color(0xff212121),
         //    inactiveTrackColor: Colors.black,

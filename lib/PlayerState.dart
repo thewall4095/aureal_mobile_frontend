@@ -39,6 +39,7 @@ class PlayerChange extends ChangeNotifier {
 
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+  AssetsAudioPlayer snippetPlayer = AssetsAudioPlayer();
   Dio dio = Dio();
 
   Map<String, dynamic> get episodeObject => _episodeObject;

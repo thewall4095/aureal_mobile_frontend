@@ -1875,6 +1875,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -1883,20 +1884,11 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
           itemCount: widget.data.length,
           pageSnapping: true,
           controller: _pageController,
-          // onPageChanged: (index) {
-          //   if (index == snippets.length - 1) {
-          //     if (selectedCategory == 30) {
-          //       getAllSnippetsWOCategory();
-          //     } else {
-          //       getAllSnippets(selectedCategory);
-          //     }
-          //   }
-          // },
+
           itemBuilder: (context, int index) {
             currentIndex = index;
             return SwipeCard(
               clipObject: widget.data[index],
-              audioPlayer: audioplayer,
             );
           }),
     );
@@ -3510,14 +3502,7 @@ class _PodcastViewBuilderState extends State<PodcastViewBuilder> {
   }
 }
 
-class PodcastCard extends StatelessWidget {
-  PodcastCard() ;
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
 
 
 

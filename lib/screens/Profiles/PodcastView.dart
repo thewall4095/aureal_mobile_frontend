@@ -2800,7 +2800,7 @@ class _SnippetDisplayState extends State<SnippetDisplay> {
                 for (var v in snippets)
                   SwipeCard(
                     clipObject: v,
-                    audioPlayer: audioPlayer,
+
                   ),
               ],
             ),
