@@ -1850,8 +1850,14 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   PageController _pageController ;
 
 
-  AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
+  // AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
   int currentIndex;
+
+  var snippetPlayer;
+
+  void getSnippetPlayer(BuildContext context){
+    snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+  }
 
   @override
   void initState() {
@@ -1860,13 +1866,16 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
     // TODO: implement initState
     super.initState();
 
+    getSnippetPlayer(context);
+
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    audioplayer.stop();
+    // audioplayer.stop();
+    snippetPlayer.snippetPlayer.stop();
   }
 
   @override
@@ -1906,10 +1915,6 @@ class SeeMore extends StatelessWidget {
     return Container();
   }
 }
-
-
-
-
 
 
 
