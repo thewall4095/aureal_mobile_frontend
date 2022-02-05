@@ -487,14 +487,15 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
                                                                   backgroundColor: Colors.transparent,
                                                                   child: UpvoteEpisode(permlink: v['permlink'], episode_id: v['id']));
                                                             }).then((value) async {
-                                                          print(
-                                                              value);
+                                                          setState(
+                                                                  () {
+                                                                    v['votes'] = v['votes'] + 1;
+                                                                v['ifVoted'] =
+                                                                !v['ifVoted'];
+
+                                                              });
                                                         });
-                                                        setState(
-                                                                () {
-                                                              v['ifVoted'] =
-                                                              !v['ifVoted'];
-                                                            });
+
                                                         setState(
                                                                 () {
                                                               v['isLoading'] =
@@ -1048,7 +1049,12 @@ class PodcastWidget extends StatelessWidget {
                 ListTile(title: Text("${data['name']}", style: TextStyle(
                     fontSize: SizeConfig.safeBlockHorizontal * 5,
                     fontWeight: FontWeight.bold
-                )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
+                )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                  return LinearGradient(colors: [Color(
+                      0xff5bc3ef),
+                    Color(
+                        0xff5d5da8)]).createShader(bounds);
+                },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),)),),
                 SizedBox(height: 10,),
                 Container(
                   width: double.infinity,

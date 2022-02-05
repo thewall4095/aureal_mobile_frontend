@@ -382,53 +382,53 @@ print("dispose is getting called on Clips");
     );
   }
 
-  Widget listPageViewSection() {
-    return ListView.builder(
-        controller: pageViewScrollController,
-        physics: PageScrollPhysics(),
-        addAutomaticKeepAlives: true,
-        itemCount: snippets.length,
-        itemBuilder: (context, int index) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: SwipeCard(
-                clipObject: snippets[index],
-
-              ),
-            ),
-          );
-        });
-  }
-
-  Widget pageViewSection() {
-    return PageView(
-      scrollDirection: Axis.vertical,
-      onPageChanged: (int index) async {
-        setState(() {
-          currentIndex = index;
-        });
-        audioPlayer.open(Audio.network(snippets[index]['url']));
-        if (index == snippets.length - 1) {
-          if (selectedCategory == 30) {
-            getAllSnippetsWOCategory();
-          } else {
-            getAllSnippets(selectedCategory);
-          }
-        }
-      },
-      pageSnapping: true,
-      controller: _pageController,
-      children: [
-        for (var v in snippets)
-          SwipeCard(
-            clipObject: v,
-
-          ),
-      ],
-    );
-  }
+  // Widget listPageViewSection() {
+  //   return ListView.builder(
+  //       controller: pageViewScrollController,
+  //       physics: PageScrollPhysics(),
+  //       addAutomaticKeepAlives: true,
+  //       itemCount: snippets.length,
+  //       itemBuilder: (context, int index) {
+  //         return Container(
+  //           height: MediaQuery.of(context).size.height,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: Center(
+  //             child: SwipeCard(
+  //               clipObject: snippets[index],
+  //
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
+  //
+  // Widget pageViewSection() {
+  //   return PageView(
+  //     scrollDirection: Axis.vertical,
+  //     onPageChanged: (int index) async {
+  //       setState(() {
+  //         currentIndex = index;
+  //       });
+  //       audioPlayer.open(Audio.network(snippets[index]['url']));
+  //       if (index == snippets.length - 1) {
+  //         if (selectedCategory == 30) {
+  //           getAllSnippetsWOCategory();
+  //         } else {
+  //           getAllSnippets(selectedCategory);
+  //         }
+  //       }
+  //     },
+  //     pageSnapping: true,
+  //     controller: _pageController,
+  //     children: [
+  //       for (var v in snippets)
+  //         SwipeCard(
+  //           clipObject: v,
+  //
+  //         ),
+  //     ],
+  //   );
+  // }
 }
 
 
@@ -884,8 +884,8 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
         trackShape: CustomTrackShape(),
         trackHeight: 5,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0),
-        // activeTrackColor: Color(0xff212121),
-        //    inactiveTrackColor: Colors.black,
+        activeTrackColor: Color(0xffe8e8e8),
+           inactiveTrackColor: Colors.transparent,
         thumbColor: Colors.transparent,
         //  thumbShape: SliderComponentShape
         // thumbShape: RoundSliderThumbShape(

@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
         break;
 
       case 1:
-        return DiscoverPage();
+        return DiscoverScreen();
         break;
 
       case 2:
