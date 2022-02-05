@@ -71,7 +71,7 @@ class PlayerChange extends ChangeNotifier {
   set playList(var newValue) {
     _playList = newValue;
 
-    notifyListeners();
+    // notifyListeners();
     print(_playList);
   }
 
