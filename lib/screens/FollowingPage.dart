@@ -317,6 +317,10 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
           }catch(e){
             return Column(
               children: [
+                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),),
                 for (int i = 0; i < 6; i++)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -524,6 +528,10 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
         }else{
           return Column(
             children: [
+              ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                  fontSize: SizeConfig.safeBlockHorizontal * 5,
+                  fontWeight: FontWeight.bold
+              )),),
               for (int i = 0; i < 6; i++)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
