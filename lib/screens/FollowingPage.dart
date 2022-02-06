@@ -138,6 +138,9 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
           },
         );
         break;
+      default:
+        return Container();
+        break;
     }
   }
 
@@ -203,12 +206,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
     );
     prefs = await SharedPreferences.getInstance();
     String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+    print(url);
 
     try{
       var response = await dio.get(url, cancelToken: _cancel);
       print(response.data['data']);
+      // playListGenerator(data: response.data['data']);
       if(response.statusCode == 200){
-        playListGenerator(data: response.data['data']);
+
         return response.data['data'];
       }
     }catch(e){
@@ -243,6 +248,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
     }
 
     episodeObject.playList = playable;
+    // episodeObject.dispose();
 
 
 
@@ -256,6 +262,12 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
 
 
   @override
@@ -265,44 +277,251 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
     return FutureBuilder(
       future: generalisedApiCall(widget.data['api']),
       builder: (context, snapshot){
-        try{
+        if(snapshot.hasData){
+          try{
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                      fontWeight: FontWeight.bold
+                  )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                    return LinearGradient(colors: [Color(
+                        0xff5bc3ef),
+                      Color(
+                          0xff5d5da8)]).createShader(bounds);
+                  },child: GestureDetector(onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                      return SeeMore(data: widget.data);
+                    },),);
+                  },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                  // Container(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       for (var v in snapshot.data)
+                  //         EpisodeCard(data: v,),
+                  //
+                  //     ],
+                  //   ),
+                  // ),
+                  ColumnBuilder(itemBuilder: (context, int index){
+                    return EpisodeCard(data: snapshot.data[index], index: index);
+                  }, itemCount: snapshot.data.length)
 
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+                ],
+              ),
+            );
+          }catch(e){
+            return Column(
               children: [
-                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
-                    fontSize: SizeConfig.safeBlockHorizontal * 5,
-                    fontWeight: FontWeight.bold
-                )),trailing: ShaderMask(shaderCallback: (Rect bounds){
-                  return LinearGradient(colors: [Color(
-                      0xff5bc3ef),
-                    Color(
-                        0xff5d5da8)]).createShader(bounds);
-                },child: GestureDetector(onTap: (){
-                  Navigator.push(context, CupertinoPageRoute(builder: (context){
-                    return SeeMore(data: widget.data);
-                  },),);
-                },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
-                // Container(
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.start,
-                //     children: [
-                //       for (var v in snapshot.data)
-                //         EpisodeCard(data: v,),
-                //
-                //     ],
-                //   ),
-                // ),
-                ColumnBuilder(itemBuilder: (context, int index){
-                  return EpisodeCard(data: snapshot.data[index], index: index);
-                }, itemCount: snapshot.data.length)
-
+                for (int i = 0; i < 6; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          color: Color(0xff222222)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      7,
+                                  height:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      7,
+                                  decoration: BoxDecoration(
+                                      color:
+                                      Color(0xff161616),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(10)),
+                                ),
+                                SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                                  children: [
+                                    Container(
+                                      decoration:
+                                      BoxDecoration(
+                                          color: Color(
+                                              0xff161616)),
+                                      height: 16,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          3,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Container(
+                                      decoration:
+                                      BoxDecoration(
+                                          color: Color(
+                                              0xff161616)),
+                                      height: 8,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          4,
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 10,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 10,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 6,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 6,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width *
+                                      0.75),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(
+                                  vertical: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(10),
+                                      color:
+                                      Color(0xff161616),
+                                    ),
+                                    height: 25,
+                                    width:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        8,
+                                    //    color: kSecondaryColor,
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        left: 10),
+                                    child: Container(
+                                      decoration:
+                                      BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(10),
+                                        color:
+                                        Color(0xff161616),
+                                      ),
+                                      height: 25,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        left: 10),
+                                    child: Container(
+                                      decoration:
+                                      BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(8),
+                                        color:
+                                        Color(0xff161616),
+                                      ),
+                                      height: 20,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
               ],
-            ),
-          );
-        }catch(e){
+            );
+          }
+        }else{
           return Column(
             children: [
               for (int i = 0; i < 6; i++)
@@ -509,6 +728,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
             ],
           );
         }
+
 
       },
     );
@@ -771,335 +991,7 @@ class EpisodeCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Container(
-                    //   width: MediaQuery.of(
-                    //       context)
-                    //       .size
-                    //       .width,
-                    //   child: Row(
-                    //     mainAxisAlignment:
-                    //     MainAxisAlignment
-                    //         .spaceBetween,
-                    //     children: [
-                    //       Row(
-                    //         mainAxisAlignment:
-                    //         MainAxisAlignment
-                    //             .spaceBetween,
-                    //         children: [
-                    //           v['permlink'] == null ?SizedBox():InkWell(
-                    //             onTap:
-                    //                 () async {
-                    //               if (prefs.getString(
-                    //                   'HiveUserName') !=
-                    //                   null) {
-                    //                 setState(
-                    //                         () {
-                    //                       v['isLoading'] =
-                    //                       true;
-                    //                     });
-                    //                 double
-                    //                 _value =
-                    //                 50.0;
-                    //                 showDialog(
-                    //                     context:
-                    //                     context,
-                    //                     builder:
-                    //                         (context) {
-                    //                       return Dialog(
-                    //                           backgroundColor: Colors.transparent,
-                    //                           child: UpvoteEpisode(permlink: v['permlink'], episode_id: v['id']));
-                    //                     }).then((value) async {
-                    //                   setState(
-                    //                           () {
-                    //                         v['votes'] = v['votes'] + 1;
-                    //                         v['ifVoted'] =
-                    //                         !v['ifVoted'];
-                    //
-                    //                       });
-                    //                 });
-                    //
-                    //                 setState(
-                    //                         () {
-                    //                       v['isLoading'] =
-                    //                       false;
-                    //                     });
-                    //               } else {
-                    //                 showBarModalBottomSheet(
-                    //                     context:
-                    //                     context,
-                    //                     builder:
-                    //                         (context) {
-                    //                       return HiveDetails();
-                    //                     });
-                    //               }
-                    //             },
-                    //             child:
-                    //             Container(
-                    //               decoration: v['ifVoted'] ==
-                    //                   true
-                    //                   ? BoxDecoration(
-                    //                   gradient:
-                    //                   LinearGradient(colors: [
-                    //                     Color(0xff5bc3ef),
-                    //                     Color(0xff5d5da8)
-                    //                   ]),
-                    //                   borderRadius: BorderRadius.circular(
-                    //                       30))
-                    //                   : BoxDecoration(
-                    //                   border:
-                    //                   Border.all(color: kSecondaryColor),
-                    //                   borderRadius: BorderRadius.circular(30)),
-                    //               child:
-                    //               Padding(
-                    //                 padding: const EdgeInsets
-                    //                     .symmetric(
-                    //                     vertical:
-                    //                     5,
-                    //                     horizontal:
-                    //                     5),
-                    //                 child:
-                    //                 Row(
-                    //                   children: [
-                    //                     v['isLoading'] == true
-                    //                         ? Container(
-                    //                       height: 17,
-                    //                       width: 18,
-                    //                       child: SpinKitPulse(
-                    //                         color: Colors.blue,
-                    //                       ),
-                    //                     )
-                    //                         : Icon(
-                    //                       FontAwesomeIcons.chevronCircleUp,
-                    //                       size: 15,
-                    //                       // color:
-                    //                       //     Color(0xffe8e8e8),
-                    //                     ),
-                    //                     Padding(
-                    //                       padding:
-                    //                       const EdgeInsets.symmetric(horizontal: 8),
-                    //                       child:
-                    //                       Text(
-                    //                         v['votes'].toString(),
-                    //                         textScaleFactor: 1.0,
-                    //                         style: TextStyle(fontSize: 12
-                    //                           // color:
-                    //                           //     Color(0xffe8e8e8)
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                     Padding(
-                    //                       padding:
-                    //                       const EdgeInsets.only(right: 4),
-                    //                       child:
-                    //                       Text(
-                    //                         '\$${v['payout_value'].toString().split(' ')[0]}',
-                    //                         textScaleFactor: 1.0,
-                    //                         style: TextStyle(
-                    //                           fontSize: 12,
-                    //
-                    //                           // color:
-                    //                           //     Color(0xffe8e8e8)
-                    //                         ),
-                    //                       ),
-                    //                     )
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //           v['permlink'] == null ? SizedBox():InkWell(
-                    //             onTap: () {
-                    //               if (prefs.getString(
-                    //                   'HiveUserName') !=
-                    //                   null) {
-                    //                 Navigator.push(
-                    //                     context,
-                    //                     CupertinoPageRoute(
-                    //                         builder: (context) => Comments(
-                    //                           episodeObject: v,
-                    //                         )));
-                    //               } else {
-                    //                 showBarModalBottomSheet(
-                    //                     context:
-                    //                     context,
-                    //                     builder:
-                    //                         (context) {
-                    //                       return HiveDetails();
-                    //                     });
-                    //               }
-                    //             },
-                    //             child:
-                    //             Padding(
-                    //               padding:
-                    //               const EdgeInsets.all(
-                    //                   8.0),
-                    //               child:
-                    //               Container(
-                    //                 decoration: BoxDecoration(
-                    //                     border: Border.all(
-                    //                         color:
-                    //                         kSecondaryColor),
-                    //                     borderRadius:
-                    //                     BorderRadius.circular(30)),
-                    //                 child:
-                    //                 Padding(
-                    //                   padding:
-                    //                   const EdgeInsets.all(4.0),
-                    //                   child:
-                    //                   Row(
-                    //                     children: [
-                    //                       Icon(
-                    //                         Icons.mode_comment_outlined,
-                    //                         size: 14,
-                    //                       ),
-                    //                       Padding(
-                    //                         padding: const EdgeInsets.symmetric(horizontal: 7),
-                    //                         child: Text(
-                    //                           v['comments_count'].toString(),
-                    //                           textScaleFactor: 1.0,
-                    //                           style: TextStyle(fontSize: 10
-                    //                             // color:
-                    //                             //     Color(0xffe8e8e8)
-                    //                           ),
-                    //                         ),
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //           InkWell(
-                    //             onTap: () {
-                    //               print(v
-                    //                   .toString()
-                    //                   .contains(
-                    //                   '.mp4'));
-                    //               if (v.toString().contains('.mp4') == true ||
-                    //                   v.toString().contains('.m4v') ==
-                    //                       true ||
-                    //                   v.toString().contains('.flv') ==
-                    //                       true ||
-                    //                   v.toString().contains('.f4v') ==
-                    //                       true ||
-                    //                   v.toString().contains('.ogv') ==
-                    //                       true ||
-                    //                   v.toString().contains('.ogx') ==
-                    //                       true ||
-                    //                   v.toString().contains('.wmv') ==
-                    //                       true ||
-                    //                   v.toString().contains('.webm') ==
-                    //                       true) {
-                    //                 currentlyPlaying
-                    //                     .stop();
-                    //                 Navigator.push(
-                    //                     context,
-                    //                     CupertinoPageRoute(builder:
-                    //                         (context) {
-                    //                       return PodcastVideoPlayer(
-                    //                           episodeObject:
-                    //                           v);
-                    //                     }));
-                    //               } else {
-                    //                 if (v.toString().contains(
-                    //                     '.pdf') ==
-                    //                     true) {
-                    //                   // Navigator.push(
-                    //                   //     context,
-                    //                   //     CupertinoPageRoute(
-                    //                   // der:
-                    //                   //             (context) {
-                    //                   //   return PDFviewer(
-                    //                   //       episodeObject:
-                    //                   //           v);
-                    //                   // }));
-                    //                 } else {
-                    //                   List<Audio>
-                    //                   playable =
-                    //                   [];
-                    //                   for (var v
-                    //                   in snapshot.data) {
-                    //                     playable
-                    //                         .add(Audio.network(
-                    //                       v['url'],
-                    //                       metas:
-                    //                       Metas(
-                    //                         id: '${v['id']}',
-                    //                         title: '${v['name']}',
-                    //                         artist: '${v['author']}',
-                    //                         album: '${v['podcast_name']}',
-                    //                         // image: MetasImage.network('https://www.google.com')
-                    //                         image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                    //                       ),
-                    //                     ));
-                    //                   }
-                    //                   episodeObject.playList =
-                    //                       playable;
-                    //                   episodeObject.audioPlayer.open(
-                    //                       Playlist(
-                    //                           audios: episodeObject.playList,
-                    //                           startIndex: snapshot.data.indexOf(v)),
-                    //                       showNotification: true);
-                    //                 }
-                    //               }
-                    //             },
-                    //             child:
-                    //             Padding(
-                    //               padding: const EdgeInsets
-                    //                   .only(
-                    //                   right:
-                    //                   60),
-                    //               child:
-                    //               Container(
-                    //                 decoration: BoxDecoration(
-                    //                     border: Border.all(
-                    //                         color:
-                    //                         kSecondaryColor),
-                    //                     borderRadius:
-                    //                     BorderRadius.circular(30)),
-                    //                 child:
-                    //                 Padding(
-                    //                   padding:
-                    //                   const EdgeInsets.all(5),
-                    //                   child:
-                    //                   Row(
-                    //                     children: [
-                    //                       Icon(
-                    //                         Icons.play_circle_outline,
-                    //                         size: 15,
-                    //                       ),
-                    //                       Padding(
-                    //                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                    //                         child: Text(
-                    //                           DurationCalculator(v['duration']),
-                    //                           textScaleFactor: 0.75,
-                    //                           // style: TextStyle(
-                    //                           //      color: Color(0xffe8e8e8)
-                    //                           //     ),
-                    //                         ),
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       InkWell(
-                    //         onTap: () {
-                    //           share(
-                    //               episodeObject:
-                    //               v);
-                    //         },
-                    //         child: Icon(
-                    //           Icons.ios_share,
-                    //           // size: 14,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+
                     PlaybackButtons(data: data, index: index)
 
                   ],
@@ -2348,21 +2240,426 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   }
 }
 
-class SeeMore extends StatelessWidget {
+class SeeMore extends StatefulWidget {
 
   final data;
 
  SeeMore({@required this.data});
 
   @override
+  State<SeeMore> createState() => _SeeMoreState();
+}
+
+class _SeeMoreState extends State<SeeMore> {
+
+  ScrollController _controller = ScrollController();
+
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  List feedData = [];
+  int page = 0;
+
+
+  void playListGenerator({List data}) async {
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    List<Audio> playable = [];
+    for (int i = 0; i < data.length; i++){
+      var v = data[i];
+      playable
+          .add(Audio.network(
+        v['url'],
+        metas:
+        Metas(
+          id: '${v['id']}',
+          title: '${v['name']}',
+          artist: '${v['author']}',
+          album: '${v['podcast_name']}',
+          // image: MetasImage.network('https://www.google.com')
+          image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+        ),
+      ));
+    }
+
+    episodeObject.playList = playable;
+    // episodeObject.dispose();
+
+
+
+  }
+
+  Future getData({var apicall}) async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=16&page=$page&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        if(page == 0){
+          if(widget.data['type'] == 'episode'){
+            playListGenerator(data: response.data['data']);
+          }
+
+          setState(() {
+            feedData = response.data['data'];
+            page = page + 1;
+          });
+        }else{
+          if(widget.data['type'] == 'episode'){
+            playListGenerator(data: response.data['data']);
+          }
+          setState(() {
+            feedData = feedData + response.data['data'];
+            page = page + 1;
+          });
+        }
+
+
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getData(apicall: widget.data['api']);
+    super.initState();
+
+    _controller.addListener(() {
+      if(_controller.position.pixels == _controller.position.maxScrollExtent){
+        getData(apicall: widget.data['api']);
+      }
+    });
+
+  }
+
+
+  
+  Widget _feedBuilder(BuildContext context, var data){
+    print(data['type']);
+    switch(data['type']){
+      case "podcast":
+        return GridView.builder(controller: _controller,itemCount: feedData.length + 2,gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+          MediaQuery.of(context)
+              .orientation ==
+              Orientation
+                  .landscape
+              ? 3
+              : 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: (1 / 1.36),
+        ), itemBuilder: (context, int index){
+          if(index > feedData.length - 1){
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                  color: Color(0xff121212),
+                    borderRadius: BorderRadius.circular(3),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                    )
+                ),
+              ),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:   InkWell(
+                onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return PodcastView(feedData[index]['id']);
+                  }));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      placeholder: (context, String url){
+                        return AspectRatio(aspectRatio: 1.0, child: Container(width: double.infinity, decoration: BoxDecoration(color: Color(0xff121212), borderRadius: BorderRadius.circular(3)),));
+                      },
+
+                      imageUrl: feedData[index]['image'],
+                      imageBuilder: (context, imageProvider){
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: double.infinity,
+
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover
+                                )
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context,
+                          url,
+                          error) => AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
+                          width: double.infinity,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                              )
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // SizedBox(height: 5,),
+                    ListTile(contentPadding: EdgeInsets.zero,title: Text("${feedData[index]['name']}", maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text('${feedData[index]['author']}', maxLines: 1, overflow: TextOverflow.ellipsis,),),
+
+
+                  ],
+                ),
+              ),
+            );
+          }
+
+        });
+        break;
+      case "episode":
+        return ListView.builder(controller: _controller,itemCount: feedData.length + 1,itemBuilder: (context, int index){
+          if(index > feedData.length -1){
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(10),
+                    color: Color(0xff222222)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            height:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            decoration: BoxDecoration(
+                                color:
+                                Color(0xff161616),
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10)),
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+                            children: [
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 16,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    3,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 8,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    4,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                2),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width *
+                                0.75),
+                      ),
+                      Padding(
+                        padding:
+                        const EdgeInsets.symmetric(
+                            vertical: 20),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10),
+                                color:
+                                Color(0xff161616),
+                              ),
+                              height: 25,
+                              width:
+                              MediaQuery.of(context)
+                                  .size
+                                  .width /
+                                  8,
+                              //    color: kSecondaryColor,
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(10),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 25,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(8),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 20,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }else{
+            return EpisodeCard(data: feedData[index], index: index,);
+          }
+        });
+        break;
+      default:
+        return Container();
+        break;
+
+        
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("${data['name']}"),
+        title: Text("${widget.data['name']}"),
       ),
-    );
+      body: _feedBuilder(context, widget.data));
+
   }
 }
 

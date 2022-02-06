@@ -267,6 +267,12 @@ class DiscoverScreen extends StatelessWidget {
       case 'featured':
         return FeaturedBuilder(data: data);
         break;
+      case 'category':
+        return Container();
+        break;
+      default:
+        return Container();
+        break;
     }
   }
 
@@ -280,7 +286,7 @@ class DiscoverScreen extends StatelessWidget {
           ];
         },
         body: Container(
-          height: MediaQuery.of(context).size.height,
+          // height: MediaQuery.of(context).size.height,
           child: FutureBuilder(
             future: getDiscoverStructure(),
             builder: (context, snapshot){
