@@ -11,7 +11,7 @@ class Seekbar extends StatefulWidget {
   final Function(Duration) seekTo;
 
   Seekbar(
-      {@required this.dominantColor,
+      {this.dominantColor,
       @required this.currentPosition,
       @required this.duration,
       @required this.episodeName,
@@ -103,12 +103,12 @@ class _SeekbarState extends State<Seekbar> {
               //     disabledThumbRadius: 5),
               ),
           child: Slider(
-            activeColor: themeProvider.isLightTheme == false
-                ? Colors.white
-                : kPrimaryColor,
-            inactiveColor: widget.dominantColor == null
-                ? Colors.blue
-                : Color(widget.dominantColor),
+            activeColor:
+                Colors.white,
+
+            inactiveColor:
+                 Colors.white.withOpacity(0.5),
+
             min: 0,
             max: widget.duration.inMilliseconds.toDouble(),
             value: percent * widget.duration.inMilliseconds.toDouble(),

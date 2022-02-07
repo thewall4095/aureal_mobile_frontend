@@ -211,7 +211,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
     try{
       var response = await dio.get(url, cancelToken: _cancel);
       print(response.data['data']);
-      // playListGenerator(data: response.data['data']);
+      playListGenerator(data: response.data['data']);
       if(response.statusCode == 200){
 
         return response.data['data'];

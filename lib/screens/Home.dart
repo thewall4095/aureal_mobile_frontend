@@ -840,7 +840,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
             bounce: true,
             context: context,
             builder: (context) {
-              return Player();
+              return Player2();
             });
         // Navigator.pushNamed(context, Player.id);
       },
