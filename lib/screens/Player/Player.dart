@@ -52,22 +52,18 @@ class Player2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-      appBar: AppBar(automaticallyImplyLeading: false, backgroundColor: Colors.transparent, elevation: 0,),
-      body: Container(
-        width: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Banner(),
-            PlayerPlaybackButtons(),
+    return Container(
+      width: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Banner(),
+          PlayerPlaybackButtons(),
 
 
 
-          ],
-        ),
+        ],
       ),
     );
   }
