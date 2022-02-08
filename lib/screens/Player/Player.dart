@@ -100,6 +100,44 @@ class PlayerPlaybackButtons extends StatefulWidget {
 }
 
 class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
+
+  @override
+  void initState() {
+    // getEpisode(context);
+    // TODO: implement initState
+    super.initState();
+  }
+
+  var episodeContent;
+  var hiveUsername;
+
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+
+  Future getEpisode1() async {
+    prefs = await SharedPreferences.getInstance();
+    var playerState = Provider.of<PlayerChange>(context, listen: false);
+    String url =
+        'https://api.aureal.one/public/episode?episode_id=${playerState.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id}&user_id=${prefs.getString('userId')}';
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['episode'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -372,28 +410,102 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                     }
                   }
                 }),
-                // Container(width: 55, height: 55, child: Icon(Icons.play_arrow, color: Color(0xff222222), size: 40,), decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   shape: BoxShape.circle
-                // ),),
+                FutureBuilder(
+                  future: getEpisode1(),
+                  builder: (context, snapshot){
+                    if(snapshot.hasData){
+                      if(snapshot.data['permlink'] == null){
+                        return Container(
+                          height: 44,
+                          width: 44,
+                          decoration: BoxDecoration(
+                            // gradient: LinearGradient(
+                            //     colors: [
+                            //       Color(
+                            //           0xff5bc3ef),
+                            //       Color(
+                            //           0xff5d5da8)
+                            //     ]
+                            // ),
+                              color: Colors.grey,
+                              shape: BoxShape.circle
+                          ),
+                          child: Icon(FontAwesomeIcons.chevronCircleUp, color: Colors.black54,),
+                        );
+                      }else{
+                        if(snapshot.data['ifVoted'] == false){
+                          return InkWell(
+                            onTap: (){
 
-                Container(
-                  height: 44,
-                  width: 44,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(
-                            0xff5bc3ef),
-                        Color(
-                            0xff5d5da8)
-                      ]
-                    ),
-color: Colors.white,
-                    shape: BoxShape.circle
-                  ),
-                  child: Icon(FontAwesomeIcons.chevronCircleUp),
+                            },
+                            child: Container(
+                              height: 44,
+                              width: 44,
+                              decoration: BoxDecoration(
+                                // gradient: LinearGradient(
+                                //     colors: [
+                                //       Color(
+                                //           0xff5bc3ef),
+                                //       Color(
+                                //           0xff5d5da8)
+                                //     ]
+                                // ),
+                                  color: Colors.white,
+                                  shape: BoxShape.circle
+                              ),
+                              child: ShaderMask(shaderCallback: (bounds) => LinearGradient(
+                                // center: Alignment.center,
+                                // radius: 0.5,
+                                colors: [Colors.blue, Colors.red],
+                                tileMode: TileMode.mirror,
+                              ).createShader(bounds),child: Icon(FontAwesomeIcons.chevronCircleUp, color: Colors.white,)),
+                            ),
+                          );
+                        }else{
+                          return Container(
+                            height: 44,
+                            width: 44,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    colors: [
+                                      Color(
+                                          0xff5bc3ef),
+                                      Color(
+                                          0xff5d5da8)
+                                    ]
+                                ),
+                                color: Colors.white,
+                                shape: BoxShape.circle
+                            ),
+                            child: Icon(FontAwesomeIcons.chevronCircleUp),
+                          );
+                        }
+
+                      }
+                    }else{
+                      return Container(
+                        height: 44,
+                        width: 44,
+                        decoration: BoxDecoration(
+                            // gradient: LinearGradient(
+                            //     colors: [
+                            //       Color(
+                            //           0xff5bc3ef),
+                            //       Color(
+                            //           0xff5d5da8)
+                            //     ]
+                            // ),
+                            color: Colors.grey,
+                            shape: BoxShape.circle
+                        ),
+                        child: Icon(FontAwesomeIcons.chevronCircleUp, color: Colors.black54,),
+                      );
+                    }
+                  },
                 ),
+
+
+
                 IconButton(onPressed: (){
                   episodeObject.audioPlayer
                       .seekBy(Duration(
@@ -432,19 +544,26 @@ class _PLayerBottomSheetState extends State<PLayerBottomSheet> with TickerProvid
   int index = 0;
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _tabController.addListener(() {
       if(_tabController.indexIsChanging){
-        showModalBottomSheet(
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            barrierColor: Colors.transparent,
-            isDismissible: true,
-            // bounce: true,
-            context: context,
-            builder: (context) {
-              return SheetView(index: _tabController.index);
-            });
+        // showModalBottomSheet(
+        //     isScrollControlled: true,
+        //     backgroundColor: Colors.transparent,
+        //     barrierColor: Colors.transparent,
+        //     isDismissible: true,
+        //     // bounce: true,
+        //     context: context,
+        //     builder: (context) {
+        //       return SheetView(index: _tabController.index);
+        //     });
 
       }
     });
@@ -455,17 +574,68 @@ class _PLayerBottomSheetState extends State<PLayerBottomSheet> with TickerProvid
           sigmaX: 15.0,
         ),
         child: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TabBar(
-              controller: _tabController,
-              // indicatorColor: Colors.transparent,
-              tabs: [
-                Tab(text: "UP NEXT",),
-                Tab(text: "TRANSCRIPT",),
-                Tab(text: "RELATED",)
-              ],
-            ),
+          color: Colors.black.withOpacity(0.3),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: (){
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      barrierColor: Colors.transparent,
+                      isDismissible: true,
+                      // bounce: true,
+                      context: context,
+                      builder: (context) {
+                        return SheetView(index: 0);
+                      });
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  height: 70,
+                  child: Center(child: Text("UP NEXT")),
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      barrierColor: Colors.transparent,
+                      isDismissible: true,
+                      // bounce: true,
+                      context: context,
+                      builder: (context) {
+                        return SheetView(index: 1);
+                      });
+                },
+                child: Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Center(child: Text("TRANSCRIPT")),
+                ),
+              ),
+              InkWell(
+                onTap: (){
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      barrierColor: Colors.transparent,
+                      isDismissible: true,
+                      // bounce: true,
+                      context: context,
+                      builder: (context) {
+                        return SheetView(index: 2);
+                      });
+                },
+                child: Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Center(child: Text("RELATED")),
+                ),
+              ),
+
+            ],
           ),
         ),
       ),
@@ -492,6 +662,14 @@ class _SheetViewState extends State<SheetView> with TickerProviderStateMixin{
     // TODO: implement initState
     _tabController = TabController(vsync: this, length: 3, initialIndex: widget.index);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _tabController.dispose();
+    nestedScrollController.dispose();
+    super.dispose();
   }
 
 
@@ -532,7 +710,7 @@ class _SheetViewState extends State<SheetView> with TickerProviderStateMixin{
                         episodeObject.audioPlayer.builderCurrent(
                           builder: (context, Playing playing) {
                             return SongSelector(
-                              audios: episodeObject.playList,
+                              audios: playing.playlist.audios,
                               onPlaylistSelected: (myAudios) {
                                 episodeObject.audioPlayer.open(
                                   Playlist(audios: myAudios),

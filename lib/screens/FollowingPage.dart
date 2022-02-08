@@ -226,6 +226,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
 
 
 
+  List<Audio> playlist;
 
   void playListGenerator({List data}) async {
     var episodeObject = Provider.of<PlayerChange>(context, listen: false);
@@ -247,7 +248,8 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
         ));
     }
 
-    episodeObject.playList = playable;
+    playlist = playable;
+    print(playlist);
     // episodeObject.dispose();
 
 
@@ -308,7 +310,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
                   //   ),
                   // ),
                   ColumnBuilder(itemBuilder: (context, int index){
-                    return EpisodeCard(data: snapshot.data[index], index: index);
+                    return EpisodeCard(data: snapshot.data[index], index: index, playlist: playlist,);
                   }, itemCount: snapshot.data.length)
 
                 ],
@@ -778,9 +780,10 @@ class EpisodeCard extends StatelessWidget {
 
   final data;
   final index;
+  List<Audio> playlist;
 
 
-  EpisodeCard({@required this.data, this.index});
+  EpisodeCard({@required this.data, this.index, this.playlist});
 
   SharedPreferences prefs;
 
@@ -1000,7 +1003,7 @@ class EpisodeCard extends StatelessWidget {
                       ),
                     ),
 
-                    PlaybackButtons(data: data, index: index)
+                    PlaybackButtons(data: data, index: index, playlist: playlist,)
 
                   ],
                 ),
@@ -1019,7 +1022,9 @@ class PlaybackButtons extends StatefulWidget {
 
   int index;
 
-  PlaybackButtons({@required this.data,  this.index});
+  List<Audio> playlist;
+
+  PlaybackButtons({@required this.data,  this.index, this.playlist});
 
   @override
   _PlaybackButtonsState createState() => _PlaybackButtonsState();
@@ -1264,7 +1269,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
                   onTap: () {
                     episodeObject.audioPlayer.open(
                         Playlist(
-                            audios: episodeObject.playList,
+                            audios: widget.playlist,
                             startIndex: widget.index),
                         showNotification: true);
                   },
@@ -2270,6 +2275,8 @@ class _SeeMoreState extends State<SeeMore> {
   List feedData = [];
   int page = 0;
 
+  List<Audio> playlist;
+
 
   void playListGenerator({List data}) async {
     var episodeObject = Provider.of<PlayerChange>(context, listen: false);
@@ -2291,7 +2298,7 @@ class _SeeMoreState extends State<SeeMore> {
       ));
     }
 
-    episodeObject.playList = playable;
+    playlist = playable;
     // episodeObject.dispose();
 
 
@@ -2306,21 +2313,21 @@ class _SeeMoreState extends State<SeeMore> {
       var response = await dio.get(url, cancelToken: _cancel);
       if(response.statusCode == 200){
         if(page == 0){
-          if(widget.data['type'] == 'episode'){
-            playListGenerator(data: response.data['data']);
-          }
-
           setState(() {
             feedData = response.data['data'];
             page = page + 1;
+            if(widget.data['type'] == 'episode'){
+              playListGenerator(data: feedData);
+            }
           });
         }else{
-          if(widget.data['type'] == 'episode'){
-            playListGenerator(data: response.data['data']);
-          }
+
           setState(() {
             feedData = feedData + response.data['data'];
             page = page + 1;
+            if(widget.data['type'] == 'episode'){
+              playListGenerator(data: feedData);
+            }
           });
         }
 
@@ -2645,7 +2652,7 @@ class _SeeMoreState extends State<SeeMore> {
               ),
             );
           }else{
-            return EpisodeCard(data: feedData[index], index: index,);
+            return EpisodeCard(data: feedData[index], index: index, playlist: playlist,);
           }
         });
         break;
