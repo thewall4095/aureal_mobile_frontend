@@ -4679,7 +4679,7 @@ class Banner extends StatelessWidget {
                           style: TextStyle(
                               fontSize: SizeConfig
                                   .blockSizeHorizontal *
-                                  3.4,
+                                  5,
                               fontWeight:
                               FontWeight
                                   .bold),
