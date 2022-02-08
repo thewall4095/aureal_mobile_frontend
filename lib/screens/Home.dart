@@ -944,8 +944,8 @@ class _BottomPlayerState extends State<BottomPlayer> {
         key: UniqueKey(),
         onDismissed: (direction) {
           setState(() {
-            episodeObject.episodeName = null;
-            episodeObject.pause();
+            // episodeObject.episodeName = null;
+            episodeObject.audioPlayer.pause();
           });
         },
         child: ClipRect(
@@ -966,6 +966,52 @@ class _BottomPlayerState extends State<BottomPlayer> {
                     width: 0,
                   );
                 } else {
+                  return ListTile(
+                    trailing: infos.isPlaying == true
+                        ? IconButton(
+                      splashColor: Colors.transparent,
+                      icon: Icon(
+                        Icons.pause,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        episodeObject.audioPlayer.pause();
+                      },
+                    )
+                        : IconButton(
+                      splashColor: Colors.blue,
+                      icon: Icon(
+                        Icons.play_arrow,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        episodeObject.resume();
+                      },
+                    ),
+                    leading: CachedNetworkImage(
+                      width: 40,
+                      height: 40,
+                      imageUrl: infos.current.audio.audio.metas.image.path,
+                      imageBuilder: (context, imageProvider) {
+                        return Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: imageProvider, fit: BoxFit.cover)),
+                        );
+                      },
+                    ),
+                    title: Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Text(
+                        "${infos.current.audio.audio.metas.title}",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  );
                   if (infos.isBuffering == true) {
                     return SizedBox();
                   } else {
