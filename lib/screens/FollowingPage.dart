@@ -2253,9 +2253,171 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   }
 }
 
+
+class SubCategoryView extends StatefulWidget {
+
+  final data;
+
+  SubCategoryView({@required this.data});
+
+  @override
+  _SubCategoryViewState createState() => _SubCategoryViewState();
+}
+
+class _SubCategoryViewState extends State<SubCategoryView> {
+
+  ScrollController _controller = ScrollController();
+
+  SharedPreferences prefs;
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  int page = 0;
+
+  List feedData = [];
+
+  Future getData() async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/subcategoryPodcasts/${widget.data['id']}?pageSize=16&page=$page&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        if(page == 0){
+          setState(() {
+            feedData = response.data['data'];
+            page = page + 1;
+          });
+        }else{
+          setState(() {
+            feedData =  feedData + response.data['data'];
+            page = page + 1;
+          });
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    getData();
+
+    super.initState();
+    _controller.addListener(() {
+      if(_controller.position.pixels == _controller.position.maxScrollExtent){
+        getData();
+      }
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("${widget.data['name']}"), backgroundColor: Colors.transparent, elevation: 0,),
+        body: GridView.builder(controller: _controller,itemCount: feedData.length + 2,gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+          MediaQuery.of(context)
+              .orientation ==
+              Orientation
+                  .landscape
+              ? 3
+              : 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: (1 / 1.36),
+        ), itemBuilder: (context, int index){
+          if(index > feedData.length - 1){
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                    color: Color(0xff121212),
+                    borderRadius: BorderRadius.circular(3),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                    )
+                ),
+              ),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:   InkWell(
+                onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return PodcastView(feedData[index]['id']);
+                  }));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      placeholder: (context, String url){
+                        return AspectRatio(aspectRatio: 1.0, child: Container(width: double.infinity, decoration: BoxDecoration(color: Color(0xff121212), borderRadius: BorderRadius.circular(3)),));
+                      },
+
+                      imageUrl: feedData[index]['image'],
+                      imageBuilder: (context, imageProvider){
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: double.infinity,
+
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover
+                                )
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context,
+                          url,
+                          error) => AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
+                          width: double.infinity,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                              )
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // SizedBox(height: 5,),
+                    ListTile(contentPadding: EdgeInsets.zero,title: Text("${feedData[index]['name']}", maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text('${feedData[index]['author']}', maxLines: 1, overflow: TextOverflow.ellipsis,),),
+
+
+                  ],
+                ),
+              ),
+            );
+          }
+
+        }),
+    );
+  }
+}
+
+
 class SeeMore extends StatefulWidget {
 
   final data;
+
 
  SeeMore({@required this.data});
 
@@ -2308,15 +2470,17 @@ class _SeeMoreState extends State<SeeMore> {
   Future getData({var apicall}) async {
     prefs = await SharedPreferences.getInstance();
     String url = "https://api.aureal.one/public/$apicall?pageSize=16&page=$page&user_id=${prefs.getString('userId')}";
+    print(url);
 
     try{
       var response = await dio.get(url, cancelToken: _cancel);
       if(response.statusCode == 200){
+        print(response.data);
         if(page == 0){
           setState(() {
             feedData = response.data['data'];
             page = page + 1;
-            if(widget.data['type'] == 'episode'){
+            if(widget.data['type'] == 'episode' || widget.data['type'] == null){
               playListGenerator(data: feedData);
             }
           });
@@ -2325,7 +2489,7 @@ class _SeeMoreState extends State<SeeMore> {
           setState(() {
             feedData = feedData + response.data['data'];
             page = page + 1;
-            if(widget.data['type'] == 'episode'){
+            if(widget.data['type'] == 'episode' || widget.data['type'] == null){
               playListGenerator(data: feedData);
             }
           });

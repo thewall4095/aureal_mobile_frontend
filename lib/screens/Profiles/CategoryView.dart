@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
@@ -901,23 +902,26 @@ class CategoryView extends StatelessWidget {
         elevation: 0,
         title: Text("${categoryObject['name']}"),
       ),
-      body: Container(
-    // height: MediaQuery.of(context).size.height,
-    child: FutureBuilder(
-    future: getCategoryStructure(categoryObject: categoryObject),
-    builder: (context, snapshot){
-    if(snapshot.hasData){
-    return ListView.builder(addAutomaticKeepAlives: true,itemBuilder: (context, int index){
-    return _feedBuilder(context, snapshot.data[index]);
-    }, itemCount: snapshot.data.length,);
-    }else{
-    return SizedBox();
-    }
+      body: Stack(
+        children: [Container(
+          // height: MediaQuery.of(context).size.height,
+          child: FutureBuilder(
+            future: getCategoryStructure(categoryObject: categoryObject),
+            builder: (context, snapshot){
+              if(snapshot.hasData){
+                return ListView.builder(addAutomaticKeepAlives: true,itemBuilder: (context, int index){
+                  return _feedBuilder(context, snapshot.data[index]);
+                }, itemCount: snapshot.data.length,);
+              }else{
+                return SizedBox();
+              }
 
-    },
+            },
 
-    ),
-    ),
+          ),
+        ), Align(alignment: Alignment.bottomCenter,child: BottomPlayer())],
+
+      ),
     );
   }
 }

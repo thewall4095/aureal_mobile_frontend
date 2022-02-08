@@ -436,6 +436,16 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                         if(snapshot.data['ifVoted'] == false){
                           return InkWell(
                             onTap: (){
+                              showDialog(context: context, builder: (context){
+                                return Dialog(
+                                  child: UpvoteEpisode(permlink: snapshot.data['permlink'], episode_id: snapshot.data['id'],),
+                                );
+
+                              }).then((value) {
+                                setState(() {
+                                  snapshot.data['ifVoted'] = true;
+                                });
+                              });
 
                             },
                             child: Container(

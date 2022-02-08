@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
@@ -223,6 +224,39 @@ class SearchFunctionality extends SearchDelegate {
     LineIcons.television
   ];
 
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  Future getCategories() async {
+    String url = "https://api.aureal.one/public/getCategory";
+    print(url);
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        print(response.data);
+        return response.data['allCategory'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
+  Future getSubCategories() async {
+    String url = "https://api.aureal.one/public/getSubcategory";
+
+    try{
+      var response = await dio.get(url,cancelToken:  _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
@@ -232,46 +266,105 @@ class SearchFunctionality extends SearchDelegate {
     var search = Provider.of<SearchResultProvider>(context, listen: false);
 
     return Container(
-      color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
-      child: ListView.builder(
-          itemCount: _icons.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, int index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xff161616),
-                    borderRadius: BorderRadius.circular(8)),
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) {
-                      return CategoryView(
-                        categoryObject: categories.categoryList[index],
-                      );
-                    }));
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height
+      ),
+      color: Colors.black,
+      height: MediaQuery.of(context).size.height,
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
 
-                  // selected: userselectedCategories
-                  //     .toSet()
-                  //     .toList()
-                  //     .contains(availableCategories[index]['id']),
-                  leading: Icon(
-                    _icons[index],
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "${categories.categoryList[index]['name']}",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return CategoryView(categoryObject: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container();
+                  }
+
+                },
               ),
-            );
-          }),
+            ],
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Sub Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getSubCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.blue)),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return SubCategoryView(data: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container();
+                  }
+
+                },
+              ),
+            ],
+          )
+
+          ],
+
+      ),
     );
   }
 }
