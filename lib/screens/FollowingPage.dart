@@ -162,6 +162,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
                 children: [
                   for(var v in snapshot.data)
                     _feedBuilder(context, v),
+                  SizedBox(height: 150,),
                 ],
               );
             }else{

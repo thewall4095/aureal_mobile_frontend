@@ -373,8 +373,13 @@ class DiscoverScreen extends StatelessWidget {
             builder: (context, snapshot){
               if(snapshot.hasData){
                 return ListView.builder(addAutomaticKeepAlives: true,itemBuilder: (context, int index){
-                  return _feedBuilder(context, snapshot.data[index]);
-                }, itemCount: snapshot.data.length,);
+                  if(index == snapshot.data.length){
+                    return SizedBox(height: 150,);
+                  }else{
+                    return _feedBuilder(context, snapshot.data[index]);
+                  }
+
+                }, itemCount: snapshot.data.length + 1,);
               }else{
                 return SizedBox();
               }
