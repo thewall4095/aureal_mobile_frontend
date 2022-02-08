@@ -690,75 +690,167 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:
-            themeProvider.isLightTheme == false ? Colors.black : Colors.white,
-        elevation: 10,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        unselectedItemColor:
-            themeProvider.isLightTheme == true ? Colors.black : Colors.white,
-        selectedItemColor: Colors.blue,
-        //Color(0xff5bc3ef),
-        // backgroundColor: Colors.transparent,
-        items: <BottomNavigationBarItem>[
-          // BottomNavigationBarItem(
-          //   icon: Icon(
-          //     Icons.stream,
-          //   ),
-          //   activeIcon: Icon(Icons.stream),
-          //   label: '',
-          // ),
-
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(
-              Icons.home_sharp,
-              size: 30,
-            ),
-            activeIcon: Icon(
-              Icons.home_rounded,
-              size: 30,
-            ),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(FontAwesomeIcons.compass),
-            activeIcon: Icon(FontAwesomeIcons.solidCompass),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.library_books_outlined),
-            activeIcon: Icon(Icons.library_books),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.casino_outlined),
-            activeIcon: Icon(Icons.casino_outlined),
-          )
-          // BottomNavigationBarItem(
-          //   label: "",
-          //   icon: Icon(
-          //     Icons.perm_identity,
-          //     size: 28,
-          //   ),
-          //   activeIcon: Icon(
-          //     Icons.person,
-          //     size: 28,
-          //   ),
-          // ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-      bottomSheet: BottomPlayer(),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   backgroundColor:
+      //   Colors.black,
+      //   elevation: 10,
+      //   type: BottomNavigationBarType.fixed,
+      //   showUnselectedLabels: false,
+      //   showSelectedLabels: false,
+      //   unselectedItemColor:
+      //   Colors.white,
+      //   selectedItemColor: Colors.blue,
+      //   //Color(0xff5bc3ef),
+      //   // backgroundColor: Colors.transparent,
+      //   items: <BottomNavigationBarItem>[
+      //     // BottomNavigationBarItem(
+      //     //   icon: Icon(
+      //     //     Icons.stream,
+      //     //   ),
+      //     //   activeIcon: Icon(Icons.stream),
+      //     //   label: '',
+      //     // ),
+      //
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: Icon(
+      //         Icons.home_sharp,
+      //         size: 30,
+      //       ),
+      //       activeIcon: Icon(
+      //         Icons.home_rounded,
+      //         size: 30,
+      //       ),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: Icon(FontAwesomeIcons.compass),
+      //       activeIcon: Icon(FontAwesomeIcons.solidCompass),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: Icon(Icons.library_books_outlined),
+      //       activeIcon: Icon(Icons.library_books),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: Icon(Icons.casino_outlined),
+      //       activeIcon: Icon(Icons.casino_outlined),
+      //     )
+      //     // BottomNavigationBarItem(
+      //     //   label: "",
+      //     //   icon: Icon(
+      //     //     Icons.perm_identity,
+      //     //     size: 28,
+      //     //   ),
+      //     //   activeIcon: Icon(
+      //     //     Icons.person,
+      //     //     size: 28,
+      //     //   ),
+      //     // ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
+      // bottomSheet: BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
             content: Text('Tap back again to leave'),
           ),
-          child: _createPage(context, _selectedIndex)),
+          child: Stack(children: [_createPage(context, _selectedIndex), Align(
+            alignment: Alignment.bottomCenter,
+            child: ClipRect(
+
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaY: 15.0,
+                  sigmaX: 15.0,
+                ),
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _selectedIndex == 3? SizedBox():BottomPlayer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black
+                          ),
+                          child: BottomNavigationBar(
+                            selectedFontSize: 0,
+                            backgroundColor:
+                            Colors.transparent,
+                            elevation: 10,
+                            type: BottomNavigationBarType.fixed,
+                            showUnselectedLabels: false,
+                            showSelectedLabels: false,
+                            unselectedItemColor:
+                            Colors.white,
+                            selectedItemColor: Colors.blue,
+                            //Color(0xff5bc3ef),
+                            // backgroundColor: Colors.transparent,
+                            items: <BottomNavigationBarItem>[
+                              // BottomNavigationBarItem(
+                              //   icon: Icon(
+                              //     Icons.stream,
+                              //   ),
+                              //   activeIcon: Icon(Icons.stream),
+                              //   label: '',
+                              // ),
+
+                              BottomNavigationBarItem(
+
+                                label: "",
+                                icon: Icon(
+                                  Icons.home_sharp,
+                                  size: 22,
+                                ),
+                                activeIcon: Icon(
+                                  Icons.home_rounded,
+                                  size: 22,
+                                ),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(FontAwesomeIcons.compass,size: 22,),
+                                activeIcon: Icon(FontAwesomeIcons.solidCompass,size: 22,),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(Icons.library_books_outlined,size: 22,),
+                                activeIcon: Icon(Icons.library_books,size: 22,),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(Icons.casino_outlined,size: 22,),
+                                activeIcon: Icon(Icons.casino_outlined,size: 22,),
+                              )
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(
+                              //     Icons.perm_identity,
+                              //     size: 28,
+                              //   ),
+                              //   activeIcon: Icon(
+                              //     Icons.person,
+                              //     size: 28,
+                              //   ),
+                              // ),
+                            ],
+                            currentIndex: _selectedIndex,
+                            onTap: _onItemTapped,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )])),
     );
   }
 }
@@ -836,8 +928,12 @@ class _BottomPlayerState extends State<BottomPlayer> {
 
     return GestureDetector(
       onTap: () {
-        showBarModalBottomSheet(
-            bounce: true,
+        showModalBottomSheet(
+            isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+            barrierColor: Colors.transparent,
+            isDismissible: true,
+            // bounce: true,
             context: context,
             builder: (context) {
               return Player2();
@@ -852,75 +948,84 @@ class _BottomPlayerState extends State<BottomPlayer> {
             episodeObject.pause();
           });
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xff161616),
-          ),
-          child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-              builder: (context, infos) {
-            if (infos == null) {
-              return SizedBox(
-                height: 0,
-                width: 0,
-              );
-            } else {
-              if (infos.isBuffering == true) {
-                return SizedBox();
-              } else {
-                if (count == 0) {
-                  episodeObject
-                      .episodeViewed(infos.current.audio.audio.metas.id);
-                  count++;
-                }
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                // color: Colors.transparent
+              ),
+              child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                  builder: (context, infos) {
+                if (infos == null) {
+                  return SizedBox(
+                    height: 0,
+                    width: 0,
+                  );
+                } else {
+                  if (infos.isBuffering == true) {
+                    return SizedBox();
+                  } else {
+                    if (count == 0) {
+                      episodeObject
+                          .episodeViewed(infos.current.audio.audio.metas.id);
+                      count++;
+                    }
 
-                return ListTile(
-                  trailing: infos.isPlaying == true
-                      ? IconButton(
-                          splashColor: Colors.transparent,
-                          icon: Icon(
-                            Icons.pause,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.audioPlayer.pause();
-                          },
-                        )
-                      : IconButton(
-                          splashColor: Colors.blue,
-                          icon: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.resume();
-                          },
-                        ),
-                  leading: CachedNetworkImage(
-                    width: 40,
-                    height: 40,
-                    imageUrl: infos.current.audio.audio.metas.image.path,
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        height: 40,
+                    return ListTile(
+                      trailing: infos.isPlaying == true
+                          ? IconButton(
+                              splashColor: Colors.transparent,
+                              icon: Icon(
+                                Icons.pause,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.audioPlayer.pause();
+                              },
+                            )
+                          : IconButton(
+                              splashColor: Colors.blue,
+                              icon: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.resume();
+                              },
+                            ),
+                      leading: CachedNetworkImage(
                         width: 40,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover)),
-                      );
-                    },
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Text(
-                      "${infos.current.audio.audio.metas.title}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                );
-              }
-            }
-          }),
+                        height: 40,
+                        imageUrl: infos.current.audio.audio.metas.image.path,
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover)),
+                          );
+                        },
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Text(
+                          "${infos.current.audio.audio.metas.title}",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    );
+                  }
+                }
+              }),
+            ),
+          ),
         ),
       ),
     );

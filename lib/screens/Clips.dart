@@ -269,113 +269,113 @@ print("dispose is getting called on Clips");
       body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
-              SliverAppBar(
-                backgroundColor: Color(0xff161616),
-                automaticallyImplyLeading: false,
-                expandedHeight: 20,
-                pinned: true,
-                //     backgroundColor: kPrimaryColor,
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(5),
-                  child: Container(
-                    height: 60,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        height: 30,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      page = 0;
-                                      selectedCategory = 30;
-                                    });
-                                    audioPlayer.stop();
-                                    getAllSnippetsWOCategory();
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: kSecondaryColor),
-                                          color: selectedCategory == 30
-                                              ? Color(0xff3a3a3a)
-                                              : Colors.transparent,
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 3),
-                                        child: Center(
-                                          child: Text(
-                                            "All",
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                                //  color:
-                                                // Color(0xffe8e8e8),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    2.5),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                for (var v in categories.categoryList)
-                                  GestureDetector(
-                                    onTap: () {
-                                      audioPlayer.stop();
-                                      setState(() {
-                                        page = 0;
-                                        selectedCategory = v['id'];
-                                      });
-                                      getAllSnippets(v['id']);
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(2.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: kSecondaryColor),
-                                            color: selectedCategory == v['id']
-                                                ? Color(0xff3a3a3a)
-                                                : Colors.transparent,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 3),
-                                          child: Center(
-                                            child: Text(
-                                              v['name'],
-                                              textScaleFactor: 1.0,
-                                              style: TextStyle(
-                                                  //  color:
-                                                  // Color(0xffe8e8e8),
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      2.5),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // SliverAppBar(
+              //   backgroundColor: Color(0xff161616),
+              //   automaticallyImplyLeading: false,
+              //   expandedHeight: 20,
+              //   pinned: true,
+              //   //     backgroundColor: kPrimaryColor,
+              //   // bottom: PreferredSize(
+              //   //   preferredSize: Size.fromHeight(5),
+              //   //   child: Container(
+              //   //     height: 60,
+              //   //     child: Padding(
+              //   //       padding: const EdgeInsets.symmetric(vertical: 10),
+              //   //       child: Container(
+              //   //         height: 30,
+              //   //         child: ListView(
+              //   //           scrollDirection: Axis.horizontal,
+              //   //           children: [
+              //   //             Row(
+              //   //               children: [
+              //   //                 GestureDetector(
+              //   //                   onTap: () {
+              //   //                     setState(() {
+              //   //                       page = 0;
+              //   //                       selectedCategory = 30;
+              //   //                     });
+              //   //                     audioPlayer.stop();
+              //   //                     getAllSnippetsWOCategory();
+              //   //                   },
+              //   //                   child: Padding(
+              //   //                     padding: const EdgeInsets.all(2.0),
+              //   //                     child: Container(
+              //   //                       decoration: BoxDecoration(
+              //   //                           border: Border.all(
+              //   //                               color: kSecondaryColor),
+              //   //                           color: selectedCategory == 30
+              //   //                               ? Color(0xff3a3a3a)
+              //   //                               : Colors.transparent,
+              //   //                           borderRadius:
+              //   //                               BorderRadius.circular(20)),
+              //   //                       child: Padding(
+              //   //                         padding: const EdgeInsets.symmetric(
+              //   //                             horizontal: 15, vertical: 3),
+              //   //                         child: Center(
+              //   //                           child: Text(
+              //   //                             "All",
+              //   //                             textScaleFactor: 1.0,
+              //   //                             style: TextStyle(
+              //   //                                 //  color:
+              //   //                                 // Color(0xffe8e8e8),
+              //   //                                 fontSize: SizeConfig
+              //   //                                         .safeBlockHorizontal *
+              //   //                                     2.5),
+              //   //                           ),
+              //   //                         ),
+              //   //                       ),
+              //   //                     ),
+              //   //                   ),
+              //   //                 ),
+              //   //                 for (var v in categories.categoryList)
+              //   //                   GestureDetector(
+              //   //                     onTap: () {
+              //   //                       audioPlayer.stop();
+              //   //                       setState(() {
+              //   //                         page = 0;
+              //   //                         selectedCategory = v['id'];
+              //   //                       });
+              //   //                       getAllSnippets(v['id']);
+              //   //                     },
+              //   //                     child: Padding(
+              //   //                       padding: const EdgeInsets.all(2.0),
+              //   //                       child: Container(
+              //   //                         decoration: BoxDecoration(
+              //   //                             border: Border.all(
+              //   //                                 color: kSecondaryColor),
+              //   //                             color: selectedCategory == v['id']
+              //   //                                 ? Color(0xff3a3a3a)
+              //   //                                 : Colors.transparent,
+              //   //                             borderRadius:
+              //   //                                 BorderRadius.circular(20)),
+              //   //                         child: Padding(
+              //   //                           padding: const EdgeInsets.symmetric(
+              //   //                               horizontal: 15, vertical: 3),
+              //   //                           child: Center(
+              //   //                             child: Text(
+              //   //                               v['name'],
+              //   //                               textScaleFactor: 1.0,
+              //   //                               style: TextStyle(
+              //   //                                   //  color:
+              //   //                                   // Color(0xffe8e8e8),
+              //   //                                   fontSize: SizeConfig
+              //   //                                           .safeBlockHorizontal *
+              //   //                                       2.5),
+              //   //                             ),
+              //   //                           ),
+              //   //                         ),
+              //   //                       ),
+              //   //                     ),
+              //   //                   ),
+              //   //               ],
+              //   //             ),
+              //   //           ],
+              //   //         ),
+              //   //       ),
+              //   //     ),
+              //   //   ),
+              //   // ),
+              // ),
             ];
           },
           body: SnippetStoryView(data: snippets, index: 0,)),
@@ -591,19 +591,14 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
         ),
         ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            filter: ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
               ),
-            ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(1.0),
-            gradient: LinearGradient(
-                colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
             ),
           ),
         ),
@@ -642,6 +637,18 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
                       },
                     ),
                   ),
+                  snippetPlayer.snippetPlayer
+                      .builderRealtimePlayingInfos(
+                      builder: (context, infos) {
+                        if (infos != null) {
+                          return ClipSeekBar(
+                              currentPosition: infos.currentPosition,
+                              duration: infos.duration,
+                              audioplayer: snippetPlayer.snippetPlayer);
+                        } else {
+                          return SizedBox();
+                        }
+                      }),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -782,21 +789,11 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
             ),
           ),
         ),
+
         Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            snippetPlayer.snippetPlayer
-                .builderRealtimePlayingInfos(
-                builder: (context, infos) {
-                  if (infos != null) {
-                    return ClipSeekBar(
-                        currentPosition: infos.currentPosition,
-                        duration: infos.duration,
-                        audioplayer: snippetPlayer.snippetPlayer);
-                  } else {
-                    return SizedBox();
-                  }
-                }),
+
           ],
         )
       ],
@@ -880,9 +877,11 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
   @override
   Widget build(BuildContext context) {
     return SliderTheme(
+
       data: SliderThemeData(
+
         trackShape: CustomTrackShape(),
-        trackHeight: 5,
+        trackHeight: 1,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0),
         activeTrackColor: Color(0xffe8e8e8),
            inactiveTrackColor: Colors.transparent,
@@ -895,8 +894,8 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
         //     disabledThumbRadius: 5),
       ),
       child: Slider(
-        activeColor: widget.color,
-        inactiveColor: Colors.white.withOpacity(0.5),
+        // activeColor: Colors.white,
+        // inactiveColor: Colors.white.withOpacity(0.5),
         min: 0,
         max: widget.duration.inMilliseconds.toDouble(),
         value: percent * widget.duration.inMilliseconds.toDouble(),
@@ -916,7 +915,9 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
             _visibleValue = to;
           });
         },
+
       ),
+
     );
   }
 }

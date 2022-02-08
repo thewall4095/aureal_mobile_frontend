@@ -52,18 +52,36 @@ class Player2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Banner(),
-          PlayerPlaybackButtons(),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.2)
+        ),
+        child: ClipRect(
+
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+            ),
+            child: Container(
+              color: Colors.transparent,
+              width: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Banner(),
+                  PlayerPlaybackButtons(),
 
 
 
-        ],
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -110,10 +128,11 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                 }
               }),
 
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(onPressed: (){
 
@@ -123,7 +142,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                   radius: 22,
                   child: IconButton(icon: Icon(Icons.speed, color: Color(0xff222222),),),
                 ),
-                Container(width: 70, height: 70, child: Icon(Icons.play_arrow, color: Color(0xff222222), size: 50,), decoration: BoxDecoration(
+                Container(width: 55, height: 55, child: Icon(Icons.play_arrow, color: Color(0xff222222), size: 40,), decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle
                 ),),
@@ -153,6 +172,7 @@ color: Colors.white,
               ],
             ),
           ),
+
 
 
         ],
