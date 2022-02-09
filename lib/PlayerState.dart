@@ -153,7 +153,7 @@ class PlayerChange extends ChangeNotifier {
             title: _episodeObject['name'],
             album: _episodeObject['podcast_name'],
             artist: _episodeObject['author'],
-            image: MetasImage.network(_episodeObject['image']),
+            image: _episodeObject['image'] == null ? MetasImage.network(_episodeObject['podcast_image']):MetasImage.network(_episodeObject['image']),
           )),
       seek: dur,
       showNotification: true,

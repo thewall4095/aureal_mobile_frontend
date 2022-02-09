@@ -1108,53 +1108,62 @@ class _PodcastViewState extends State<PodcastView>
                     ),
                   ),
                   bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(80),
+                    preferredSize: Size.fromHeight(50),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TabBar(
-                            isScrollable: true,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            controller: _tabController,
-                            tabs: [
-                              Tab(
-                                text: "EPISODES",
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter : ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+              ),
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TabBar(
+                                isScrollable: true,
+                                indicatorSize: TabBarIndicatorSize.label,
+                                controller: _tabController,
+                                tabs: [
+                                  Tab(
+                                    text: "EPISODES",
+                                  ),
+                                  Tab(
+                                    text: "RELATED",
+                                  )
+                                ],
                               ),
-                              Tab(
-                                text: "RELATED",
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return LinearGradient(colors: [
+                                        Color(0xff5d5da8),
+                                        Color(0xff5bc3ef)
+                                      ]).createShader(bounds);
+                                    },
+                                    child: InkWell(
+                                      onTap: () {
+                                        showMaterialModalBottomSheet(
+                                            enableDrag: false,
+                                            context: context,
+                                            builder: (context) {
+                                              return SnippetDisplay(
+                                                podcastObject: podcastData,
+                                              );
+                                            });
+                                      },
+                                      child: Text(
+                                        "Snippets",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(fontWeight: FontWeight.w600),
+                                      ),
+                                    )),
                               )
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: ShaderMask(
-                                shaderCallback: (Rect bounds) {
-                                  return LinearGradient(colors: [
-                                    Color(0xff5d5da8),
-                                    Color(0xff5bc3ef)
-                                  ]).createShader(bounds);
-                                },
-                                child: InkWell(
-                                  onTap: () {
-                                    showMaterialModalBottomSheet(
-                                        enableDrag: false,
-                                        context: context,
-                                        builder: (context) {
-                                          return SnippetDisplay(
-                                            podcastObject: podcastData,
-                                          );
-                                        });
-                                  },
-                                  child: Text(
-                                    "Snippets",
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(fontWeight: FontWeight.w600),
-                                  ),
-                                )),
-                          )
-                        ],
+                        ),
                       ),
                     ),
                   ),

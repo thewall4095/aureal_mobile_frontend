@@ -755,7 +755,9 @@ class CategoryView extends StatelessWidget {
 
       );
       prefs = await SharedPreferences.getInstance();
-      String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+      String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}&category_id=${categoryObject['id']}";
+
+      print(url);
 
       try{
         var response = await dio.get(url, cancelToken: _cancel);
@@ -779,7 +781,7 @@ class CategoryView extends StatelessWidget {
         return PodcastWidget(data: data);
         break;
       case 'episode':
-        return EpisodeWidget(data: data);
+        return EpisodeWidget(data: data, categoryId: categoryObject['id'],);
         break;
       case "playlist":
         return PlaylistWidget(data: data);
@@ -813,7 +815,7 @@ class CategoryView extends StatelessWidget {
       case 'featured':
         return FeaturedBuilder(data: data);
         break;
-      case 'category':
+      case 'subcategory':
         return FutureBuilder(
           future: generalisedApiCall(data['api']),
           builder: (context, snapshot){
@@ -843,14 +845,14 @@ class CategoryView extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[4])),
                                 color: Color(0xff222222)
                             ),
                             child: Center(
                               child: ListTile(
                                 onTap: (){
                                   Navigator.push(context, CupertinoPageRoute(builder: (context){
-                                    return CategoryView(categoryObject: snapshot.data[index],);
+                                    return SubCategoryView(data: snapshot.data[index],);
                                   }));
                                 },
 

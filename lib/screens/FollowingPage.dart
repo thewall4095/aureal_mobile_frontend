@@ -186,8 +186,9 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
 class EpisodeWidget extends StatefulWidget {
 
   final data;
+  final categoryId;
 
-  const EpisodeWidget({@required this.data}) ;
+  EpisodeWidget({@required this.data, this.categoryId}) ;
 
   @override
   _EpisodeWidgetState createState() => _EpisodeWidgetState();
@@ -206,7 +207,11 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
 
     );
     prefs = await SharedPreferences.getInstance();
+    print(widget.categoryId);
     String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+    if(widget.categoryId != null){
+      url = url + "&category_ids=${widget.categoryId}";
+    }
     print(url);
 
     try{
@@ -230,7 +235,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
   List<Audio> playlist;
 
   void playListGenerator({List data}) async {
-    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+
     List<Audio> playable = [];
     for (int i = 0; i < data.length; i++){
       var v = data[i];
