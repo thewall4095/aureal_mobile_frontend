@@ -855,175 +855,95 @@ class _HomeState extends State<Home> {
   }
 }
 
-class BottomPlayer extends StatefulWidget {
-  @override
-  _BottomPlayerState createState() => _BottomPlayerState();
-}
+class BottomPlayer extends StatelessWidget {
+   BottomPlayer();
 
-class _BottomPlayerState extends State<BottomPlayer> {
-  // MusicPlayer player;
+   PlayerState playerstate = PlayerState.playing;
 
-  PlayerState playerstate = PlayerState.playing;
+   // ScrollController _controller = ScrollController();
+   //
+   // var status;
+   // bool _hasBeenPressed = false;
+   //
+   // SharedPreferences prefs;
+   //
+   // getLocalData() async {
+   //   prefs = await SharedPreferences.getInstance();
+   // }
+   //
+   // String changingDuration = '0.0';
+   //
+   // Duration _visibleValue;
+   // bool listenOnlyUserInteraction = false;
+   // double get percent => duration.inMilliseconds == 0
+   //     ? 0
+   //     : _visibleValue.inMilliseconds / duration.inMilliseconds;
+   //
+   // void durationToString(Duration duration) {
+   //   String twoDigits(int n) {
+   //     if (n >= 10) return "$n";
+   //     return "0$n";
+   //   }
+   //
+   //   String twoDigitMinutes =
+   //   twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+   //   String twoDigitSeconds =
+   //   twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+   //
+   //   setState(() {
+   //     changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+   //   });
+   // }
 
-  ScrollController _controller = ScrollController();
-
-  var status;
-  bool _hasBeenPressed = false;
-
-  SharedPreferences prefs;
-
-  getLocalData() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  String changingDuration = '0.0';
-
-  Duration _visibleValue;
-  bool listenOnlyUserInteraction = false;
-  double get percent => duration.inMilliseconds == 0
-      ? 0
-      : _visibleValue.inMilliseconds / duration.inMilliseconds;
-
-  void durationToString(Duration duration) {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
-    }
-
-    String twoDigitMinutes =
-        twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
-    String twoDigitSeconds =
-        twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
-
-    setState(() {
-      changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-    // episodeObject.episodeViewed(
-    //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
-
-    super.initState();
-  }
-
-  int count = 0;
+   int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     var episodeObject = Provider.of<PlayerChange>(context);
-
-    // if (episodeObject.episodeObject != null) {
-    //   episodeObject.audioPlayer.currentPosition.listen((event) {
-    //     if (episodeObject.audioPlayer.currentPosition.value ==
-    //         episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
-    //       episodeObject.customNextAction(episodeObject.audioPlayer);
-    //     }
-    //   });
-    // }
-
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-            isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-            barrierColor: Colors.transparent,
-            isDismissible: true,
-            // bounce: true,
-            context: context,
-            builder: (context) {
-              return Player2();
-            });
-        // Navigator.pushNamed(context, Player.id);
-      },
-      child: Dismissible(
-        key: UniqueKey(),
-        onDismissed: (direction) {
-          setState(() {
-            // episodeObject.episodeName = null;
-            episodeObject.audioPlayer.pause();
-          });
+    try{
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: Colors.transparent,
+              isDismissible: true,
+              // bounce: true,
+              context: context,
+              builder: (context) {
+                return Player2();
+              });
+          // Navigator.pushNamed(context, Player.id);
         },
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaY: 15.0,
-              sigmaX: 15.0,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                // color: Colors.transparent
-              ),
-              child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-                  builder: (context, infos) {
-                if (infos == null) {
-                  return SizedBox(
-                    height: 0,
-                    width: 0,
-                  );
-                } else {
-                  return ListTile(
-                    trailing: infos.isPlaying == true
-                        ? IconButton(
-                      splashColor: Colors.transparent,
-                      icon: Icon(
-                        Icons.pause,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        episodeObject.audioPlayer.pause();
-                      },
-                    )
-                        : IconButton(
-                      splashColor: Colors.blue,
-                      icon: Icon(
-                        Icons.play_arrow,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        episodeObject.resume();
-                      },
-                    ),
-                    leading: CachedNetworkImage(
-                      width: 40,
-                      height: 40,
-                      imageUrl: infos.current.audio.audio.metas.image.path,
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover)),
-                        );
-                      },
-                    ),
-                    title: Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Text(
-                        "${infos.current.audio.audio.metas.title}",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  );
-                  if (infos.isBuffering == true) {
-                    return SizedBox();
-                  } else {
-                    if (count == 0) {
-                      episodeObject
-                          .episodeViewed(infos.current.audio.audio.metas.id);
-                      count++;
-                    }
+        child: Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
 
-                    return ListTile(
-                      trailing: infos.isPlaying == true
-                          ? IconButton(
+              // episodeObject.episodeName = null;
+              episodeObject.audioPlayer.pause();
+
+          },
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaY: 15.0,
+                sigmaX: 15.0,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  // color: Colors.transparent
+                ),
+                child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                    builder: (context, infos) {
+                      if (infos == null) {
+                        return SizedBox(
+                          height: 0,
+                          width: 0,
+                        );
+                      } else {
+                        return ListTile(
+                            trailing: infos.isPlaying == true
+                                ? IconButton(
                               splashColor: Colors.transparent,
                               icon: Icon(
                                 Icons.pause,
@@ -1033,7 +953,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 episodeObject.audioPlayer.pause();
                               },
                             )
-                          : IconButton(
+                                : IconButton(
                               splashColor: Colors.blue,
                               icon: Icon(
                                 Icons.play_arrow,
@@ -1043,37 +963,284 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 episodeObject.resume();
                               },
                             ),
-                      leading: CachedNetworkImage(
-                        width: 40,
-                        height: 40,
-                        imageUrl: infos.current.audio.audio.metas.image.path,
-                        imageBuilder: (context, imageProvider) {
-                          return Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover)),
-                          );
-                        },
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Text(
-                          "${infos.current.audio.audio.metas.title}",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    );
-                  }
-                }
-              }),
+                            leading: Builder(builder: (context){
+                              try{
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+                                  errorWidget: (context, url, e){
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    );
+                                  },
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider, fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }catch(e){
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider, fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }
+                            },),
+                            title: Builder(builder: (context){
+                              try{
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: infos.current.audio == null? Text(""):Text(
+                                    "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }catch(e){
+                                return SizedBox();
+                              }
+                            },)
+                        );
+                      }
+                    }),
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }catch(e){
+      SizedBox();
+    }
   }
 }
+
+
+// class BottomPlayer extends StatefulWidget {
+//   @override
+//   _BottomPlayerState createState() => _BottomPlayerState();
+// }
+//
+// class _BottomPlayerState extends State<BottomPlayer> {
+//   // MusicPlayer player;
+//
+//   PlayerState playerstate = PlayerState.playing;
+//
+//   ScrollController _controller = ScrollController();
+//
+//   var status;
+//   bool _hasBeenPressed = false;
+//
+//   SharedPreferences prefs;
+//
+//   getLocalData() async {
+//     prefs = await SharedPreferences.getInstance();
+//   }
+//
+//   String changingDuration = '0.0';
+//
+//   Duration _visibleValue;
+//   bool listenOnlyUserInteraction = false;
+//   double get percent => duration.inMilliseconds == 0
+//       ? 0
+//       : _visibleValue.inMilliseconds / duration.inMilliseconds;
+//
+//   void durationToString(Duration duration) {
+//     String twoDigits(int n) {
+//       if (n >= 10) return "$n";
+//       return "0$n";
+//     }
+//
+//     String twoDigitMinutes =
+//         twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+//     String twoDigitSeconds =
+//         twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+//
+//     setState(() {
+//       changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+//     });
+//   }
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     // var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+//     // episodeObject.episodeViewed(
+//     //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
+//
+//     super.initState();
+//   }
+//
+//   int count = 0;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     SizeConfig().init(context);
+//     var episodeObject = Provider.of<PlayerChange>(context);
+//
+//     // if (episodeObject.episodeObject != null) {
+//     //   episodeObject.audioPlayer.currentPosition.listen((event) {
+//     //     if (episodeObject.audioPlayer.currentPosition.value ==
+//     //         episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+//     //       episodeObject.customNextAction(episodeObject.audioPlayer);
+//     //     }
+//     //   });
+//     // }
+//     try{
+//       return GestureDetector(
+//         onTap: () {
+//           showModalBottomSheet(
+//               isScrollControlled: true,
+//               backgroundColor: Colors.transparent,
+//               barrierColor: Colors.transparent,
+//               isDismissible: true,
+//               // bounce: true,
+//               context: context,
+//               builder: (context) {
+//                 return Player2();
+//               });
+//           // Navigator.pushNamed(context, Player.id);
+//         },
+//         child: Dismissible(
+//           key: UniqueKey(),
+//           onDismissed: (direction) {
+//             setState(() {
+//               // episodeObject.episodeName = null;
+//               episodeObject.audioPlayer.pause();
+//             });
+//           },
+//           child: ClipRect(
+//             child: BackdropFilter(
+//               filter: ImageFilter.blur(
+//                 sigmaY: 15.0,
+//                 sigmaX: 15.0,
+//               ),
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                   // color: Colors.transparent
+//                 ),
+//                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+//                     builder: (context, infos) {
+//                       if (infos == null) {
+//                         return SizedBox(
+//                           height: 0,
+//                           width: 0,
+//                         );
+//                       } else {
+//                         return ListTile(
+//                           trailing: infos.isPlaying == true
+//                               ? IconButton(
+//                             splashColor: Colors.transparent,
+//                             icon: Icon(
+//                               Icons.pause,
+//                               color: Colors.white,
+//                             ),
+//                             onPressed: () {
+//                               episodeObject.audioPlayer.pause();
+//                             },
+//                           )
+//                               : IconButton(
+//                             splashColor: Colors.blue,
+//                             icon: Icon(
+//                               Icons.play_arrow,
+//                               color: Colors.white,
+//                             ),
+//                             onPressed: () {
+//                               episodeObject.resume();
+//                             },
+//                           ),
+//                           leading: Builder(builder: (context){
+//                             try{
+//                               return CachedNetworkImage(
+//                                 width: 40,
+//                                 height: 40,
+//                                 imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+//                                 errorWidget: (context, url, e){
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                       color: Color(0xff222222),
+//                                       borderRadius: BorderRadius.circular(3),
+//                                     ),
+//                                   );
+//                                 },
+//                                 imageBuilder: (context, imageProvider) {
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(3),
+//                                         image: DecorationImage(
+//                                             image: imageProvider, fit: BoxFit.cover)),
+//                                   );
+//                                 },
+//                               );
+//                             }catch(e){
+//                               return CachedNetworkImage(
+//                                 width: 40,
+//                                 height: 40,
+//                                 imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+//                                 imageBuilder: (context, imageProvider) {
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(3),
+//                                         image: DecorationImage(
+//                                             image: imageProvider, fit: BoxFit.cover)),
+//                                   );
+//                                 },
+//                               );
+//                             }
+//                           },),
+//                           title: Builder(builder: (context){
+//                             try{
+//                               return Padding(
+//                                 padding: const EdgeInsets.only(right: 10),
+//                                 child: infos.current.audio == null? Text(""):Text(
+//                                   "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
+//                                   maxLines: 2,
+//                                   overflow: TextOverflow.ellipsis,
+//                                 ),
+//                               );
+//                             }catch(e){
+//                               return SizedBox();
+//                             }
+//                           },)
+//                         );
+//                       }
+//                     }),
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     }catch(e){
+//       SizedBox();
+//     }
+//
+//
+//   }
+// }

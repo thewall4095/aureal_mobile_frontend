@@ -535,7 +535,74 @@ class _EpisodeViewState extends State<EpisodeView>
                               ),
                             ],
                           ),
-                          Row(
+                          Platform.isIOS?Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.crop),
+                                onPressed: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                        return AudioEditor(
+                                          episodeObject: episodeContent,
+                                        );
+                                      }));
+                                },
+                              ),
+                              // Platform.isAndroid == true
+                              //     ? GestureDetector(
+                              //   onTap: () {
+                              //     startDownload();
+                              //     setState(() {
+                              //       _loading = !_loading;
+                              //       _updateProgress();
+                              //     });
+                              //   },
+                              //   child: Container(
+                              //       padding: EdgeInsets.all(15.0),
+                              //       child: _loading
+                              //           ? Column(
+                              //         mainAxisAlignment:
+                              //         MainAxisAlignment
+                              //             .center,
+                              //         children: <Widget>[
+                              //           CircularProgressIndicator(
+                              //             value: _progressValue,
+                              //           ),
+                              //           Text(
+                              //               '${(_progressValue * 100).round()}%'),
+                              //         ],
+                              //       )
+                              //           : Icon(Icons.arrow_circle_down,
+                              //           color: isDownloading == true
+                              //               ? Colors.blue
+                              //               : Colors.white)),
+                              // )
+                              //     : SizedBox(
+                              //   height: 0,
+                              //   width: 0,
+                              // ),
+                              IconButton(
+                                onPressed: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Createplaylist(
+                                            episodeId: widget.episodeId);
+                                      });
+                                },
+                                icon: Icon(Icons.playlist_add),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  share1(
+                                      episodeObject:
+                                      episodeObject.episodeObject);
+                                },
+                                icon: Icon(Icons.ios_share),
+                              )
+                            ],
+                          ):Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               IconButton(
@@ -606,295 +673,14 @@ class _EpisodeViewState extends State<EpisodeView>
                           SizedBox(
                             height: 20,
                           ),
-                          episodeObject.episodeObject == null
-                              ? GestureDetector(
+                          GestureDetector(
                             onTap: () {
-                              print(episodeContent['url']
-                                  .toString()
-                                  .contains('.mp4'));
-                              if (episodeContent['url']
-                                  .toString()
-                                  .contains('.mp4') ==
-                                  true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.m4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.flv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.f4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.ogv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.ogx') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.wmv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.webm') ==
-                                      true) {
-                                episodeObject.stop();
-                                Navigator.push(context,
-                                    CupertinoPageRoute(
-                                        builder: (context) {
-                                          return PodcastVideoPlayer(
-                                            episodeObject: episodeContent,
-                                          );
-                                        }));
-                              } else {
-                                if (episodeContent['url']
-                                    .toString()
-                                    .contains('.pdf') ==
-                                    true) {
-                                  // Navigator.push(context,
-                                  //     CupertinoPageRoute(
-                                  //         builder: (context) {
-                                  //   return PDFviewer(
-                                  //     episodeObject:
-                                  //         widget.episodeObject,
-                                  //   );
-                                  // }));
-                                } else {
-                                  List<Audio> playable = [];
-                                  playable.add(Audio.network(
-                                      episodeContent['url'],
-                                      metas: Metas(
-                                        id: '${episodeContent['id']}',
-                                        title:
-                                        '${episodeContent['name']}',
-                                        artist:
-                                        '${episodeContent['author']}',
-                                        album:
-                                        '${episodeContent['podcast_name']}',
-                                        // image: MetasImage.network('https://www.google.com')
-                                        image: MetasImage.network(
-                                            '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
-                                      )));
-                                  for (var v in playlist) {
-                                    playable.add(Audio.network(
-                                      v['url'],
-                                      metas: Metas(
-                                        id: '${v['id']}',
-                                        title: '${v['name']}',
-                                        artist: '${v['author']}',
-                                        album: '${v['podcast_name']}',
-                                        // image: MetasImage.network('https://www.google.com')
-                                        image: MetasImage.network(
-                                            '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                      ),
-                                    ));
-                                  }
-
-                                  episodeObject.playList = playable;
-                                  episodeObject.audioPlayer.open(
-                                      Playlist(
-                                          audios:
-                                          episodeObject.playList,
-                                          startIndex: 0),
-                                      showNotification: true);
-                                }
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(5),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff5d5da8),
-                                      Color(0xff5bc3ef)
-                                    ],
-                                  )),
-                              width: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(7.0),
-                                      child: Text("GET STARTED"),
-                                    )),
-                              ),
-                            ),
-                          )
-                              : (episodeObject.episodeObject['id'] == null ||
-                              episodeObject.episodeObject['id'] ==
-                                  episodeContent['id']
-                              ? (episodeObject
-                              .audioPlayer
-                              .realtimePlayingInfos
-                              .value
-                              .isPlaying ==
-                              true
-                              ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                episodeObject.pause();
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(5),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff5d5da8),
-                                      Color(0xff5bc3ef)
-                                    ],
-                                  )),
-                              width: double.infinity,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.all(7.0),
-                                      child: Row(
-                                        mainAxisSize:
-                                        MainAxisSize.min,
-                                        children: [
-                                          // Padding(
-                                          //   padding: const EdgeInsets
-                                          //           .symmetric(
-                                          //       horizontal:
-                                          //           5),
-                                          //   child: Icon(
-                                          //       Icons
-                                          //           .pause),
-                                          // ),
-                                          Text("PAUSE"),
-                                        ],
-                                      ),
-                                    )),
-                              ),
-                            ),
-                          )
-                              : GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                episodeObject.resume();
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(5),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xff5d5da8),
-                                      Color(0xff5bc3ef)
-                                    ],
-                                  )),
-                              width: double.infinity,
-                              child: Padding(
-                                padding:
-                                const EdgeInsets.all(8.0),
-                                child: Center(
-                                    child: Padding(
-                                      padding:
-                                      const EdgeInsets.all(7.0),
-                                      child: Row(
-                                        mainAxisSize:
-                                        MainAxisSize.min,
-                                        children: [
-                                          // Padding(
-                                          //   padding: const EdgeInsets
-                                          //           .symmetric(
-                                          //       horizontal:
-                                          //           5),
-                                          //   child: Icon(Icons
-                                          //       .play_arrow_rounded),
-                                          // ),
-                                          Text("RESUME"),
-                                        ],
-                                      ),
-                                    )),
-                              ),
-                            ),
-                          ))
-                              : GestureDetector(
-                            onTap: () {
-                              print(episodeContent['url']
-                                  .toString()
-                                  .contains('.mp4'));
-                              if (episodeContent['url']
-                                  .toString()
-                                  .contains('.mp4') ==
-                                  true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.m4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.flv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.f4v') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.ogv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.ogx') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.wmv') ==
-                                      true ||
-                                  episodeContent['url']
-                                      .toString()
-                                      .contains('.webm') ==
-                                      true) {
-                                episodeObject.stop();
-                                Navigator.push(context,
-                                    CupertinoPageRoute(
-                                        builder: (context) {
-                                          return PodcastVideoPlayer(
-                                            episodeObject: episodeContent,
-                                          );
-                                        }));
-                              } else {
-                                if (episodeContent['url']
-                                    .toString()
-                                    .contains('.pdf') ==
-                                    true) {
-                                  // Navigator.push(context,
-                                  //     CupertinoPageRoute(
-                                  //         builder: (context) {
-                                  //   return PDFviewer(
-                                  //     episodeObject:
-                                  //         widget.episodeObject,
-                                  //   );
-                                  // }));
-                                } else {
-                                  episodeObject.stop();
-                                  episodeObject.episodeObject =
-                                      episodeContent;
-                                  print(episodeObject.episodeObject
-                                      .toString());
-                                  episodeObject.play();
-                                  showBarModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return Player();
-                                      });
-                                }
-                              }
+                              episodeObject.stop();
+                              episodeObject.episodeObject =
+                                  episodeContent;
+                              print(episodeObject.episodeObject
+                                  .toString());
+                              episodeObject.play();
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -917,7 +703,349 @@ class _EpisodeViewState extends State<EpisodeView>
                                     )),
                               ),
                             ),
-                          )),
+                          ),
+                          // widget.episodeId == episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id ? (episodeObject.audioPlayer.isPlaying.value == true ? GestureDetector(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       episodeObject.pause();
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding:
+                          //       const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Text("PAUSE"),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // ): GestureDetector(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       episodeObject.resume();
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding:
+                          //       const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Row(
+                          //               mainAxisSize:
+                          //               MainAxisSize.min,
+                          //               children: [
+                          //                 // Padding(
+                          //                 //   padding: const EdgeInsets
+                          //                 //           .symmetric(
+                          //                 //       horizontal:
+                          //                 //           5),
+                          //                 //   child: Icon(Icons
+                          //                 //       .play_arrow_rounded),
+                          //                 // ),
+                          //                 Text("RESUME"),
+                          //               ],
+                          //             ),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // )) : GestureDetector(
+                          //   onTap: () {
+                          //     episodeObject.stop();
+                          //     episodeObject.episodeObject =
+                          //         episodeContent;
+                          //     print(episodeObject.episodeObject
+                          //         .toString());
+                          //     episodeObject.play();
+                          //     showBarModalBottomSheet(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return Player();
+                          //         });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Text("GET STARTED"),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // ),
+                          // episodeObject.episodeObject == null
+                          //     ? GestureDetector(
+                          //   onTap: () {
+                          //     print(episodeContent['url']
+                          //         .toString()
+                          //         .contains('.mp4'));
+                          //     if (episodeContent['url']
+                          //         .toString()
+                          //         .contains('.mp4') ==
+                          //         true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.m4v') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.flv') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.f4v') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.ogv') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.ogx') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.wmv') ==
+                          //             true ||
+                          //         episodeContent['url']
+                          //             .toString()
+                          //             .contains('.webm') ==
+                          //             true) {
+                          //       episodeObject.stop();
+                          //       Navigator.push(context,
+                          //           CupertinoPageRoute(
+                          //               builder: (context) {
+                          //                 return PodcastVideoPlayer(
+                          //                   episodeObject: episodeContent,
+                          //                 );
+                          //               }));
+                          //     } else {
+                          //       if (episodeContent['url']
+                          //           .toString()
+                          //           .contains('.pdf') ==
+                          //           true) {
+                          //         // Navigator.push(context,
+                          //         //     CupertinoPageRoute(
+                          //         //         builder: (context) {
+                          //         //   return PDFviewer(
+                          //         //     episodeObject:
+                          //         //         widget.episodeObject,
+                          //         //   );
+                          //         // }));
+                          //       } else {
+                          //         List<Audio> playable = [];
+                          //         playable.add(Audio.network(
+                          //             episodeContent['url'],
+                          //             metas: Metas(
+                          //               id: '${episodeContent['id']}',
+                          //               title:
+                          //               '${episodeContent['name']}',
+                          //               artist:
+                          //               '${episodeContent['author']}',
+                          //               album:
+                          //               '${episodeContent['podcast_name']}',
+                          //               // image: MetasImage.network('https://www.google.com')
+                          //               image: MetasImage.network(
+                          //                   '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
+                          //             )));
+                          //         for (var v in playlist) {
+                          //           playable.add(Audio.network(
+                          //             v['url'],
+                          //             metas: Metas(
+                          //               id: '${v['id']}',
+                          //               title: '${v['name']}',
+                          //               artist: '${v['author']}',
+                          //               album: '${v['podcast_name']}',
+                          //               // image: MetasImage.network('https://www.google.com')
+                          //               image: MetasImage.network(
+                          //                   '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                          //             ),
+                          //           ));
+                          //         }
+                          //         episodeObject.audioPlayer.open(
+                          //             Playlist(
+                          //                 audios:
+                          //                 playable,
+                          //                 startIndex: 0),
+                          //             showNotification: true);
+                          //       }
+                          //     }
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding: const EdgeInsets.all(7.0),
+                          //             child: Text("GET STARTED"),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // )
+                          //     : (episodeObject.episodeObject['id'] == null ||
+                          //     episodeObject.episodeObject['id'] ==
+                          //         episodeContent['id']
+                          //     ? (episodeObject
+                          //     .audioPlayer
+                          //     .realtimePlayingInfos
+                          //     .value
+                          //     .isPlaying ==
+                          //     true
+                          //     ? GestureDetector(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       episodeObject.pause();
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding:
+                          //       const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Text("PAUSE"),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // )
+                          //     : GestureDetector(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       episodeObject.resume();
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding:
+                          //       const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Row(
+                          //               mainAxisSize:
+                          //               MainAxisSize.min,
+                          //               children: [
+                          //                 // Padding(
+                          //                 //   padding: const EdgeInsets
+                          //                 //           .symmetric(
+                          //                 //       horizontal:
+                          //                 //           5),
+                          //                 //   child: Icon(Icons
+                          //                 //       .play_arrow_rounded),
+                          //                 // ),
+                          //                 Text("RESUME"),
+                          //               ],
+                          //             ),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // ))
+                          //     : GestureDetector(
+                          //   onTap: () {
+                          //     episodeObject.stop();
+                          //     episodeObject.episodeObject =
+                          //         episodeContent;
+                          //     print(episodeObject.episodeObject
+                          //         .toString());
+                          //     episodeObject.play();
+                          //     showBarModalBottomSheet(
+                          //         context: context,
+                          //         builder: (context) {
+                          //           return Player();
+                          //         });
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius:
+                          //         BorderRadius.circular(5),
+                          //         gradient: LinearGradient(
+                          //           colors: [
+                          //             Color(0xff5d5da8),
+                          //             Color(0xff5bc3ef)
+                          //           ],
+                          //         )),
+                          //     width: double.infinity,
+                          //     child: Padding(
+                          //       padding: const EdgeInsets.all(8.0),
+                          //       child: Center(
+                          //           child: Padding(
+                          //             padding:
+                          //             const EdgeInsets.all(7.0),
+                          //             child: Text("GET STARTED"),
+                          //           )),
+                          //     ),
+                          //   ),
+                          // )),
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 30,
                           ),
@@ -1190,50 +1318,12 @@ class _EpisodeViewState extends State<EpisodeView>
               ],
             ),
           ),
+
           Align(alignment: Alignment.bottomCenter,child: BottomPlayer())
         ],
 
       ),
-      // bottomSheet: widget.notificationData == null
-      //     ? SizedBox()
-      //     : Container(
-      //         decoration: BoxDecoration(
-      //             gradient: LinearGradient(
-      //                 colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
-      //         child: Padding(
-      //           padding: const EdgeInsets.all(8.0),
-      //           child: ListTile(
-      //             onTap: () {
-      //               showBarModalBottomSheet(
-      //                   context: context,
-      //                   builder: (context) {
-      //                     return CommunitySelector();
-      //                   }).then((value) async {
-      //                 setState(() {
-      //                   var navigatorValue = value;
-      //                   if (navigatorValue[1] == true) {
-      //                     selectedCommunity['title'] = navigatorValue[0][1];
-      //                     selectedCommunity['id'] = navigatorValue[0][0];
-      //                     print(selectedCommunity);
-      //                   } else {
-      //                     selectedCommunity = navigatorValue[0];
-      //                     print(selectedCommunity);
-      //                   }
-      //                 });
-      //                 updateEpisode();
-      //                 setState(() {
-      //                   widget.notificationData = null;
-      //                 });
-      //               });
-      //             },
-      //             title: Text(
-      //                 "Your Episode is Live on Hive, you can cross post now"),
-      //             subtitle: Text(
-      //                 "Use the relevant communities to increase the visibility of your episode and podcast"),
-      //             trailing: Icon(Icons.close),
-      //           ),
-      //         ),
-      //       ),
+
     );
   }
 }

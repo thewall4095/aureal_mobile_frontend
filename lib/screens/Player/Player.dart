@@ -122,6 +122,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
     var playerState = Provider.of<PlayerChange>(context, listen: false);
     String url =
         'https://api.aureal.one/public/episode?episode_id=${playerState.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id}&user_id=${prefs.getString('userId')}';
+    print(url);
     try{
       var response = await dio.get(url, cancelToken: _cancel);
       if(response.statusCode == 200){
@@ -4674,9 +4675,7 @@ class Banner extends StatelessWidget {
                                       (context) {
                                     return EpisodeView(
                                         episodeId:
-                                        episodeObject
-                                            .episodeObject[
-                                        'id']);
+                                        episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id);
                                   }));
                         },
                         child: Text(
