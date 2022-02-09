@@ -3,6 +3,7 @@ import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/buttonPages/Bio.dart';
 import 'package:auditory/screens/buttonPages/Referralprogram.dart';
+import 'package:auditory/screens/buttonPages/Settings.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'dart:io';
@@ -394,6 +395,39 @@ class _PublicProfileState extends State<PublicProfile>
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      Settings()));
+                        },
+                        title: Text(
+                          "Settings",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Your settings",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
                       ListTile(
                         onTap: () {
                           Navigator.push(
