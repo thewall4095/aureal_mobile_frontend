@@ -37,6 +37,7 @@ import 'package:http/http.dart' as http;
 import 'package:linkable/linkable.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -86,6 +87,16 @@ class _EpisodeViewState extends State<EpisodeView>
   var episodeContent;
 
   var recommendations = [];
+
+  Future<Color> getColor (String url) async {
+    final PaletteGenerator paletteGenerator = await PaletteGenerator
+        .fromImageProvider(CachedNetworkImageProvider(url));
+
+    setState(() {
+      dominantColor =  paletteGenerator.dominantColor.color.value;
+    });
+
+  }
 
   void getRecommendations() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -376,17 +387,17 @@ class _EpisodeViewState extends State<EpisodeView>
         '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
   }
 
-  void getColor(String url) async {
-    getColorFromUrl(url).then((value) {
-      setState(() {
-        dominantColor = hexOfRGBA(value[0], value[1], value[2]);
-
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          statusBarColor: Color(dominantColor),
-        ));
-      });
-    });
-  }
+  // void getColor(String url) async {
+  //   getColorFromUrl(url).then((value) {
+  //     setState(() {
+  //       dominantColor = hexOfRGBA(value[0], value[1], value[2]);
+  //
+  //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //         statusBarColor: Color(dominantColor),
+  //       ));
+  //     });
+  //   });
+  // }
 
   ScrollController _controller = ScrollController();
 

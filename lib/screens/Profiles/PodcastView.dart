@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:palette_generator/palette_generator.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
@@ -275,7 +275,17 @@ class _PodcastViewState extends State<PodcastView>
     send.send([id, status, progress]);
   }
 
-  var dominantColor;
+  int dominantColor;
+
+  Future<Color> getColor (String url) async {
+    final PaletteGenerator paletteGenerator = await PaletteGenerator
+        .fromImageProvider(CachedNetworkImageProvider(url));
+
+    setState(() {
+      dominantColor =  paletteGenerator.dominantColor.color.value;
+    });
+
+  }
 
   int hexOfRGBA(int r, int g, int b, {double opacity = 1}) {
     r = (r < 0) ? -r : r;
@@ -291,18 +301,18 @@ class _PodcastViewState extends State<PodcastView>
         '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
   }
 
-  void getColor(String url) async {
-    getColorFromUrl(url).then((value) {
-      setState(() {
-        dominantColor = hexOfRGBA(value[0], value[1], value[2]);
-        print(dominantColor.toString());
-
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          statusBarColor: Color(dominantColor),
-        ));
-      });
-    });
-  }
+  // void getColor(String url) async {
+  //   getColorFromUrl(url).then((value) {
+  //     setState(() {
+  //       dominantColor = hexOfRGBA(value[0], value[1], value[2]);
+  //       print(dominantColor.toString());
+  //
+  //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //         statusBarColor: Color(dominantColor),
+  //       ));
+  //     });
+  //   });
+  // }
 
   void _showBottomSheet() {
     setState(() {
@@ -474,7 +484,7 @@ class _PodcastViewState extends State<PodcastView>
                     IconButton(
                       icon: Icon(Icons.more_vert_outlined),
                       onPressed: () {
-                        showBarModalBottomSheet(
+                        showModalBottomSheet(
                             context: context,
                             builder: (context) {
                               return Column(

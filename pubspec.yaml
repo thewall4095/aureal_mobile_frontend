@@ -131,6 +131,7 @@ dependencies:
 
 
 
+
 dev_dependencies:
   flutter_launcher_icons: ^0.9.0
   flutter_test:
@@ -228,6 +229,37 @@ flutter:
          - asset: assets/fonts/Nunito_Sans/NunitoSans-SemiBold.ttf
            weight: 600
          - asset: assets/fonts/Nunito_Sans/NunitoSans-SemiBoldItalic.ttf
+           weight: 600
+
+     - family: Metropolis
+       fonts:
+         - asset: assets/fonts/Metropolis/Metropolis-Black.ttf
+           weight: 900
+         - asset: assets/fonts/Metropolis/Metropolis-BlackItalic.ttf
+           weight: 900
+         - asset: assets/fonts/Metropolis/Metropolis-Bold.ttf
+           weight: 700
+         - asset: assets/fonts/Metropolis/Metropolis-BoldItalic.ttf
+           weight: 700
+         - asset: assets/fonts/Metropolis/Metropolis-ExtraBold.ttf
+           weight: 800
+         - asset: assets/fonts/Metropolis/Metropolis-ExtraBoldItalic.ttf
+           weight: 800
+         - asset: assets/fonts/Metropolis/Metropolis-ExtraLight.ttf
+           weight: 200
+         - asset: assets/fonts/Metropolis/Metropolis-ExtraLightItalic.ttf
+           weight: 200
+#         - asset: assets/fonts/Metropolis/Metropolis-Italic.ttf
+#           weight: 400
+#         - asset: assets/fonts/Metropolis/Metropolis-Light.ttf
+#           weight: 300
+         - asset: assets/fonts/Metropolis/Metropolis-LightItalic.ttf
+           weight: 300
+         - asset: assets/fonts/Metropolis/Metropolis-Regular.ttf
+           weight: 400
+         - asset: assets/fonts/Metropolis/Metropolis-SemiBold.ttf
+           weight: 600
+         - asset: assets/fonts/Metropolis/Metropolis-SemiBoldItalic.ttf
            weight: 600
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

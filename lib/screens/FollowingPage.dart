@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
@@ -1407,146 +1408,7 @@ class PodcastWidget extends StatelessWidget {
                     addAutomaticKeepAlives: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, int index){
-                      return Padding(
-                        padding:
-                        const EdgeInsets.fromLTRB(
-                            15, 0, 0, 8),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        PodcastView(
-                                            snapshot.data[index]['id'])));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              // x
-                              borderRadius:
-                              BorderRadius.circular(
-                                  15),
-                            ),
-                            width: MediaQuery.of(context)
-                                .size
-                                .width *
-                                0.38,
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment
-                                  .start,
-                              mainAxisSize:
-                              MainAxisSize.min,
-                              children: [
-                                CachedNetworkImage(
-                                  errorWidget: (context,
-                                      url, error) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
-                                              fit: BoxFit
-                                                  .cover),
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              3)),
-                                      width: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                      height: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                    );
-                                  },
-                                  imageBuilder: (context,
-                                      imageProvider) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image:
-                                              imageProvider,
-                                              fit: BoxFit
-                                                  .cover),
-                                          borderRadius:
-                                          BorderRadius
-                                              .circular(
-                                              3)),
-                                      width: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                      height: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                    );
-                                  },
-                                  memCacheHeight:
-                                  (MediaQuery.of(
-                                      context)
-                                      .size
-                                      .height)
-                                      .floor(),
-                                  imageUrl:snapshot.data[index]['image'],
-
-                                  placeholder: (context,
-                                      imageProvider) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/Thumbnail.png'),
-                                              fit: BoxFit
-                                                  .cover)),
-                                      height: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                      width: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width *
-                                          0.38,
-                                    );
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  snapshot.data[index]['name'],
-                                  maxLines: 1,
-                                  textScaleFactor: 1.0,
-                                  overflow: TextOverflow
-                                      .ellipsis,
-                                  // style:
-                                  //     TextStyle(color: Color(0xffe8e8e8)),
-                                ),
-                                Text(
-                                  snapshot.data[index]['author'],
-                                  maxLines: 2,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      fontSize: SizeConfig
-                                          .safeBlockHorizontal *
-                                          2.5,
-                                      color: Color(
-                                          0xffe777777)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      return PodcastCard(data: snapshot.data[index]);
                     },
                     scrollDirection: Axis.horizontal,
 
@@ -2843,10 +2705,294 @@ class _SeeMoreState extends State<SeeMore> {
         elevation: 0,
         title: Text("${widget.data['name']}"),
       ),
-      body: _feedBuilder(context, widget.data));
+      body: Stack(children: [_feedBuilder(context, widget.data), Align(alignment: Alignment.bottomCenter,child: BottomPlayer())] ));
 
   }
 }
+
+class PodcastCard extends StatelessWidget {
+  final data;
+  PodcastCard({@required this.data});
+
+  void podcastShare() async {
+    await FlutterShare.share(
+        title: '${data['name']}',
+        text:
+        "Hey There, I'm listening to ${data['name']} on Aureal, here's the link for you https://aureal.one/podcast/${data['id']}");
+  }
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = data['id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+      const EdgeInsets.fromLTRB(
+          15, 0, 0, 8),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) =>
+                      PodcastView(
+                          data['id'])));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            // x
+            borderRadius:
+            BorderRadius.circular(
+                15),
+          ),
+          width: MediaQuery.of(context)
+              .size
+              .width *
+              0.38,
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            mainAxisSize:
+            MainAxisSize.min,
+            children: [
+              CachedNetworkImage(
+                errorWidget: (context,
+                    url, error) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                            fit: BoxFit
+                                .cover),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                            3)),
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+                imageBuilder: (context,
+                    imageProvider) {
+                  return Container(
+                    // child: Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.end,
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(3),
+                    //       child: InkWell(
+                    //         onTap: (){
+                    //           showModalBottomSheet(
+                    //               context: context,
+                    //               builder: (context) {
+                    //                 return Column(
+                    //                   mainAxisSize: MainAxisSize.min,
+                    //                   children: [
+                    //                     Padding(
+                    //                       padding:
+                    //                       const EdgeInsets.symmetric(vertical: 10),
+                    //                       child: ListTile(
+                    //                         leading: CachedNetworkImage(
+                    //                           memCacheHeight:
+                    //                           (MediaQuery.of(context).size.width /
+                    //                               2)
+                    //                               .floor(),
+                    //                           imageUrl: data['image'],
+                    //                           imageBuilder: (context, imageProvider) {
+                    //                             return Container(
+                    //                               height: 50,
+                    //                               width: 50,
+                    //                               decoration: BoxDecoration(
+                    //                                   borderRadius:
+                    //                                   BorderRadius.circular(5),
+                    //                                   image: DecorationImage(
+                    //                                       image: imageProvider,
+                    //                                       fit: BoxFit.cover)),
+                    //                             );
+                    //                           },
+                    //                         ),
+                    //                         title: Text(
+                    //                           "${data['name']}",
+                    //                           style: TextStyle(
+                    //                               fontWeight: FontWeight.w600),
+                    //                         ),
+                    //                         subtitle: Text("${data['author']}"),
+                    //                       ),
+                    //                     ),
+                    //                     Divider(),
+                    //                     ListTile(
+                    //                       leading: Icon(Icons.ios_share),
+                    //                       title: Text("Share"),
+                    //                       onTap: () {
+                    //                         podcastShare();
+                    //                       },
+                    //                     ),
+                    //                     ListTile(
+                    //                       onTap: () {
+                    //                         follow();
+                    //                         // setState(() {
+                    //                         //   if (followState == FollowState.follow) {
+                    //                         //     followState = FollowState.following;
+                    //                         //   } else {
+                    //                         //     followState = FollowState.follow;
+                    //                         //   }
+                    //                         // });
+                    //                         Navigator.pop(context);
+                    //                       },
+                    //                       leading: Icon(Icons.add_circle_outline),
+                    //                       title: Text("Subscribe"),
+                    //                     ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.notification_add),
+                    //                     //   title: Text("Get Notified"),
+                    //                     // ),
+                    //                     //     ListTile(
+                    //                     //       onTap:() {
+                    //                     //
+                    //                     // },
+                    //                     //       leading: Icon(Icons.playlist_add),
+                    //                     //       title: Text("Add to podcast playlist"),
+                    //                     //     ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.animation),
+                    //                     //   title: Text("More like these"),
+                    //                     // ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.send),
+                    //                     //   title: Text("Invite this podcast to Aureal"),
+                    //                     // ),
+                    //                   ],
+                    //                 );
+                    //               });
+                    //         },
+                    //         child: ClipOval(
+                    //
+                    //           child: BackdropFilter(
+                    //             filter:  ImageFilter.blur(
+                    //             sigmaY: 10.0,
+                    //             sigmaX: 10.0,
+                    //           ),
+                    //             child: Container(decoration: BoxDecoration(shape: BoxShape.circle), child: Padding(
+                    //               padding: const EdgeInsets.all(2),
+                    //               child: Icon(Icons.more_vert_outlined, color: Colors.white.withOpacity(0.7),),
+                    //             )),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                            imageProvider,
+                            fit: BoxFit
+                                .cover),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                            3)),
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+                memCacheHeight:
+                (MediaQuery.of(
+                    context)
+                    .size
+                    .height)
+                    .floor(),
+                imageUrl:data['image'],
+
+                placeholder: (context,
+                    imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                                'assets/images/Thumbnail.png'),
+                            fit: BoxFit
+                                .cover)),
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                data['name'],
+                maxLines: 1,
+                textScaleFactor: 1.0,
+                overflow: TextOverflow
+                    .ellipsis,
+                // style:
+                //     TextStyle(color: Color(0xffe8e8e8)),
+              ),
+              Text(
+                data['author'],
+                maxLines: 2,
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                    fontSize: SizeConfig
+                        .safeBlockHorizontal *
+                        2.5,
+                    color: Color(
+                        0xffe777777)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 
 
 
