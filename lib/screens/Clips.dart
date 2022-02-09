@@ -580,8 +580,8 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
         Container(
           decoration: BoxDecoration(
 
-            // gradient:
-            //     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
+            gradient:
+                LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
                 image: CachedNetworkImageProvider(
@@ -597,6 +597,7 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
             ),
             child: Container(
               decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
