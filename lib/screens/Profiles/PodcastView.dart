@@ -7,6 +7,7 @@ import 'package:audioplayer/audioplayer.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
@@ -152,6 +153,36 @@ class _PodcastViewState extends State<PodcastView>
 
   String creator = '';
 
+  List<Audio> playlist;
+
+  void playListGenerator({List data}) async {
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    List<Audio> playable = [];
+    for (int i = 0; i < data.length; i++){
+      var v = data[i];
+      playable
+          .add(Audio.network(
+        v['url'],
+        metas:
+        Metas(
+          id: '${v['id']}',
+          title: '${v['name']}',
+          artist: '${v['author']}',
+          album: '${v['podcast_name']}',
+          // image: MetasImage.network('https://www.google.com')
+          image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+        ),
+      ));
+    }
+
+    playlist = playable;
+    print(playlist);
+    // episodeObject.dispose();
+
+
+
+  }
+
   void getEpisodes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -164,11 +195,14 @@ class _PodcastViewState extends State<PodcastView>
             episodeList = jsonDecode(response.body)['episodes'];
             pageNumber = pageNumber + 1;
             episodeListLoading = false;
+
+
           } else {
             episodeList = episodeList + jsonDecode(response.body)['episodes'];
             episodeListLoading = false;
             pageNumber = pageNumber + 1;
           }
+          playListGenerator(data: episodeList);
         });
       } else {
         print(response.statusCode);
@@ -790,34 +824,12 @@ class _PodcastViewState extends State<PodcastView>
                                         )
                                             : InkWell(
                                           onTap: () {
-                                            for (var v
-                                            in episodeList) {
-                                              audioPlaylist
-                                                  .add(Audio.network(
-                                                v['url'],
-                                                metas: Metas(
-                                                  id: '${v['id']}',
-                                                  title:
-                                                  '${v['name']}',
-                                                  artist:
-                                                  '${v['author']}',
-                                                  album:
-                                                  '${v['podcast_name']}',
-                                                  // image: MetasImage.network('https://www.google.com')
-                                                  image: MetasImage
-                                                      .network(
-                                                      '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                                ),
-                                              ));
-                                            }
-                                            currentlyPlaying
-                                                .playList =
-                                                audioPlaylist;
+
+
                                             currentlyPlaying.audioPlayer.open(
                                                 Playlist(
                                                     audios:
-                                                    currentlyPlaying
-                                                        .playList,
+                                                    playlist,
                                                     startIndex: 0),
                                                 showNotification:
                                                 true);
@@ -1286,557 +1298,558 @@ class _PodcastViewState extends State<PodcastView>
                             return SizedBox();
                           }
                         }
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 10),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  boxShadow: [
-                                    new BoxShadow(
-                                      color: Colors.black54.withOpacity(0.2),
-                                      blurRadius: 10.0,
-                                    ),
-                                  ],
-                                  color: themeProvider.isLightTheme == true
-                                      ? Colors.white
-                                      : Color(0xff222222),
-                                ),
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 15),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          CupertinoPageRoute(
-                                              builder: (context) => EpisodeView(
-                                                  episodeId:
-                                                  episodeList[index - 1]
-                                                  ['id'])));
-                                    },
-                                    //
-                                    title: Text(
-                                      episodeList[index - 1]['name'],
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 1.5)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          //       color: Colors.white,
-                                          fontSize:
-                                          SizeConfig.safeBlockHorizontal * 4),
-                                    ),
-                                    subtitle: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          episodeList[index - 1]['summary'] ==
-                                              null
-                                              ? SizedBox(
-                                            height: 20,
-                                          )
-                                              : Padding(
-                                            padding:
-                                            const EdgeInsets.symmetric(
-                                                vertical: 10.0),
-                                            child: htmlMatch.hasMatch(
-                                                episodeList[
-                                                index - 1]
-                                                ['summary']) ==
-                                                true
-                                                ? Text(
-                                              '${(parse(episodeList[index - 1]['summary']).body.text)}',
-                                              maxLines: 2,
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              textScaleFactor:
-                                              mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                //       color: Colors.grey,
-                                                  fontSize: SizeConfig
-                                                      .blockSizeHorizontal *
-                                                      3.5),
-                                            )
-                                                : Text(
-                                              episodeList[index - 1]
-                                              ['summary'],
-                                              maxLines: 2,
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                              textScaleFactor:
-                                              mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                //         color: Colors.grey,
-                                                  fontSize: SizeConfig
-                                                      .safeBlockHorizontal *
-                                                      3.5),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Row(children: [
-                                                    episodeList[index - 1][
-                                                    'permlink'] ==
-                                                        null ||
-                                                        episodeList[index - 1]
-                                                        ['votes'] ==
-                                                            null
-                                                        ? (creator ==
-                                                        prefs.getString(
-                                                            'userId')
-                                                        ? InkWell(
-                                                      onTap: () async {
-                                                        await publishManually(
-                                                            episodeList[
-                                                            index -
-                                                                1]
-                                                            ['id']);
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .only(
-                                                            right:
-                                                            5),
-                                                        child:
-                                                        Container(
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            borderRadius:
-                                                            BorderRadius.circular(
-                                                                20),
-                                                            border: Border
-                                                                .all(),
-                                                          ),
-                                                          child:
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                20,
-                                                                vertical:
-                                                                5),
-                                                            child: Text(
-                                                              "Publish",
-                                                              textScaleFactor: mediaQueryData
-                                                                  .textScaleFactor
-                                                                  .clamp(
-                                                                  0.5,
-                                                                  1)
-                                                                  .toDouble(),
-                                                              style:
-                                                              TextStyle(),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                        : SizedBox(
-                                                      width: 0,
-                                                    ))
-                                                        : InkWell(
-                                                      onTap: () async {
-                                                        if (prefs.getString(
-                                                            'HiveUserName') !=
-                                                            null) {
-                                                          setState(() {
-                                                            episodeList[
-                                                            index -
-                                                                1][
-                                                            'isLoading'] = true;
-                                                          });
-                                                          showDialog(
-                                                              context:
-                                                              context,
-                                                              builder:
-                                                                  (context) {
-                                                                return Dialog(
-                                                                    backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                    child: UpvoteEpisode(
-                                                                        permlink:
-                                                                        episodeList[index - 1]['permlink'],
-                                                                        episode_id: episodeList[index - 1]['id']));
-                                                              }).then((value) async {
-                                                            print(value);
-                                                          });
-
-                                                          setState(() {
-                                                            episodeList[
-                                                            index -
-                                                                1][
-                                                            'ifVoted'] = !episodeList[
-                                                            index -
-                                                                1]
-                                                            ['ifVoted'];
-                                                            episodeList[index -
-                                                                1][
-                                                            'isLoading'] =
-                                                            false;
-                                                          });
-                                                        } else {
-                                                          showBarModalBottomSheet(
-                                                              context:
-                                                              context,
-                                                              builder:
-                                                                  (context) {
-                                                                return HiveDetails();
-                                                              });
-                                                        }
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .only(
-                                                            right: 5),
-                                                        child: Container(
-                                                          decoration: episodeList[index -
-                                                              1][
-                                                          'ifVoted'] ==
-                                                              true
-                                                              ? BoxDecoration(
-                                                              gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                    Color(0xff5bc3ef),
-                                                                    Color(0xff5d5da8)
-                                                                  ]),
-                                                              borderRadius:
-                                                              BorderRadius.circular(
-                                                                  30))
-                                                              : BoxDecoration(
-                                                              border: Border.all(
-                                                                  color:
-                                                                  kSecondaryColor),
-                                                              borderRadius:
-                                                              BorderRadius.circular(
-                                                                  30)),
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(
-                                                                5.0),
-                                                            child: Row(
-                                                              children: [
-                                                                episodeList[index -
-                                                                    1]['isLoading'] ==
-                                                                    true
-                                                                    ? Container(
-                                                                  height:
-                                                                  18,
-                                                                  width:
-                                                                  18,
-                                                                  child:
-                                                                  SpinKitPulse(
-                                                                    color: Colors.blue,
-                                                                  ),
-                                                                )
-                                                                    : Icon(
-                                                                  FontAwesomeIcons.chevronCircleUp,
-                                                                  size:
-                                                                  15,
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                      8),
-                                                                  child:
-                                                                  Text(
-                                                                    '${episodeList[index - 1]['votes']}',
-                                                                    textScaleFactor: mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(0.5,
-                                                                        1)
-                                                                        .toDouble(),
-                                                                    style: TextStyle(
-                                                                      //        color: Color(
-                                                                      // 0xffe8e8e8)
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .only(
-                                                                      right:
-                                                                      4),
-                                                                  child:
-                                                                  Text(
-                                                                    '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
-                                                                    textScaleFactor: mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(0.5,
-                                                                        1)
-                                                                        .toDouble(),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    episodeList[index - 1][
-                                                    'permlink'] ==
-                                                        null ||
-                                                        episodeList[index - 1]
-                                                        ['votes'] ==
-                                                            null
-                                                        ? SizedBox(
-                                                      width: 0,
-                                                    )
-                                                        : InkWell(
-                                                      onTap: () {
-                                                        if (prefs.getString(
-                                                            'HiveUserName') !=
-                                                            null) {
-                                                          Navigator.push(
-                                                              context,
-                                                              CupertinoPageRoute(
-                                                                  builder: (context) =>
-                                                                      Comments(
-                                                                        episodeObject:
-                                                                        episodeList[index - 1],
-                                                                      )));
-                                                        } else {
-                                                          showBarModalBottomSheet(
-                                                              context:
-                                                              context,
-                                                              builder:
-                                                                  (context) {
-                                                                return HiveDetails();
-                                                              });
-                                                        }
-                                                      },
-                                                      child: Padding(
-                                                        padding:
-                                                        const EdgeInsets
-                                                            .only(
-                                                            right: 5),
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                              border: Border
-                                                                  .all(
-                                                                  color:
-                                                                  kSecondaryColor),
-                                                              borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  30)),
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .all(
-                                                                5.0),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .mode_comment_outlined,
-                                                                  size: 15,
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                      8),
-                                                                  child:
-                                                                  Text(
-                                                                    episodeList[index -
-                                                                        1]['comments_count']
-                                                                        .toString(),
-                                                                    textScaleFactor: mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(0.5,
-                                                                        1)
-                                                                        .toDouble(),
-                                                                    // style: TextStyle(
-                                                                    //      color: Color(0xffe8e8e8)
-                                                                    //     ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        List<Audio> playable = [];
-                                                        for (var v
-                                                        in episodeList) {
-                                                          playable
-                                                              .add(Audio.network(
-                                                            v['url'],
-                                                            metas: Metas(
-                                                              id: '${v['id']}',
-                                                              title:
-                                                              '${v['name']}',
-                                                              artist:
-                                                              '${v['author']}',
-                                                              album:
-                                                              '${v['podcast_name']}',
-                                                              // image: MetasImage.network('https://www.google.com')
-                                                              image: MetasImage
-                                                                  .network(
-                                                                  '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                                            ),
-                                                          ));
-                                                        }
-                                                        currentlyPlaying
-                                                            .playList = playable;
-                                                        currentlyPlaying.audioPlayer.open(
-                                                            Playlist(
-                                                                audios:
-                                                                currentlyPlaying
-                                                                    .playList,
-                                                                startIndex:
-                                                                index - 1),
-                                                            showNotification:
-                                                            true);
-                                                      },
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color:
-                                                                kSecondaryColor),
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                30)),
-                                                        child: Padding(
-                                                          padding:
-                                                          const EdgeInsets
-                                                              .all(5),
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .play_circle_outline,
-                                                                size: 15,
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                    8),
-                                                                child: Text(
-                                                                  '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
-                                                                  textScaleFactor:
-                                                                  mediaQueryData
-                                                                      .textScaleFactor
-                                                                      .clamp(
-                                                                      0.5,
-                                                                      1)
-                                                                      .toDouble(),
-                                                                  // style: TextStyle(
-                                                                  //      color: Color(0xffe8e8e8)
-                                                                  //     ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ]),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  episodeList[index - 1]
-                                                  ['permlink'] ==
-                                                      null ||
-                                                      episodeList[index - 1]
-                                                      ['votes'] ==
-                                                          null
-                                                      ? SizedBox(
-                                                    width: 0,
-                                                    height: 0,
-                                                  )
-                                                      : (creator ==
-                                                      prefs.getString(
-                                                          'userId')
-                                                      ? IconButton(
-                                                    icon: Icon(Icons
-                                                        .more_vert),
-                                                    onPressed: () {
-                                                      showBarModalBottomSheet(
-                                                          context:
-                                                          context,
-                                                          builder:
-                                                              (context) {
-                                                            return null;
-                                                          });
-                                                    },
-                                                  )
-                                                      : SizedBox(
-                                                    width: 0,
-                                                    height: 0,
-                                                  )),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ]),
-                                  ),
-                                ),
-                              ),
-                              Builder(builder: (context) {
-                                return currentlyPlaying.audioPlayer
-                                    .builderRealtimePlayingInfos(
-                                    builder: (context, infos) {
-                                      if (infos == null) {
-                                        return SizedBox();
-                                      } else {
-                                        if (infos.current.audio.audio.metas.id
-                                            .toString() ==
-                                            episodeList[index - 1]['id']) {
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 7),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.circular(30),
-                                                  gradient: LinearGradient(colors: [
-                                                    Color(0xff5d5da8),
-                                                    Color(0xff5bc3ef)
-                                                  ])),
-                                              width: double.infinity,
-                                              height: 4,
-                                            ),
-                                          );
-                                        } else {
-                                          return SizedBox();
-                                        }
-                                      }
-                                    });
-                              }),
-                            ],
-                          ),
-                        );
+                        // return Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: 15, vertical: 10),
+                        //   child: Column(
+                        //     children: [
+                        //       Container(
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(8),
+                        //           boxShadow: [
+                        //             new BoxShadow(
+                        //               color: Colors.black54.withOpacity(0.2),
+                        //               blurRadius: 10.0,
+                        //             ),
+                        //           ],
+                        //           color: themeProvider.isLightTheme == true
+                        //               ? Colors.white
+                        //               : Color(0xff222222),
+                        //         ),
+                        //         width: double.infinity,
+                        //         child: Padding(
+                        //           padding: const EdgeInsets.symmetric(
+                        //               horizontal: 20, vertical: 15),
+                        //           child: ListTile(
+                        //             contentPadding: EdgeInsets.zero,
+                        //
+                        //             onTap: () {
+                        //               Navigator.push(
+                        //                   context,
+                        //                   CupertinoPageRoute(
+                        //                       builder: (context) => EpisodeView(
+                        //                           episodeId:
+                        //                           episodeList[index - 1]
+                        //                           ['id'])));
+                        //             },
+                        //             //
+                        //             title: Text(
+                        //               episodeList[index - 1]['name'],
+                        //               maxLines: 2,
+                        //               overflow: TextOverflow.ellipsis,
+                        //               textScaleFactor: mediaQueryData
+                        //                   .textScaleFactor
+                        //                   .clamp(0.5, 1.5)
+                        //                   .toDouble(),
+                        //               style: TextStyle(
+                        //                   fontWeight: FontWeight.w700,
+                        //                   //       color: Colors.white,
+                        //                   fontSize:
+                        //                   SizeConfig.safeBlockHorizontal * 4),
+                        //             ),
+                        //             subtitle: Column(
+                        //                 crossAxisAlignment:
+                        //                 CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   episodeList[index - 1]['summary'] ==
+                        //                       null
+                        //                       ? SizedBox(
+                        //                     height: 20,
+                        //                   )
+                        //                       : Padding(
+                        //                     padding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10.0),
+                        //                     child: htmlMatch.hasMatch(
+                        //                         episodeList[
+                        //                         index - 1]
+                        //                         ['summary']) ==
+                        //                         true
+                        //                         ? Text(
+                        //                       '${(parse(episodeList[index - 1]['summary']).body.text)}',
+                        //                       maxLines: 2,
+                        //                       overflow: TextOverflow
+                        //                           .ellipsis,
+                        //                       textScaleFactor:
+                        //                       mediaQueryData
+                        //                           .textScaleFactor
+                        //                           .clamp(0.5, 1)
+                        //                           .toDouble(),
+                        //                       style: TextStyle(
+                        //                         //       color: Colors.grey,
+                        //                           fontSize: SizeConfig
+                        //                               .blockSizeHorizontal *
+                        //                               3.5),
+                        //                     )
+                        //                         : Text(
+                        //                       episodeList[index - 1]
+                        //                       ['summary'],
+                        //                       maxLines: 2,
+                        //                       overflow: TextOverflow
+                        //                           .ellipsis,
+                        //                       textScaleFactor:
+                        //                       mediaQueryData
+                        //                           .textScaleFactor
+                        //                           .clamp(0.5, 1)
+                        //                           .toDouble(),
+                        //                       style: TextStyle(
+                        //                         //         color: Colors.grey,
+                        //                           fontSize: SizeConfig
+                        //                               .safeBlockHorizontal *
+                        //                               3.5),
+                        //                     ),
+                        //                   ),
+                        //                   Row(
+                        //                     mainAxisAlignment:
+                        //                     MainAxisAlignment.spaceBetween,
+                        //                     children: [
+                        //                       Row(
+                        //                         children: [
+                        //                           Row(children: [
+                        //                             episodeList[index - 1][
+                        //                             'permlink'] ==
+                        //                                 null ||
+                        //                                 episodeList[index - 1]
+                        //                                 ['votes'] ==
+                        //                                     null
+                        //                                 ? (creator ==
+                        //                                 prefs.getString(
+                        //                                     'userId')
+                        //                                 ? InkWell(
+                        //                               onTap: () async {
+                        //                                 await publishManually(
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1]
+                        //                                     ['id']);
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right:
+                        //                                     5),
+                        //                                 child:
+                        //                                 Container(
+                        //                                   decoration:
+                        //                                   BoxDecoration(
+                        //                                     borderRadius:
+                        //                                     BorderRadius.circular(
+                        //                                         20),
+                        //                                     border: Border
+                        //                                         .all(),
+                        //                                   ),
+                        //                                   child:
+                        //                                   Padding(
+                        //                                     padding: const EdgeInsets
+                        //                                         .symmetric(
+                        //                                         horizontal:
+                        //                                         20,
+                        //                                         vertical:
+                        //                                         5),
+                        //                                     child: Text(
+                        //                                       "Publish",
+                        //                                       textScaleFactor: mediaQueryData
+                        //                                           .textScaleFactor
+                        //                                           .clamp(
+                        //                                           0.5,
+                        //                                           1)
+                        //                                           .toDouble(),
+                        //                                       style:
+                        //                                       TextStyle(),
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             )
+                        //                                 : SizedBox(
+                        //                               width: 0,
+                        //                             ))
+                        //                                 : InkWell(
+                        //                               onTap: () async {
+                        //                                 if (prefs.getString(
+                        //                                     'HiveUserName') !=
+                        //                                     null) {
+                        //                                   setState(() {
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1][
+                        //                                     'isLoading'] = true;
+                        //                                   });
+                        //                                   showDialog(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return Dialog(
+                        //                                             backgroundColor:
+                        //                                             Colors
+                        //                                                 .transparent,
+                        //                                             child: UpvoteEpisode(
+                        //                                                 permlink:
+                        //                                                 episodeList[index - 1]['permlink'],
+                        //                                                 episode_id: episodeList[index - 1]['id']));
+                        //                                       }).then((value) async {
+                        //                                     print(value);
+                        //                                   });
+                        //
+                        //                                   setState(() {
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1][
+                        //                                     'ifVoted'] = !episodeList[
+                        //                                     index -
+                        //                                         1]
+                        //                                     ['ifVoted'];
+                        //                                     episodeList[index -
+                        //                                         1][
+                        //                                     'isLoading'] =
+                        //                                     false;
+                        //                                   });
+                        //                                 } else {
+                        //                                   showBarModalBottomSheet(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return HiveDetails();
+                        //                                       });
+                        //                                 }
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right: 5),
+                        //                                 child: Container(
+                        //                                   decoration: episodeList[index -
+                        //                                       1][
+                        //                                   'ifVoted'] ==
+                        //                                       true
+                        //                                       ? BoxDecoration(
+                        //                                       gradient:
+                        //                                       LinearGradient(
+                        //                                           colors: [
+                        //                                             Color(0xff5bc3ef),
+                        //                                             Color(0xff5d5da8)
+                        //                                           ]),
+                        //                                       borderRadius:
+                        //                                       BorderRadius.circular(
+                        //                                           30))
+                        //                                       : BoxDecoration(
+                        //                                       border: Border.all(
+                        //                                           color:
+                        //                                           kSecondaryColor),
+                        //                                       borderRadius:
+                        //                                       BorderRadius.circular(
+                        //                                           30)),
+                        //                                   child: Padding(
+                        //                                     padding:
+                        //                                     const EdgeInsets
+                        //                                         .all(
+                        //                                         5.0),
+                        //                                     child: Row(
+                        //                                       children: [
+                        //                                         episodeList[index -
+                        //                                             1]['isLoading'] ==
+                        //                                             true
+                        //                                             ? Container(
+                        //                                           height:
+                        //                                           18,
+                        //                                           width:
+                        //                                           18,
+                        //                                           child:
+                        //                                           SpinKitPulse(
+                        //                                             color: Colors.blue,
+                        //                                           ),
+                        //                                         )
+                        //                                             : Icon(
+                        //                                           FontAwesomeIcons.chevronCircleUp,
+                        //                                           size:
+                        //                                           15,
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .symmetric(
+                        //                                               horizontal:
+                        //                                               8),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             '${episodeList[index - 1]['votes']}',
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                             style: TextStyle(
+                        //                                               //        color: Color(
+                        //                                               // 0xffe8e8e8)
+                        //                                             ),
+                        //                                           ),
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .only(
+                        //                                               right:
+                        //                                               4),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                           ),
+                        //                                         )
+                        //                                       ],
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                             episodeList[index - 1][
+                        //                             'permlink'] ==
+                        //                                 null ||
+                        //                                 episodeList[index - 1]
+                        //                                 ['votes'] ==
+                        //                                     null
+                        //                                 ? SizedBox(
+                        //                               width: 0,
+                        //                             )
+                        //                                 : InkWell(
+                        //                               onTap: () {
+                        //                                 if (prefs.getString(
+                        //                                     'HiveUserName') !=
+                        //                                     null) {
+                        //                                   Navigator.push(
+                        //                                       context,
+                        //                                       CupertinoPageRoute(
+                        //                                           builder: (context) =>
+                        //                                               Comments(
+                        //                                                 episodeObject:
+                        //                                                 episodeList[index - 1],
+                        //                                               )));
+                        //                                 } else {
+                        //                                   showBarModalBottomSheet(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return HiveDetails();
+                        //                                       });
+                        //                                 }
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right: 5),
+                        //                                 child: Container(
+                        //                                   decoration: BoxDecoration(
+                        //                                       border: Border
+                        //                                           .all(
+                        //                                           color:
+                        //                                           kSecondaryColor),
+                        //                                       borderRadius:
+                        //                                       BorderRadius
+                        //                                           .circular(
+                        //                                           30)),
+                        //                                   child: Padding(
+                        //                                     padding:
+                        //                                     const EdgeInsets
+                        //                                         .all(
+                        //                                         5.0),
+                        //                                     child: Row(
+                        //                                       children: [
+                        //                                         Icon(
+                        //                                           Icons
+                        //                                               .mode_comment_outlined,
+                        //                                           size: 15,
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .symmetric(
+                        //                                               horizontal:
+                        //                                               8),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             episodeList[index -
+                        //                                                 1]['comments_count']
+                        //                                                 .toString(),
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                             // style: TextStyle(
+                        //                                             //      color: Color(0xffe8e8e8)
+                        //                                             //     ),
+                        //                                           ),
+                        //                                         ),
+                        //                                       ],
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                             InkWell(
+                        //                               onTap: () {
+                        //                                 List<Audio> playable = [];
+                        //                                 for (var v
+                        //                                 in episodeList) {
+                        //                                   playable
+                        //                                       .add(Audio.network(
+                        //                                     v['url'],
+                        //                                     metas: Metas(
+                        //                                       id: '${v['id']}',
+                        //                                       title:
+                        //                                       '${v['name']}',
+                        //                                       artist:
+                        //                                       '${v['author']}',
+                        //                                       album:
+                        //                                       '${v['podcast_name']}',
+                        //                                       // image: MetasImage.network('https://www.google.com')
+                        //                                       image: MetasImage
+                        //                                           .network(
+                        //                                           '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                        //                                     ),
+                        //                                   ));
+                        //                                 }
+                        //                                 currentlyPlaying
+                        //                                     .playList = playable;
+                        //                                 currentlyPlaying.audioPlayer.open(
+                        //                                     Playlist(
+                        //                                         audios:
+                        //                                         currentlyPlaying
+                        //                                             .playList,
+                        //                                         startIndex:
+                        //                                         index - 1),
+                        //                                     showNotification:
+                        //                                     true);
+                        //                               },
+                        //                               child: Container(
+                        //                                 decoration: BoxDecoration(
+                        //                                     border: Border.all(
+                        //                                         color:
+                        //                                         kSecondaryColor),
+                        //                                     borderRadius:
+                        //                                     BorderRadius
+                        //                                         .circular(
+                        //                                         30)),
+                        //                                 child: Padding(
+                        //                                   padding:
+                        //                                   const EdgeInsets
+                        //                                       .all(5),
+                        //                                   child: Row(
+                        //                                     children: [
+                        //                                       Icon(
+                        //                                         Icons
+                        //                                             .play_circle_outline,
+                        //                                         size: 15,
+                        //                                       ),
+                        //                                       Padding(
+                        //                                         padding: const EdgeInsets
+                        //                                             .symmetric(
+                        //                                             horizontal:
+                        //                                             8),
+                        //                                         child: Text(
+                        //                                           '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
+                        //                                           textScaleFactor:
+                        //                                           mediaQueryData
+                        //                                               .textScaleFactor
+                        //                                               .clamp(
+                        //                                               0.5,
+                        //                                               1)
+                        //                                               .toDouble(),
+                        //                                           // style: TextStyle(
+                        //                                           //      color: Color(0xffe8e8e8)
+                        //                                           //     ),
+                        //                                         ),
+                        //                                       ),
+                        //                                     ],
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                           ]),
+                        //                         ],
+                        //                       ),
+                        //                       Row(
+                        //                         children: [
+                        //                           episodeList[index - 1]
+                        //                           ['permlink'] ==
+                        //                               null ||
+                        //                               episodeList[index - 1]
+                        //                               ['votes'] ==
+                        //                                   null
+                        //                               ? SizedBox(
+                        //                             width: 0,
+                        //                             height: 0,
+                        //                           )
+                        //                               : (creator ==
+                        //                               prefs.getString(
+                        //                                   'userId')
+                        //                               ? IconButton(
+                        //                             icon: Icon(Icons
+                        //                                 .more_vert),
+                        //                             onPressed: () {
+                        //                               showBarModalBottomSheet(
+                        //                                   context:
+                        //                                   context,
+                        //                                   builder:
+                        //                                       (context) {
+                        //                                     return null;
+                        //                                   });
+                        //                             },
+                        //                           )
+                        //                               : SizedBox(
+                        //                             width: 0,
+                        //                             height: 0,
+                        //                           )),
+                        //                         ],
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 ]),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       Builder(builder: (context) {
+                        //         return currentlyPlaying.audioPlayer
+                        //             .builderRealtimePlayingInfos(
+                        //             builder: (context, infos) {
+                        //               if (infos == null) {
+                        //                 return SizedBox();
+                        //               } else {
+                        //                 if (infos.current.audio.audio.metas.id
+                        //                     .toString() ==
+                        //                     episodeList[index - 1]['id']) {
+                        //                   return Padding(
+                        //                     padding: const EdgeInsets.symmetric(
+                        //                         horizontal: 7),
+                        //                     child: Container(
+                        //                       decoration: BoxDecoration(
+                        //                           borderRadius:
+                        //                           BorderRadius.circular(30),
+                        //                           gradient: LinearGradient(colors: [
+                        //                             Color(0xff5d5da8),
+                        //                             Color(0xff5bc3ef)
+                        //                           ])),
+                        //                       width: double.infinity,
+                        //                       height: 4,
+                        //                     ),
+                        //                   );
+                        //                 } else {
+                        //                   return SizedBox();
+                        //                 }
+                        //               }
+                        //             });
+                        //       }),
+                        //     ],
+                        //   ),
+                        // );
+                        return EpisodeCard(data: episodeList[index - 1], index: index, playlist: playlist,);
                       }
                     }),
                 ListView(
