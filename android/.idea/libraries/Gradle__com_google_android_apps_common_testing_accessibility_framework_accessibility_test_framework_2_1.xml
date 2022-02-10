@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.apps.common.testing.accessibility.framework/accessibility-test-framework/2.1/d475d261a03b760e69707c7828da7267c404ca99/accessibility-test-framework-2.1-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.apps.common.testing.accessibility.framework/accessibility-test-framework/2.1/d475d261a03b760e69707c7828da7267c404ca99/accessibility-test-framework-2.1-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

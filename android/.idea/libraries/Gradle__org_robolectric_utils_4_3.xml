@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.robolectric/utils/4.3/1540cc2b2354f5d80609149ead213afdb6efbbe2/utils-4.3-sources.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.robolectric/utils/4.3/1540cc2b2354f5d80609149ead213afdb6efbbe2/utils-4.3-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

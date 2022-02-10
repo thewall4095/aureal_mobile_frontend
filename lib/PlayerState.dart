@@ -39,6 +39,7 @@ class PlayerChange extends ChangeNotifier {
 
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
+  AssetsAudioPlayer snippetPlayer = AssetsAudioPlayer();
   Dio dio = Dio();
 
   Map<String, dynamic> get episodeObject => _episodeObject;
@@ -70,7 +71,7 @@ class PlayerChange extends ChangeNotifier {
   set playList(var newValue) {
     _playList = newValue;
 
-    notifyListeners();
+    // notifyListeners();
     print(_playList);
   }
 
@@ -152,7 +153,7 @@ class PlayerChange extends ChangeNotifier {
             title: _episodeObject['name'],
             album: _episodeObject['podcast_name'],
             artist: _episodeObject['author'],
-            image: MetasImage.network(_episodeObject['image']),
+            image: _episodeObject['image'] == null ? MetasImage.network(_episodeObject['podcast_image']):MetasImage.network(_episodeObject['image']),
           )),
       seek: dur,
       showNotification: true,

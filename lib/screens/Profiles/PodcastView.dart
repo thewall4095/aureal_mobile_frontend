@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
-
+import 'package:palette_generator/palette_generator.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
@@ -152,6 +153,36 @@ class _PodcastViewState extends State<PodcastView>
 
   String creator = '';
 
+  List<Audio> playlist;
+
+  void playListGenerator({List data}) async {
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    List<Audio> playable = [];
+    for (int i = 0; i < data.length; i++){
+      var v = data[i];
+      playable
+          .add(Audio.network(
+        v['url'],
+        metas:
+        Metas(
+          id: '${v['id']}',
+          title: '${v['name']}',
+          artist: '${v['author']}',
+          album: '${v['podcast_name']}',
+          // image: MetasImage.network('https://www.google.com')
+          image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+        ),
+      ));
+    }
+
+    playlist = playable;
+    print(playlist);
+    // episodeObject.dispose();
+
+
+
+  }
+
   void getEpisodes() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -164,11 +195,14 @@ class _PodcastViewState extends State<PodcastView>
             episodeList = jsonDecode(response.body)['episodes'];
             pageNumber = pageNumber + 1;
             episodeListLoading = false;
+
+
           } else {
             episodeList = episodeList + jsonDecode(response.body)['episodes'];
             episodeListLoading = false;
             pageNumber = pageNumber + 1;
           }
+          playListGenerator(data: episodeList);
         });
       } else {
         print(response.statusCode);
@@ -241,7 +275,17 @@ class _PodcastViewState extends State<PodcastView>
   //   send.send([id, status, progress]);
   // }
 
-  var dominantColor;
+  int dominantColor;
+
+  Future<Color> getColor (String url) async {
+    final PaletteGenerator paletteGenerator = await PaletteGenerator
+        .fromImageProvider(CachedNetworkImageProvider(url));
+
+    setState(() {
+      dominantColor =  paletteGenerator.dominantColor.color.value;
+    });
+
+  }
 
   int hexOfRGBA(int r, int g, int b, {double opacity = 1}) {
     r = (r < 0) ? -r : r;
@@ -257,18 +301,18 @@ class _PodcastViewState extends State<PodcastView>
         '0x${a.toRadixString(16)}${r.toRadixString(16)}${g.toRadixString(16)}${b.toRadixString(16)}');
   }
 
-  void getColor(String url) async {
-    getColorFromUrl(url).then((value) {
-      setState(() {
-        dominantColor = hexOfRGBA(value[0], value[1], value[2]);
-        print(dominantColor.toString());
-
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          statusBarColor: Color(dominantColor),
-        ));
-      });
-    });
-  }
+  // void getColor(String url) async {
+  //   getColorFromUrl(url).then((value) {
+  //     setState(() {
+  //       dominantColor = hexOfRGBA(value[0], value[1], value[2]);
+  //       print(dominantColor.toString());
+  //
+  //       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //         statusBarColor: Color(dominantColor),
+  //       ));
+  //     });
+  //   });
+  // }
 
   void _showBottomSheet() {
     setState(() {
@@ -423,226 +467,1492 @@ class _PodcastViewState extends State<PodcastView>
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Color(0xff161616),
-      body: NestedScrollView(
-          controller: _controller,
-          physics: BouncingScrollPhysics(),
-          headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                backgroundColor: dominantColor == null
-                    ? Colors.transparent
-                    : Color(dominantColor),
-                centerTitle: true,
-                pinned: true,
-                floating: true,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.more_vert_outlined),
-                    onPressed: () {
-                      showBarModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: ListTile(
-                                    leading: CachedNetworkImage(
-                                      memCacheHeight:
-                                          (MediaQuery.of(context).size.width /
-                                                  2)
-                                              .floor(),
-                                      imageUrl: podcastData['image'],
-                                      imageBuilder: (context, imageProvider) {
-                                        return Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      },
+      body: Stack(
+        children: [NestedScrollView(
+            controller: _controller,
+            physics: BouncingScrollPhysics(),
+            headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  backgroundColor: dominantColor == null
+                      ? Colors.transparent
+                      : Color(dominantColor),
+                  centerTitle: true,
+                  pinned: true,
+                  floating: true,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.more_vert_outlined),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                    child: ListTile(
+                                      leading: CachedNetworkImage(
+                                        memCacheHeight:
+                                        (MediaQuery.of(context).size.width /
+                                            2)
+                                            .floor(),
+                                        imageUrl: podcastData['image'],
+                                        imageBuilder: (context, imageProvider) {
+                                          return Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius.circular(5),
+                                                image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover)),
+                                          );
+                                        },
+                                      ),
+                                      title: Text(
+                                        "${podcastData['name']}",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      subtitle: Text("${podcastData['author']}"),
                                     ),
-                                    title: Text(
-                                      "${podcastData['name']}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    subtitle: Text("${podcastData['author']}"),
                                   ),
-                                ),
-                                Divider(),
-                                ListTile(
-                                  leading: Icon(Icons.ios_share),
-                                  title: Text("Share"),
-                                  onTap: () {
-                                    podcastShare();
-                                  },
-                                ),
-                                ListTile(
-                                  onTap: () {
-                                    follow();
-                                    setState(() {
-                                      if (followState == FollowState.follow) {
-                                        followState = FollowState.following;
-                                      } else {
-                                        followState = FollowState.follow;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  leading: Icon(Icons.add_circle_outline),
-                                  title: Text("Subscribe"),
-                                ),
-                                // ListTile(
-                                //   leading: Icon(Icons.notification_add),
-                                //   title: Text("Get Notified"),
-                                // ),
-                                //     ListTile(
-                                //       onTap:() {
-                                //
-                                // },
-                                //       leading: Icon(Icons.playlist_add),
-                                //       title: Text("Add to podcast playlist"),
-                                //     ),
-                                // ListTile(
-                                //   leading: Icon(Icons.animation),
-                                //   title: Text("More like these"),
-                                // ),
-                                // ListTile(
-                                //   leading: Icon(Icons.send),
-                                //   title: Text("Invite this podcast to Aureal"),
-                                // ),
+                                  Divider(),
+                                  ListTile(
+                                    leading: Icon(Icons.ios_share),
+                                    title: Text("Share"),
+                                    onTap: () {
+                                      podcastShare();
+                                    },
+                                  ),
+                                  ListTile(
+                                    onTap: () {
+                                      follow();
+                                      setState(() {
+                                        if (followState == FollowState.follow) {
+                                          followState = FollowState.following;
+                                        } else {
+                                          followState = FollowState.follow;
+                                        }
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    leading: Icon(Icons.add_circle_outline),
+                                    title: Text("Subscribe"),
+                                  ),
+                                  // ListTile(
+                                  //   leading: Icon(Icons.notification_add),
+                                  //   title: Text("Get Notified"),
+                                  // ),
+                                  //     ListTile(
+                                  //       onTap:() {
+                                  //
+                                  // },
+                                  //       leading: Icon(Icons.playlist_add),
+                                  //       title: Text("Add to podcast playlist"),
+                                  //     ),
+                                  // ListTile(
+                                  //   leading: Icon(Icons.animation),
+                                  //   title: Text("More like these"),
+                                  // ),
+                                  // ListTile(
+                                  //   leading: Icon(Icons.send),
+                                  //   title: Text("Invite this podcast to Aureal"),
+                                  // ),
+                                ],
+                              );
+                            });
+                      },
+                    ),
+                  ],
+                  //   backgroundColor: kPrimaryColor,
+                  expandedHeight: MediaQuery.of(context).size.height / 1.5,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                                Color(dominantColor == null
+                                    ? 0xff3a3a3a
+                                    : dominantColor),
+                                Color(0xff161616)
                               ],
-                            );
-                          });
-                    },
-                  ),
-                ],
-                //   backgroundColor: kPrimaryColor,
-                expandedHeight: MediaQuery.of(context).size.height / 1.4,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [
-                          Color(dominantColor == null
-                              ? 0xff3a3a3a
-                              : dominantColor),
-                          Color(0xff161616)
-                        ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                    child: podcastData == null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Shimmer.fromColors(
-                              baseColor: themeProvider.isLightTheme == false
-                                  ? kPrimaryColor
-                                  : Colors.white,
-                              highlightColor:
-                                  themeProvider.isLightTheme == false
-                                      ? Color(0xff3a3a3a)
-                                      : Colors.white,
-                              child: Container(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      color: kSecondaryColor,
-                                      width: MediaQuery.of(context).size.width /
-                                          2.5,
-                                      height:
-                                          MediaQuery.of(context).size.width /
-                                              2.5,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      // width: MediaQuery.of(context).size.width / 2,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                      child: podcastData == null
+                          ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Shimmer.fromColors(
+                          baseColor: themeProvider.isLightTheme == false
+                              ? kPrimaryColor
+                              : Colors.white,
+                          highlightColor:
+                          themeProvider.isLightTheme == false
+                              ? Color(0xff3a3a3a)
+                              : Colors.white,
+                          child: Container(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  color: kSecondaryColor,
+                                  width: MediaQuery.of(context).size.width /
+                                      2.5,
+                                  height:
+                                  MediaQuery.of(context).size.width /
+                                      2.5,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  // width: MediaQuery.of(context).size.width / 2,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  height: 20,
-                                                  color: kSecondaryColor,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  height: 20,
-                                                  color: kSecondaryColor,
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    right: 8.0,
-                                                    top: 8.0),
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  height: 20,
-                                                  color: kSecondaryColor,
-                                                ),
-                                              ),
-                                            ],
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 20,
+                                              color: kSecondaryColor,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.all(8.0),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 20,
+                                              color: kSecondaryColor,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0,
+                                                right: 8.0,
+                                                top: 8.0),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 20,
+                                              color: kSecondaryColor,
+                                            ),
                                           ),
                                         ],
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                          : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment:
+                            MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height:
+                                MediaQuery.of(context).size.width / 10,
+                              ),
+                              Hero(
+                                tag: '${podcastData['id']}',
+                                child: Container(
+                                  width:
+                                  MediaQuery.of(context).size.width / 2,
+                                  height:
+                                  MediaQuery.of(context).size.width / 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CachedNetworkImage(
+                                      imageBuilder:
+                                          (context, imageProvider) {
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover),
+                                          ),
+                                        );
+                                      },
+                                      memCacheHeight:
+                                      (MediaQuery.of(context)
+                                          .size
+                                          .height)
+                                          .floor(),
+                                      placeholder: (context, url) =>
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                2.5,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                2.5,
+                                            child: Image.asset(
+                                                'assets/images/Thumbnail.png'),
+                                          ),
+                                      imageUrl: podcastData == null
+                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          : podcastData['image'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          podcastData['name'],
+                                          textScaleFactor: mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1)
+                                              .toDouble(),
+                                          style: TextStyle(
+                                            //    color: Color(0xffe8e8e8),
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                                  5),
+                                        ),
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                            onTap: () {
+                                              if (podcastData[
+                                              'author_hiveusername'] !=
+                                                  null) {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                          return PublicProfile(
+                                                            userId: podcastData[
+                                                            'user_id'],
+                                                          );
+                                                        }));
+                                              }
+                                            },
+                                            child: Text(
+                                              podcastData['author'],
+                                              maxLines: 2,
+                                              overflow:
+                                              TextOverflow.ellipsis,
+                                              textScaleFactor:
+                                              mediaQueryData
+                                                  .textScaleFactor
+                                                  .clamp(0.5, 1)
+                                                  .toDouble(),
+                                              style: TextStyle(
+                                                  color: Color(0xffe8e8e8)
+                                                      .withOpacity(0.5),
+                                                  fontWeight:
+                                                  FontWeight.w400,
+                                                  fontSize: SizeConfig
+                                                      .safeBlockHorizontal *
+                                                      3),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        currentlyPlaying
+                                            .isPlaylistPlaying ==
+                                            true
+                                            ? InkWell(
+                                          onTap: () {
+                                            currentlyPlaying
+                                                .audioPlayer
+                                                .pause();
+                                            // setState(() {
+                                            //   currentlyPlaying.playList =
+                                            //       episodeList;
+                                            //   currentlyPlaying.stop();
+                                            //   currentlyPlaying
+                                            //           .episodeObject =
+                                            //       currentlyPlaying
+                                            //           .playList[0];
+                                            //   currentlyPlaying.play();
+                                            //   currentlyPlaying
+                                            //           .isPlaylistPlaying =
+                                            //       true;
+                                            // });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(30),
+                                                gradient:
+                                                LinearGradient(
+                                                    colors: [
+                                                      Color(
+                                                          0xff5d5da8),
+                                                      Color(
+                                                          0xff5bc3ef)
+                                                    ])),
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal: 40,
+                                                  vertical: 8),
+                                              child: Text("Pause"),
+                                            ),
+                                          ),
+                                        )
+                                            : InkWell(
+                                          onTap: () {
+
+
+                                            currentlyPlaying.audioPlayer.open(
+                                                Playlist(
+                                                    audios:
+                                                    playlist,
+                                                    startIndex: 0),
+                                                showNotification:
+                                                true);
+                                            // setState(() {
+                                            //   currentlyPlaying.stop();
+                                            //   currentlyPlaying.playList =
+                                            //       episodeList;
+                                            //
+                                            //   currentlyPlaying
+                                            //           .episodeObject =
+                                            //       currentlyPlaying
+                                            //           .playList[0];
+                                            //   currentlyPlaying.play();
+                                            //   currentlyPlaying
+                                            //           .isPlaylistPlaying =
+                                            //       true;
+                                            // });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(30),
+                                                gradient:
+                                                LinearGradient(
+                                                    colors: [
+                                                      Color(
+                                                          0xff5d5da8),
+                                                      Color(
+                                                          0xff5bc3ef)
+                                                    ])),
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal: 40,
+                                                  vertical: 8),
+                                              child: Text("Play"),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        followState == FollowState.following
+                                            ? InkWell(
+                                            onTap: () {
+                                              follow();
+                                              setState(() {
+                                                if (followState ==
+                                                    FollowState
+                                                        .follow) {
+                                                  followState =
+                                                      FollowState
+                                                          .following;
+                                                } else {
+                                                  followState =
+                                                      FollowState
+                                                          .follow;
+                                                }
+                                              });
+                                            },
+                                            child: Icon(
+                                                Icons.check_circle))
+                                            : InkWell(
+                                          onTap: () async {
+                                            follow();
+                                            setState(() {
+                                              if (followState ==
+                                                  FollowState
+                                                      .follow) {
+                                                followState =
+                                                    FollowState
+                                                        .following;
+                                              } else {
+                                                followState =
+                                                    FollowState
+                                                        .follow;
+                                              }
+                                            });
+                                          },
+                                          child:
+                                          Icon(Icons.add_circle),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Container(
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height:
-                                        MediaQuery.of(context).size.width / 10,
+                              SizedBox(height: 30,),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        podcastData == null
+                                            ? SizedBox()
+                                            : htmlMatch.hasMatch(podcastData[
+                                        'description']) ==
+                                            true
+                                            ? Text(
+                                          '${(parse(podcastData['description']).body.text)}',
+                                          maxLines:
+                                          seeMore == true
+                                              ? 30
+                                              : 2,
+                                          overflow: TextOverflow
+                                              .ellipsis,
+                                          textScaleFactor:
+                                          mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1.5)
+                                              .toDouble(),
+                                          style: TextStyle(
+                                            //      color: Colors.grey,
+                                              fontSize: SizeConfig
+                                                  .blockSizeHorizontal *
+                                                  3),
+                                        )
+                                            : Text(
+                                          podcastData[
+                                          'description'],
+                                          maxLines:
+                                          seeMore == true
+                                              ? 30
+                                              : 2,
+                                          overflow: TextOverflow
+                                              .ellipsis,
+                                          textScaleFactor:
+                                          mediaQueryData
+                                              .textScaleFactor
+                                              .clamp(0.5, 1)
+                                              .toDouble(),
+                                          style: TextStyle(
+                                            //  color: Colors.grey,
+                                              fontSize: SizeConfig
+                                                  .safeBlockHorizontal *
+                                                  3),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            showBarModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return Container(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                      MainAxisSize.min,
+                                                      children: [
+                                                        ListTile(
+                                                          leading: SizedBox(
+                                                            height: 50,
+                                                            width: 50,
+                                                            child:
+                                                            CachedNetworkImage(
+                                                              imageUrl: podcastData ==
+                                                                  null
+                                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                  : podcastData[
+                                                              'image'],
+                                                              imageBuilder:
+                                                                  (context,
+                                                                  imageProvider) {
+                                                                return Container(
+                                                                  decoration: BoxDecoration(
+                                                                      image: DecorationImage(
+                                                                          image: imageProvider,
+                                                                          fit: BoxFit.cover)),
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                          title: Text(
+                                                              "${podcastData['name']}"),
+                                                          subtitle: Text(
+                                                              "${podcastData['author']}"),
+                                                        ),
+                                                        Divider(),
+                                                        ListTile(
+                                                          subtitle: podcastData ==
+                                                              null
+                                                              ? SizedBox()
+                                                              : htmlMatch.hasMatch(
+                                                              podcastData['description']) ==
+                                                              true
+                                                              ? Text(
+                                                            '${(parse(podcastData['description']).body.text)}',
+                                                            textScaleFactor: mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1.5)
+                                                                .toDouble(),
+                                                            style: TextStyle(
+                                                              //      color: Colors.grey,
+                                                                fontSize: SizeConfig.blockSizeHorizontal * 3.5),
+                                                          )
+                                                              : Text(
+                                                            podcastData[
+                                                            'description'],
+                                                            textScaleFactor: mediaQueryData
+                                                                .textScaleFactor
+                                                                .clamp(0.5, 1)
+                                                                .toDouble(),
+                                                            style: TextStyle(
+                                                              //  color: Colors.grey,
+                                                                fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          height: 20,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  );
+                                                });
+                                          },
+                                          child: Text(
+                                            seeMore == false
+                                                ? "See more"
+                                                : "See less",
+                                            style: TextStyle(
+                                                color: Colors.white
+                                                    .withOpacity(0.5)),
+                                          ),
+                                        ),
+                                      ]),
+                                ),
+                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       Text(
+                              //           "All Episodes (${podcastData['total_count']})"),
+                              //       Padding(
+                              //         padding: const EdgeInsets.symmetric(
+                              //             horizontal: 8),
+                              //         child: ShaderMask(
+                              //             shaderCallback: (Rect bounds) {
+                              //               return LinearGradient(colors: [
+                              //                 Color(0xff5d5da8),
+                              //                 Color(0xff5bc3ef)
+                              //               ]).createShader(bounds);
+                              //             },
+                              //             child: InkWell(
+                              //               onTap: () {
+                              //                 showMaterialModalBottomSheet(
+                              //                     enableDrag: false,
+                              //                     context: context,
+                              //                     builder: (context) {
+                              //                       return SnippetDisplay(
+                              //                         podcastObject:
+                              //                             podcastData,
+                              //                       );
+                              //                     });
+                              //               },
+                              //               child: Text(
+                              //                 "Snippets",
+                              //                 textScaleFactor: 1.0,
+                              //                 style: TextStyle(
+                              //                     fontWeight:
+                              //                         FontWeight.w600),
+                              //               ),
+                              //             )),
+                              //       )
+                              //     ],
+                              //   ),
+                              // )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(50),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter : ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+              ),
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TabBar(
+                                isScrollable: true,
+                                indicatorSize: TabBarIndicatorSize.label,
+                                controller: _tabController,
+                                tabs: [
+                                  Tab(
+                                    text: "EPISODES",
                                   ),
-                                  Hero(
-                                    tag: '${podcastData['id']}',
-                                    child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      height:
-                                          MediaQuery.of(context).size.width / 2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                  Tab(
+                                    text: "RELATED",
+                                  )
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                                child: ShaderMask(
+                                    shaderCallback: (Rect bounds) {
+                                      return LinearGradient(colors: [
+                                        Color(0xff5d5da8),
+                                        Color(0xff5bc3ef)
+                                      ]).createShader(bounds);
+                                    },
+                                    child: InkWell(
+                                      onTap: () {
+                                        showMaterialModalBottomSheet(
+                                            enableDrag: false,
+                                            context: context,
+                                            builder: (context) {
+                                              return SnippetDisplay(
+                                                podcastObject: podcastData,
+                                              );
+                                            });
+                                      },
+                                      child: Text(
+                                        "Snippets",
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(fontWeight: FontWeight.w600),
+                                      ),
+                                    )),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              controller: _tabController,
+              children: [
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: episodeList.length + 2,
+                    itemBuilder: (context, int index) {
+                      if (index == 0) {
+                        return SizedBox();
+                      } else {
+                        if (index == episodeList.length + 1) {
+                          if (isLoading == false) {
+                            for (int i = 0; i < 2; i++) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Color(0xff222222)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 3),
+                                          child: Container(
+                                              color: Color(0xff161616),
+                                              height: 10,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 3),
+                                          child: Container(
+                                              color: Color(0xff161616),
+                                              height: 10,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                                  2),
+                                        ),
+                                        SizedBox(
+                                          height: 6,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 3),
+                                          child: Container(
+                                              color: Color(0xff161616),
+                                              height: 6,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 3),
+                                          child: Container(
+                                              color: Color(0xff161616),
+                                              height: 6,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.75),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10),
+                                                  color: Color(0xff161616),
+                                                ),
+                                                height: 25,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                    8,
+                                                //    color: kSecondaryColor,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(10),
+                                                    color: Color(0xff161616),
+                                                  ),
+                                                  height: 25,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                      8,
+                                                  //    color: kSecondaryColor,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(8),
+                                                    color: Color(0xff161616),
+                                                  ),
+                                                  height: 20,
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                      8,
+                                                  //    color: kSecondaryColor,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            return SizedBox();
+                          }
+                        }
+                        // return Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: 15, vertical: 10),
+                        //   child: Column(
+                        //     children: [
+                        //       Container(
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(8),
+                        //           boxShadow: [
+                        //             new BoxShadow(
+                        //               color: Colors.black54.withOpacity(0.2),
+                        //               blurRadius: 10.0,
+                        //             ),
+                        //           ],
+                        //           color: themeProvider.isLightTheme == true
+                        //               ? Colors.white
+                        //               : Color(0xff222222),
+                        //         ),
+                        //         width: double.infinity,
+                        //         child: Padding(
+                        //           padding: const EdgeInsets.symmetric(
+                        //               horizontal: 20, vertical: 15),
+                        //           child: ListTile(
+                        //             contentPadding: EdgeInsets.zero,
+                        //
+                        //             onTap: () {
+                        //               Navigator.push(
+                        //                   context,
+                        //                   CupertinoPageRoute(
+                        //                       builder: (context) => EpisodeView(
+                        //                           episodeId:
+                        //                           episodeList[index - 1]
+                        //                           ['id'])));
+                        //             },
+                        //             //
+                        //             title: Text(
+                        //               episodeList[index - 1]['name'],
+                        //               maxLines: 2,
+                        //               overflow: TextOverflow.ellipsis,
+                        //               textScaleFactor: mediaQueryData
+                        //                   .textScaleFactor
+                        //                   .clamp(0.5, 1.5)
+                        //                   .toDouble(),
+                        //               style: TextStyle(
+                        //                   fontWeight: FontWeight.w700,
+                        //                   //       color: Colors.white,
+                        //                   fontSize:
+                        //                   SizeConfig.safeBlockHorizontal * 4),
+                        //             ),
+                        //             subtitle: Column(
+                        //                 crossAxisAlignment:
+                        //                 CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   episodeList[index - 1]['summary'] ==
+                        //                       null
+                        //                       ? SizedBox(
+                        //                     height: 20,
+                        //                   )
+                        //                       : Padding(
+                        //                     padding:
+                        //                     const EdgeInsets.symmetric(
+                        //                         vertical: 10.0),
+                        //                     child: htmlMatch.hasMatch(
+                        //                         episodeList[
+                        //                         index - 1]
+                        //                         ['summary']) ==
+                        //                         true
+                        //                         ? Text(
+                        //                       '${(parse(episodeList[index - 1]['summary']).body.text)}',
+                        //                       maxLines: 2,
+                        //                       overflow: TextOverflow
+                        //                           .ellipsis,
+                        //                       textScaleFactor:
+                        //                       mediaQueryData
+                        //                           .textScaleFactor
+                        //                           .clamp(0.5, 1)
+                        //                           .toDouble(),
+                        //                       style: TextStyle(
+                        //                         //       color: Colors.grey,
+                        //                           fontSize: SizeConfig
+                        //                               .blockSizeHorizontal *
+                        //                               3.5),
+                        //                     )
+                        //                         : Text(
+                        //                       episodeList[index - 1]
+                        //                       ['summary'],
+                        //                       maxLines: 2,
+                        //                       overflow: TextOverflow
+                        //                           .ellipsis,
+                        //                       textScaleFactor:
+                        //                       mediaQueryData
+                        //                           .textScaleFactor
+                        //                           .clamp(0.5, 1)
+                        //                           .toDouble(),
+                        //                       style: TextStyle(
+                        //                         //         color: Colors.grey,
+                        //                           fontSize: SizeConfig
+                        //                               .safeBlockHorizontal *
+                        //                               3.5),
+                        //                     ),
+                        //                   ),
+                        //                   Row(
+                        //                     mainAxisAlignment:
+                        //                     MainAxisAlignment.spaceBetween,
+                        //                     children: [
+                        //                       Row(
+                        //                         children: [
+                        //                           Row(children: [
+                        //                             episodeList[index - 1][
+                        //                             'permlink'] ==
+                        //                                 null ||
+                        //                                 episodeList[index - 1]
+                        //                                 ['votes'] ==
+                        //                                     null
+                        //                                 ? (creator ==
+                        //                                 prefs.getString(
+                        //                                     'userId')
+                        //                                 ? InkWell(
+                        //                               onTap: () async {
+                        //                                 await publishManually(
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1]
+                        //                                     ['id']);
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right:
+                        //                                     5),
+                        //                                 child:
+                        //                                 Container(
+                        //                                   decoration:
+                        //                                   BoxDecoration(
+                        //                                     borderRadius:
+                        //                                     BorderRadius.circular(
+                        //                                         20),
+                        //                                     border: Border
+                        //                                         .all(),
+                        //                                   ),
+                        //                                   child:
+                        //                                   Padding(
+                        //                                     padding: const EdgeInsets
+                        //                                         .symmetric(
+                        //                                         horizontal:
+                        //                                         20,
+                        //                                         vertical:
+                        //                                         5),
+                        //                                     child: Text(
+                        //                                       "Publish",
+                        //                                       textScaleFactor: mediaQueryData
+                        //                                           .textScaleFactor
+                        //                                           .clamp(
+                        //                                           0.5,
+                        //                                           1)
+                        //                                           .toDouble(),
+                        //                                       style:
+                        //                                       TextStyle(),
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             )
+                        //                                 : SizedBox(
+                        //                               width: 0,
+                        //                             ))
+                        //                                 : InkWell(
+                        //                               onTap: () async {
+                        //                                 if (prefs.getString(
+                        //                                     'HiveUserName') !=
+                        //                                     null) {
+                        //                                   setState(() {
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1][
+                        //                                     'isLoading'] = true;
+                        //                                   });
+                        //                                   showDialog(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return Dialog(
+                        //                                             backgroundColor:
+                        //                                             Colors
+                        //                                                 .transparent,
+                        //                                             child: UpvoteEpisode(
+                        //                                                 permlink:
+                        //                                                 episodeList[index - 1]['permlink'],
+                        //                                                 episode_id: episodeList[index - 1]['id']));
+                        //                                       }).then((value) async {
+                        //                                     print(value);
+                        //                                   });
+                        //
+                        //                                   setState(() {
+                        //                                     episodeList[
+                        //                                     index -
+                        //                                         1][
+                        //                                     'ifVoted'] = !episodeList[
+                        //                                     index -
+                        //                                         1]
+                        //                                     ['ifVoted'];
+                        //                                     episodeList[index -
+                        //                                         1][
+                        //                                     'isLoading'] =
+                        //                                     false;
+                        //                                   });
+                        //                                 } else {
+                        //                                   showBarModalBottomSheet(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return HiveDetails();
+                        //                                       });
+                        //                                 }
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right: 5),
+                        //                                 child: Container(
+                        //                                   decoration: episodeList[index -
+                        //                                       1][
+                        //                                   'ifVoted'] ==
+                        //                                       true
+                        //                                       ? BoxDecoration(
+                        //                                       gradient:
+                        //                                       LinearGradient(
+                        //                                           colors: [
+                        //                                             Color(0xff5bc3ef),
+                        //                                             Color(0xff5d5da8)
+                        //                                           ]),
+                        //                                       borderRadius:
+                        //                                       BorderRadius.circular(
+                        //                                           30))
+                        //                                       : BoxDecoration(
+                        //                                       border: Border.all(
+                        //                                           color:
+                        //                                           kSecondaryColor),
+                        //                                       borderRadius:
+                        //                                       BorderRadius.circular(
+                        //                                           30)),
+                        //                                   child: Padding(
+                        //                                     padding:
+                        //                                     const EdgeInsets
+                        //                                         .all(
+                        //                                         5.0),
+                        //                                     child: Row(
+                        //                                       children: [
+                        //                                         episodeList[index -
+                        //                                             1]['isLoading'] ==
+                        //                                             true
+                        //                                             ? Container(
+                        //                                           height:
+                        //                                           18,
+                        //                                           width:
+                        //                                           18,
+                        //                                           child:
+                        //                                           SpinKitPulse(
+                        //                                             color: Colors.blue,
+                        //                                           ),
+                        //                                         )
+                        //                                             : Icon(
+                        //                                           FontAwesomeIcons.chevronCircleUp,
+                        //                                           size:
+                        //                                           15,
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .symmetric(
+                        //                                               horizontal:
+                        //                                               8),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             '${episodeList[index - 1]['votes']}',
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                             style: TextStyle(
+                        //                                               //        color: Color(
+                        //                                               // 0xffe8e8e8)
+                        //                                             ),
+                        //                                           ),
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .only(
+                        //                                               right:
+                        //                                               4),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                           ),
+                        //                                         )
+                        //                                       ],
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                             episodeList[index - 1][
+                        //                             'permlink'] ==
+                        //                                 null ||
+                        //                                 episodeList[index - 1]
+                        //                                 ['votes'] ==
+                        //                                     null
+                        //                                 ? SizedBox(
+                        //                               width: 0,
+                        //                             )
+                        //                                 : InkWell(
+                        //                               onTap: () {
+                        //                                 if (prefs.getString(
+                        //                                     'HiveUserName') !=
+                        //                                     null) {
+                        //                                   Navigator.push(
+                        //                                       context,
+                        //                                       CupertinoPageRoute(
+                        //                                           builder: (context) =>
+                        //                                               Comments(
+                        //                                                 episodeObject:
+                        //                                                 episodeList[index - 1],
+                        //                                               )));
+                        //                                 } else {
+                        //                                   showBarModalBottomSheet(
+                        //                                       context:
+                        //                                       context,
+                        //                                       builder:
+                        //                                           (context) {
+                        //                                         return HiveDetails();
+                        //                                       });
+                        //                                 }
+                        //                               },
+                        //                               child: Padding(
+                        //                                 padding:
+                        //                                 const EdgeInsets
+                        //                                     .only(
+                        //                                     right: 5),
+                        //                                 child: Container(
+                        //                                   decoration: BoxDecoration(
+                        //                                       border: Border
+                        //                                           .all(
+                        //                                           color:
+                        //                                           kSecondaryColor),
+                        //                                       borderRadius:
+                        //                                       BorderRadius
+                        //                                           .circular(
+                        //                                           30)),
+                        //                                   child: Padding(
+                        //                                     padding:
+                        //                                     const EdgeInsets
+                        //                                         .all(
+                        //                                         5.0),
+                        //                                     child: Row(
+                        //                                       children: [
+                        //                                         Icon(
+                        //                                           Icons
+                        //                                               .mode_comment_outlined,
+                        //                                           size: 15,
+                        //                                         ),
+                        //                                         Padding(
+                        //                                           padding: const EdgeInsets
+                        //                                               .symmetric(
+                        //                                               horizontal:
+                        //                                               8),
+                        //                                           child:
+                        //                                           Text(
+                        //                                             episodeList[index -
+                        //                                                 1]['comments_count']
+                        //                                                 .toString(),
+                        //                                             textScaleFactor: mediaQueryData
+                        //                                                 .textScaleFactor
+                        //                                                 .clamp(0.5,
+                        //                                                 1)
+                        //                                                 .toDouble(),
+                        //                                             // style: TextStyle(
+                        //                                             //      color: Color(0xffe8e8e8)
+                        //                                             //     ),
+                        //                                           ),
+                        //                                         ),
+                        //                                       ],
+                        //                                     ),
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                             InkWell(
+                        //                               onTap: () {
+                        //                                 List<Audio> playable = [];
+                        //                                 for (var v
+                        //                                 in episodeList) {
+                        //                                   playable
+                        //                                       .add(Audio.network(
+                        //                                     v['url'],
+                        //                                     metas: Metas(
+                        //                                       id: '${v['id']}',
+                        //                                       title:
+                        //                                       '${v['name']}',
+                        //                                       artist:
+                        //                                       '${v['author']}',
+                        //                                       album:
+                        //                                       '${v['podcast_name']}',
+                        //                                       // image: MetasImage.network('https://www.google.com')
+                        //                                       image: MetasImage
+                        //                                           .network(
+                        //                                           '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                        //                                     ),
+                        //                                   ));
+                        //                                 }
+                        //                                 currentlyPlaying
+                        //                                     .playList = playable;
+                        //                                 currentlyPlaying.audioPlayer.open(
+                        //                                     Playlist(
+                        //                                         audios:
+                        //                                         currentlyPlaying
+                        //                                             .playList,
+                        //                                         startIndex:
+                        //                                         index - 1),
+                        //                                     showNotification:
+                        //                                     true);
+                        //                               },
+                        //                               child: Container(
+                        //                                 decoration: BoxDecoration(
+                        //                                     border: Border.all(
+                        //                                         color:
+                        //                                         kSecondaryColor),
+                        //                                     borderRadius:
+                        //                                     BorderRadius
+                        //                                         .circular(
+                        //                                         30)),
+                        //                                 child: Padding(
+                        //                                   padding:
+                        //                                   const EdgeInsets
+                        //                                       .all(5),
+                        //                                   child: Row(
+                        //                                     children: [
+                        //                                       Icon(
+                        //                                         Icons
+                        //                                             .play_circle_outline,
+                        //                                         size: 15,
+                        //                                       ),
+                        //                                       Padding(
+                        //                                         padding: const EdgeInsets
+                        //                                             .symmetric(
+                        //                                             horizontal:
+                        //                                             8),
+                        //                                         child: Text(
+                        //                                           '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
+                        //                                           textScaleFactor:
+                        //                                           mediaQueryData
+                        //                                               .textScaleFactor
+                        //                                               .clamp(
+                        //                                               0.5,
+                        //                                               1)
+                        //                                               .toDouble(),
+                        //                                           // style: TextStyle(
+                        //                                           //      color: Color(0xffe8e8e8)
+                        //                                           //     ),
+                        //                                         ),
+                        //                                       ),
+                        //                                     ],
+                        //                                   ),
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                           ]),
+                        //                         ],
+                        //                       ),
+                        //                       Row(
+                        //                         children: [
+                        //                           episodeList[index - 1]
+                        //                           ['permlink'] ==
+                        //                               null ||
+                        //                               episodeList[index - 1]
+                        //                               ['votes'] ==
+                        //                                   null
+                        //                               ? SizedBox(
+                        //                             width: 0,
+                        //                             height: 0,
+                        //                           )
+                        //                               : (creator ==
+                        //                               prefs.getString(
+                        //                                   'userId')
+                        //                               ? IconButton(
+                        //                             icon: Icon(Icons
+                        //                                 .more_vert),
+                        //                             onPressed: () {
+                        //                               showBarModalBottomSheet(
+                        //                                   context:
+                        //                                   context,
+                        //                                   builder:
+                        //                                       (context) {
+                        //                                     return null;
+                        //                                   });
+                        //                             },
+                        //                           )
+                        //                               : SizedBox(
+                        //                             width: 0,
+                        //                             height: 0,
+                        //                           )),
+                        //                         ],
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 ]),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       Builder(builder: (context) {
+                        //         return currentlyPlaying.audioPlayer
+                        //             .builderRealtimePlayingInfos(
+                        //             builder: (context, infos) {
+                        //               if (infos == null) {
+                        //                 return SizedBox();
+                        //               } else {
+                        //                 if (infos.current.audio.audio.metas.id
+                        //                     .toString() ==
+                        //                     episodeList[index - 1]['id']) {
+                        //                   return Padding(
+                        //                     padding: const EdgeInsets.symmetric(
+                        //                         horizontal: 7),
+                        //                     child: Container(
+                        //                       decoration: BoxDecoration(
+                        //                           borderRadius:
+                        //                           BorderRadius.circular(30),
+                        //                           gradient: LinearGradient(colors: [
+                        //                             Color(0xff5d5da8),
+                        //                             Color(0xff5bc3ef)
+                        //                           ])),
+                        //                       width: double.infinity,
+                        //                       height: 4,
+                        //                     ),
+                        //                   );
+                        //                 } else {
+                        //                   return SizedBox();
+                        //                 }
+                        //               }
+                        //             });
+                        //       }),
+                        //     ],
+                        //   ),
+                        // );
+                        return EpisodeCard(data: episodeList[index - 1], index: index, playlist: playlist,);
+                      }
+                    }),
+                ListView(
+                  children: [
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 15,
+                        ),
+                        episodeRecommendations.length == 0
+                            ? SizedBox()
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(
+                                "You might also like",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    fontSize:
+                                    SizeConfig.safeBlockHorizontal * 4,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              height:
+                              MediaQuery.of(context).size.height / 2.8,
+                              child: GridView(
+                                scrollDirection: Axis.horizontal,
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    mainAxisSpacing: 10,
+                                    crossAxisSpacing: 1,
+                                    childAspectRatio: 1.2 / 5.3),
+                                children: [
+                                  for (var a in episodeRecommendations)
+                                    ListTile(
+                                      onTap: () {
+                                        List<Audio> playable = [];
+                                        for (var v
+                                        in episodeRecommendations) {
+                                          playable.add(Audio.network(
+                                            v['url'],
+                                            metas: Metas(
+                                              id: '${v['id']}',
+                                              title: '${v['name']}',
+                                              artist: '${v['author']}',
+                                              album: '${v['podcast_name']}',
+                                              // image: MetasImage.network('https://www.google.com')
+                                              image: MetasImage.network(
+                                                  '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                            ),
+                                          ));
+                                        }
+                                        currentlyPlaying.playList =
+                                            playable;
+                                        currentlyPlaying.audioPlayer.open(
+                                            Playlist(
+                                                audios: currentlyPlaying
+                                                    .playList,
+                                                startIndex:
+                                                episodeRecommendations
+                                                    .indexOf(a)),
+                                            showNotification: true);
+                                      },
+                                      leading: CircleAvatar(
+                                        radius: 25,
                                         child: CachedNetworkImage(
                                           imageBuilder:
                                               (context, imageProvider) {
                                             return Container(
+                                              height: 60,
+                                              width: 60,
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(
+                                                    3),
                                                 image: DecorationImage(
                                                     image: imageProvider,
                                                     fit: BoxFit.cover),
@@ -650,1656 +1960,382 @@ class _PodcastViewState extends State<PodcastView>
                                             );
                                           },
                                           memCacheHeight:
-                                              (MediaQuery.of(context)
-                                                      .size
-                                                      .height)
-                                                  .floor(),
-                                          placeholder: (context, url) =>
-                                              Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2.5,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2.5,
-                                            child: Image.asset(
-                                                'assets/images/Thumbnail.png'),
-                                          ),
-                                          imageUrl: podcastData == null
-                                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                              : podcastData['image'],
-                                          fit: BoxFit.cover,
+                                          (MediaQuery.of(context)
+                                              .size
+                                              .height)
+                                              .floor(),
+                                          imageUrl: a['image'] != null
+                                              ? a['image']
+                                              : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                          placeholder:
+                                              (context, imageProvider) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/images/Thumbnail.png'),
+                                                      fit: BoxFit.cover)),
+                                              height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.38,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.38,
+                                            );
+                                          },
                                         ),
                                       ),
+                                      title: Text(
+                                        a['name'].toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontSize: SizeConfig
+                                                .safeBlockHorizontal *
+                                                3),
+                                      ),
+                                      trailing: Icon(Icons.more_vert),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Text(
-                                              podcastData['name'],
-                                              textScaleFactor: mediaQueryData
-                                                  .textScaleFactor
-                                                  .clamp(0.5, 1)
-                                                  .toDouble(),
-                                              style: TextStyle(
-                                                  //    color: Color(0xffe8e8e8),
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: SizeConfig
-                                                          .safeBlockHorizontal *
-                                                      5),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  if (podcastData[
-                                                          'author_hiveusername'] !=
-                                                      null) {
-                                                    Navigator.push(context,
-                                                        CupertinoPageRoute(
-                                                            builder: (context) {
-                                                      return PublicProfile(
-                                                        userId: podcastData[
-                                                            'user_id'],
-                                                      );
-                                                    }));
-                                                  }
-                                                },
-                                                child: Text(
-                                                  podcastData['author'],
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor:
-                                                      mediaQueryData
-                                                          .textScaleFactor
-                                                          .clamp(0.5, 1)
-                                                          .toDouble(),
-                                                  style: TextStyle(
-                                                      color: Color(0xffe8e8e8)
-                                                          .withOpacity(0.5),
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontSize: SizeConfig
-                                                              .safeBlockHorizontal *
-                                                          3),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            currentlyPlaying
-                                                        .isPlaylistPlaying ==
-                                                    true
-                                                ? InkWell(
-                                                    onTap: () {
-                                                      currentlyPlaying
-                                                          .audioPlayer
-                                                          .pause();
-                                                      // setState(() {
-                                                      //   currentlyPlaying.playList =
-                                                      //       episodeList;
-                                                      //   currentlyPlaying.stop();
-                                                      //   currentlyPlaying
-                                                      //           .episodeObject =
-                                                      //       currentlyPlaying
-                                                      //           .playList[0];
-                                                      //   currentlyPlaying.play();
-                                                      //   currentlyPlaying
-                                                      //           .isPlaylistPlaying =
-                                                      //       true;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                          gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                Color(
-                                                                    0xff5d5da8),
-                                                                Color(
-                                                                    0xff5bc3ef)
-                                                              ])),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 40,
-                                                                vertical: 8),
-                                                        child: Text("Pause"),
-                                                      ),
-                                                    ),
-                                                  )
-                                                : InkWell(
-                                                    onTap: () {
-                                                      for (var v
-                                                          in episodeList) {
-                                                        audioPlaylist
-                                                            .add(Audio.network(
-                                                          v['url'],
-                                                          metas: Metas(
-                                                            id: '${v['id']}',
-                                                            title:
-                                                                '${v['name']}',
-                                                            artist:
-                                                                '${v['author']}',
-                                                            album:
-                                                                '${v['podcast_name']}',
-                                                            // image: MetasImage.network('https://www.google.com')
-                                                            image: MetasImage
-                                                                .network(
-                                                                    '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                                          ),
-                                                        ));
-                                                      }
-                                                      currentlyPlaying
-                                                              .playList =
-                                                          audioPlaylist;
-                                                      currentlyPlaying.audioPlayer.open(
-                                                          Playlist(
-                                                              audios:
-                                                                  currentlyPlaying
-                                                                      .playList,
-                                                              startIndex: 0),
-                                                          showNotification:
-                                                              true);
-                                                      // setState(() {
-                                                      //   currentlyPlaying.stop();
-                                                      //   currentlyPlaying.playList =
-                                                      //       episodeList;
-                                                      //
-                                                      //   currentlyPlaying
-                                                      //           .episodeObject =
-                                                      //       currentlyPlaying
-                                                      //           .playList[0];
-                                                      //   currentlyPlaying.play();
-                                                      //   currentlyPlaying
-                                                      //           .isPlaylistPlaying =
-                                                      //       true;
-                                                      // });
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(30),
-                                                          gradient:
-                                                              LinearGradient(
-                                                                  colors: [
-                                                                Color(
-                                                                    0xff5d5da8),
-                                                                Color(
-                                                                    0xff5bc3ef)
-                                                              ])),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 40,
-                                                                vertical: 8),
-                                                        child: Text("Play"),
-                                                      ),
-                                                    ),
-                                                  ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            followState == FollowState.following
-                                                ? InkWell(
-                                                    onTap: () {
-                                                      follow();
-                                                      setState(() {
-                                                        if (followState ==
-                                                            FollowState
-                                                                .follow) {
-                                                          followState =
-                                                              FollowState
-                                                                  .following;
-                                                        } else {
-                                                          followState =
-                                                              FollowState
-                                                                  .follow;
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                        Icons.check_circle))
-                                                : InkWell(
-                                                    onTap: () async {
-                                                      follow();
-                                                      setState(() {
-                                                        if (followState ==
-                                                            FollowState
-                                                                .follow) {
-                                                          followState =
-                                                              FollowState
-                                                                  .following;
-                                                        } else {
-                                                          followState =
-                                                              FollowState
-                                                                  .follow;
-                                                        }
-                                                      });
-                                                    },
-                                                    child:
-                                                        Icon(Icons.add_circle),
-                                                  ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            podcastData == null
-                                                ? SizedBox()
-                                                : htmlMatch.hasMatch(podcastData[
-                                                            'description']) ==
-                                                        true
-                                                    ? Text(
-                                                        '${(parse(podcastData['description']).body.text)}',
-                                                        maxLines:
-                                                            seeMore == true
-                                                                ? 30
-                                                                : 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1.5)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //      color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .blockSizeHorizontal *
-                                                                3),
-                                                      )
-                                                    : Text(
-                                                        podcastData[
-                                                            'description'],
-                                                        maxLines:
-                                                            seeMore == true
-                                                                ? 30
-                                                                : 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //  color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .safeBlockHorizontal *
-                                                                3),
-                                                      ),
-                                            InkWell(
-                                              onTap: () {
-                                                showBarModalBottomSheet(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return Container(
-                                                        child: Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            ListTile(
-                                                              leading: SizedBox(
-                                                                height: 50,
-                                                                width: 50,
-                                                                child:
-                                                                    CachedNetworkImage(
-                                                                  imageUrl: podcastData ==
-                                                                          null
-                                                                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                      : podcastData[
-                                                                          'image'],
-                                                                  imageBuilder:
-                                                                      (context,
-                                                                          imageProvider) {
-                                                                    return Container(
-                                                                      decoration: BoxDecoration(
-                                                                          image: DecorationImage(
-                                                                              image: imageProvider,
-                                                                              fit: BoxFit.cover)),
-                                                                    );
-                                                                  },
-                                                                ),
-                                                              ),
-                                                              title: Text(
-                                                                  "${podcastData['name']}"),
-                                                              subtitle: Text(
-                                                                  "${podcastData['author']}"),
-                                                            ),
-                                                            Divider(),
-                                                            ListTile(
-                                                              subtitle: podcastData ==
-                                                                      null
-                                                                  ? SizedBox()
-                                                                  : htmlMatch.hasMatch(
-                                                                              podcastData['description']) ==
-                                                                          true
-                                                                      ? Text(
-                                                                          '${(parse(podcastData['description']).body.text)}',
-                                                                          textScaleFactor: mediaQueryData
-                                                                              .textScaleFactor
-                                                                              .clamp(0.5, 1.5)
-                                                                              .toDouble(),
-                                                                          style: TextStyle(
-                                                                              //      color: Colors.grey,
-                                                                              fontSize: SizeConfig.blockSizeHorizontal * 3.5),
-                                                                        )
-                                                                      : Text(
-                                                                          podcastData[
-                                                                              'description'],
-                                                                          textScaleFactor: mediaQueryData
-                                                                              .textScaleFactor
-                                                                              .clamp(0.5, 1)
-                                                                              .toDouble(),
-                                                                          style: TextStyle(
-                                                                              //  color: Colors.grey,
-                                                                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                                                                        ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 20,
-                                                            )
-                                                          ],
-                                                        ),
-                                                      );
-                                                    });
-                                              },
-                                              child: Text(
-                                                seeMore == false
-                                                    ? "See more"
-                                                    : "See less",
-                                                style: TextStyle(
-                                                    color: Colors.white
-                                                        .withOpacity(0.5)),
-                                              ),
-                                            ),
-                                          ]),
-                                    ),
-                                  ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(8.0),
-                                  //   child: Row(
-                                  //     mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceBetween,
-                                  //     children: [
-                                  //       Text(
-                                  //           "All Episodes (${podcastData['total_count']})"),
-                                  //       Padding(
-                                  //         padding: const EdgeInsets.symmetric(
-                                  //             horizontal: 8),
-                                  //         child: ShaderMask(
-                                  //             shaderCallback: (Rect bounds) {
-                                  //               return LinearGradient(colors: [
-                                  //                 Color(0xff5d5da8),
-                                  //                 Color(0xff5bc3ef)
-                                  //               ]).createShader(bounds);
-                                  //             },
-                                  //             child: InkWell(
-                                  //               onTap: () {
-                                  //                 showMaterialModalBottomSheet(
-                                  //                     enableDrag: false,
-                                  //                     context: context,
-                                  //                     builder: (context) {
-                                  //                       return SnippetDisplay(
-                                  //                         podcastObject:
-                                  //                             podcastData,
-                                  //                       );
-                                  //                     });
-                                  //               },
-                                  //               child: Text(
-                                  //                 "Snippets",
-                                  //                 textScaleFactor: 1.0,
-                                  //                 style: TextStyle(
-                                  //                     fontWeight:
-                                  //                         FontWeight.w600),
-                                  //               ),
-                                  //             )),
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // )
                                 ],
                               ),
                             ),
-                          ),
-                  ),
-                ),
-                bottom: PreferredSize(
-                  preferredSize: Size.fromHeight(80),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TabBar(
-                          isScrollable: true,
-                          indicatorSize: TabBarIndicatorSize.label,
-                          controller: _tabController,
-                          tabs: [
-                            Tab(
-                              text: "EPISODES",
-                            ),
-                            Tab(
-                              text: "RELATED",
-                            )
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: ShaderMask(
-                              shaderCallback: (Rect bounds) {
-                                return LinearGradient(colors: [
-                                  Color(0xff5d5da8),
-                                  Color(0xff5bc3ef)
-                                ]).createShader(bounds);
-                              },
-                              child: InkWell(
-                                onTap: () {
-                                  showMaterialModalBottomSheet(
-                                      enableDrag: false,
-                                      context: context,
-                                      builder: (context) {
-                                        return SnippetDisplay(
-                                          podcastObject: podcastData,
-                                        );
-                                      });
-                                },
-                                child: Text(
-                                  "Snippets",
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(fontWeight: FontWeight.w600),
-                                ),
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: episodeList.length + 2,
-                  itemBuilder: (context, int index) {
-                    if (index == 0) {
-                      return SizedBox();
-                    } else {
-                      if (index == episodeList.length + 1) {
-                        if (isLoading == false) {
-                          for (int i = 0; i < 2; i++) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff222222)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                        podcastRecommendations.length == 0
+                            ? SizedBox()
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(
+                                "Recommended Podcasts",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    fontSize:
+                                    SizeConfig.safeBlockHorizontal * 4,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              width: double.infinity,
+                              height: SizeConfig.blockSizeVertical * 28,
+                              constraints: BoxConstraints(
+                                  minHeight:
+                                  MediaQuery.of(context).size.height *
+                                      0.17),
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  Row(
                                     children: [
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3),
-                                        child: Container(
-                                            color: Color(0xff161616),
-                                            height: 10,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3),
-                                        child: Container(
-                                            color: Color(0xff161616),
-                                            height: 10,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                2),
-                                      ),
-                                      SizedBox(
-                                        height: 6,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3),
-                                        child: Container(
-                                            color: Color(0xff161616),
-                                            height: 6,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 3),
-                                        child: Container(
-                                            color: Color(0xff161616),
-                                            height: 6,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.75),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Container(
+                                      for (var a in podcastRecommendations)
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.fromLTRB(
+                                              15, 0, 0, 8),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          PodcastView(
+                                                              a['id'])));
+                                            },
+                                            child: Container(
                                               decoration: BoxDecoration(
+
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: Color(0xff161616),
+                                                BorderRadius.circular(
+                                                    15),
                                               ),
-                                              height: 25,
                                               width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  8,
-                                              //    color: kSecondaryColor,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: Color(0xff161616),
-                                                ),
-                                                height: 25,
-                                                width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                                  0.38,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .start,
+                                                mainAxisSize:
+                                                MainAxisSize.min,
+                                                children: [
+                                                  CachedNetworkImage(
+                                                    errorWidget: (context,
+                                                        url, error) {
+                                                      return Container(
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                3)),
+                                                        width: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                        height: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                      );
+                                                    },
+                                                    imageBuilder: (context,
+                                                        imageProvider) {
+                                                      return Container(
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image:
+                                                                imageProvider,
+                                                                fit: BoxFit
+                                                                    .cover),
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                3)),
+                                                        width: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                        height: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                      );
+                                                    },
+                                                    memCacheHeight:
+                                                    (MediaQuery.of(
+                                                        context)
                                                         .size
-                                                        .width /
-                                                    8,
-                                                //    color: kSecondaryColor,
+                                                        .height)
+                                                        .floor(),
+                                                    imageUrl: a['image'] !=
+                                                        null
+                                                        ? a['image']
+                                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                    placeholder: (context,
+                                                        imageProvider) {
+                                                      return Container(
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: AssetImage(
+                                                                    'assets/images/Thumbnail.png'),
+                                                                fit: BoxFit
+                                                                    .cover)),
+                                                        height: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                        width: MediaQuery.of(
+                                                            context)
+                                                            .size
+                                                            .width *
+                                                            0.38,
+                                                      );
+                                                    },
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    a['name'],
+                                                    maxLines: 1,
+                                                    textScaleFactor: 1.0,
+                                                    overflow: TextOverflow
+                                                        .ellipsis,
+                                                    // style:
+                                                    //     TextStyle(color: Color(0xffe8e8e8)),
+                                                  ),
+                                                  Text(
+                                                    a['author'],
+                                                    maxLines: 2,
+                                                    textScaleFactor: 1.0,
+                                                    style: TextStyle(
+                                                        fontSize: SizeConfig
+                                                            .safeBlockHorizontal *
+                                                            2.5,
+                                                        color: Color(
+                                                            0xffe777777)),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  color: Color(0xff161616),
-                                                ),
-                                                height: 20,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    8,
-                                                //    color: kSecondaryColor,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      )
                                     ],
                                   ),
-                                ),
-                              ),
-                            );
-                          }
-                        } else {
-                          return SizedBox();
-                        }
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
-                        child: Column(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  new BoxShadow(
-                                    color: Colors.black54.withOpacity(0.2),
-                                    blurRadius: 10.0,
-                                  ),
                                 ],
-                                color: themeProvider.isLightTheme == true
-                                    ? Colors.white
-                                    : Color(0xff222222),
-                              ),
-                              width: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 15),
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.zero,
-
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) => EpisodeView(
-                                                episodeId:
-                                                    episodeList[index - 1]
-                                                        ['id'])));
-                                  },
-                                  //
-                                  title: Text(
-                                    episodeList[index - 1]['name'],
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    textScaleFactor: mediaQueryData
-                                        .textScaleFactor
-                                        .clamp(0.5, 1.5)
-                                        .toDouble(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        //       color: Colors.white,
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 4),
-                                  ),
-                                  subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        episodeList[index - 1]['summary'] ==
-                                                null
-                                            ? SizedBox(
-                                                height: 20,
-                                              )
-                                            : Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10.0),
-                                                child: htmlMatch.hasMatch(
-                                                            episodeList[
-                                                                    index - 1]
-                                                                ['summary']) ==
-                                                        true
-                                                    ? Text(
-                                                        '${(parse(episodeList[index - 1]['summary']).body.text)}',
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //       color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .blockSizeHorizontal *
-                                                                3.5),
-                                                      )
-                                                    : Text(
-                                                        episodeList[index - 1]
-                                                            ['summary'],
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor:
-                                                            mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                        style: TextStyle(
-                                                            //         color: Colors.grey,
-                                                            fontSize: SizeConfig
-                                                                    .safeBlockHorizontal *
-                                                                3.5),
-                                                      ),
-                                              ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Row(children: [
-                                                  episodeList[index - 1][
-                                                                  'permlink'] ==
-                                                              null ||
-                                                          episodeList[index - 1]
-                                                                  ['votes'] ==
-                                                              null
-                                                      ? (creator ==
-                                                              prefs.getString(
-                                                                  'userId')
-                                                          ? InkWell(
-                                                              onTap: () async {
-                                                                await publishManually(
-                                                                    episodeList[
-                                                                            index -
-                                                                                1]
-                                                                        ['id']);
-                                                              },
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        right:
-                                                                            5),
-                                                                child:
-                                                                    Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            20),
-                                                                    border: Border
-                                                                        .all(),
-                                                                  ),
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        horizontal:
-                                                                            20,
-                                                                        vertical:
-                                                                            5),
-                                                                    child: Text(
-                                                                      "Publish",
-                                                                      textScaleFactor: mediaQueryData
-                                                                          .textScaleFactor
-                                                                          .clamp(
-                                                                              0.5,
-                                                                              1)
-                                                                          .toDouble(),
-                                                                      style:
-                                                                          TextStyle(),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : SizedBox(
-                                                              width: 0,
-                                                            ))
-                                                      : InkWell(
-                                                          onTap: () async {
-                                                            if (prefs.getString(
-                                                                    'HiveUserName') !=
-                                                                null) {
-                                                              setState(() {
-                                                                episodeList[
-                                                                        index -
-                                                                            1][
-                                                                    'isLoading'] = true;
-                                                              });
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return Dialog(
-                                                                        backgroundColor:
-                                                                            Colors
-                                                                                .transparent,
-                                                                        child: UpvoteEpisode(
-                                                                            permlink:
-                                                                                episodeList[index - 1]['permlink'],
-                                                                            episode_id: episodeList[index - 1]['id']));
-                                                                  }).then((value) async {
-                                                                print(value);
-                                                              });
-
-                                                              setState(() {
-                                                                episodeList[
-                                                                        index -
-                                                                            1][
-                                                                    'ifVoted'] = !episodeList[
-                                                                        index -
-                                                                            1]
-                                                                    ['ifVoted'];
-                                                                episodeList[index -
-                                                                            1][
-                                                                        'isLoading'] =
-                                                                    false;
-                                                              });
-                                                            } else {
-                                                              showBarModalBottomSheet(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return HiveDetails();
-                                                                  });
-                                                            }
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 5),
-                                                            child: Container(
-                                                              decoration: episodeList[index -
-                                                                              1][
-                                                                          'ifVoted'] ==
-                                                                      true
-                                                                  ? BoxDecoration(
-                                                                      gradient:
-                                                                          LinearGradient(
-                                                                              colors: [
-                                                                            Color(0xff5bc3ef),
-                                                                            Color(0xff5d5da8)
-                                                                          ]),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              30))
-                                                                  : BoxDecoration(
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              kSecondaryColor),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              30)),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        5.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    episodeList[index -
-                                                                                1]['isLoading'] ==
-                                                                            true
-                                                                        ? Container(
-                                                                            height:
-                                                                                18,
-                                                                            width:
-                                                                                18,
-                                                                            child:
-                                                                                SpinKitPulse(
-                                                                              color: Colors.blue,
-                                                                            ),
-                                                                          )
-                                                                        : Icon(
-                                                                            FontAwesomeIcons.chevronCircleUp,
-                                                                            size:
-                                                                                15,
-                                                                          ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                          horizontal:
-                                                                              8),
-                                                                      child:
-                                                                          Text(
-                                                                        '${episodeList[index - 1]['votes']}',
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                1)
-                                                                            .toDouble(),
-                                                                        style: TextStyle(
-                                                                            //        color: Color(
-                                                                            // 0xffe8e8e8)
-                                                                            ),
-                                                                      ),
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .only(
-                                                                          right:
-                                                                              4),
-                                                                      child:
-                                                                          Text(
-                                                                        '\$${episodeList[index - 1]['payout_value'].toString().split(' ')[0]}',
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                1)
-                                                                            .toDouble(),
-                                                                      ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  episodeList[index - 1][
-                                                                  'permlink'] ==
-                                                              null ||
-                                                          episodeList[index - 1]
-                                                                  ['votes'] ==
-                                                              null
-                                                      ? SizedBox(
-                                                          width: 0,
-                                                        )
-                                                      : InkWell(
-                                                          onTap: () {
-                                                            if (prefs.getString(
-                                                                    'HiveUserName') !=
-                                                                null) {
-                                                              Navigator.push(
-                                                                  context,
-                                                                  CupertinoPageRoute(
-                                                                      builder: (context) =>
-                                                                          Comments(
-                                                                            episodeObject:
-                                                                                episodeList[index - 1],
-                                                                          )));
-                                                            } else {
-                                                              showBarModalBottomSheet(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return HiveDetails();
-                                                                  });
-                                                            }
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right: 5),
-                                                            child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  border: Border
-                                                                      .all(
-                                                                          color:
-                                                                              kSecondaryColor),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              30)),
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        5.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .mode_comment_outlined,
-                                                                      size: 15,
-                                                                    ),
-                                                                    Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                          horizontal:
-                                                                              8),
-                                                                      child:
-                                                                          Text(
-                                                                        episodeList[index -
-                                                                                1]['comments_count']
-                                                                            .toString(),
-                                                                        textScaleFactor: mediaQueryData
-                                                                            .textScaleFactor
-                                                                            .clamp(0.5,
-                                                                                1)
-                                                                            .toDouble(),
-                                                                        // style: TextStyle(
-                                                                        //      color: Color(0xffe8e8e8)
-                                                                        //     ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      List<Audio> playable = [];
-                                                      for (var v
-                                                          in episodeList) {
-                                                        playable
-                                                            .add(Audio.network(
-                                                          v['url'],
-                                                          metas: Metas(
-                                                            id: '${v['id']}',
-                                                            title:
-                                                                '${v['name']}',
-                                                            artist:
-                                                                '${v['author']}',
-                                                            album:
-                                                                '${v['podcast_name']}',
-                                                            // image: MetasImage.network('https://www.google.com')
-                                                            image: MetasImage
-                                                                .network(
-                                                                    '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                                          ),
-                                                        ));
-                                                      }
-                                                      currentlyPlaying
-                                                          .playList = playable;
-                                                      currentlyPlaying.audioPlayer.open(
-                                                          Playlist(
-                                                              audios:
-                                                                  currentlyPlaying
-                                                                      .playList,
-                                                              startIndex:
-                                                                  index - 1),
-                                                          showNotification:
-                                                              true);
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color:
-                                                                  kSecondaryColor),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      30)),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .play_circle_outline,
-                                                              size: 15,
-                                                            ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8),
-                                                              child: Text(
-                                                                '${DurationCalculator(episodeList[index - 1]['duration']) == "Some Issue" ? '' : DurationCalculator(episodeList[index - 1]['duration'])}',
-                                                                textScaleFactor:
-                                                                    mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.5,
-                                                                            1)
-                                                                        .toDouble(),
-                                                                // style: TextStyle(
-                                                                //      color: Color(0xffe8e8e8)
-                                                                //     ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ]),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                episodeList[index - 1]
-                                                                ['permlink'] ==
-                                                            null ||
-                                                        episodeList[index - 1]
-                                                                ['votes'] ==
-                                                            null
-                                                    ? SizedBox(
-                                                        width: 0,
-                                                        height: 0,
-                                                      )
-                                                    : (creator ==
-                                                            prefs.getString(
-                                                                'userId')
-                                                        ? IconButton(
-                                                            icon: Icon(Icons
-                                                                .more_vert),
-                                                            onPressed: () {
-                                                              showBarModalBottomSheet(
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return null;
-                                                                  });
-                                                            },
-                                                          )
-                                                        : SizedBox(
-                                                            width: 0,
-                                                            height: 0,
-                                                          )),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ]),
-                                ),
                               ),
                             ),
-                            Builder(builder: (context) {
-                              return currentlyPlaying.audioPlayer
-                                  .builderRealtimePlayingInfos(
-                                      builder: (context, infos) {
-                                if (infos == null) {
-                                  return SizedBox();
-                                } else {
-                                  if (infos.current.audio.audio.metas.id
-                                          .toString() ==
-                                      episodeList[index - 1]['id']) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 7),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            gradient: LinearGradient(colors: [
-                                              Color(0xff5d5da8),
-                                              Color(0xff5bc3ef)
-                                            ])),
-                                        width: double.infinity,
-                                        height: 4,
-                                      ),
-                                    );
-                                  } else {
-                                    return SizedBox();
-                                  }
-                                }
-                              });
-                            }),
                           ],
                         ),
-                      );
-                    }
-                  }),
-              ListView(
-                children: [
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 15,
-                      ),
-                      episodeRecommendations.length == 0
-                          ? SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    "You might also like",
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 4,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 2.8,
-                                  child: GridView(
-                                    scrollDirection: Axis.horizontal,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 4,
-                                            mainAxisSpacing: 10,
-                                            crossAxisSpacing: 1,
-                                            childAspectRatio: 1.2 / 5.3),
-                                    children: [
-                                      for (var a in episodeRecommendations)
-                                        ListTile(
-                                          onTap: () {
-                                            List<Audio> playable = [];
-                                            for (var v
-                                                in episodeRecommendations) {
-                                              playable.add(Audio.network(
-                                                v['url'],
-                                                metas: Metas(
-                                                  id: '${v['id']}',
-                                                  title: '${v['name']}',
-                                                  artist: '${v['author']}',
-                                                  album: '${v['podcast_name']}',
-                                                  // image: MetasImage.network('https://www.google.com')
-                                                  image: MetasImage.network(
-                                                      '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                                ),
-                                              ));
-                                            }
-                                            currentlyPlaying.playList =
-                                                playable;
-                                            currentlyPlaying.audioPlayer.open(
-                                                Playlist(
-                                                    audios: currentlyPlaying
-                                                        .playList,
-                                                    startIndex:
-                                                        episodeRecommendations
-                                                            .indexOf(a)),
-                                                showNotification: true);
-                                          },
-                                          leading: CircleAvatar(
-                                            radius: 25,
-                                            child: CachedNetworkImage(
+                        peopleRecommendations.length == 0
+                            ? SizedBox()
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(
+                                "Podcasters for you",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    fontSize:
+                                    SizeConfig.safeBlockHorizontal * 4,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              height:
+                              MediaQuery.of(context).size.height / 5,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  for (var v in peopleRecommendations)
+                                    Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                                    return PublicProfile(
+                                                      userId: v['id'],
+                                                    );
+                                                  }));
+                                        },
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CachedNetworkImage(
                                               imageBuilder:
                                                   (context, imageProvider) {
                                                 return Container(
-                                                  height: 60,
-                                                  width: 60,
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
+                                                    shape: BoxShape.circle,
                                                     image: DecorationImage(
-                                                        image: imageProvider,
+                                                        image:
+                                                        imageProvider,
                                                         fit: BoxFit.cover),
                                                   ),
+                                                  width:
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                      4,
+                                                  height:
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                      4,
                                                 );
                                               },
+                                              imageUrl: v['img'],
+                                              memCacheWidth:
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width
+                                                  .floor(),
                                               memCacheHeight:
-                                                  (MediaQuery.of(context)
-                                                          .size
-                                                          .height)
-                                                      .floor(),
-                                              imageUrl: a['image'] != null
-                                                  ? a['image']
-                                                  : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                              placeholder:
-                                                  (context, imageProvider) {
-                                                return Container(
-                                                  decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: AssetImage(
-                                                              'assets/images/Thumbnail.png'),
-                                                          fit: BoxFit.cover)),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.38,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.38,
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          title: Text(
-                                            a['name'].toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
-                                          ),
-                                          trailing: Icon(Icons.more_vert),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                      podcastRecommendations.length == 0
-                          ? SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    "Recommended Podcasts",
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 4,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  height: SizeConfig.blockSizeVertical * 28,
-                                  constraints: BoxConstraints(
-                                      minHeight:
-                                          MediaQuery.of(context).size.height *
-                                              0.17),
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          for (var a in podcastRecommendations)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      15, 0, 0, 8),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              PodcastView(
-                                                                  a['id'])));
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    // x
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                  ),
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.38,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      CachedNetworkImage(
-                                                        errorWidget: (context,
-                                                            url, error) {
-                                                          return Container(
-                                                            decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                    image: NetworkImage(
-                                                                        "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
-                                                                    fit: BoxFit
-                                                                        .cover),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            3)),
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                          );
-                                                        },
-                                                        imageBuilder: (context,
-                                                            imageProvider) {
-                                                          return Container(
-                                                            decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                    image:
-                                                                        imageProvider,
-                                                                    fit: BoxFit
-                                                                        .cover),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            3)),
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                          );
-                                                        },
-                                                        memCacheHeight:
-                                                            (MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .height)
-                                                                .floor(),
-                                                        imageUrl: a['image'] !=
-                                                                null
-                                                            ? a['image']
-                                                            : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
-                                                        placeholder: (context,
-                                                            imageProvider) {
-                                                          return Container(
-                                                            decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                    image: AssetImage(
-                                                                        'assets/images/Thumbnail.png'),
-                                                                    fit: BoxFit
-                                                                        .cover)),
-                                                            height: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.38,
-                                                          );
-                                                        },
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Text(
-                                                        a['name'],
-                                                        maxLines: 1,
-                                                        textScaleFactor: 1.0,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        // style:
-                                                        //     TextStyle(color: Color(0xffe8e8e8)),
-                                                      ),
-                                                      Text(
-                                                        a['author'],
-                                                        maxLines: 2,
-                                                        textScaleFactor: 1.0,
-                                                        style: TextStyle(
-                                                            fontSize: SizeConfig
-                                                                    .safeBlockHorizontal *
-                                                                2.5,
-                                                            color: Color(
-                                                                0xffe777777)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                      peopleRecommendations.length == 0
-                          ? SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    "Podcasters for you",
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 4,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 5,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: [
-                                      for (var v in peopleRecommendations)
-                                        Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(context,
-                                                  CupertinoPageRoute(
-                                                      builder: (context) {
-                                                return PublicProfile(
-                                                  userId: v['id'],
-                                                );
-                                              }));
-                                            },
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CachedNetworkImage(
-                                                  imageBuilder:
-                                                      (context, imageProvider) {
-                                                    return Container(
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        image: DecorationImage(
-                                                            image:
-                                                                imageProvider,
-                                                            fit: BoxFit.cover),
-                                                      ),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              4,
-                                                      height:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              4,
-                                                    );
-                                                  },
-                                                  imageUrl: v['img'],
-                                                  memCacheWidth:
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width
-                                                          .floor(),
-                                                  memCacheHeight:
-                                                      MediaQuery.of(context)
-                                                          .size
-                                                          .width
-                                                          .floor(),
-                                                  placeholder: (context, url) =>
-                                                      Container(
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width
+                                                  .floor(),
+                                              placeholder: (context, url) =>
+                                                  Container(
                                                     width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            7,
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                        7,
                                                     height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            7,
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                        7,
                                                     child: Image.asset(
                                                         'assets/images/Thumbnail.png'),
                                                   ),
-                                                  errorWidget: (context, url,
-                                                          error) =>
-                                                      Container(
-                                                          width:
-                                                              MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width /
-                                                                  4,
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              4,
-                                                          child: Icon(
-                                                            Icons.error,
-                                                            color: Color(
-                                                                0xffe8e8e8),
-                                                          )),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 10),
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width /
-                                                            4,
-                                                    child: Text(
-                                                      "${v['username']}",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          color: Color(
-                                                              0xffe8e8e8)),
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
+                                              errorWidget: (context, url,
+                                                  error) =>
+                                                  Container(
+                                                      width:
+                                                      MediaQuery.of(
+                                                          context)
+                                                          .size
+                                                          .width /
+                                                          4,
+                                                      height: MediaQuery.of(
+                                                          context)
+                                                          .size
+                                                          .width /
+                                                          4,
+                                                      child: Icon(
+                                                        Icons.error,
+                                                        color: Color(
+                                                            0xffe8e8e8),
+                                                      )),
                                             ),
-                                          ),
-                                        )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                    ],
-                  ),
-                ],
-              )
-            ],
-            physics: BouncingScrollPhysics(),
-          )),
-      bottomSheet: BottomPlayer(),
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Container(
+                                                width:
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                    4,
+                                                child: Text(
+                                                  "${v['username']}",
+                                                  textAlign:
+                                                  TextAlign.center,
+                                                  maxLines: 2,
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      color: Color(
+                                                          0xffe8e8e8)),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                )
+              ],
+              physics: BouncingScrollPhysics(),
+            )),Align(alignment: Alignment.bottomCenter,child: BottomPlayer())],
+
+      ),
+      // bottomSheet: BottomPlayer(),
     );
   }
 }
@@ -2712,7 +2748,7 @@ class _SnippetDisplayState extends State<SnippetDisplay> {
 
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 
-  PageController _pageController = PageController();
+  PageController _pageController = PageController(viewportFraction: 0.7);
 
   List snippets = [];
 
@@ -2787,7 +2823,7 @@ class _SnippetDisplayState extends State<SnippetDisplay> {
         children: [
           Container(
             child: PageView(
-              // scrollDirection: Axis.vertical,
+              scrollDirection: Axis.vertical,
               onPageChanged: (int index) async {
                 setState(() {
                   currentIndex = index;
@@ -2800,7 +2836,7 @@ class _SnippetDisplayState extends State<SnippetDisplay> {
                 for (var v in snippets)
                   SwipeCard(
                     clipObject: v,
-                    audioPlayer: audioPlayer,
+
                   ),
               ],
             ),

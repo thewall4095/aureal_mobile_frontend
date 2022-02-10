@@ -276,7 +276,7 @@ class _MyAppState extends State<MyApp> {
                                     title: 'Aureal',
                                     theme: widget.themeProvider.themeData(),
                                     home: SplashScreenPage(),
-                                    // home: TemporaryError(),
+                                    // home: OnboardingCategories(),
                                     // initialRoute: HiveAccount.id,
                                     routes: {
                                       PostRSSFeed.id: (context) =>

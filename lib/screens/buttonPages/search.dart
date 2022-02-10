@@ -1,27 +1,28 @@
 import 'dart:convert';
-
-import 'package:auditory/CategoriesProvider.dart';
+import 'dart:io';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
-import 'package:auditory/screens/Profiles/CategoryView.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
-import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
-import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
-import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
+import 'package:auditory/CategoriesProvider.dart';
+import 'package:auditory/screens/Profiles/CategoryView.dart';
+import 'package:auditory/screens/Profiles/PodcastView.dart';
+import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
+import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 // import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as featureflags;
 // import 'package:jitsi_meet/jitsi_meet.dart';
@@ -30,6 +31,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../SearchProvider.dart';
 
 // class Search extends StatefulWidget {
 //   static const String id = "Search";
@@ -221,6 +224,39 @@ class SearchFunctionality extends SearchDelegate {
     LineIcons.television
   ];
 
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  Future getCategories() async {
+    String url = "https://api.aureal.one/public/getCategory";
+    print(url);
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        print(response.data);
+        return response.data['allCategory'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
+  Future getSubCategories() async {
+    String url = "https://api.aureal.one/public/getSubcategory";
+
+    try{
+      var response = await dio.get(url,cancelToken:  _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
@@ -230,46 +266,105 @@ class SearchFunctionality extends SearchDelegate {
     var search = Provider.of<SearchResultProvider>(context, listen: false);
 
     return Container(
-      color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
-      child: ListView.builder(
-          itemCount: _icons.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, int index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xff161616),
-                    borderRadius: BorderRadius.circular(8)),
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) {
-                      return CategoryView(
-                        categoryObject: categories.categoryList[index],
-                      );
-                    }));
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height
+      ),
+      color: Colors.black,
+      height: MediaQuery.of(context).size.height,
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
 
-                  // selected: userselectedCategories
-                  //     .toSet()
-                  //     .toList()
-                  //     .contains(availableCategories[index]['id']),
-                  leading: Icon(
-                    _icons[index],
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "${categories.categoryList[index]['name']}",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return CategoryView(categoryObject: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container();
+                  }
+
+                },
               ),
-            );
-          }),
+            ],
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Sub Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getSubCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.blue)),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return SubCategoryView(data: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container();
+                  }
+
+                },
+              ),
+            ],
+          )
+
+          ],
+
+      ),
     );
   }
 }
@@ -3850,7 +3945,7 @@ class SearchResultProvider extends ChangeNotifier {
     print("Community Search Ended");
   }
 }
-//
+
 // _joinMeeting({String roomId, String roomName, String hostUserId}) async {
 //   // Enable or disable any feature flag here
 //   // If feature flag are not provided, default values will be used

@@ -113,7 +113,7 @@ class _SettingsState extends State<Settings> {
     SizeConfig().init(context);
     return Scaffold(
         //  backgroundColor: kPrimaryColor,
-        appBar: AppBar(
+        appBar: AppBar(backgroundColor: Colors.transparent,
           elevation: 0,
           //     backgroundColor: Colors.transparent,
           leading: IconButton(
@@ -133,198 +133,190 @@ class _SettingsState extends State<Settings> {
           ),
         ),
         body: SafeArea(
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
             children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Scaffold(
-                                appBar: AppBar(
-                                  title: Text(
-                                    "Send Feedback",
-                                    style: TextStyle(
-                                        fontSize:
-                                            SizeConfig.safeBlockHorizontal * 3),
-                                    textScaleFactor: 1.0,
-                                  ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    onTap: (){
+                      showBarModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Scaffold(
+                              appBar: AppBar(
+                                title: Text(
+                                  "Send Feedback",
+                                  style: TextStyle(
+                                      fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3),
+                                  textScaleFactor: 1.0,
                                 ),
-                                body: Container(
-                                  child: ListView(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 20),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: kSecondaryColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: TextField(
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      feedback = value;
-                                                    });
-                                                  },
-                                                  maxLines: 25,
-                                                ),
+                              ),
+                              body: Container(
+                                child: ListView(
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 20),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: kSecondaryColor,
+                                              borderRadius:
+                                              BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                              const EdgeInsets.all(8.0),
+                                              child: TextField(
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    feedback = value;
+                                                  });
+                                                },
+                                                maxLines: 25,
                                               ),
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 20, horizontal: 15),
-                                            child: InkWell(
-                                              onTap: () {
-                                                if (feedback.isEmpty == true) {
-                                                  Fluttertoast.showToast(
-                                                      msg:
-                                                          "Please enter a message");
-                                                } else {
-                                                  feedBack();
-                                                }
-                                              },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    color: kSecondaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 15),
-                                                      child: Text(
-                                                        "Send",
-                                                        style: TextStyle(
-                                                            fontSize: SizeConfig
-                                                                    .safeBlockHorizontal *
-                                                                4),
-                                                      ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 15),
+                                          child: InkWell(
+                                            onTap: () {
+                                              if (feedback.isEmpty == true) {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                    "Please enter a message");
+                                              } else {
+                                                feedBack();
+                                              }
+                                            },
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  color: kSecondaryColor,
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      10)),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 15),
+                                                    child: Text(
+                                                      "Send",
+                                                      style: TextStyle(
+                                                          fontSize: SizeConfig
+                                                              .safeBlockHorizontal *
+                                                              4),
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            });
-                        // Navigator.pushNamed(context, Prefrences.id);
-                      },
-                      child:ListTile(
-                        title:Text(
-                          "Send Feedback",
-                          textScaleFactor: mediaQueryData
-                              .textScaleFactor
-                              .clamp(0.5, 1.5)
-                              .toDouble(),
-                          style: TextStyle(
-                            //  color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                              SizeConfig.safeBlockHorizontal * 5),
-                        ),
-                        trailing:     Icon(Icons.arrow_forward_ios_rounded, size: 15),
-                        subtitle:
-                        Text(
-                                      "Let us know if you see anything troubling",
-                                      textScaleFactor: mediaQueryData
-                                          .textScaleFactor
-                                          .clamp(0.5, 0.8)
-                                          .toDouble(),
-                                      style: TextStyle(
-                                          //       color: Colors.white70,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal * 3),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                      ),
-
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                    title:Text(
+                      "Send Feedback",
+                      textScaleFactor: mediaQueryData
+                          .textScaleFactor
+                          .clamp(0.5, 1.5)
+                          .toDouble(),
+                      style: TextStyle(
+                        //  color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          SizeConfig.safeBlockHorizontal * 5),
                     ),
-                    ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => UserCategories()));
-                      },
-                      title:   Text(
-                        "Categories",
-                        textScaleFactor: mediaQueryData
-                            .textScaleFactor
-                            .clamp(0.5, 1.5)
-                            .toDouble(),
-                        style: TextStyle(
-                          //  color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize:
-                            SizeConfig.safeBlockHorizontal * 5),
-                      ),
-                      subtitle: Text(
-                        "Selected Categories",
-                        textScaleFactor: mediaQueryData
-                            .textScaleFactor
-                            .clamp(0.5, 0.8)
-                            .toDouble(),
-                        style: TextStyle(
-                          //       color: Colors.white70,
-                            fontWeight: FontWeight.w300,
-                            fontSize:
-                            SizeConfig.safeBlockHorizontal * 3),
-                      ) ,
-                      trailing:  Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                    trailing:     Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                    subtitle:
+                    Text(
+                      "Let us know if you see any bug",
+                      textScaleFactor: mediaQueryData
+                          .textScaleFactor
+                          .clamp(0.5, 0.8)
+                          .toDouble(),
+                      style: TextStyle(
+                        //       color: Colors.white70,
+                          fontWeight: FontWeight.w300,
+                          fontSize:
+                          SizeConfig.safeBlockHorizontal * 3),
                     ),
-
-                    ListTile(
-                      onTap: () {
-                        launcher.launchInBrowser(
-                            "https://play.google.com/store/apps/details?id=co.titandlt.auditory");
-                      },
-                      title:  Text(
-                        "Version",
-                        textScaleFactor: mediaQueryData
-                            .textScaleFactor
-                            .clamp(0.5, 1.5)
-                            .toDouble(),
-                        style: TextStyle(
-                          //  color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize:
-                            SizeConfig.safeBlockHorizontal * 5),
-                      ),
-                      trailing:   Text("1.0.49"),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => OnboardingCategories()));
+                    },
+                    title:   Text(
+                      "Categories",
+                      textScaleFactor: mediaQueryData
+                          .textScaleFactor
+                          .clamp(0.5, 1.5)
+                          .toDouble(),
+                      style: TextStyle(
+                        //  color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          SizeConfig.safeBlockHorizontal * 5),
                     ),
-
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 2.1,
+                    subtitle: Text(
+                      "Selected Categories",
+                      textScaleFactor: mediaQueryData
+                          .textScaleFactor
+                          .clamp(0.5, 0.8)
+                          .toDouble(),
+                      style: TextStyle(
+                        //       color: Colors.white70,
+                          fontWeight: FontWeight.w300,
+                          fontSize:
+                          SizeConfig.safeBlockHorizontal * 3),
+                    ) ,
+                    trailing:  Icon(Icons.arrow_forward_ios_rounded, size: 15),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      launcher.launchInBrowser(
+                          "https://play.google.com/store/apps/details?id=co.titandlt.auditory");
+                    },
+                    title:  Text(
+                      "Version",
+                      textScaleFactor: mediaQueryData
+                          .textScaleFactor
+                          .clamp(0.5, 1.5)
+                          .toDouble(),
+                      style: TextStyle(
+                        //  color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          SizeConfig.safeBlockHorizontal * 5),
+                    ),
+                    trailing:   Text("1.0.49"),
+                  ),
+                ],
               ),
               Column(
+                mainAxisSize: MainAxisSize.min,
+
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -336,9 +328,9 @@ class _SettingsState extends State<Settings> {
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
-                          color: Colors.white, // Text colour here
-                          width: 1.0, // Underline width
-                        ))),
+                                  color: Colors.white, // Text colour here
+                                  width: 1.0, // Underline width
+                                ))),
                         child: Text(
                           "Privacy Policy",
                           style: TextStyle(
@@ -360,9 +352,9 @@ class _SettingsState extends State<Settings> {
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
-                          color: Colors.white, // Text colour here
-                          width: 1.0, // Underline width
-                        ))),
+                                  color: Colors.white, // Text colour here
+                                  width: 1.0, // Underline width
+                                ))),
                         child: Text(
                           "Terms of Use",
                           style: TextStyle(
@@ -372,24 +364,7 @@ class _SettingsState extends State<Settings> {
                       ),
                     ],
                   ),
-                  // Container(
-                  //   padding: EdgeInsets.only(
-                  //     bottom: 3, // space between underline and text
-                  //   ),
-                  //   decoration: BoxDecoration(
-                  //       border: Border(bottom: BorderSide(
-                  //         color: Colors.white,  // Text colour here
-                  //         width: 1.0, // Underline width
-                  //       ))
-                  //   ),
-                  //
-                  //   child: Text(
-                  //     "Privacy Policy and Terms of Use",
-                  //     style: TextStyle(
-                  //       color: Colors.white,  // Text colour here
-                  //     ),
-                  //   ),
-                  // ),
+
                   SizedBox(
                     height: 20,
                   ),
@@ -399,7 +374,7 @@ class _SettingsState extends State<Settings> {
                           : "Logged in with Hive",
                       textScaleFactor: 1.0,
                       style: TextStyle(
-                          //     color: Color(0xffe8e8e8),
+                        //     color: Color(0xffe8e8e8),
                           fontSize: SizeConfig.safeBlockHorizontal * 3)),
                   //   "Logged in with Hive",style: TextStyle(
                   //   fontSize: 12
@@ -421,13 +396,19 @@ class _SettingsState extends State<Settings> {
                       width: MediaQuery.of(context).size.width / 1.2,
                       child: Center(
                           child: Text(
-                        "Log Out",
-                        style: TextStyle(color: Colors.white),
-                      )),
+                            "Log Out",
+                            style: TextStyle(color: Colors.white),
+                          )),
                     ),
                   ),
                 ],
-              ),
+              )
+
+
+
+
+
+
             ],
           ),
         ));

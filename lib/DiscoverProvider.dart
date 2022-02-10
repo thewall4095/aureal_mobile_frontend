@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -154,6 +155,8 @@ class DiscoverProvider extends ChangeNotifier {
   void getPreferences() async {
     prefs = await SharedPreferences.getInstance();
   }
+  Dio dio = Dio();
+  CancelToken cancelToken = CancelToken();
 
   void getFeatured() async {
     String url =
@@ -178,9 +181,9 @@ class DiscoverProvider extends ChangeNotifier {
     String url =
         'https://api.aureal.one/public/recently?user_id=${prefs.getString('userId')}';
     try {
-      http.Response response = await http.get(Uri.parse(url));
+      var response = await dio.get(url, cancelToken: cancelToken);
       if (response.statusCode == 200) {
-        recentlyPlayed = jsonDecode(response.body)['recently'];
+        recentlyPlayed = jsonDecode(response.data)['recently'];
         discoverList[1]['data'] = _recentlyPlayed;
         recentlyPlayedLoading = true;
         discoverList[0]['isLoaded'] = recentlyPlayedLoading;
@@ -230,7 +233,7 @@ class DiscoverProvider extends ChangeNotifier {
 
   void recommendedPodcast() async {
     String url =
-        'https://sandbox.aureal.one/public/recommend?user_id=${prefs.getString('userId')}';
+        'https://api.aureal.one/public/recommend?user_id=${prefs.getString('userId')}';
     try {
       http.Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

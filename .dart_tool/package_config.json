@@ -164,6 +164,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "dismissible_page",
+      "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dismissible_page-0.6.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "dotted_border",
       "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dotted_border-2.0.0",
       "packageUri": "lib/",
@@ -699,7 +705,7 @@
     },
     {
       "name": "pedantic",
-      "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0",
+      "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1124,7 +1130,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2022-01-23T09:48:27.812284Z",
+  "generated": "2022-02-10T12:48:52.231512Z",
   "generator": "pub",
   "generatorVersion": "2.15.1"
 }

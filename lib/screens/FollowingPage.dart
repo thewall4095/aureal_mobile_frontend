@@ -10,15 +10,19 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
@@ -29,12 +33,2973 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
+import 'Clips.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/VideoPlayer.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/settings/Theme-.dart';
+
+
+
+
+class Feed extends StatefulWidget {
+
+  @override
+  State<Feed> createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
+  CancelToken _cancel = CancelToken();
+
+  final String baseUrl = "https://api.aureal.one/public";
+
+  var feedStructure = [];
+
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
+  Future<List> getFeedStructure() async {
+    Dio dio = Dio();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/recommended?page=0&pageSize=5&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url);
+      if(response.statusCode == 200){
+
+        return response.data['data'];
+      }else{
+
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  SharedPreferences prefs;
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio(
+
+    );
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  Widget _feedBuilder(BuildContext context, var data){
+
+    var episodeObject = Provider.of<PlayerChange>(context);
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
+
+    switch(data['type']){
+      case 'podcast':
+        return PodcastWidget(data: data);
+        break;
+      case 'episode':
+        return EpisodeWidget(data: data);
+        break;
+
+      case "playlist":
+        return PlaylistWidget(data: data);
+        break;
+      case 'snippet':
+        return SnippetWidget(data: data);
+        break;
+      case 'user':
+        return FutureBuilder(
+          future: generalisedApiCall(data['api']),
+          builder: (context, snapshot){
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text("${data['name']}", style: TextStyle(
+                        fontSize: SizeConfig.safeBlockHorizontal * 5,
+                        fontWeight: FontWeight.bold
+                    )),
+                  ),
+                  Text("${snapshot.data}"),
+                ],
+              ),
+            );
+          },
+        );
+        break;
+      default:
+        return Container();
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
+          return <Widget>[
+
+          ];
+        },
+        body: FutureBuilder(
+          future: getFeedStructure(),
+          builder: (context, snapshot){
+            if(snapshot.hasData){
+              return ListView(
+                addAutomaticKeepAlives: true,
+                children: [
+                  for(var v in snapshot.data)
+                    _feedBuilder(context, v),
+                  SizedBox(height: 150,),
+                ],
+              );
+            }else{
+              return SizedBox();
+            }
+
+          },
+
+        ),
+
+
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+}
+
+class EpisodeWidget extends StatefulWidget {
+
+  final data;
+  final categoryId;
+
+  EpisodeWidget({@required this.data, this.categoryId}) ;
+
+  @override
+  _EpisodeWidgetState createState() => _EpisodeWidgetState();
+}
+
+class _EpisodeWidgetState extends State<EpisodeWidget> {
+
+  SharedPreferences prefs;
+
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
+  CancelToken _cancel = CancelToken();
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio(
+
+    );
+    prefs = await SharedPreferences.getInstance();
+    print(widget.categoryId);
+    String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+    if(widget.categoryId != null){
+      url = url + "&category_ids=${widget.categoryId}";
+    }
+    print(url);
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      print(response.data['data']);
+      playListGenerator(data: response.data['data']);
+      if(response.statusCode == 200){
+
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+
+
+  }
+
+
+
+  List<Audio> playlist;
+
+  void playListGenerator({List data}) async {
+
+    List<Audio> playable = [];
+    for (int i = 0; i < data.length; i++){
+      var v = data[i];
+      playable
+            .add(Audio.network(
+          v['url'],
+          metas:
+          Metas(
+            id: '${v['id']}',
+            title: '${v['name']}',
+            artist: '${v['author']}',
+            album: '${v['podcast_name']}',
+            // image: MetasImage.network('https://www.google.com')
+            image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+          ),
+        ));
+    }
+
+    playlist = playable;
+    print(playlist);
+    // episodeObject.dispose();
+
+
+
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
+    var episodeObject = Provider.of<PlayerChange>(context);
+    return FutureBuilder(
+      future: generalisedApiCall(widget.data['api']),
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          try{
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                      fontWeight: FontWeight.bold
+                  )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                    return LinearGradient(colors: [Color(
+                        0xff5bc3ef),
+                      Color(
+                          0xff5d5da8)]).createShader(bounds);
+                  },child: GestureDetector(onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                      return SeeMore(data: widget.data);
+                    },),);
+                  },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                  // Container(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       for (var v in snapshot.data)
+                  //         EpisodeCard(data: v,),
+                  //
+                  //     ],
+                  //   ),
+                  // ),
+                  ColumnBuilder(itemBuilder: (context, int index){
+                    return EpisodeCard(data: snapshot.data[index], index: index, playlist: playlist,);
+                  }, itemCount: snapshot.data.length)
+
+                ],
+              ),
+            );
+          }catch(e){
+            return Column(
+              children: [
+                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),),
+                for (int i = 0; i < 6; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                          BorderRadius.circular(10),
+                          color: Color(0xff222222)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      7,
+                                  height:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      7,
+                                  decoration: BoxDecoration(
+                                      color:
+                                      Color(0xff161616),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(10)),
+                                ),
+                                SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+                                  children: [
+                                    Container(
+                                      decoration:
+                                      BoxDecoration(
+                                          color: Color(
+                                              0xff161616)),
+                                      height: 16,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          3,
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Container(
+                                      decoration:
+                                      BoxDecoration(
+                                          color: Color(
+                                              0xff161616)),
+                                      height: 8,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          4,
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 10,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 10,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      2),
+                            ),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 6,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 3),
+                              child: Container(
+                                  color: Color(0xff161616),
+                                  height: 6,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width *
+                                      0.75),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.symmetric(
+                                  vertical: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(10),
+                                      color:
+                                      Color(0xff161616),
+                                    ),
+                                    height: 25,
+                                    width:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width /
+                                        8,
+                                    //    color: kSecondaryColor,
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        left: 10),
+                                    child: Container(
+                                      decoration:
+                                      BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(10),
+                                        color:
+                                        Color(0xff161616),
+                                      ),
+                                      height: 25,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        left: 10),
+                                    child: Container(
+                                      decoration:
+                                      BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(8),
+                                        color:
+                                        Color(0xff161616),
+                                      ),
+                                      height: 20,
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                      //    color: kSecondaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          }
+        }else{
+          return Column(
+            children: [
+              ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                  fontSize: SizeConfig.safeBlockHorizontal * 5,
+                  fontWeight: FontWeight.bold
+              )),),
+              for (int i = 0; i < 6; i++)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius:
+                        BorderRadius.circular(10),
+                        color: Color(0xff222222)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width /
+                                    7,
+                                height:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width /
+                                    7,
+                                decoration: BoxDecoration(
+                                    color:
+                                    Color(0xff161616),
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(10)),
+                              ),
+                              SizedBox(width: 10),
+                              Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment
+                                    .start,
+                                children: [
+                                  Container(
+                                    decoration:
+                                    BoxDecoration(
+                                        color: Color(
+                                            0xff161616)),
+                                    height: 16,
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        3,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    decoration:
+                                    BoxDecoration(
+                                        color: Color(
+                                            0xff161616)),
+                                    height: 8,
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        4,
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3),
+                            child: Container(
+                                color: Color(0xff161616),
+                                height: 10,
+                                width:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3),
+                            child: Container(
+                                color: Color(0xff161616),
+                                height: 10,
+                                width:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width /
+                                    2),
+                          ),
+                          SizedBox(
+                            height: 6,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3),
+                            child: Container(
+                                color: Color(0xff161616),
+                                height: 6,
+                                width:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 3),
+                            child: Container(
+                                color: Color(0xff161616),
+                                height: 6,
+                                width:
+                                MediaQuery.of(context)
+                                    .size
+                                    .width *
+                                    0.75),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 20),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(10),
+                                    color:
+                                    Color(0xff161616),
+                                  ),
+                                  height: 25,
+                                  width:
+                                  MediaQuery.of(context)
+                                      .size
+                                      .width /
+                                      8,
+                                  //    color: kSecondaryColor,
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(
+                                      left: 10),
+                                  child: Container(
+                                    decoration:
+                                    BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(10),
+                                      color:
+                                      Color(0xff161616),
+                                    ),
+                                    height: 25,
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        8,
+                                    //    color: kSecondaryColor,
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(
+                                      left: 10),
+                                  child: Container(
+                                    decoration:
+                                    BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(8),
+                                      color:
+                                      Color(0xff161616),
+                                    ),
+                                    height: 20,
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width /
+                                        8,
+                                    //    color: kSecondaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          );
+        }
+
+
+      },
+    );
+  }
+}
+
+class ColumnBuilder extends StatelessWidget {
+  final IndexedWidgetBuilder itemBuilder;
+  final MainAxisAlignment mainAxisAlignment;
+  final MainAxisSize mainAxisSize;
+  final CrossAxisAlignment crossAxisAlignment;
+  final VerticalDirection verticalDirection;
+  final int itemCount;
+
+  const ColumnBuilder({
+    Key key,
+    @required this.itemBuilder,
+    @required this.itemCount,
+    this.mainAxisAlignment: MainAxisAlignment.start,
+    this.mainAxisSize: MainAxisSize.max,
+    this.crossAxisAlignment: CrossAxisAlignment.center,
+    this.verticalDirection: VerticalDirection.down,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      crossAxisAlignment: this.crossAxisAlignment,
+      mainAxisSize: this.mainAxisSize,
+      mainAxisAlignment: this.mainAxisAlignment,
+      verticalDirection: this.verticalDirection,
+      children:
+      new List.generate(this.itemCount, (index) => this.itemBuilder(context, index)).toList(),
+    );
+  }
+}
+
+class EpisodeCard extends StatelessWidget {
+
+  final data;
+  final index;
+  List<Audio> playlist;
+
+
+  EpisodeCard({@required this.data, this.index, this.playlist});
+
+  SharedPreferences prefs;
+
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
+  CancelToken _cancel = CancelToken();
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) =>
+                      EpisodeView(
+                          episodeId: data['id'])));
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                // boxShadow: [
+                //   new BoxShadow(
+                //     color: Colors.black54
+                //         .withOpacity(0.2),
+                //     blurRadius: 10.0,
+                //   ),
+                // ],
+                // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
+                color:
+                Color(0xff222222),
+                borderRadius:
+                BorderRadius.circular(5),
+              ),
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets
+                    .symmetric(
+                    vertical: 15,
+                    horizontal: 15),
+                child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  children: [
+                    Row(
+                      children: [
+                        CachedNetworkImage(
+                          imageBuilder: (context,
+                              imageProvider) {
+                            return Container(
+                              decoration:
+                              BoxDecoration(
+                                borderRadius:
+                                BorderRadius
+                                    .circular(
+                                    3),
+                                image: DecorationImage(
+                                    image:
+                                    imageProvider,
+                                    fit: BoxFit
+                                        .cover),
+                              ),
+                              width: MediaQuery.of(
+                                  context)
+                                  .size
+                                  .width /
+                                  8,
+                              height: MediaQuery.of(
+                                  context)
+                                  .size
+                                  .width /
+                                  8,
+                            );
+                          },
+                          imageUrl:
+                          data['image'] == null ? data['podcast_image'] : data['image'],
+                          memCacheWidth:
+                          MediaQuery.of(
+                              context)
+                              .size
+                              .width
+                              .floor(),
+                          memCacheHeight:
+                          MediaQuery.of(
+                              context)
+                              .size
+                              .width
+                              .floor(),
+                          placeholder:
+                              (context,
+                              url) =>
+                              Container(
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                height: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                child: Image.asset(
+                                    'assets/images/Thumbnail.png'),
+                              ),
+                          errorWidget:
+                              (context, url,
+                              error) =>
+                              Icon(Icons
+                                  .error),
+                        ),
+                        SizedBox(
+                            width: SizeConfig
+                                .screenWidth /
+                                26),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              PodcastView(data['podcast_id'])));
+                                },
+                                child: Text(
+                                  data['podcast_name'],
+                                  textScaleFactor: 0.8,
+                                  style: TextStyle(
+                                    // color: Color(
+                                    //     0xffe8e8e8),
+                                      fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Text(
+                                '${timeago.format(DateTime.parse(data['published_at']))}',
+                                textScaleFactor: 0.8,
+                                style: TextStyle(
+                                  // color: Color(
+                                  //     0xffe8e8e8),
+                                    fontSize: SizeConfig.safeBlockHorizontal * 3),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding:
+                      const EdgeInsets
+                          .symmetric(
+                          vertical: 15),
+                      child: Container(
+                        width:
+                        double.infinity,
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          children: [
+                            Text(
+                              data['name'],
+                              textScaleFactor:
+                              0.8,
+                              style: TextStyle(
+                                // color: Color(
+                                //     0xffe8e8e8),
+                                  fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets
+                                  .symmetric(
+                                  vertical:
+                                  10),
+                              child: data['summary'] ==
+                                  null
+                                  ? SizedBox(
+                                  width:
+                                  0,
+                                  height:
+                                  0)
+                                  : (htmlMatch.hasMatch(data['summary']) ==
+                                  true
+                                  ? Text(
+                                parse(data['summary']).body.text,
+                                textScaleFactor:
+                                0.8,
+                                maxLines:
+                                2,
+                                style: TextStyle(
+                                  // color: Colors.white,
+                                    fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                              )
+                                  : Text(
+                                '${data['summary']}',
+                                textScaleFactor:
+                                1.0,
+                                style: TextStyle(
+                                  //      color: Colors.white,
+                                    fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                              )),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    PlaybackButtons(data: data, index: index, playlist: playlist,)
+
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlaybackButtons extends StatefulWidget {
+
+  var data;
+
+  int index;
+
+  List<Audio> playlist;
+
+  PlaybackButtons({@required this.data,  this.index, this.playlist});
+
+  @override
+  _PlaybackButtonsState createState() => _PlaybackButtonsState();
+}
+
+class _PlaybackButtonsState extends State<PlaybackButtons> {
+
+  SharedPreferences prefs;
+
+  var episodeData;
+
+  Future getLocalPreferences() async {
+
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      episodeData = widget.data;
+      episodeData['isLoading'] = false;
+    });
+
+
+    return episodeData;
+  }
+
+
+
+
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getLocalPreferences();
+    super.initState();
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var currentlyPlaying = Provider.of<PlayerChange>(context);
+    var episodeObject  = Provider.of<PlayerChange>(context);
+    try{
+      return  Container(
+        width: MediaQuery.of(
+            context)
+            .size
+            .width,
+        child: Row(
+          mainAxisAlignment:
+          MainAxisAlignment
+              .spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .spaceBetween,
+              children: [
+                episodeData['permlink'] == null ?SizedBox():InkWell(
+                  onTap:
+                      () async {
+                    if (prefs.getString(
+                        'HiveUserName') !=
+                        null) {
+                      setState(
+                              () {
+                            episodeData['isLoading'] =
+                            true;
+                          });
+                      double
+                      _value =
+                      50.0;
+                      showDialog(
+                          context:
+                          context,
+                          builder:
+                              (context) {
+                            return Dialog(
+                                backgroundColor: Colors.transparent,
+                                child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
+                          }).then((value) async {
+                        setState(
+                                () {
+                              episodeData['votes'] = episodeData['votes'] + 1;
+                              episodeData['ifVoted'] =
+                              !episodeData['ifVoted'];
+
+                            });
+                      });
+
+                      setState(
+                              () {
+                            episodeData['isLoading'] =
+                            false;
+                          });
+                    } else {
+                      showBarModalBottomSheet(
+                          context:
+                          context,
+                          builder:
+                              (context) {
+                            return HiveDetails();
+                          });
+                    }
+                  },
+                  child:
+                  Container(
+                    decoration: episodeData['ifVoted'] ==
+                        true
+                        ? BoxDecoration(
+                        gradient:
+                        LinearGradient(colors: [
+                          Color(0xff5bc3ef),
+                          Color(0xff5d5da8)
+                        ]),
+                        borderRadius: BorderRadius.circular(
+                            30))
+                        : BoxDecoration(
+                        border:
+                        Border.all(color: kSecondaryColor),
+                        borderRadius: BorderRadius.circular(30)),
+                    child:
+                    Padding(
+                      padding: const EdgeInsets
+                          .symmetric(
+                          vertical:
+                          5,
+                          horizontal:
+                          5),
+                      child:
+                      Row(
+                        children: [
+                          episodeData['isLoading'] == true
+                              ? Container(
+                            height: 17,
+                            width: 18,
+                            child: SpinKitPulse(
+                              color: Colors.blue,
+                            ),
+                          )
+                              : Icon(
+                            FontAwesomeIcons.chevronCircleUp,
+                            size: 15,
+                            // color:
+                            //     Color(0xffe8e8e8),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 8),
+                            child:
+                            Text(
+                              episodeData['votes'].toString(),
+                              textScaleFactor: 1.0,
+                              style: TextStyle(fontSize: 12
+                                // color:
+                                //     Color(0xffe8e8e8)
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.only(right: 4),
+                            child:
+                            Text(
+                              '\$${episodeData['payout_value'].toString().split(' ')[0]}',
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                fontSize: 12,
+
+                                // color:
+                                //     Color(0xffe8e8e8)
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                episodeData['permlink'] == null ? SizedBox():InkWell(
+                  onTap: () {
+                    if (prefs.getString(
+                        'HiveUserName') !=
+                        null) {
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => Comments(
+                                episodeObject: episodeData,
+                              )));
+                    } else {
+                      showBarModalBottomSheet(
+                          context:
+                          context,
+                          builder:
+                              (context) {
+                            return HiveDetails();
+                          });
+                    }
+                  },
+                  child:
+                  Padding(
+                    padding:
+                    const EdgeInsets.all(
+                        8.0),
+                    child:
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color:
+                              kSecondaryColor),
+                          borderRadius:
+                          BorderRadius.circular(30)),
+                      child:
+                      Padding(
+                        padding:
+                        const EdgeInsets.all(4.0),
+                        child:
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.mode_comment_outlined,
+                              size: 14,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 7),
+                              child: Text(
+                                episodeData['comments_count'].toString(),
+                                textScaleFactor: 1.0,
+                                style: TextStyle(fontSize: 10
+                                  // color:
+                                  //     Color(0xffe8e8e8)
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    episodeObject.audioPlayer.open(
+                        Playlist(
+                            audios: widget.playlist,
+                            startIndex: widget.index),
+                        showNotification: true);
+                  },
+                  child:
+                  Padding(
+                    padding: const EdgeInsets
+                        .only(
+                        right:
+                        60),
+                    child:
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                              color:
+                              kSecondaryColor),
+                          borderRadius:
+                          BorderRadius.circular(30)),
+                      child:
+                      Padding(
+                        padding:
+                        const EdgeInsets.all(5),
+                        child:
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.play_circle_outline,
+                              size: 15,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                DurationCalculator(widget.data['duration']),
+                                textScaleFactor: 0.75,
+                                // style: TextStyle(
+                                //      color: Color(0xffe8e8e8)
+                                //     ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            InkWell(
+              onTap: () {
+                share(
+                    episodeObject:
+                    widget.data);
+              },
+              child: Icon(
+                Icons.ios_share,
+                // size: 14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }catch(e){
+      return SizedBox();
+    }
+
+  }
+}
+
+class PodcastWidget extends StatelessWidget {
+
+  final data;
+
+  PodcastWidget({@required this.data});
+
+  SharedPreferences prefs;
+
+  CancelToken _cancel = CancelToken();
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio(
+
+    );
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: generalisedApiCall(data['api']),
+      builder: (context, snapshot){
+        try{
+          return Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(title: Text("${data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                  return LinearGradient(colors: [Color(
+                      0xff5bc3ef),
+                    Color(
+                        0xff5d5da8)]).createShader(bounds);
+                },child: GestureDetector(onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return SeeMore(data: data);
+                  },),);
+                },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                SizedBox(height: 10,),
+                Container(
+                  width: double.infinity,
+                  height: SizeConfig.blockSizeVertical * 25,
+                  constraints: BoxConstraints(
+                      minHeight:
+                      MediaQuery.of(context).size.height *
+                          0.20),
+                  child: ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, int index){
+                      return PodcastCard(data: snapshot.data[index]);
+                    },
+                    scrollDirection: Axis.horizontal,
+
+                  ),
+                ),
+                // Text("${snapshot.data}"),
+              ],
+            ),
+          );
+        }catch(e){
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              ListTile(title: Text("${data['name']}", style: TextStyle(
+                  fontSize: SizeConfig.safeBlockHorizontal * 5,
+                  fontWeight: FontWeight.bold
+              )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
+              SizedBox(height: 10,),
+              Container(
+                width: double.infinity,
+                height: SizeConfig.blockSizeVertical * 26,
+                constraints: BoxConstraints(
+                    minHeight:
+                    MediaQuery.of(context).size.height *
+                        0.17),
+                child: ListView.builder(
+
+                  addAutomaticKeepAlives: true,
+
+                  itemCount: 10,
+                  itemBuilder: (context, int index){
+                    return Padding(
+                      padding:
+                      const EdgeInsets.fromLTRB(
+                          15, 0, 0, 8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          // x
+                          borderRadius:
+                          BorderRadius.circular(
+                              15),
+                        ),
+                        width: MediaQuery.of(context)
+                            .size
+                            .width *
+                            0.38,
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment
+                              .start,
+                          mainAxisSize:
+                          MainAxisSize.min,
+                          children: [
+                            CachedNetworkImage(
+                              errorWidget: (context,
+                                  url, error) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xff222222),
+                                      // image: DecorationImage(
+                                      //     image: NetworkImage(
+                                      //         "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                      //     fit: BoxFit
+                                      //         .cover),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                          3)),
+                                  width: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                  height: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                );
+                              },
+                              imageBuilder: (context,
+                                  imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image:
+                                          imageProvider,
+                                          fit: BoxFit
+                                              .cover),
+                                      borderRadius:
+                                      BorderRadius
+                                          .circular(
+                                          3)),
+                                  width: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                  height: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                );
+                              },
+                              memCacheHeight:
+                              (MediaQuery.of(
+                                  context)
+                                  .size
+                                  .height)
+                                  .floor(),
+                              imageUrl: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                              placeholder: (context,
+                                  imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      // image: DecorationImage(
+                                      //     image: AssetImage(
+                                      //         'assets/images/Thumbnail.png'),
+                                      //     fit: BoxFit
+                                      //         .cover),
+                                    color: Color(0xff222222)
+                                  ),
+                                  height: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                  width: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  scrollDirection: Axis.horizontal,
+
+                ),
+              ),
+            ],
+          );
+        }
+
+      },
+    );
+  }
+}
+
+class PlaylistWidget extends StatelessWidget {
+
+  final data;
+
+  PlaylistWidget({@required this.data}) ;
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio(
+
+    );
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+    print(url); //TODO: Delete this print statement later
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  SharedPreferences prefs;
+
+  CancelToken _cancel = CancelToken();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: generalisedApiCall(data['api']),
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          try{
+            return Container(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(title: Text("${data['name']}", style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                      fontWeight: FontWeight.bold
+                  )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                    return LinearGradient(colors: [Color(
+                        0xff5bc3ef),
+                      Color(
+                          0xff5d5da8)]).createShader(bounds);
+                  },child: GestureDetector(onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                      return SeeMore(data: data);
+                    },),);
+                  },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                  Container(
+                    width: double.infinity,
+                    height: SizeConfig.blockSizeVertical * 25,
+                    constraints:  BoxConstraints(
+                        minHeight:
+                        MediaQuery.of(context).size.height *
+                            0.17),
+                    child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                      return Padding(
+                        padding:
+                        const EdgeInsets.fromLTRB(
+                            15, 0, 0, 8),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, CupertinoPageRoute(builder: (context){
+                              return PlaylistView(playlistId: snapshot.data[index]['id']);
+                            }));
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                int.parse(snapshot.data[index]['episodes_count']) <= 4 ? CachedNetworkImage(imageUrl: snapshot.data[index]['episodes_images'][0], imageBuilder: (context, imageProvider){
+                                  return Container(
+                                    height: MediaQuery.of(context).size.width / 3,
+                                    width: MediaQuery.of(context).size.width / 3,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider, fit: BoxFit.cover
+                                        )
+                                    ),
+                                  );
+                                },) : Container(child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][0],
+                                        ),
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][1],
+                                        )
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][2],
+                                        ),
+                                        CachedNetworkImage(
+                                          imageBuilder: (context, imageProvider){
+                                            return Container(
+                                              height: MediaQuery.of(context).size.width / 6,
+                                              width: MediaQuery.of(context).size.width / 6,
+                                              decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover
+                                                  )
+                                              ),
+                                            );
+                                          },
+                                          imageUrl: snapshot.data[index]['episodes_images'][3],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 5),
+                                  child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }, itemCount: snapshot.data.length,),
+                  ),
+                ],
+              ),
+            );
+          }catch(e){
+            return Container(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(title: Text("${data['name']}", style: TextStyle(
+                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                      fontWeight: FontWeight.bold
+                  )),),
+                  Container(
+                    width: double.infinity,
+                    height: SizeConfig.blockSizeVertical * 25,
+                    constraints:  BoxConstraints(
+                        minHeight:
+                        MediaQuery.of(context).size.height *
+                            0.17),
+                    child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                      return Padding(
+                        padding:
+                        const EdgeInsets.fromLTRB(
+                            15, 0, 0, 8),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: MediaQuery.of(context).size.width / 3,
+                                width: MediaQuery.of(context).size.width / 3,
+                                decoration: BoxDecoration(
+                                    color: Color(0xff222222)
+                                ),
+                              )
+                              // Padding(
+                              //   padding: const EdgeInsets.symmetric(vertical: 5),
+                              //   child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                              // )
+                            ],
+                          ),
+                        ),
+                      );
+                    }, itemCount: snapshot.data.length,),
+                  ),
+                ],
+              ),
+            );
+          }
+        }else{
+          return Container(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(title: Text("${data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),),
+                Container(
+                  width: double.infinity,
+                  height: SizeConfig.blockSizeVertical * 25,
+                  constraints:  BoxConstraints(
+                      minHeight:
+                      MediaQuery.of(context).size.height *
+                          0.17),
+                  child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                    return Padding(
+                      padding:
+                      const EdgeInsets.fromLTRB(
+                          15, 0, 0, 8),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.width / 3,
+                              width: MediaQuery.of(context).size.width / 3,
+                              decoration: BoxDecoration(
+                                  color: Color(0xff222222)
+                              ),
+                            )
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(vertical: 5),
+                            //   child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                            // )
+                          ],
+                        ),
+                      ),
+                    );
+                  }, itemCount: 10,),
+                ),
+              ],
+            ),
+          );
+        }
+
+
+      },
+    );
+  }
+}
+
+
+class SnippetWidget extends StatelessWidget {
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio(
+
+    );
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+    print(url); //TODO: Delete this print statement later
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  SharedPreferences prefs;
+
+  CancelToken _cancel = CancelToken();
+  final data;
+  
+  
+  SnippetWidget(
+  {@required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: generalisedApiCall(data['api']),
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          return Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListTile(title: Text("${data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                  return LinearGradient(colors: [Color(
+                      0xff5bc3ef),
+                    Color(
+                        0xff5d5da8)]).createShader(bounds);
+                },child: GestureDetector(onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return SeeMore(data: data);
+                  },),);
+                },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                Container(
+                  height: SizeConfig.blockSizeVertical * 32,
+                  constraints:  BoxConstraints(
+                      minHeight:
+                      MediaQuery.of(context).size.height *
+                          0.17),
+                  child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, CupertinoPageRoute(builder: (context){
+                            return SnippetStoryView(data: snapshot.data,  index: index,);
+                          }));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: Stack(
+                            children: [
+                              Container(
+                                foregroundDecoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  gradient: LinearGradient(
+                                      colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                  ),
+                                ),
+
+                                decoration: BoxDecoration(
+
+                                  borderRadius: BorderRadius.circular(5),
+
+                                  image: DecorationImage(
+                                      image: CachedNetworkImageProvider(
+                                          snapshot.data[index]['podcast_image']),
+                                      fit: BoxFit.cover),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ListTile(
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text("${snapshot.data[index]['episode_name']}", maxLines:  2, style: TextStyle(fontWeight: FontWeight.bold),),
+                                        subtitle: Text("${snapshot.data[index]['podcast_name']}", maxLines: 1,),
+                                      )
+
+
+                                    ],
+                                  ),
+                                ),
+                              )
+                              // ClipRect(
+                              //   child: BackdropFilter(
+                              //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                              //     child: Container(
+                              //       decoration: BoxDecoration(
+                              //         borderRadius: BorderRadius.circular(10),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+
+                              ],
+
+                          ),
+                        ),
+                      ),
+                    );
+                  }, itemCount: snapshot.data.length,),
+                ),
+              ],
+            ),
+          );
+        }else{
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Text("${data['name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 5, fontWeight: FontWeight.bold),),
+              ),
+              Container(
+                height: SizeConfig.blockSizeVertical * 32,
+                constraints:  BoxConstraints(
+                    minHeight:
+                    MediaQuery.of(context).size.height *
+                        0.17),
+
+                child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, CupertinoPageRoute(builder: (context){
+                          return SnippetStoryView(data: snapshot.data,  index: index,);
+                        }));
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: Stack(
+                          children: [
+                            Container(
+                              foregroundDecoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                gradient: LinearGradient(
+                                    colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                ),
+                              ),
+
+                              decoration: BoxDecoration(
+                                color: Color(0xff222222),
+
+                                borderRadius: BorderRadius.circular(5),
+
+
+                              ),
+                            ),
+
+                            // ClipRect(
+                            //   child: BackdropFilter(
+                            //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                            //     child: Container(
+                            //       decoration: BoxDecoration(
+                            //         borderRadius: BorderRadius.circular(10),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
+
+                          ],
+
+                        ),
+                      ),
+                    ),
+                  );
+                }, itemCount: 10 ,),
+
+              ),
+
+            ],
+          );
+        }
+      },
+    );
+  }
+}
+
+class SnippetStoryView extends StatefulWidget {
+
+  final data;
+  int index;
+
+  SnippetStoryView({@required this.data, this.index});
+
+  @override
+  _SnippetStoryViewState createState() => _SnippetStoryViewState();
+}
+
+class _SnippetStoryViewState extends State<SnippetStoryView> {
+
+  PageController _pageController ;
+
+
+  // AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
+  int currentIndex;
+
+  var snippetPlayer;
+
+  void getSnippetPlayer(BuildContext context){
+    snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+  }
+
+  @override
+  void initState() {
+    _pageController =
+        PageController(viewportFraction: 1.0, keepPage: true, initialPage: widget.index);
+    // TODO: implement initState
+    super.initState();
+
+    getSnippetPlayer(context);
+
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    // audioplayer.stop();
+    snippetPlayer.snippetPlayer.stop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: PageView.builder(
+        scrollDirection: Axis.vertical,
+          itemCount: widget.data.length,
+          pageSnapping: true,
+          controller: _pageController,
+
+          itemBuilder: (context, int index) {
+            currentIndex = index;
+            return SwipeCard(
+              clipObject: widget.data[index],
+            );
+          }),
+    );
+  }
+}
+
+
+class SubCategoryView extends StatefulWidget {
+
+  final data;
+
+  SubCategoryView({@required this.data});
+
+  @override
+  _SubCategoryViewState createState() => _SubCategoryViewState();
+}
+
+class _SubCategoryViewState extends State<SubCategoryView> {
+
+  ScrollController _controller = ScrollController();
+
+  SharedPreferences prefs;
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  int page = 0;
+
+  List feedData = [];
+
+  Future getData() async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/subcategoryPodcasts/${widget.data['id']}?pageSize=16&page=$page&user_id=${prefs.getString('userId')}";
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        if(page == 0){
+          setState(() {
+            feedData = response.data['data'];
+            page = page + 1;
+          });
+        }else{
+          setState(() {
+            feedData =  feedData + response.data['data'];
+            page = page + 1;
+          });
+        }
+      }
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    getData();
+
+    super.initState();
+    _controller.addListener(() {
+      if(_controller.position.pixels == _controller.position.maxScrollExtent){
+        getData();
+      }
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("${widget.data['name']}"), backgroundColor: Colors.transparent, elevation: 0,),
+        body: GridView.builder(controller: _controller,itemCount: feedData.length + 2,gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+          MediaQuery.of(context)
+              .orientation ==
+              Orientation
+                  .landscape
+              ? 3
+              : 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: (1 / 1.36),
+        ), itemBuilder: (context, int index){
+          if(index > feedData.length - 1){
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                    color: Color(0xff121212),
+                    borderRadius: BorderRadius.circular(3),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                    )
+                ),
+              ),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:   InkWell(
+                onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return PodcastView(feedData[index]['id']);
+                  }));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      placeholder: (context, String url){
+                        return AspectRatio(aspectRatio: 1.0, child: Container(width: double.infinity, decoration: BoxDecoration(color: Color(0xff121212), borderRadius: BorderRadius.circular(3)),));
+                      },
+
+                      imageUrl: feedData[index]['image'],
+                      imageBuilder: (context, imageProvider){
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: double.infinity,
+
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover
+                                )
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context,
+                          url,
+                          error) => AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
+                          width: double.infinity,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                              )
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // SizedBox(height: 5,),
+                    ListTile(contentPadding: EdgeInsets.zero,title: Text("${feedData[index]['name']}", maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text('${feedData[index]['author']}', maxLines: 1, overflow: TextOverflow.ellipsis,),),
+
+
+                  ],
+                ),
+              ),
+            );
+          }
+
+        }),
+    );
+  }
+}
+
+
+class SeeMore extends StatefulWidget {
+
+  final data;
+
+
+ SeeMore({@required this.data});
+
+  @override
+  State<SeeMore> createState() => _SeeMoreState();
+}
+
+class _SeeMoreState extends State<SeeMore> {
+
+  ScrollController _controller = ScrollController();
+
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  List feedData = [];
+  int page = 0;
+
+  List<Audio> playlist;
+
+
+  void playListGenerator({List data}) async {
+    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    List<Audio> playable = [];
+    for (int i = 0; i < data.length; i++){
+      var v = data[i];
+      playable
+          .add(Audio.network(
+        v['url'],
+        metas:
+        Metas(
+          id: '${v['id']}',
+          title: '${v['name']}',
+          artist: '${v['author']}',
+          album: '${v['podcast_name']}',
+          // image: MetasImage.network('https://www.google.com')
+          image: MetasImage.network('${v['image'] == null ? v['podcast_image'] : v['image']}'),
+        ),
+      ));
+    }
+
+    playlist = playable;
+    // episodeObject.dispose();
+
+
+
+  }
+
+  Future getData({var apicall}) async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/$apicall?pageSize=16&page=$page&user_id=${prefs.getString('userId')}";
+    print(url);
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        print(response.data);
+        if(page == 0){
+          setState(() {
+            feedData = response.data['data'];
+            page = page + 1;
+            if(widget.data['type'] == 'episode' || widget.data['type'] == null){
+              playListGenerator(data: feedData);
+            }
+          });
+        }else{
+
+          setState(() {
+            feedData = feedData + response.data['data'];
+            page = page + 1;
+            if(widget.data['type'] == 'episode' || widget.data['type'] == null){
+              playListGenerator(data: feedData);
+            }
+          });
+        }
+
+
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getData(apicall: widget.data['api']);
+    super.initState();
+
+    _controller.addListener(() {
+      if(_controller.position.pixels == _controller.position.maxScrollExtent){
+        getData(apicall: widget.data['api']);
+      }
+    });
+
+  }
+
+
+  
+  Widget _feedBuilder(BuildContext context, var data){
+    print(data['type']);
+    switch(data['type']){
+      case "podcast":
+        return GridView.builder(controller: _controller,itemCount: feedData.length + 2,gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+          MediaQuery.of(context)
+              .orientation ==
+              Orientation
+                  .landscape
+              ? 3
+              : 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: (1 / 1.36),
+        ), itemBuilder: (context, int index){
+          if(index > feedData.length - 1){
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                  color: Color(0xff121212),
+                    borderRadius: BorderRadius.circular(3),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                    )
+                ),
+              ),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:   InkWell(
+                onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return PodcastView(feedData[index]['id']);
+                  }));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      placeholder: (context, String url){
+                        return AspectRatio(aspectRatio: 1.0, child: Container(width: double.infinity, decoration: BoxDecoration(color: Color(0xff121212), borderRadius: BorderRadius.circular(3)),));
+                      },
+
+                      imageUrl: feedData[index]['image'],
+                      imageBuilder: (context, imageProvider){
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: double.infinity,
+
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover
+                                )
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context,
+                          url,
+                          error) => AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
+                          width: double.infinity,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                              )
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // SizedBox(height: 5,),
+                    ListTile(contentPadding: EdgeInsets.zero,title: Text("${feedData[index]['name']}", maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text('${feedData[index]['author']}', maxLines: 1, overflow: TextOverflow.ellipsis,),),
+
+
+                  ],
+                ),
+              ),
+            );
+          }
+
+        });
+        break;
+      case "episode":
+        return ListView.builder(controller: _controller,itemCount: feedData.length + 1,itemBuilder: (context, int index){
+          if(index > feedData.length -1){
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(10),
+                    color: Color(0xff222222)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            height:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            decoration: BoxDecoration(
+                                color:
+                                Color(0xff161616),
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10)),
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+                            children: [
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 16,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    3,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 8,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    4,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                2),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width *
+                                0.75),
+                      ),
+                      Padding(
+                        padding:
+                        const EdgeInsets.symmetric(
+                            vertical: 20),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10),
+                                color:
+                                Color(0xff161616),
+                              ),
+                              height: 25,
+                              width:
+                              MediaQuery.of(context)
+                                  .size
+                                  .width /
+                                  8,
+                              //    color: kSecondaryColor,
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(10),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 25,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(8),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 20,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }else{
+            return EpisodeCard(data: feedData[index], index: index, playlist: playlist,);
+          }
+        });
+        break;
+      default:
+        return Container();
+        break;
+
+        
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final orientation = MediaQuery.of(context).orientation;
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text("${widget.data['name']}"),
+      ),
+      body: Stack(children: [_feedBuilder(context, widget.data), Align(alignment: Alignment.bottomCenter,child: BottomPlayer())] ));
+
+  }
+}
+
+class PodcastCard extends StatelessWidget {
+  final data;
+  PodcastCard({@required this.data});
+
+  void podcastShare() async {
+    await FlutterShare.share(
+        title: '${data['name']}',
+        text:
+        "Hey There, I'm listening to ${data['name']} on Aureal, here's the link for you https://aureal.one/podcast/${data['id']}");
+  }
+
+  void follow() async {
+    print("Follow function started");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = 'https://api.aureal.one/public/follow';
+    var map = Map<String, dynamic>();
+
+    map['user_id'] = prefs.getString('userId');
+    map['podcast_id'] = data['id'];
+
+    FormData formData = FormData.fromMap(map);
+
+    try {
+      var response = await dio.post(url, data: formData);
+      print(response.toString());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+      const EdgeInsets.fromLTRB(
+          15, 0, 0, 8),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                  builder: (context) =>
+                      PodcastView(
+                          data['id'])));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            // x
+            borderRadius:
+            BorderRadius.circular(
+                15),
+          ),
+          width: MediaQuery.of(context)
+              .size
+              .width *
+              0.38,
+          child: Column(
+            crossAxisAlignment:
+            CrossAxisAlignment
+                .start,
+            mainAxisSize:
+            MainAxisSize.min,
+            children: [
+              CachedNetworkImage(
+                errorWidget: (context,
+                    url, error) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                            fit: BoxFit
+                                .cover),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                            3)),
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+                imageBuilder: (context,
+                    imageProvider) {
+                  return Container(
+                    // child: Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.end,
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   children: [
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(3),
+                    //       child: InkWell(
+                    //         onTap: (){
+                    //           showModalBottomSheet(
+                    //               context: context,
+                    //               builder: (context) {
+                    //                 return Column(
+                    //                   mainAxisSize: MainAxisSize.min,
+                    //                   children: [
+                    //                     Padding(
+                    //                       padding:
+                    //                       const EdgeInsets.symmetric(vertical: 10),
+                    //                       child: ListTile(
+                    //                         leading: CachedNetworkImage(
+                    //                           memCacheHeight:
+                    //                           (MediaQuery.of(context).size.width /
+                    //                               2)
+                    //                               .floor(),
+                    //                           imageUrl: data['image'],
+                    //                           imageBuilder: (context, imageProvider) {
+                    //                             return Container(
+                    //                               height: 50,
+                    //                               width: 50,
+                    //                               decoration: BoxDecoration(
+                    //                                   borderRadius:
+                    //                                   BorderRadius.circular(5),
+                    //                                   image: DecorationImage(
+                    //                                       image: imageProvider,
+                    //                                       fit: BoxFit.cover)),
+                    //                             );
+                    //                           },
+                    //                         ),
+                    //                         title: Text(
+                    //                           "${data['name']}",
+                    //                           style: TextStyle(
+                    //                               fontWeight: FontWeight.w600),
+                    //                         ),
+                    //                         subtitle: Text("${data['author']}"),
+                    //                       ),
+                    //                     ),
+                    //                     Divider(),
+                    //                     ListTile(
+                    //                       leading: Icon(Icons.ios_share),
+                    //                       title: Text("Share"),
+                    //                       onTap: () {
+                    //                         podcastShare();
+                    //                       },
+                    //                     ),
+                    //                     ListTile(
+                    //                       onTap: () {
+                    //                         follow();
+                    //                         // setState(() {
+                    //                         //   if (followState == FollowState.follow) {
+                    //                         //     followState = FollowState.following;
+                    //                         //   } else {
+                    //                         //     followState = FollowState.follow;
+                    //                         //   }
+                    //                         // });
+                    //                         Navigator.pop(context);
+                    //                       },
+                    //                       leading: Icon(Icons.add_circle_outline),
+                    //                       title: Text("Subscribe"),
+                    //                     ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.notification_add),
+                    //                     //   title: Text("Get Notified"),
+                    //                     // ),
+                    //                     //     ListTile(
+                    //                     //       onTap:() {
+                    //                     //
+                    //                     // },
+                    //                     //       leading: Icon(Icons.playlist_add),
+                    //                     //       title: Text("Add to podcast playlist"),
+                    //                     //     ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.animation),
+                    //                     //   title: Text("More like these"),
+                    //                     // ),
+                    //                     // ListTile(
+                    //                     //   leading: Icon(Icons.send),
+                    //                     //   title: Text("Invite this podcast to Aureal"),
+                    //                     // ),
+                    //                   ],
+                    //                 );
+                    //               });
+                    //         },
+                    //         child: ClipOval(
+                    //
+                    //           child: BackdropFilter(
+                    //             filter:  ImageFilter.blur(
+                    //             sigmaY: 10.0,
+                    //             sigmaX: 10.0,
+                    //           ),
+                    //             child: Container(decoration: BoxDecoration(shape: BoxShape.circle), child: Padding(
+                    //               padding: const EdgeInsets.all(2),
+                    //               child: Icon(Icons.more_vert_outlined, color: Colors.white.withOpacity(0.7),),
+                    //             )),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                            imageProvider,
+                            fit: BoxFit
+                                .cover),
+                        borderRadius:
+                        BorderRadius
+                            .circular(
+                            3)),
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+                memCacheHeight:
+                (MediaQuery.of(
+                    context)
+                    .size
+                    .height)
+                    .floor(),
+                imageUrl:data['image'],
+
+                placeholder: (context,
+                    imageProvider) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(
+                                'assets/images/Thumbnail.png'),
+                            fit: BoxFit
+                                .cover)),
+                    height: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                    width: MediaQuery.of(
+                        context)
+                        .size
+                        .width *
+                        0.38,
+                  );
+                },
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                data['name'],
+                maxLines: 1,
+                textScaleFactor: 1.0,
+                overflow: TextOverflow
+                    .ellipsis,
+                // style:
+                //     TextStyle(color: Color(0xffe8e8e8)),
+              ),
+              Text(
+                data['author'],
+                maxLines: 2,
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                    fontSize: SizeConfig
+                        .safeBlockHorizontal *
+                        2.5,
+                    color: Color(
+                        0xffe777777)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
 
 class FollowingPage extends StatefulWidget {
   @override
@@ -1606,3 +4571,27 @@ class Podcast {
       this.listens,
       this.value});
 }
+
+class PodcastViewBuilder extends StatefulWidget {
+
+  var podcastData;
+
+
+  PodcastViewBuilder(@required this.podcastData);
+
+  @override
+  _PodcastViewBuilderState createState() => _PodcastViewBuilderState();
+}
+
+class _PodcastViewBuilderState extends State<PodcastViewBuilder> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+
+
+
+
+

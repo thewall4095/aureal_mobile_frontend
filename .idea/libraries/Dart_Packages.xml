@@ -191,6 +191,13 @@
             </list>
           </value>
         </entry>
+        <entry key="dismissible_page">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dismissible_page-0.6.4/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="dotted_border">
           <value>
             <list>
@@ -817,7 +824,7 @@
         <entry key="pedantic">
           <value>
             <list>
-              <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0/lib" />
+              <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1/lib" />
             </list>
           </value>
         </entry>
@@ -1334,6 +1341,7 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.3/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/datetime_picker_formfield-2.0.0/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dio-4.0.0/lib" />
+      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dismissible_page-0.6.4/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/dotted_border-2.0.0/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/double_back_to_close_app-2.0.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/expandable-5.0.1/lib" />
@@ -1420,7 +1428,7 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.0/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.1/lib" />
-      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0/lib" />
+      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/percent_indicator-3.0.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-8.1.4+2/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler_platform_interface-3.6.1/lib" />
