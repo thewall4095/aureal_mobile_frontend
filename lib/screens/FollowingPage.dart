@@ -1272,50 +1272,263 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    episodeObject.audioPlayer.open(
-                        Playlist(
-                            audios: widget.playlist,
-                            startIndex: widget.index),
-                        showNotification: true);
-                  },
-                  child:
-                  Padding(
-                    padding: const EdgeInsets
-                        .only(
-                        right:
-                        60),
+                Container(
+
+                  child: episodeObject.audioPlayer.isPlaying.value == true? InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {
+                      episodeObject.audioPlayer.open(
+                          Playlist(
+                              audios: widget.playlist,
+                              startIndex: widget.index),
+                          showNotification: true).then((value) {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.transparent,
+                            isDismissible: true,
+                            // bounce: true,
+                            context: context,
+                            builder: (context) {
+                              return Player2();
+                            });
+                      });
+                    },
                     child:
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color:
-                              kSecondaryColor),
-                          borderRadius:
-                          BorderRadius.circular(30)),
+                    Padding(
+                      padding: const EdgeInsets
+                          .only(
+                          right:
+                          60),
                       child:
-                      Padding(
-                        padding:
-                        const EdgeInsets.all(5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xff161616),
+
+                            border: Border.all(
+                                color:
+                                kSecondaryColor),
+                            borderRadius:
+                            BorderRadius.circular(30)),
                         child:
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.play_circle_outline,
-                              size: 15,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                DurationCalculator(widget.data['duration']),
-                                textScaleFactor: 0.75,
-                                // style: TextStyle(
-                                //      color: Color(0xffe8e8e8)
-                                //     ),
+                        Padding(
+                          padding:
+                          const EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+
+                              Icon(
+                                Icons.play_circle_outline,
+                                size: 15,
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  DurationCalculator(widget.data['duration']),
+                                  textScaleFactor: 0.75,
+                                  // style: TextStyle(
+                                  //      color: Color(0xffe8e8e8)
+                                  //     ),
+                                ),
+                              ),
+                            ],
+                          )
+    //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
+    //                             if(infos == null){
+    //                               return Row(
+    //                                 children: [
+    //
+    //                                   Icon(
+    //                                     Icons.play_circle_outline,
+    //                                     size: 15,
+    //                                   ),
+    //                                   Padding(
+    //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                     child: Text(
+    //                                       DurationCalculator(widget.data['duration']),
+    //                                       textScaleFactor: 0.75,
+    //                                       // style: TextStyle(
+    //                                       //      color: Color(0xffe8e8e8)
+    //                                       //     ),
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               );
+    //                             }else{
+    //                               if(infos.index == widget.index){
+    //                                 return Row(
+    //                                   children: [
+    //
+    //                                     Icon(
+    //                                       Icons.play_circle_outline,
+    //                                       size: 15,
+    //                                     ),
+    //                                     Padding(
+    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                       child: Text(
+    //                                         DurationCalculator(widget.data['duration']),
+    //                                         textScaleFactor: 0.75,
+    //                                         // style: TextStyle(
+    //                                         //      color: Color(0xffe8e8e8)
+    //                                         //     ),
+    //                                       ),
+    //                                     ),
+    //                                   ],
+    //                                 );
+    //                               }else{
+    //                                 return Row(
+    //                                   children: [
+    //
+    //                                     Icon(
+    //                                       Icons.play_circle_outline,
+    //                                       size: 15,
+    //                                     ),
+    //                                     Padding(
+    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                       child: Text(
+    //                                         DurationCalculator(widget.data['duration']),
+    //                                         textScaleFactor: 0.75,
+    //                                         // style: TextStyle(
+    //                                         //      color: Color(0xffe8e8e8)
+    //                                         //     ),
+    //                                       ),
+    //                                     ),
+    //                                   ],
+    //                                 );
+    //                               }
+    //                             }
+    //
+    // }),
+
+                        ),
+                      ),
+                    ),
+                  ) : InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {
+                      episodeObject.audioPlayer.open(
+                          Playlist(
+                              audios: widget.playlist,
+                              startIndex: widget.index),
+                          showNotification: true).then((value) {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.transparent,
+                            isDismissible: true,
+                            // bounce: true,
+                            context: context,
+                            builder: (context) {
+                              return Player2();
+                            });
+                      });
+                    },
+                    child:
+                    Padding(
+                      padding: const EdgeInsets
+                          .only(
+                          right:
+                          60),
+                      child:
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff161616),
+
+                            border: Border.all(
+                                color:
+                                kSecondaryColor),
+                            borderRadius:
+                            BorderRadius.circular(30)),
+                        child:
+                        Padding(
+                            padding:
+                            const EdgeInsets.all(5),
+                            child: Row(
+                              children: [
+
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  size: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text(
+                                    DurationCalculator(widget.data['duration']),
+                                    textScaleFactor: 0.75,
+                                    // style: TextStyle(
+                                    //      color: Color(0xffe8e8e8)
+                                    //     ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
+                          //                             if(infos == null){
+                          //                               return Row(
+                          //                                 children: [
+                          //
+                          //                                   Icon(
+                          //                                     Icons.play_circle_outline,
+                          //                                     size: 15,
+                          //                                   ),
+                          //                                   Padding(
+                          //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                     child: Text(
+                          //                                       DurationCalculator(widget.data['duration']),
+                          //                                       textScaleFactor: 0.75,
+                          //                                       // style: TextStyle(
+                          //                                       //      color: Color(0xffe8e8e8)
+                          //                                       //     ),
+                          //                                     ),
+                          //                                   ),
+                          //                                 ],
+                          //                               );
+                          //                             }else{
+                          //                               if(infos.index == widget.index){
+                          //                                 return Row(
+                          //                                   children: [
+                          //
+                          //                                     Icon(
+                          //                                       Icons.play_circle_outline,
+                          //                                       size: 15,
+                          //                                     ),
+                          //                                     Padding(
+                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                       child: Text(
+                          //                                         DurationCalculator(widget.data['duration']),
+                          //                                         textScaleFactor: 0.75,
+                          //                                         // style: TextStyle(
+                          //                                         //      color: Color(0xffe8e8e8)
+                          //                                         //     ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                                 );
+                          //                               }else{
+                          //                                 return Row(
+                          //                                   children: [
+                          //
+                          //                                     Icon(
+                          //                                       Icons.play_circle_outline,
+                          //                                       size: 15,
+                          //                                     ),
+                          //                                     Padding(
+                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                       child: Text(
+                          //                                         DurationCalculator(widget.data['duration']),
+                          //                                         textScaleFactor: 0.75,
+                          //                                         // style: TextStyle(
+                          //                                         //      color: Color(0xffe8e8e8)
+                          //                                         //     ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                                 );
+                          //                               }
+                          //                             }
+                          //
+                          // }),
+
                         ),
                       ),
                     ),
