@@ -155,7 +155,7 @@ class _EpisodeViewState extends State<EpisodeView>
   List playlist = [];
 
   void getPlaylistRecommendations({int podcastId, int episodeId}) async {
-    print("///////////////////////////////////////////////////////////");
+
     String url =
         "https://api.aureal.one/public/getPrevNextEpisode/$podcastId/$episodeId?type=prev";
 
@@ -205,8 +205,6 @@ class _EpisodeViewState extends State<EpisodeView>
   void getComments() async {
     String url =
         'https://api.aureal.one/public/getComments?episode_id=${widget.episodeId}';
-    // print('loada');
-    // print(widget.episodeObject.toString());
 
     try {
       http.Response response = await http.get(Uri.parse(url));

@@ -127,9 +127,7 @@ class SearchFunctionality extends SearchDelegate {
   }
 
   Future getUsers() async {
-    // if (_pagePeople != 0) {
-    //   cancelToken.cancel();
-    // }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/userSearch?word=$query&loggedinuser=${prefs.getString('userId')}&page=0&pageSize=10";
@@ -144,7 +142,7 @@ class SearchFunctionality extends SearchDelegate {
     } catch (e) {
       print(e);
     }
-    print("User Search Ended");
+
   }
 
   Future getEpisodes() async {
@@ -183,6 +181,30 @@ class SearchFunctionality extends SearchDelegate {
     ];
   }
 
+  Future getSearchSnippets() async {
+    String url = "";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future getPlaylistSearch() async {
+    String url = "";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget buildLeading(BuildContext context) {
     // TODO: implement buildLeading
@@ -216,8 +238,7 @@ class SearchFunctionality extends SearchDelegate {
             FutureBuilder(
               future: getPodcast(),
               builder: (context, snapshot){
-
-                  try{
+                try{
                     return Container(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -988,100 +1009,100 @@ class SearchFunctionality extends SearchDelegate {
                                     SizedBox(
                                       height: 6,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 3),
-                                      child: Container(
-                                          color: Color(0xff161616),
-                                          height: 6,
-                                          width:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 3),
-                                      child: Container(
-                                          color: Color(0xff161616),
-                                          height: 6,
-                                          width:
-                                          MediaQuery.of(context)
-                                              .size
-                                              .width *
-                                              0.75),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(
-                                          vertical: 20),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius
-                                                  .circular(10),
-                                              color:
-                                              Color(0xff161616),
-                                            ),
-                                            height: 25,
-                                            width:
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width /
-                                                8,
-                                            //    color: kSecondaryColor,
-                                          ),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(
-                                                left: 10),
-                                            child: Container(
-                                              decoration:
-                                              BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(10),
-                                                color:
-                                                Color(0xff161616),
-                                              ),
-                                              height: 25,
-                                              width: MediaQuery.of(
-                                                  context)
-                                                  .size
-                                                  .width /
-                                                  8,
-                                              //    color: kSecondaryColor,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.only(
-                                                left: 10),
-                                            child: Container(
-                                              decoration:
-                                              BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius
-                                                    .circular(8),
-                                                color:
-                                                Color(0xff161616),
-                                              ),
-                                              height: 20,
-                                              width: MediaQuery.of(
-                                                  context)
-                                                  .size
-                                                  .width /
-                                                  8,
-                                              //    color: kSecondaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 3),
+                                    //   child: Container(
+                                    //       color: Color(0xff161616),
+                                    //       height: 6,
+                                    //       width:
+                                    //       MediaQuery.of(context)
+                                    //           .size
+                                    //           .width),
+                                    // ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 3),
+                                    //   child: Container(
+                                    //       color: Color(0xff161616),
+                                    //       height: 6,
+                                    //       width:
+                                    //       MediaQuery.of(context)
+                                    //           .size
+                                    //           .width *
+                                    //           0.75),
+                                    // ),
+                                    // Padding(
+                                    //   padding:
+                                    //   const EdgeInsets.symmetric(
+                                    //       vertical: 20),
+                                    //   child: Row(
+                                    //     mainAxisAlignment:
+                                    //     MainAxisAlignment.start,
+                                    //     children: [
+                                    //       Container(
+                                    //         decoration: BoxDecoration(
+                                    //           borderRadius:
+                                    //           BorderRadius
+                                    //               .circular(10),
+                                    //           color:
+                                    //           Color(0xff161616),
+                                    //         ),
+                                    //         height: 25,
+                                    //         width:
+                                    //         MediaQuery.of(context)
+                                    //             .size
+                                    //             .width /
+                                    //             8,
+                                    //         //    color: kSecondaryColor,
+                                    //       ),
+                                    //       Padding(
+                                    //         padding:
+                                    //         const EdgeInsets.only(
+                                    //             left: 10),
+                                    //         child: Container(
+                                    //           decoration:
+                                    //           BoxDecoration(
+                                    //             borderRadius:
+                                    //             BorderRadius
+                                    //                 .circular(10),
+                                    //             color:
+                                    //             Color(0xff161616),
+                                    //           ),
+                                    //           height: 25,
+                                    //           width: MediaQuery.of(
+                                    //               context)
+                                    //               .size
+                                    //               .width /
+                                    //               8,
+                                    //           //    color: kSecondaryColor,
+                                    //         ),
+                                    //       ),
+                                    //       Padding(
+                                    //         padding:
+                                    //         const EdgeInsets.only(
+                                    //             left: 10),
+                                    //         child: Container(
+                                    //           decoration:
+                                    //           BoxDecoration(
+                                    //             borderRadius:
+                                    //             BorderRadius
+                                    //                 .circular(8),
+                                    //             color:
+                                    //             Color(0xff161616),
+                                    //           ),
+                                    //           height: 20,
+                                    //           width: MediaQuery.of(
+                                    //               context)
+                                    //               .size
+                                    //               .width /
+                                    //               8,
+                                    //           //    color: kSecondaryColor,
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // )
                                   ],
                                 ),
                               ),
@@ -1356,7 +1377,18 @@ class SearchFunctionality extends SearchDelegate {
               }
 
             }),
-
+            FutureBuilder(
+              future: getPlaylistSearch(),
+              builder: (context, snapshot){
+                return Container();
+              },
+            ),
+            FutureBuilder(
+              future: getSearchSnippets(),
+              builder: (context, snapshot){
+                return Container();
+              },
+            ),
 
           ],
         ),
@@ -1460,9 +1492,7 @@ class SearchFunctionality extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     // throw UnimplementedError();
-    var categories = Provider.of<CategoriesProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    var search = Provider.of<SearchResultProvider>(context, listen: false);
+
 
     return Container(
       constraints: BoxConstraints(
@@ -1510,7 +1540,34 @@ class SearchFunctionality extends SearchDelegate {
                       }),
                     );
                   }else{
-                    return Container();
+                    return Container(
+
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: 18,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                  //   return CategoryView(categoryObject: snapshot.data[index],);
+                                  // }));
+                                },
+                                title: Text("", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
                   }
 
                 },
@@ -1553,20 +1610,45 @@ class SearchFunctionality extends SearchDelegate {
                       }),
                     );
                   }else{
-                    return Container();
+                    return Container(
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: 60,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.blue)),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                  //   return SubCategoryView(data: snapshot.data[index],);
+                                  // }));
+                                },
+                                title: Text("", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
                   }
-
                 },
               ),
             ],
           )
-
           ],
 
       ),
     );
   }
 }
+
 
 class ResultsSection extends StatefulWidget {
   String query;
@@ -4900,13 +4982,10 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    print("Episode Search Ended");
   }
 
   void getPodcast() async {
-    // if (_pagePodcast != 0) {
-    //   cancelToken.cancel();
-    // }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/search?word=$_query&loggedinuser${prefs.getString('userId')}&page=$_pagePodcast";
@@ -4952,7 +5031,6 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    print("User Search Ended");
   }
 
   void getCommunities() async {
