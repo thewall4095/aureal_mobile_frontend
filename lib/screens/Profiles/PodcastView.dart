@@ -531,10 +531,7 @@ class _PodcastViewState extends State<PodcastView>
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                 BorderRadius.circular(5),
-                                                color: Color(0xff121212)
-                                                // image: DecorationImage(
-                                                //     image: CachedNetworkImageProvider('https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'),
-                                                //     fit: BoxFit.cover),
+                                                color: Color(0xff121212),
                                             ),
                                           );
                                         },
