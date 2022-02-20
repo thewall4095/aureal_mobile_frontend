@@ -347,7 +347,7 @@ class _PodcastViewState extends State<PodcastView>
 
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     // TODO: implement initState
 //    setEpisodes();
     _showPersistantBottomSheetCallBack = _showBottomSheet;
@@ -689,7 +689,7 @@ class _PodcastViewState extends State<PodcastView>
                         child: Container(
                           child: Column(
                             mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
+                            MainAxisAlignment.center,
                             children: [
                               SizedBox(
                                 height:
@@ -952,146 +952,146 @@ class _PodcastViewState extends State<PodcastView>
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        podcastData == null
-                                            ? SizedBox()
-                                            : htmlMatch.hasMatch(podcastData[
-                                        'description']) ==
-                                            true
-                                            ? Text(
-                                          '${(parse(podcastData['description']).body.text)}',
-                                          maxLines:
-                                          seeMore == true
-                                              ? 30
-                                              : 2,
-                                          overflow: TextOverflow
-                                              .ellipsis,
-                                          textScaleFactor:
-                                          mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1.5)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                            //      color: Colors.grey,
-                                              fontSize: SizeConfig
-                                                  .blockSizeHorizontal *
-                                                  3),
-                                        )
-                                            : Text(
-                                          podcastData[
-                                          'description'],
-                                          maxLines:
-                                          seeMore == true
-                                              ? 30
-                                              : 2,
-                                          overflow: TextOverflow
-                                              .ellipsis,
-                                          textScaleFactor:
-                                          mediaQueryData
-                                              .textScaleFactor
-                                              .clamp(0.5, 1)
-                                              .toDouble(),
-                                          style: TextStyle(
-                                            //  color: Colors.grey,
-                                              fontSize: SizeConfig
-                                                  .safeBlockHorizontal *
-                                                  3),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            showBarModalBottomSheet(
-                                                context: context,
-                                                builder: (context) {
-                                                  return Container(
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                      MainAxisSize.min,
-                                                      children: [
-                                                        ListTile(
-                                                          leading: SizedBox(
-                                                            height: 50,
-                                                            width: 50,
-                                                            child:
-                                                            CachedNetworkImage(
-                                                              imageUrl: podcastData ==
-                                                                  null
-                                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                                                                  : podcastData[
-                                                              'image'],
-                                                              imageBuilder:
-                                                                  (context,
-                                                                  imageProvider) {
-                                                                return Container(
-                                                                  decoration: BoxDecoration(
-                                                                      image: DecorationImage(
-                                                                          image: imageProvider,
-                                                                          fit: BoxFit.cover)),
-                                                                );
-                                                              },
-                                                            ),
-                                                          ),
-                                                          title: Text(
-                                                              "${podcastData['name']}"),
-                                                          subtitle: Text(
-                                                              "${podcastData['author']}"),
-                                                        ),
-                                                        Divider(),
-                                                        ListTile(
-                                                          subtitle: podcastData ==
-                                                              null
-                                                              ? SizedBox()
-                                                              : htmlMatch.hasMatch(
-                                                              podcastData['description']) ==
-                                                              true
-                                                              ? Text(
-                                                            '${(parse(podcastData['description']).body.text)}',
-                                                            textScaleFactor: mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1.5)
-                                                                .toDouble(),
-                                                            style: TextStyle(
-                                                              //      color: Colors.grey,
-                                                                fontSize: SizeConfig.blockSizeHorizontal * 3.5),
-                                                          )
-                                                              : Text(
-                                                            podcastData[
-                                                            'description'],
-                                                            textScaleFactor: mediaQueryData
-                                                                .textScaleFactor
-                                                                .clamp(0.5, 1)
-                                                                .toDouble(),
-                                                            style: TextStyle(
-                                                              //  color: Colors.grey,
-                                                                fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 20,
-                                                        )
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: Text(
-                                            seeMore == false
-                                                ? "See more"
-                                                : "See less",
-                                            style: TextStyle(
-                                                color: Colors.white
-                                                    .withOpacity(0.5)),
-                                          ),
-                                        ),
-                                      ]),
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: Container(
+                              //     width: MediaQuery.of(context).size.width,
+                              //     child: Column(
+                              //         crossAxisAlignment:
+                              //         CrossAxisAlignment.start,
+                              //         children: [
+                              //           podcastData == null
+                              //               ? SizedBox()
+                              //               : htmlMatch.hasMatch(podcastData[
+                              //           'description']) ==
+                              //               true
+                              //               ? Text(
+                              //             '${(parse(podcastData['description']).body.text)}',
+                              //             maxLines:
+                              //             seeMore == true
+                              //                 ? 30
+                              //                 : 2,
+                              //             overflow: TextOverflow
+                              //                 .ellipsis,
+                              //             textScaleFactor:
+                              //             mediaQueryData
+                              //                 .textScaleFactor
+                              //                 .clamp(0.5, 1.5)
+                              //                 .toDouble(),
+                              //             style: TextStyle(
+                              //               //      color: Colors.grey,
+                              //                 fontSize: SizeConfig
+                              //                     .blockSizeHorizontal *
+                              //                     3),
+                              //           )
+                              //               : Text(
+                              //             podcastData[
+                              //             'description'],
+                              //             maxLines:
+                              //             seeMore == true
+                              //                 ? 30
+                              //                 : 2,
+                              //             overflow: TextOverflow
+                              //                 .ellipsis,
+                              //             textScaleFactor:
+                              //             mediaQueryData
+                              //                 .textScaleFactor
+                              //                 .clamp(0.5, 1)
+                              //                 .toDouble(),
+                              //             style: TextStyle(
+                              //               //  color: Colors.grey,
+                              //                 fontSize: SizeConfig
+                              //                     .safeBlockHorizontal *
+                              //                     3),
+                              //           ),
+                              //           InkWell(
+                              //             onTap: () {
+                              //               showBarModalBottomSheet(
+                              //                   context: context,
+                              //                   builder: (context) {
+                              //                     return Container(
+                              //                       child: Column(
+                              //                         mainAxisSize:
+                              //                         MainAxisSize.min,
+                              //                         children: [
+                              //                           ListTile(
+                              //                             leading: SizedBox(
+                              //                               height: 50,
+                              //                               width: 50,
+                              //                               child:
+                              //                               CachedNetworkImage(
+                              //                                 imageUrl: podcastData ==
+                              //                                     null
+                              //                                     ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                              //                                     : podcastData[
+                              //                                 'image'],
+                              //                                 imageBuilder:
+                              //                                     (context,
+                              //                                     imageProvider) {
+                              //                                   return Container(
+                              //                                     decoration: BoxDecoration(
+                              //                                         image: DecorationImage(
+                              //                                             image: imageProvider,
+                              //                                             fit: BoxFit.cover)),
+                              //                                   );
+                              //                                 },
+                              //                               ),
+                              //                             ),
+                              //                             title: Text(
+                              //                                 "${podcastData['name']}"),
+                              //                             subtitle: Text(
+                              //                                 "${podcastData['author']}"),
+                              //                           ),
+                              //                           Divider(),
+                              //                           ListTile(
+                              //                             subtitle: podcastData ==
+                              //                                 null
+                              //                                 ? SizedBox()
+                              //                                 : htmlMatch.hasMatch(
+                              //                                 podcastData['description']) ==
+                              //                                 true
+                              //                                 ? Text(
+                              //                               '${(parse(podcastData['description']).body.text)}',
+                              //                               textScaleFactor: mediaQueryData
+                              //                                   .textScaleFactor
+                              //                                   .clamp(0.5, 1.5)
+                              //                                   .toDouble(),
+                              //                               style: TextStyle(
+                              //                                 //      color: Colors.grey,
+                              //                                   fontSize: SizeConfig.blockSizeHorizontal * 3.5),
+                              //                             )
+                              //                                 : Text(
+                              //                               podcastData[
+                              //                               'description'],
+                              //                               textScaleFactor: mediaQueryData
+                              //                                   .textScaleFactor
+                              //                                   .clamp(0.5, 1)
+                              //                                   .toDouble(),
+                              //                               style: TextStyle(
+                              //                                 //  color: Colors.grey,
+                              //                                   fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                              //                             ),
+                              //                           ),
+                              //                           SizedBox(
+                              //                             height: 20,
+                              //                           )
+                              //                         ],
+                              //                       ),
+                              //                     );
+                              //                   });
+                              //             },
+                              //             child: Text(
+                              //               seeMore == false
+                              //                   ? "See more"
+                              //                   : "See less",
+                              //               style: TextStyle(
+                              //                   color: Colors.white
+                              //                       .withOpacity(0.5)),
+                              //             ),
+                              //           ),
+                              //         ]),
+                              //   ),
+                              // ),
                               // Padding(
                               //   padding: const EdgeInsets.all(8.0),
                               //   child: Row(
@@ -1164,7 +1164,10 @@ class _PodcastViewState extends State<PodcastView>
                                   ),
                                   Tab(
                                     text: "RELATED",
-                                  )
+                                  ),
+                                  Tab(
+                                    text: "ABOUT",
+                                  ),
                                 ],
                               ),
                               Padding(
@@ -1801,7 +1804,49 @@ class _PodcastViewState extends State<PodcastView>
                       ],
                     ),
                   ],
-                )
+                ),
+                ListView(
+                    shrinkWrap: true,
+                    children: [
+                      ListTile(
+                          title: podcastData == null
+                              ? SizedBox()
+                              : htmlMatch.hasMatch(podcastData[
+                          'description']) ==
+                              true
+                              ? Text(
+                            '${(parse(podcastData['description']).body.text)}',
+                            maxLines: 30,
+
+                            overflow: TextOverflow
+                                .ellipsis,
+                            textScaleFactor:
+                            1.0,
+                            style: TextStyle(
+                              //      color: Colors.grey,
+                                fontSize: SizeConfig
+                                    .blockSizeHorizontal *
+                                    3),
+                          )
+                              : Text(
+                            podcastData[
+                            'description'],
+
+                            maxLines: 30,
+                            overflow: TextOverflow
+                                .ellipsis,
+                            textScaleFactor:
+                            1.0,
+                            style: TextStyle(
+                              //  color: Colors.grey,
+                                fontSize: SizeConfig
+                                    .safeBlockHorizontal *
+                                    3),
+                          ),
+                      ),
+
+                    ],
+                ),
               ],
               physics: BouncingScrollPhysics(),
             )),Align(alignment: Alignment.bottomCenter,child: BottomPlayer())],
