@@ -596,7 +596,7 @@ class _HomeState extends State<Home> {
     int count = 0;
     return Scaffold(
       backgroundColor: Color(0xff161616),
-      appBar: AppBar(
+      appBar: _selectedIndex == 3 ? null :AppBar(
         backgroundColor: Color(0xff161616),
         elevation: 0.5,
         leading: Padding(
@@ -690,69 +690,7 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor:
-      //   Colors.black,
-      //   elevation: 10,
-      //   type: BottomNavigationBarType.fixed,
-      //   showUnselectedLabels: false,
-      //   showSelectedLabels: false,
-      //   unselectedItemColor:
-      //   Colors.white,
-      //   selectedItemColor: Colors.blue,
-      //   //Color(0xff5bc3ef),
-      //   // backgroundColor: Colors.transparent,
-      //   items: <BottomNavigationBarItem>[
-      //     // BottomNavigationBarItem(
-      //     //   icon: Icon(
-      //     //     Icons.stream,
-      //     //   ),
-      //     //   activeIcon: Icon(Icons.stream),
-      //     //   label: '',
-      //     // ),
-      //
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(
-      //         Icons.home_sharp,
-      //         size: 30,
-      //       ),
-      //       activeIcon: Icon(
-      //         Icons.home_rounded,
-      //         size: 30,
-      //       ),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(FontAwesomeIcons.compass),
-      //       activeIcon: Icon(FontAwesomeIcons.solidCompass),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(Icons.library_books_outlined),
-      //       activeIcon: Icon(Icons.library_books),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(Icons.casino_outlined),
-      //       activeIcon: Icon(Icons.casino_outlined),
-      //     )
-      //     // BottomNavigationBarItem(
-      //     //   label: "",
-      //     //   icon: Icon(
-      //     //     Icons.perm_identity,
-      //     //     size: 28,
-      //     //   ),
-      //     //   activeIcon: Icon(
-      //     //     Icons.person,
-      //     //     size: 28,
-      //     //   ),
-      //     // ),
-      //   ],
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      // ),
-      // bottomSheet: BottomPlayer(),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(

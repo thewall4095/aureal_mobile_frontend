@@ -1052,6 +1052,13 @@
             </list>
           </value>
         </entry>
+        <entry key="slider_controller">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/slider_controller-0.0.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="social_share">
           <value>
             <list>
@@ -1502,6 +1509,7 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.0.2/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/shimmer-2.0.0/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/sign_in_with_apple-3.0.0/lib" />
+      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/slider_controller-0.0.3/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/social_share-2.1.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/sqflite-2.0.0+3/lib" />

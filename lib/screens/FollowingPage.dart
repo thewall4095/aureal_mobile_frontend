@@ -1342,22 +1342,40 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                       double
                       _value =
                       50.0;
-                      showDialog(
-                          context:
-                          context,
-                          builder:
-                              (context) {
-                            return Dialog(
-                                backgroundColor: Colors.transparent,
-                                child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
-                          }).then((value) async {
+                      // showDialog(
+                      //     context:
+                      //     context,
+                      //     builder:
+                      //         (context) {
+                      //       return Dialog(
+                      //           backgroundColor: Colors.transparent,
+                      //           child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
+                      //     }).then((value) async {
+                      //   setState(
+                      //           () {
+                      //         data['net_votes'] = data['net_votes'] + 1;
+                      //         data['ifVoted'] =
+                      //         !data['ifVoted'];
+                      //
+                      //       });
+                      // });
+                      showModalBottomSheet(backgroundColor: Colors.transparent,context: context, builder: (context){
+                        return ClipRect(
+                          child: BackdropFilter(filter:ImageFilter.blur(
+                            sigmaY: 15.0,
+                            sigmaX: 15.0,
+                          ),child: Container(
+                            child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']),
+                          )),
+                        );
+                      }).then((value) {
                         setState(
-                                () {
-                              data['net_votes'] = data['net_votes'] + 1;
-                              data['ifVoted'] =
-                              !data['ifVoted'];
+                                      () {
+                                    data['net_votes'] = data['net_votes'] + 1;
+                                    data['ifVoted'] =
+                                    !data['ifVoted'];
 
-                            });
+                                  });
                       });
 
                       setState(

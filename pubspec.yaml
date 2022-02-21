@@ -124,6 +124,7 @@ dependencies:
   uni_links: ^0.5.0
   badges: ^2.0.1
   jitsi_meet: ^4.0.0
+  slider_controller: ^0.0.3
 
 
 

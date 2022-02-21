@@ -343,6 +343,44 @@ class _PodcastViewState extends State<PodcastView>
         });
   }
 
+  int page = 0;
+  List snippets = [];
+
+  void getAllSnippets() async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/discoverSnippets?loggedinuser=${prefs.getString('userId')}&page=$page&podcast_id=${widget.podcastId}";
+    print(url);
+
+    try {
+      http.Response response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        if (page == 0) {
+          setState(() {
+            snippets = jsonDecode(response.body)['snippets'];
+            page = page + 1;
+          });
+        } else {
+          setState(() {
+            snippets = snippets + jsonDecode(response.body)['snippets'];
+            page = page + 1;
+          });
+        }
+        print(response.body);
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   TabController _tabController;
 
   @override
@@ -357,6 +395,7 @@ class _PodcastViewState extends State<PodcastView>
     getEpisodeRecommendations();
     getPodcastRecommendations();
     getPeopleRecommendation(widget.podcastId);
+    getAllSnippets();
 
     super.initState();
 
@@ -818,19 +857,7 @@ class _PodcastViewState extends State<PodcastView>
                                             currentlyPlaying
                                                 .audioPlayer
                                                 .pause();
-                                            // setState(() {
-                                            //   currentlyPlaying.playList =
-                                            //       episodeList;
-                                            //   currentlyPlaying.stop();
-                                            //   currentlyPlaying
-                                            //           .episodeObject =
-                                            //       currentlyPlaying
-                                            //           .playList[0];
-                                            //   currentlyPlaying.play();
-                                            //   currentlyPlaying
-                                            //           .isPlaylistPlaying =
-                                            //       true;
-                                            // });
+
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
@@ -1185,9 +1212,10 @@ class _PodcastViewState extends State<PodcastView>
                                             enableDrag: false,
                                             context: context,
                                             builder: (context) {
-                                              return SnippetDisplay(
-                                                podcastObject: podcastData,
-                                              );
+                                              // return SnippetDisplay(
+                                              //   podcastObject: podcastData,
+                                              // );
+                                              return SnippetStoryView(data: snippets, index: 0,);
                                             });
                                       },
                                       child: Text(
