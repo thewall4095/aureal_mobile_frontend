@@ -25,6 +25,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +42,19 @@ import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/settings/Theme-.dart';
+
+// enum FeedbackType {
+//   success,
+//   error,
+//   warning,
+//   selection,
+//   impact,
+//   heavy,
+//   medium,
+//   light
+// }
+
+
 
 
 
@@ -1194,6 +1208,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
 
   var episodeData;
 
+  bool isPlaying = false;
+
   Future getLocalPreferences() async {
 
     prefs = await SharedPreferences.getInstance();
@@ -1296,6 +1312,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
 
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     var currentlyPlaying = Provider.of<PlayerChange>(context);
@@ -1341,23 +1359,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                       double
                       _value =
                       50.0;
-                      // showDialog(
-                      //     context:
-                      //     context,
-                      //     builder:
-                      //         (context) {
-                      //       return Dialog(
-                      //           backgroundColor: Colors.transparent,
-                      //           child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
-                      //     }).then((value) async {
-                      //   setState(
-                      //           () {
-                      //         data['net_votes'] = data['net_votes'] + 1;
-                      //         data['ifVoted'] =
-                      //         !data['ifVoted'];
-                      //
-                      //       });
-                      // });
+
                       showModalBottomSheet(backgroundColor: Colors.transparent,context: context, builder: (context){
                         return ClipRect(
                           child: BackdropFilter(filter:ImageFilter.blur(
@@ -1737,23 +1739,31 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                 Container(
 
                   child: episodeObject.audioPlayer.isPlaying.value == true? InkWell(
+
                     splashColor: Colors.blue,
+                    splashFactory: InkRipple.splashFactory,
                     onTap: () {
+                      setState(() {
+                        isPlaying = true;
+                      });
+                      FeedbackType _vibtype = FeedbackType.impact;
+                      Vibrate.feedback(FeedbackType.impact);
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          barrierColor: Colors.transparent,
+                          isDismissible: true,
+                          // bounce: true,
+                          context: context,
+                          builder: (context) {
+                            return Player2();
+                          });
                       episodeObject.audioPlayer.open(
                           Playlist(
                               audios: widget.playlist,
                               startIndex: widget.index),
                           showNotification: true).then((value) {
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            barrierColor: Colors.transparent,
-                            isDismissible: true,
-                            // bounce: true,
-                            context: context,
-                            builder: (context) {
-                              return Player2();
-                            });
+
                       });
                     },
                     child:
@@ -1867,7 +1877,14 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                     ),
                   ) : InkWell(
                     splashColor: Colors.blue,
+                    splashFactory: InkRipple.splashFactory,
+
                     onTap: () {
+                      setState(() {
+                        isPlaying = true;
+                      });
+                      FeedbackType _vibtype = FeedbackType.impact;
+                      Vibrate.feedback(FeedbackType.impact);
                       if(widget.playlist == null){
                         episodeObject.stop();
                         episodeObject.episodeObject =
@@ -1876,21 +1893,24 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                             .toString());
                         episodeObject.play();
                       }else{
+
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.transparent,
+                            isDismissible: true,
+                            // bounce: true,
+                            context: context,
+                            builder: (context) {
+                              return Player2();
+                            });
+
                         episodeObject.audioPlayer.open(
                             Playlist(
                                 audios: widget.playlist,
                                 startIndex: widget.index),
                             showNotification: true).then((value) {
-                          showModalBottomSheet(
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              barrierColor: Colors.transparent,
-                              isDismissible: true,
-                              // bounce: true,
-                              context: context,
-                              builder: (context) {
-                                return Player2();
-                              });
+
                         });
                       }
 
@@ -2169,7 +2189,7 @@ class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveCl
                                     color: Color(0xff222222),
                                       // image: DecorationImage(
                                       //     image: NetworkImage(
-                                      //         "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                      //         placeholderUrl),
                                       //     fit: BoxFit
                                       //         .cover),
                                       borderRadius:
@@ -2219,7 +2239,7 @@ class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveCl
                                   .size
                                   .height)
                                   .floor(),
-                              imageUrl: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                              imageUrl: placeholderUrl,
                               placeholder: (context,
                                   imageProvider) {
                                 return Container(
@@ -2910,7 +2930,7 @@ class _SubCategoryViewState extends State<SubCategoryView> {
                     color: Color(0xff121212),
                     borderRadius: BorderRadius.circular(3),
                     image: DecorationImage(
-                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                        image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.contain
                     )
                 ),
               ),
@@ -2958,7 +2978,7 @@ class _SubCategoryViewState extends State<SubCategoryView> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3),
                               image: DecorationImage(
-                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                                  image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
                               )
                           ),
                         ),
@@ -3112,7 +3132,7 @@ class _SeeMoreState extends State<SeeMore> {
                   color: Color(0xff121212),
                     borderRadius: BorderRadius.circular(3),
                     image: DecorationImage(
-                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                        image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.contain
                     )
                 ),
               ),
@@ -3160,7 +3180,7 @@ class _SeeMoreState extends State<SeeMore> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3),
                               image: DecorationImage(
-                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                                  image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
                               )
                           ),
                         ),
@@ -3479,7 +3499,7 @@ class PodcastCard extends StatelessWidget {
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: NetworkImage(
-                                "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                placeholderUrl),
                             fit: BoxFit
                                 .cover),
                         borderRadius:

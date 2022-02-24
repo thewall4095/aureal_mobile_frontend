@@ -203,7 +203,7 @@ class _HistoryState extends State<History> {
                                             .floor(),
                                     imageUrl: a['image'] != null
                                         ? a['image']
-                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                        : placeholderUrl,
                                     placeholder: (context, imageProvider) {
                                       return Container(
                                         decoration: BoxDecoration(

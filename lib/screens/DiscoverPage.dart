@@ -361,6 +361,7 @@ class DiscoverScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
+
         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
           return <Widget>[
 
@@ -372,7 +373,7 @@ class DiscoverScreen extends StatelessWidget {
             future: getDiscoverStructure(),
             builder: (context, snapshot){
               if(snapshot.hasData){
-                return ListView.builder(addAutomaticKeepAlives: true,itemBuilder: (context, int index){
+                return ListView.builder(shrinkWrap: true,addAutomaticKeepAlives: true,itemBuilder: (context, int index){
                   if(index == snapshot.data.length){
                     return SizedBox(height: 150,);
                   }else{
@@ -495,7 +496,7 @@ class FeaturedBuilder extends StatelessWidget {
                                         decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 image: NetworkImage(
-                                                    "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                    placeholderUrl),
                                                 fit: BoxFit
                                                     .cover),
                                             borderRadius:
@@ -640,7 +641,7 @@ class FeaturedBuilder extends StatelessWidget {
         decoration: BoxDecoration(
         image: DecorationImage(
         image: NetworkImage(
-        "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+        placeholderUrl),
         fit: BoxFit
             .cover),
         borderRadius:

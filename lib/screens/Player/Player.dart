@@ -388,6 +388,9 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                   if(infos == null){
                     return Container(width: 55, height: 55, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white),);
                   }else {
+                    if(infos.isBuffering){
+                      return CircularProgressIndicator.adaptive();
+                    }
                     if(infos.isPlaying){
                       return InkWell(
                         onTap: (){
@@ -3077,7 +3080,7 @@ class Related1 extends StatelessWidget {
                           //               .floor(),
                           //           imageUrl: a['image'] != null
                           //               ? a['image']
-                          //               : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                          //               : placeholderUrl,
                           //           placeholder:
                           //               (context, imageProvider) {
                           //             return Container(
@@ -3166,7 +3169,7 @@ class Related1 extends StatelessWidget {
                                       .floor(),
                                   imageUrl: snapshot.data[index]['image'] != null
                                       ? snapshot.data[index]['image']
-                                      : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                      : placeholderUrl,
                                   placeholder:
                                       (context, imageProvider) {
                                     return Container(
@@ -3280,7 +3283,7 @@ class Related1 extends StatelessWidget {
                                               decoration: BoxDecoration(
                                                   image: DecorationImage(
                                                       image: NetworkImage(
-                                                          "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                          placeholderUrl),
                                                       fit: BoxFit
                                                           .cover),
                                                   borderRadius:
@@ -3639,7 +3642,7 @@ class Related1 extends StatelessWidget {
             //                       .floor(),
             //                   imageUrl: a['image'] != null
             //                       ? a['image']
-            //                       : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+            //                       : placeholderUrl,
             //                   placeholder:
             //                       (context, imageProvider) {
             //                     return Container(
@@ -3748,7 +3751,7 @@ class Related1 extends StatelessWidget {
             //                                 decoration: BoxDecoration(
             //                                     image: DecorationImage(
             //                                         image: NetworkImage(
-            //                                             "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+            //                                             placeholderUrl),
             //                                         fit: BoxFit
             //                                             .cover),
             //                                     borderRadius:
@@ -3801,7 +3804,7 @@ class Related1 extends StatelessWidget {
             //                             imageUrl: a['image'] !=
             //                                 null
             //                                 ? a['image']
-            //                                 : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+            //                                 : placeholderUrl,
             //                             placeholder: (context,
             //                                 imageProvider) {
             //                               return Container(
@@ -4248,7 +4251,7 @@ class _RelatedState extends State<Related> with AutomaticKeepAliveClientMixin {
                                       .floor(),
                                   imageUrl: a['image'] != null
                                       ? a['image']
-                                      : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                      : placeholderUrl,
                                   placeholder:
                                       (context, imageProvider) {
                                     return Container(
@@ -4357,7 +4360,7 @@ class _RelatedState extends State<Related> with AutomaticKeepAliveClientMixin {
                                                 decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                            placeholderUrl),
                                                         fit: BoxFit
                                                             .cover),
                                                     borderRadius:
@@ -4410,7 +4413,7 @@ class _RelatedState extends State<Related> with AutomaticKeepAliveClientMixin {
                                             imageUrl: a['image'] !=
                                                 null
                                                 ? a['image']
-                                                : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                : placeholderUrl,
                                             placeholder: (context,
                                                 imageProvider) {
                                               return Container(
@@ -4639,97 +4642,138 @@ class Banner extends StatelessWidget {
     return episodeObject.audioPlayer
         .builderRealtimePlayingInfos(
         builder: (context, infos){
-          return CachedNetworkImage(
-            imageUrl: infos
-                .current.audio.audio.metas.image.path,
-            imageBuilder: (context, imageProvider) {
+          if(infos.isBuffering){
+            return CachedNetworkImage(imageUrl: placeholderUrl, imageBuilder: (context, imageProvider){
               return Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover)),
-                    width: MediaQuery.of(context)
-                        .size
-                        .height /
-                        3,
-                    height: MediaQuery.of(context)
-                        .size
-                        .height /
-                        3,
-                  ),
+                  Container(width: MediaQuery.of(context)
+                      .size
+                      .height /
+                      3,
+                      height: MediaQuery.of(context)
+                          .size
+                          .height /
+                          3,decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),image: DecorationImage(
+                    image: imageProvider, fit: BoxFit.cover
+                  )),),
                   SizedBox(height: MediaQuery.of(context).size.height/35,),
-                  Container(width: MediaQuery.of(context).size.height / 3,
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder:
-                                      (context) {
-                                    return EpisodeView(
-                                        episodeId:
-                                        episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id);
-                                  }));
-                        },
-                        child: Text(
-                          '${infos.current.audio.audio.metas.title}',
-                          maxLines: 2,
-                          textScaleFactor: 1.0,
-                          overflow: TextOverflow
-                              .ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: SizeConfig
-                                  .blockSizeHorizontal *
-                                  5,
-                              fontWeight:
-                              FontWeight
-                                  .bold),
-                        ),
-                      ),
-                      subtitle: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder:
-                                      (context) {
-                                    return PublicProfile(
-                                      userId: episodeObject
-                                          .episodeObject[
-                                      'user_id'],
-                                    );
-                                  }));
-                        },
-                        child: Padding(
-                          padding:
-                          const EdgeInsets
-                              .symmetric(
-                              vertical: 8),
+                  ListTile(
+                    title: Text(
+                      ' ',
+                      maxLines: 2,
+                      textScaleFactor: 1.0,
+                      overflow: TextOverflow
+                          .ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: SizeConfig
+                              .blockSizeHorizontal *
+                              5,
+                          fontWeight:
+                          FontWeight
+                              .bold),
+                    ),
+                    subtitle: Text(" "),
+                  )
+
+                ],
+              );
+            },);
+          }else{
+            return CachedNetworkImage(
+              imageUrl: infos
+                  .current.audio.audio.metas.image.path,
+              imageBuilder: (context, imageProvider) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover)),
+                      width: MediaQuery.of(context)
+                          .size
+                          .height /
+                          3,
+                      height: MediaQuery.of(context)
+                          .size
+                          .height /
+                          3,
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height/35,),
+                    Container(width: MediaQuery.of(context).size.height / 3,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder:
+                                        (context) {
+                                      return EpisodeView(
+                                          episodeId:
+                                          episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id);
+                                    }));
+                          },
                           child: Text(
-                            '${infos.current.audio.audio.metas.artist}',
+                            '${infos.current.audio.audio.metas.title}',
+                            maxLines: 2,
+                            textScaleFactor: 1.0,
+                            overflow: TextOverflow
+                                .ellipsis,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 16,
+                                fontSize: SizeConfig
+                                    .blockSizeHorizontal *
+                                    5,
+                                fontWeight:
+                                FontWeight
+                                    .bold),
+                          ),
+                        ),
+                        subtitle: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder:
+                                        (context) {
+                                      return PublicProfile(
+                                        userId: episodeObject
+                                            .episodeObject[
+                                        'user_id'],
+                                      );
+                                    }));
+                          },
+                          child: Padding(
+                            padding:
+                            const EdgeInsets
+                                .symmetric(
+                                vertical: 8),
+                            child: Text(
+                              '${infos.current.audio.audio.metas.artist}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height/35,),
+                    SizedBox(height: MediaQuery.of(context).size.height/35,),
 
-                ],
-              );
-            },
-          );
+                  ],
+                );
+              },
+            );
+          }
+
         });
   }
 }

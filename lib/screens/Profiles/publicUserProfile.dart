@@ -1,6 +1,6 @@
 import 'dart:convert';
-<<<<<<< HEAD
-=======
+
+
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/buttonPages/Bio.dart';
@@ -8,7 +8,7 @@ import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/Settings.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/utilities/Share.dart';
->>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
+
 import 'dart:io';
 
 import 'package:auditory/Services/DurationCalculator.dart';
@@ -31,23 +31,23 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-<<<<<<< HEAD
+
 import 'package:jitsi_meet/jitsi_meet.dart';
-=======
+
 // import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
->>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
+
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
-<<<<<<< HEAD
-=======
+
+
 import '../Clips.dart';
 import '../RewardsScreen.dart';
->>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
+
 import 'Comments.dart';
 import 'PodcastView.dart';
 
@@ -220,7 +220,7 @@ class _PublicProfileState extends State<PublicProfile>
                     children: [
                       CachedNetworkImage(
                         imageUrl: userData['img'] == null
-                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                            ? placeholderUrl
                             : userData['img'],
                         imageBuilder: (context, imageProvider) {
                           return Container(
@@ -1818,7 +1818,7 @@ class _FollowersState extends State<Followers> {
                           children: [
                             CachedNetworkImage(
                               imageUrl: v['img'] == null
-                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  ? placeholderUrl
                                   : v['img'],
                               imageBuilder: (context, imageProvider) {
                                 return Container(
@@ -1854,7 +1854,7 @@ class _FollowersState extends State<Followers> {
                                     v['hive_username'] == null
                                         ? SizedBox()
                                         : Text(
-<<<<<<< HEAD
+
                                             "${v['hive_username']}",
                                             textScaleFactor: 1.0,
                                             overflow: TextOverflow.ellipsis,
@@ -1865,8 +1865,8 @@ class _FollowersState extends State<Followers> {
                                                 fontSize: SizeConfig
                                                         .safeBlockHorizontal *
                                                     3),
-                                          )
-=======
+                                          ),
+Text(
                                       "${v['fullname']}",
                                       textScaleFactor: 1.0,
                                       overflow: TextOverflow.ellipsis,
@@ -1878,7 +1878,7 @@ class _FollowersState extends State<Followers> {
                                               .safeBlockHorizontal *
                                               3),
                                     )
->>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
+
                                   ],
                                 ),
                               ),
@@ -2012,7 +2012,7 @@ class _FolllowingState extends State<Folllowing> {
                           children: [
                             CachedNetworkImage(
                               imageUrl: v['img'] == null
-                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  ? placeholderUrl
                                   : v['img'],
                               imageBuilder: (context, imageProvider) {
                                 return Container(

@@ -614,7 +614,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           backgroundImage:
                                               CachedNetworkImageProvider(
                                             displayPicture == null
-                                                ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                ? placeholderUrl
                                                 : displayPicture,
                                           ),
                                           radius: 55,
@@ -1373,7 +1373,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                       );
                         //                     },
                         //                     imageUrl: displayPicture == null
-                        //                         ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                        //                         ? placeholderUrl
                         //                         : displayPicture,
                         //                     fit: BoxFit.cover,
                         //                     memCacheHeight: MediaQuery.of(context)
@@ -1634,7 +1634,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                     //                               4,
                         //                     //                       child: CachedNetworkImage(
                         //                     //                         imageUrl: v['profileImageUrl'] == null
-                        //                     //                             ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                        //                     //                             ? placeholderUrl
                         //                     //                             : v['profileImageUrl'],
                         //                     //                         memCacheHeight: MediaQuery.of(context)
                         //                     //                             .size
@@ -1845,7 +1845,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                             },
                         //                                             imageUrl: displayPicture ==
                         //                                                     null
-                        //                                                 ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                        //                                                 ? placeholderUrl
                         //                                                 : displayPicture,
                         //                                             fit: BoxFit.cover,
                         //                                             // memCacheHeight:
@@ -1865,7 +1865,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                                         url) =>
                         //                                                     Container(
                         //                                               child: Image.network(
-                        //                                                   'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'),
+                        //                                                   placeholderUrl),
                         //                                             ),
                         //                                             errorWidget:
                         //                                                 (context, url,

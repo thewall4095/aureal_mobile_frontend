@@ -270,6 +270,10 @@ flutter_swiper
 2.0
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_swiper-1.1.6/
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_swiper-1.1.6/lib/
+flutter_vibrate
+2.12
+file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_vibrate-1.3.0/
+file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_vibrate-1.3.0/lib/
 fluttertoast
 2.12
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.7/
@@ -582,10 +586,6 @@ sign_in_with_apple
 2.12
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/sign_in_with_apple-3.0.0/
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/sign_in_with_apple-3.0.0/lib/
-slider_controller
-2.15
-file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/slider_controller-0.0.3/
-file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/slider_controller-0.0.3/lib/
 social_share
 2.12
 file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/social_share-2.1.1/

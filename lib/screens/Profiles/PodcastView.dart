@@ -559,7 +559,7 @@ class _PodcastViewState extends State<PodcastView>
                                                 borderRadius:
                                                 BorderRadius.circular(5),
                                                 image: DecorationImage(
-                                                    image: CachedNetworkImageProvider('https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'),
+                                                    image: CachedNetworkImageProvider(placeholderUrl),
                                                     fit: BoxFit.cover)),
                                           );
                                         },
@@ -775,7 +775,7 @@ class _PodcastViewState extends State<PodcastView>
                                                 'assets/images/Thumbnail.png'),
                                           ),
                                       imageUrl: podcastData == null
-                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          ? placeholderUrl
                                           : podcastData['image'],
                                       fit: BoxFit.cover,
                                     ),
@@ -1049,7 +1049,7 @@ class _PodcastViewState extends State<PodcastView>
                               //                               CachedNetworkImage(
                               //                                 imageUrl: podcastData ==
                               //                                     null
-                              //                                     ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                              //                                     ? placeholderUrl
                               //                                     : podcastData[
                               //                                 'image'],
                               //                                 imageBuilder:
@@ -1372,7 +1372,7 @@ class _PodcastViewState extends State<PodcastView>
                           }
                         }
 
-                        return EpisodeCard(data: episodeList[index - 1], index: index, playlist: playlist,);
+                        return EpisodeCard(data: episodeList[index - 1], index: index -1, playlist: playlist,);
                       }
                     }),
                 ListView(
@@ -1469,7 +1469,7 @@ class _PodcastViewState extends State<PodcastView>
                                               .floor(),
                                           imageUrl: a['image'] != null
                                               ? a['image']
-                                              : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                              : placeholderUrl,
                                           placeholder:
                                               (context, imageProvider) {
                                             return Container(
@@ -1578,7 +1578,7 @@ class _PodcastViewState extends State<PodcastView>
                                                         decoration: BoxDecoration(
                                                             image: DecorationImage(
                                                                 image: NetworkImage(
-                                                                    "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                                    placeholderUrl),
                                                                 fit: BoxFit
                                                                     .cover),
                                                             borderRadius:
@@ -1631,7 +1631,7 @@ class _PodcastViewState extends State<PodcastView>
                                                     imageUrl: a['image'] !=
                                                         null
                                                         ? a['image']
-                                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                        : placeholderUrl,
                                                     placeholder: (context,
                                                         imageProvider) {
                                                       return Container(

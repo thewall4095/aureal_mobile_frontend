@@ -421,7 +421,7 @@ class _CommentsState extends State<Comments> {
                                       //                       //               'user_image'] ==
                                       //                       //           null
                                       //                       //       ? NetworkImage(
-                                      //                       //           'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
+                                      //                       //           placeholderUrl)
                                       //                       //       : NetworkImage(
                                       //                       //           v['user_image']),
                                       //                       // ),
@@ -1183,7 +1183,7 @@ class _CommentsState extends State<Comments> {
 //                                                                       backgroundImage: v['user_image'] ==
 //                                                                               null
 //                                                                           ? NetworkImage(
-//                                                                               'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
+//                                                                               placeholderUrl)
 //                                                                           : NetworkImage(
 //                                                                               v['user_image']),
 //                                                                     ),
@@ -1815,7 +1815,7 @@ class _CommentsState extends State<Comments> {
 //       //                                                                     'user_image'] ==
 //       //                                                                 null
 //       //                                                             ? NetworkImage(
-//       //                                                                 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png')
+//       //                                                                 placeholderUrl)
 //       //                                                             : NetworkImage(
 //       //                                                                 v['user_image']),
 //       //                                                       ),
