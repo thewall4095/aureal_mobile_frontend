@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:async/async.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/CommunityService.dart';
@@ -43,14 +44,12 @@ import 'buttonPages/settings/Theme-.dart';
 
 
 
+class Feed extends StatelessWidget {
 
-class Feed extends StatefulWidget {
 
-  @override
-  State<Feed> createState() => _FeedState();
-}
 
-class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
+  Feed();
+
   CancelToken _cancel = CancelToken();
 
   final String baseUrl = "https://api.aureal.one/public";
@@ -148,41 +147,193 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
-          return <Widget>[
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
+            return <Widget>[
 
-          ];
-        },
-        body: FutureBuilder(
-          future: getFeedStructure(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              return ListView(
-                addAutomaticKeepAlives: true,
-                children: [
-                  for(var v in snapshot.data)
-                    _feedBuilder(context, v),
-                  SizedBox(height: 150,),
-                ],
-              );
-            }else{
-              return SizedBox();
-            }
-
+            ];
           },
+          body: FutureBuilder(
+            future: getFeedStructure(),
+            builder: (context, snapshot){
+              try{
+                if(snapshot.hasData){
+
+                  return ListView.builder(shrinkWrap: true,addAutomaticKeepAlives: true,itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
+                    if(index == snapshot.data.length){
+                      return SizedBox(height: 50,);
+                    }else{
+                      return _feedBuilder(context, snapshot.data[index]);
+                    }
+
+                  });
+                }else{
+                  return SizedBox();
+                }
+              }catch(e){
+                return Container();
+              }
+            },
+
+          ),
+
 
         ),
-
-
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
+
+
+// class Feed extends StatefulWidget {
+//
+//   @override
+//   State<Feed> createState() => _FeedState();
+// }
+//
+// class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
+//   CancelToken _cancel = CancelToken();
+//
+//   final String baseUrl = "https://api.aureal.one/public";
+//
+//   var feedStructure = [];
+//
+//   RegExp htmlMatch = RegExp(r'(\w+)');
+//
+//   Future<List> getFeedStructure() async {
+//     Dio dio = Dio();
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String url = "https://api.aureal.one/public/recommended?page=0&pageSize=5&user_id=${prefs.getString('userId')}";
+//
+//     try{
+//       var response = await dio.get(url);
+//       if(response.statusCode == 200){
+//
+//         return response.data['data'];
+//       }else{
+//
+//       }
+//     }catch(e){
+//       print(e);
+//     }
+//   }
+//
+//   SharedPreferences prefs;
+//
+//   Future generalisedApiCall(String apicall) async {
+//     Dio dio = Dio(
+//
+//     );
+//     prefs = await SharedPreferences.getInstance();
+//     String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+//
+//     try{
+//       var response = await dio.get(url, cancelToken: _cancel);
+//       if(response.statusCode == 200){
+//         return response.data['data'];
+//       }
+//     }catch(e){
+//       print(e);
+//     }
+//
+//   }
+//
+//   Widget _feedBuilder(BuildContext context, var data){
+//
+//     var episodeObject = Provider.of<PlayerChange>(context);
+//     var currentlyPlaying = Provider.of<PlayerChange>(context);
+//
+//     switch(data['type']){
+//       case 'podcast':
+//         return PodcastWidget(data: data);
+//         break;
+//       case 'episode':
+//         return EpisodeWidget(data: data);
+//         break;
+//
+//       case "playlist":
+//         return PlaylistWidget(data: data);
+//         break;
+//       case 'snippet':
+//         return SnippetWidget(data: data);
+//         break;
+//       case 'user':
+//         return FutureBuilder(
+//           future: generalisedApiCall(data['api']),
+//           builder: (context, snapshot){
+//             return Container(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.all(15),
+//                     child: Text("${data['name']}", style: TextStyle(
+//                         fontSize: SizeConfig.safeBlockHorizontal * 5,
+//                         fontWeight: FontWeight.bold
+//                     )),
+//                   ),
+//                   Text("${snapshot.data}"),
+//                 ],
+//               ),
+//             );
+//           },
+//         );
+//         break;
+//       default:
+//         return Container();
+//         break;
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: NestedScrollView(
+//         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
+//           return <Widget>[
+//
+//           ];
+//         },
+//         body: FutureBuilder(
+//           future: getFeedStructure(),
+//           builder: (context, snapshot){
+//             if(snapshot.hasData){
+//               // return ListView(
+//               //   addAutomaticKeepAlives: true,
+//               //   children: [
+//               //     for(var v in snapshot.data)
+//               //       _feedBuilder(context, v),
+//               //     SizedBox(height: 150,),
+//               //   ],
+//               // );
+//               return ListView.builder(itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
+//                 if(index == snapshot.data.length){
+//                   return SizedBox(height: 50,);
+//                 }else{
+//                   return _feedBuilder(context, snapshot.data[index]);
+//                 }
+//
+//               });
+//             }else{
+//               return SizedBox();
+//             }
+//
+//           },
+//
+//         ),
+//
+//
+//       ),
+//     );
+//   }
+//
+//   @override
+//   // TODO: implement wantKeepAlive
+//   bool get wantKeepAlive => true;
+// }
 
 class EpisodeWidget extends StatefulWidget {
 
@@ -1025,9 +1176,9 @@ class EpisodeCard extends StatelessWidget {
 
 class PlaybackButtons extends StatefulWidget {
 
-  var data;
+  final data;
 
-  int index;
+  final int index;
 
   List<Audio> playlist;
 
@@ -1037,7 +1188,7 @@ class PlaybackButtons extends StatefulWidget {
   _PlaybackButtonsState createState() => _PlaybackButtonsState();
 }
 
-class _PlaybackButtonsState extends State<PlaybackButtons> {
+class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAliveClientMixin{
 
   SharedPreferences prefs;
 
@@ -1055,16 +1206,92 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
     return episodeData;
   }
 
+  Future getVotingValue() async {
+    setState(() {
+      isLoading = true;
+    });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =  "https://rpc.ecency.com";
+    print(url);
+    var map = Map<String, dynamic>();
+    map = {
+      "jsonrpc": "2.0",
+      "method": "bridge.get_post",
+      "params": {
+        'author' : episodeData['author_hiveusername'],
+        'permlink': episodeData['permlink'],
+        'observer': ""
+      },
+      "id": 0
+    };
+    print(map);
+
+
+
+    try{
+      await dio.post(url, data: map).then((value)async {
+        // print(value.data);
+        if(value.data['result'] != null){
+          // print("${
+          //     {
+          //       'hive_earnings': value.data['result']['payout'],
+          //       'net_votes': value.data['result']['active_votes'].length,
+          //       'ifVoted': getIfVoted(value.data['result']['active_votes']),}
+          //
+          // }");
+          var responsedata = {
+            'hive_earnings': value.data['result']['payout'],
+            'net_votes': value.data['result']['active_votes'].length,
+            'ifVoted': await getIfVoted(value.data['result']['active_votes']),
+            'isLoading': false,
+          };
+          setState(() {
+            data = responsedata;
+          });
+
+          // return responsedata;
+        }
+      });
+    }catch(e){
+      print(e);
+    }
+    setState(() {
+      isLoading = false;
+    });
+
+  }
+
+  Future getIfVoted(List activeVotes) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.getString('HiveUserName') != null){
+      if(activeVotes.toString().contains("${prefs.getString("HiveUserName")}")){
+        return true;
+      }else{
+        return false;
+      }
+    }
+  }
 
 
 
 
+
+  var data = Map<String, dynamic>();
+
+  bool isLoading = true;
 
 
   @override
   void initState() {
     // TODO: implement initState
-    getLocalPreferences();
+    getLocalPreferences().then((value){
+      if(episodeData['permlink'] != null){
+        getVotingValue();
+      }
+
+
+
+    });
     super.initState();
 
   }
@@ -1089,9 +1316,339 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
               MainAxisAlignment
                   .spaceBetween,
               children: [
-                episodeData['permlink'] == null ?SizedBox():InkWell(
+                (episodeData['permlink'] == null ? SizedBox():(isLoading == true? Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Container(
+                    height: 25, width: MediaQuery.of(context).size.width / 6,
+
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xffe8e8e8).withOpacity(0.5), width: 0.5),
+                        color: Color(0xff161616),
+                        borderRadius: BorderRadius.circular(30)
+                    ),
+                  ),
+                ):InkWell(
                   onTap:
                       () async {
+                    if (prefs.getString(
+                        'HiveUserName') !=
+                        null) {
+                      setState(
+                              () {
+                            data['isLoading'] =
+                            true;
+                          });
+                      double
+                      _value =
+                      50.0;
+                      // showDialog(
+                      //     context:
+                      //     context,
+                      //     builder:
+                      //         (context) {
+                      //       return Dialog(
+                      //           backgroundColor: Colors.transparent,
+                      //           child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
+                      //     }).then((value) async {
+                      //   setState(
+                      //           () {
+                      //         data['net_votes'] = data['net_votes'] + 1;
+                      //         data['ifVoted'] =
+                      //         !data['ifVoted'];
+                      //
+                      //       });
+                      // });
+                      showModalBottomSheet(backgroundColor: Colors.transparent,context: context, builder: (context){
+                        return ClipRect(
+                          child: BackdropFilter(filter:ImageFilter.blur(
+                            sigmaY: 15.0,
+                            sigmaX: 15.0,
+                          ),child: Container(
+                            child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']),
+                          )),
+                        );
+                      }).then((value) {
+                        setState(
+                                      () {
+                                    data['net_votes'] = data['net_votes'] + 1;
+                                    data['ifVoted'] =
+                                    !data['ifVoted'];
+
+                                  });
+                      });
+
+                      setState(
+                              () {
+                            data['isLoading'] =
+                            false;
+                          });
+                    } else {
+                      showBarModalBottomSheet(
+                          context:
+                          context,
+                          builder:
+                              (context) {
+                            return HiveDetails();
+                          });
+                    }
+                  },
+                  child:
+                  Container(
+                    decoration: data['ifVoted'] ==
+                        true
+                        ? BoxDecoration(
+                        gradient:
+                        LinearGradient(colors: [
+                          Color(0xff5bc3ef),
+                          Color(0xff5d5da8)
+                        ]),
+                        borderRadius: BorderRadius.circular(
+                            30))
+                        : BoxDecoration(
+                        border:
+                        Border.all(color: kSecondaryColor),
+                        borderRadius: BorderRadius.circular(30)),
+                    child:
+                    Padding(
+                      padding: const EdgeInsets
+                          .symmetric(
+                          vertical:
+                          5,
+                          horizontal:
+                          5),
+                      child:
+                      Row(
+                        children: [
+                          data['isLoading'] == true
+                              ? Container(
+                            height: 17,
+                            width: 18,
+                            child: SpinKitPulse(
+                              color: Colors.blue,
+                            ),
+                          )
+                              : Icon(
+                            FontAwesomeIcons.chevronCircleUp,
+                            size: 15,
+                            // color:
+                            //     Color(0xffe8e8e8),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 8),
+                            child:
+                            Text(
+                              "${data['net_votes'] != null ? data['net_votes'] : ""}",
+                              textScaleFactor: 1.0,
+                              style: TextStyle(fontSize: 12
+                                // color:
+                                //     Color(0xffe8e8e8)
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.only(right: 4),
+                            child:
+                            Text(
+                              '\$${data['hive_earnings'] != null ? data['hive_earnings'] : ""}',
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                fontSize: 12,
+
+                                // color:
+                                //     Color(0xffe8e8e8)
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ))),
+                // episodeData['permlink'] != null ?FutureBuilder(future: getLocalPreferences().then((value) {
+                //   getVotingValue();
+                // }),builder: (context, snapshot){
+                //   if(snapshot.hasData){
+                //     return InkWell(
+                //       onTap: (){
+                //         if (prefs.getString(
+                //             'HiveUserName') !=
+                //             null) {
+                //           setState(
+                //                   () {
+                //                 snapshot.data['isLoading'] =
+                //                 true;
+                //               });
+                //           double
+                //           _value =
+                //           50.0;
+                //           showDialog(
+                //               context:
+                //               context,
+                //               builder:
+                //                   (context) {
+                //                 return Dialog(
+                //                     backgroundColor: Colors.transparent,
+                //                     child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
+                //               }).then((value) async {
+                //             setState(
+                //                     () {
+                //                   snapshot.data['net_votes'] = snapshot.data['net_votes'] + 1;
+                //                   snapshot.data['ifVoted'] =
+                //                   true;
+                //
+                //                 });
+                //           });
+                //
+                //           setState(
+                //                   () {
+                //                 snapshot.data['isLoading'] =
+                //                 false;
+                //               });
+                //         } else {
+                //           showBarModalBottomSheet(
+                //               context:
+                //               context,
+                //               builder:
+                //                   (context) {
+                //                 return HiveDetails();
+                //               });
+                //         }
+                //       },
+                //       child: Container(
+                //         decoration: snapshot.data['ifVoted'] ==
+                //             true
+                //             ? BoxDecoration(
+                //             gradient:
+                //             LinearGradient(colors: [
+                //               Color(0xff5bc3ef),
+                //               Color(0xff5d5da8)
+                //             ]),
+                //             borderRadius: BorderRadius.circular(
+                //                 30))
+                //             : BoxDecoration(
+                //             border:
+                //             Border.all(color: kSecondaryColor),
+                //             borderRadius: BorderRadius.circular(30)),
+                //         child:
+                //         Padding(
+                //           padding: const EdgeInsets
+                //               .symmetric(
+                //               vertical:
+                //               5,
+                //               horizontal:
+                //               5),
+                //           child:
+                //           Row(
+                //             children: [
+                //               episodeData['isLoading'] == true
+                //                   ? Container(
+                //                 height: 17,
+                //                 width: 18,
+                //                 child: SpinKitPulse(
+                //                   color: Colors.blue,
+                //                 ),
+                //               )
+                //                   : Icon(
+                //                 FontAwesomeIcons.chevronCircleUp,
+                //                 size: 15,
+                //                 // color:
+                //                 //     Color(0xffe8e8e8),
+                //               ),
+                //               Padding(
+                //                 padding:
+                //                 const EdgeInsets.symmetric(horizontal: 8),
+                //                 child:
+                //                 Text(
+                //                   "${snapshot.data['net_votes']}",
+                //                   textScaleFactor: 1.0,
+                //                   style: TextStyle(fontSize: 12
+                //                     // color:
+                //                     //     Color(0xffe8e8e8)
+                //                   ),
+                //                 ),
+                //               ),
+                //               Padding(
+                //                 padding:
+                //                 const EdgeInsets.only(right: 4),
+                //                 child:
+                //                 Text(
+                //                   '\$${snapshot.data['hive_earnings']}',
+                //                   textScaleFactor: 1.0,
+                //                   style: TextStyle(
+                //                     fontSize: 12,
+                //
+                //                     // color:
+                //                     //     Color(0xffe8e8e8)
+                //                   ),
+                //                 ),
+                //               )
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     );
+                //   }else{
+                //     return Container(
+                //       decoration:
+                //            BoxDecoration(
+                //           border:
+                //           Border.all(color: kSecondaryColor),
+                //           borderRadius: BorderRadius.circular(30)),
+                //       child:
+                //       Padding(
+                //         padding: const EdgeInsets
+                //             .symmetric(
+                //             vertical:
+                //             5,
+                //             horizontal:
+                //             5),
+                //         child:
+                //         Row(
+                //           children: [
+                //              Icon(
+                //               FontAwesomeIcons.chevronCircleUp,
+                //               size: 15,
+                //               // color:
+                //               //     Color(0xffe8e8e8),
+                //             ),
+                //             Padding(
+                //               padding:
+                //               const EdgeInsets.symmetric(horizontal: 8),
+                //               child:
+                //               Text(
+                //                 "${''}",
+                //                 textScaleFactor: 1.0,
+                //                 style: TextStyle(fontSize: 12
+                //                   // color:
+                //                   //     Color(0xffe8e8e8)
+                //                 ),
+                //               ),
+                //             ),
+                //             Padding(
+                //               padding:
+                //               const EdgeInsets.only(right: 4),
+                //               child:
+                //               Text(
+                //                 ' ',
+                //                 textScaleFactor: 1.0,
+                //                 style: TextStyle(
+                //                   fontSize: 12,
+                //
+                //                   // color:
+                //                   //     Color(0xffe8e8e8)
+                //                 ),
+                //               ),
+                //             )
+                //           ],
+                //         ),
+                //       ),
+                //     );
+                //   }
+                // }): SizedBox(),
+                episodeData['permlink'] == null ? SizedBox():InkWell(
+                  onTap: () {
                     if (prefs.getString(
                         'HiveUserName') !=
                         null) {
@@ -1126,101 +1683,6 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
                             episodeData['isLoading'] =
                             false;
                           });
-                    } else {
-                      showBarModalBottomSheet(
-                          context:
-                          context,
-                          builder:
-                              (context) {
-                            return HiveDetails();
-                          });
-                    }
-                  },
-                  child:
-                  Container(
-                    decoration: episodeData['ifVoted'] ==
-                        true
-                        ? BoxDecoration(
-                        gradient:
-                        LinearGradient(colors: [
-                          Color(0xff5bc3ef),
-                          Color(0xff5d5da8)
-                        ]),
-                        borderRadius: BorderRadius.circular(
-                            30))
-                        : BoxDecoration(
-                        border:
-                        Border.all(color: kSecondaryColor),
-                        borderRadius: BorderRadius.circular(30)),
-                    child:
-                    Padding(
-                      padding: const EdgeInsets
-                          .symmetric(
-                          vertical:
-                          5,
-                          horizontal:
-                          5),
-                      child:
-                      Row(
-                        children: [
-                          episodeData['isLoading'] == true
-                              ? Container(
-                            height: 17,
-                            width: 18,
-                            child: SpinKitPulse(
-                              color: Colors.blue,
-                            ),
-                          )
-                              : Icon(
-                            FontAwesomeIcons.chevronCircleUp,
-                            size: 15,
-                            // color:
-                            //     Color(0xffe8e8e8),
-                          ),
-                          Padding(
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 8),
-                            child:
-                            Text(
-                              episodeData['votes'].toString(),
-                              textScaleFactor: 1.0,
-                              style: TextStyle(fontSize: 12
-                                // color:
-                                //     Color(0xffe8e8e8)
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(right: 4),
-                            child:
-                            Text(
-                              '\$${episodeData['payout_value'].toString().split(' ')[0]}',
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                fontSize: 12,
-
-                                // color:
-                                //     Color(0xffe8e8e8)
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                episodeData['permlink'] == null ? SizedBox():InkWell(
-                  onTap: () {
-                    if (prefs.getString(
-                        'HiveUserName') !=
-                        null) {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => Comments(
-                                episodeObject: episodeData,
-                              )));
                     } else {
                       showBarModalBottomSheet(
                           context:
@@ -1272,50 +1734,273 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    episodeObject.audioPlayer.open(
-                        Playlist(
-                            audios: widget.playlist,
-                            startIndex: widget.index),
-                        showNotification: true);
-                  },
-                  child:
-                  Padding(
-                    padding: const EdgeInsets
-                        .only(
-                        right:
-                        60),
+                Container(
+
+                  child: episodeObject.audioPlayer.isPlaying.value == true? InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {
+                      episodeObject.audioPlayer.open(
+                          Playlist(
+                              audios: widget.playlist,
+                              startIndex: widget.index),
+                          showNotification: true).then((value) {
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.transparent,
+                            isDismissible: true,
+                            // bounce: true,
+                            context: context,
+                            builder: (context) {
+                              return Player2();
+                            });
+                      });
+                    },
                     child:
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color:
-                              kSecondaryColor),
-                          borderRadius:
-                          BorderRadius.circular(30)),
+                    Padding(
+                      padding: const EdgeInsets
+                          .only(
+                          right:
+                          60),
                       child:
-                      Padding(
-                        padding:
-                        const EdgeInsets.all(5),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xff161616),
+
+                            border: Border.all(
+                                color:
+                                kSecondaryColor),
+                            borderRadius:
+                            BorderRadius.circular(30)),
                         child:
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.play_circle_outline,
-                              size: 15,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                DurationCalculator(widget.data['duration']),
-                                textScaleFactor: 0.75,
-                                // style: TextStyle(
-                                //      color: Color(0xffe8e8e8)
-                                //     ),
+                        Padding(
+                          padding:
+                          const EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+
+                              Icon(
+                                Icons.play_circle_outline,
+                                size: 15,
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  DurationCalculator(widget.data['duration']),
+                                  textScaleFactor: 0.75,
+                                  // style: TextStyle(
+                                  //      color: Color(0xffe8e8e8)
+                                  //     ),
+                                ),
+                              ),
+                            ],
+                          )
+    //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
+    //                             if(infos == null){
+    //                               return Row(
+    //                                 children: [
+    //
+    //                                   Icon(
+    //                                     Icons.play_circle_outline,
+    //                                     size: 15,
+    //                                   ),
+    //                                   Padding(
+    //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                     child: Text(
+    //                                       DurationCalculator(widget.data['duration']),
+    //                                       textScaleFactor: 0.75,
+    //                                       // style: TextStyle(
+    //                                       //      color: Color(0xffe8e8e8)
+    //                                       //     ),
+    //                                     ),
+    //                                   ),
+    //                                 ],
+    //                               );
+    //                             }else{
+    //                               if(infos.index == widget.index){
+    //                                 return Row(
+    //                                   children: [
+    //
+    //                                     Icon(
+    //                                       Icons.play_circle_outline,
+    //                                       size: 15,
+    //                                     ),
+    //                                     Padding(
+    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                       child: Text(
+    //                                         DurationCalculator(widget.data['duration']),
+    //                                         textScaleFactor: 0.75,
+    //                                         // style: TextStyle(
+    //                                         //      color: Color(0xffe8e8e8)
+    //                                         //     ),
+    //                                       ),
+    //                                     ),
+    //                                   ],
+    //                                 );
+    //                               }else{
+    //                                 return Row(
+    //                                   children: [
+    //
+    //                                     Icon(
+    //                                       Icons.play_circle_outline,
+    //                                       size: 15,
+    //                                     ),
+    //                                     Padding(
+    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+    //                                       child: Text(
+    //                                         DurationCalculator(widget.data['duration']),
+    //                                         textScaleFactor: 0.75,
+    //                                         // style: TextStyle(
+    //                                         //      color: Color(0xffe8e8e8)
+    //                                         //     ),
+    //                                       ),
+    //                                     ),
+    //                                   ],
+    //                                 );
+    //                               }
+    //                             }
+    //
+    // }),
+
+                        ),
+                      ),
+                    ),
+                  ) : InkWell(
+                    splashColor: Colors.blue,
+                    onTap: () {
+                      if(widget.playlist == null){
+                        episodeObject.stop();
+                        episodeObject.episodeObject =
+                            episodeData;
+                        print(episodeObject.episodeObject
+                            .toString());
+                        episodeObject.play();
+                      }else{
+                        episodeObject.audioPlayer.open(
+                            Playlist(
+                                audios: widget.playlist,
+                                startIndex: widget.index),
+                            showNotification: true).then((value) {
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              barrierColor: Colors.transparent,
+                              isDismissible: true,
+                              // bounce: true,
+                              context: context,
+                              builder: (context) {
+                                return Player2();
+                              });
+                        });
+                      }
+
+                    },
+                    child:
+                    Padding(
+                      padding: const EdgeInsets
+                          .only(
+                          right:
+                          60),
+                      child:
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Color(0xff161616),
+
+                            border: Border.all(
+                                color:
+                                kSecondaryColor),
+                            borderRadius:
+                            BorderRadius.circular(30)),
+                        child:
+                        Padding(
+                            padding:
+                            const EdgeInsets.all(5),
+                            child: Row(
+                              children: [
+
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  size: 15,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text(
+                                    DurationCalculator(widget.data['duration']),
+                                    textScaleFactor: 0.75,
+                                    // style: TextStyle(
+                                    //      color: Color(0xffe8e8e8)
+                                    //     ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
+                          //                             if(infos == null){
+                          //                               return Row(
+                          //                                 children: [
+                          //
+                          //                                   Icon(
+                          //                                     Icons.play_circle_outline,
+                          //                                     size: 15,
+                          //                                   ),
+                          //                                   Padding(
+                          //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                     child: Text(
+                          //                                       DurationCalculator(widget.data['duration']),
+                          //                                       textScaleFactor: 0.75,
+                          //                                       // style: TextStyle(
+                          //                                       //      color: Color(0xffe8e8e8)
+                          //                                       //     ),
+                          //                                     ),
+                          //                                   ),
+                          //                                 ],
+                          //                               );
+                          //                             }else{
+                          //                               if(infos.index == widget.index){
+                          //                                 return Row(
+                          //                                   children: [
+                          //
+                          //                                     Icon(
+                          //                                       Icons.play_circle_outline,
+                          //                                       size: 15,
+                          //                                     ),
+                          //                                     Padding(
+                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                       child: Text(
+                          //                                         DurationCalculator(widget.data['duration']),
+                          //                                         textScaleFactor: 0.75,
+                          //                                         // style: TextStyle(
+                          //                                         //      color: Color(0xffe8e8e8)
+                          //                                         //     ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                                 );
+                          //                               }else{
+                          //                                 return Row(
+                          //                                   children: [
+                          //
+                          //                                     Icon(
+                          //                                       Icons.play_circle_outline,
+                          //                                       size: 15,
+                          //                                     ),
+                          //                                     Padding(
+                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //                                       child: Text(
+                          //                                         DurationCalculator(widget.data['duration']),
+                          //                                         textScaleFactor: 0.75,
+                          //                                         // style: TextStyle(
+                          //                                         //      color: Color(0xffe8e8e8)
+                          //                                         //     ),
+                          //                                       ),
+                          //                                     ),
+                          //                                   ],
+                          //                                 );
+                          //                               }
+                          //                             }
+                          //
+                          // }),
+
                         ),
                       ),
                     ),
@@ -1342,40 +2027,54 @@ class _PlaybackButtonsState extends State<PlaybackButtons> {
     }
 
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
-class PodcastWidget extends StatelessWidget {
+class PodcastWidget extends StatefulWidget {
 
   final data;
 
   PodcastWidget({@required this.data});
+
+  @override
+  State<PodcastWidget> createState() => _PodcastWidgetState();
+}
+
+class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveClientMixin{
+  AsyncMemoizer _memoizer = AsyncMemoizer();
 
   SharedPreferences prefs;
 
   CancelToken _cancel = CancelToken();
 
   Future generalisedApiCall(String apicall) async {
-    Dio dio = Dio(
+    return this._memoizer.runOnce(() async {
+      Dio dio = Dio(
 
-    );
-    prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+      );
+      prefs = await SharedPreferences.getInstance();
+      String url = "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
 
-    try{
-      var response = await dio.get(url, cancelToken: _cancel);
-      if(response.statusCode == 200){
-        return response.data['data'];
+      try{
+        var response = await dio.get(url, cancelToken: _cancel);
+        if(response.statusCode == 200){
+          return response.data['data'];
+        }
+      }catch(e){
+        print(e);
       }
-    }catch(e){
-      print(e);
-    }
+    });
+
 
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generalisedApiCall(data['api']),
+      future: generalisedApiCall(widget.data['api']),
       builder: (context, snapshot){
         try{
           return Container(
@@ -1383,7 +2082,7 @@ class PodcastWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(title: Text("${data['name']}", style: TextStyle(
+                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                     fontSize: SizeConfig.safeBlockHorizontal * 5,
                     fontWeight: FontWeight.bold
                 )),trailing: ShaderMask(shaderCallback: (Rect bounds){
@@ -1393,7 +2092,7 @@ class PodcastWidget extends StatelessWidget {
                         0xff5d5da8)]).createShader(bounds);
                 },child: GestureDetector(onTap: (){
                   Navigator.push(context, CupertinoPageRoute(builder: (context){
-                    return SeeMore(data: data);
+                    return SeeMore(data: widget.data);
                   },),);
                 },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
                 SizedBox(height: 10,),
@@ -1421,9 +2120,8 @@ class PodcastWidget extends StatelessWidget {
         }catch(e){
           return Column(
             mainAxisSize: MainAxisSize.min,
-
             children: [
-              ListTile(title: Text("${data['name']}", style: TextStyle(
+              ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                   fontSize: SizeConfig.safeBlockHorizontal * 5,
                   fontWeight: FontWeight.bold
               )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
@@ -1566,6 +2264,10 @@ class PodcastWidget extends StatelessWidget {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class PlaylistWidget extends StatelessWidget {
@@ -1997,9 +2699,9 @@ class SnippetWidget extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: (){
-                        Navigator.push(context, CupertinoPageRoute(builder: (context){
-                          return SnippetStoryView(data: snapshot.data,  index: index,);
-                        }));
+                        // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                        //   return SnippetStoryView(data: snapshot.data,  index: index,);
+                        // }));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 2,
@@ -2021,18 +2723,6 @@ class SnippetWidget extends StatelessWidget {
 
                               ),
                             ),
-
-                            // ClipRect(
-                            //   child: BackdropFilter(
-                            //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                            //     child: Container(
-                            //       decoration: BoxDecoration(
-                            //         borderRadius: BorderRadius.circular(10),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-
                           ],
 
                         ),
@@ -2071,19 +2761,24 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   int currentIndex;
 
   var snippetPlayer;
+  var episodeObject;
 
-  void getSnippetPlayer(BuildContext context){
-    snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
+  Future getSnippetPlayer(BuildContext context)async{
+
+    snippetPlayer = await Provider.of<PlayerChange>(context, listen: false);
   }
 
   @override
   void initState() {
+
     _pageController =
         PageController(viewportFraction: 1.0, keepPage: true, initialPage: widget.index);
     // TODO: implement initState
     super.initState();
 
-    getSnippetPlayer(context);
+    getSnippetPlayer(context).then((value) {
+      Provider.of<PlayerChange>(context, listen: false).audioPlayer.stop();
+    });
 
   }
 
@@ -2101,22 +2796,26 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: PageView.builder(
-        scrollDirection: Axis.vertical,
-          itemCount: widget.data.length,
-          pageSnapping: true,
-          controller: _pageController,
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: PageView.builder(
+          scrollDirection: Axis.vertical,
+            itemCount: widget.data.length,
+            pageSnapping: true,
+            controller: _pageController,
 
-          itemBuilder: (context, int index) {
-            currentIndex = index;
-            return SwipeCard(
-              clipObject: widget.data[index],
-            );
-          }),
+            itemBuilder: (context, int index) {
+              currentIndex = index;
+              return SwipeCard(
+                clipObject: widget.data[index],
+              );
+            }),
+      ),
     );
   }
 }

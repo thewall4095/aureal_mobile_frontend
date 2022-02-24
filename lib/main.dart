@@ -738,17 +738,13 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
           print('${prefs.getString('userId')} /////////////////////');
 
-          DiscoverProvider discoverData =
-              Provider.of<DiscoverProvider>(context, listen: false);
-          if (discoverData.isFetcheddiscoverList == false) {
-            discoverData.getDiscoverProvider();
+
+
             setState(() {
               _home = Home();
             });
-          }
-          // var categoryBuild = Provider.of<CategoriesProvider>(context);
-          // // var communities = Provider.of<CommunityProvider>(context);
-          // categoryBuild.getCategories();
+
+
         } else {
           setState(() {
             _home = Welcome();
@@ -766,9 +762,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
       });
     }
 
-    // Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) {
-    //   return _home;
-    // }));
+
 
     setState(() {
       counter = counter + 1;

@@ -1001,6 +1001,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  slider_controller:
+    dependency: "direct main"
+    description:
+      name: slider_controller
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   social_share:
     dependency: "direct main"
     description:
@@ -1303,5 +1310,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.14.0 <3.0.0"
+  dart: ">=2.15.0 <3.0.0"
   flutter: ">=2.5.0"

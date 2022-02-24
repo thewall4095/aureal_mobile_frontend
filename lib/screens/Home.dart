@@ -26,8 +26,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-// import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as featureflag;
-// import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as featureflag;
+import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -177,10 +177,10 @@ class _HomeState extends State<Home> {
         return LibraryPage();
         break;
 
-      case 3:
-        // return BrowsePage();
-        return Clips();
-        break;
+      // case 3:
+      //   // return BrowsePage();
+      //   return Clips();
+      //   break;
 
       // case 4:
       //   return RoomsPage();
@@ -253,78 +253,78 @@ class _HomeState extends State<Home> {
     }
   }
 
-  // _joinMeeting({String roomId, String roomName, String hostUserId}) async {
-  //   // Enable or disable any feature flag here
-  //   // If feature flag are not provided, default values will be used
-  //   // Full list of feature flags (and defaults) available in the README
-  //   Map<FeatureFlagEnum, bool> featureFlags = {
-  //     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-  //     FeatureFlagEnum.CHAT_ENABLED: false,
-  //   };
-  //   if (!kIsWeb) {
-  //     // Here is an example, disabling features for each platform
-  //     if (Platform.isAndroid) {
-  //       // Disable ConnectionService usage on Android to avoid issues (see README)
-  //       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-  //     } else if (Platform.isIOS) {
-  //       // Disable PIP on iOS as it looks weird
-  //       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-  //     }
-  //   }
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   bool isAudioMuted = true;
-  //   bool isVideoMuted = true;
-  //
-  //   var options = JitsiMeetingOptions(room: roomId)
-  //     ..serverURL = 'https://sessions.aureal.one'
-  //     ..subject = roomName
-  //     ..userDisplayName = prefs.getString("HiveUserName")
-  //     ..userEmail = 'emailText.text'
-  //     // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-  //     ..audioOnly = true
-  //     ..audioMuted = isAudioMuted
-  //     ..videoMuted = isVideoMuted
-  //     ..featureFlags.addAll(featureFlags)
-  //     ..webOptions = {
-  //       "roomName": roomName,
-  //       "width": "100%",
-  //       "height": "100%",
-  //       "enableWelcomePage": false,
-  //       "chromeExtensionBanner": null,
-  //       "userInfo": {
-  //         "displayName": prefs.getString('userName'),
-  //         'avatarUrl': prefs.getString('displayPicture')
-  //       }
-  //     };
-  //
-  //   debugPrint("JitsiMeetingOptions: $options");
-  //
-  //   await JitsiMeet.joinMeeting(
-  //     options,
-  //     listener: JitsiMeetingListener(
-  //         onConferenceWillJoin: (message) {
-  //           debugPrint("${options.room} will join with message: $message");
-  //         },
-  //         onConferenceJoined: (message) {
-  //           debugPrint("${options.room} joined with message: $message");
-  //         },
-  //         onConferenceTerminated: (message) {
-  //           debugPrint("${options.room} terminated with message: $message");
-  //         },
-  //         genericListeners: [
-  //           JitsiGenericListener(
-  //               eventName: 'onConferenceTerminated',
-  //               callback: (dynamic message) {
-  //                 if (hostUserId == prefs.getString("userId")) {
-  //                   hostLeft(roomId);
-  //                 }
-  //                 debugPrint("readyToClose callback");
-  //               }),
-  //         ]),
-  //   );
-  // }
+  _joinMeeting({String roomId, String roomName, String hostUserId}) async {
+    // Enable or disable any feature flag here
+    // If feature flag are not provided, default values will be used
+    // Full list of feature flags (and defaults) available in the README
+    Map<FeatureFlagEnum, bool> featureFlags = {
+      FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+      FeatureFlagEnum.CHAT_ENABLED: false,
+    };
+    if (!kIsWeb) {
+      // Here is an example, disabling features for each platform
+      if (Platform.isAndroid) {
+        // Disable ConnectionService usage on Android to avoid issues (see README)
+        featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+      } else if (Platform.isIOS) {
+        // Disable PIP on iOS as it looks weird
+        featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+      }
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    bool isAudioMuted = true;
+    bool isVideoMuted = true;
+
+    var options = JitsiMeetingOptions(room: roomId)
+      ..serverURL = 'https://sessions.aureal.one'
+      ..subject = roomName
+      ..userDisplayName = prefs.getString("HiveUserName")
+      ..userEmail = 'emailText.text'
+      // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+      ..audioOnly = true
+      ..audioMuted = isAudioMuted
+      ..videoMuted = isVideoMuted
+      ..featureFlags.addAll(featureFlags)
+      ..webOptions = {
+        "roomName": roomName,
+        "width": "100%",
+        "height": "100%",
+        "enableWelcomePage": false,
+        "chromeExtensionBanner": null,
+        "userInfo": {
+          "displayName": prefs.getString('userName'),
+          'avatarUrl': prefs.getString('displayPicture')
+        }
+      };
+
+    debugPrint("JitsiMeetingOptions: $options");
+
+    await JitsiMeet.joinMeeting(
+      options,
+      listener: JitsiMeetingListener(
+          onConferenceWillJoin: (message) {
+            debugPrint("${options.room} will join with message: $message");
+          },
+          onConferenceJoined: (message) {
+            debugPrint("${options.room} joined with message: $message");
+          },
+          onConferenceTerminated: (message) {
+            debugPrint("${options.room} terminated with message: $message");
+          },
+          genericListeners: [
+            JitsiGenericListener(
+                eventName: 'onConferenceTerminated',
+                callback: (dynamic message) {
+                  if (hostUserId == prefs.getString("userId")) {
+                    hostLeft(roomId);
+                  }
+                  debugPrint("readyToClose callback");
+                }),
+          ]),
+    );
+  }
 
   void addRoomParticipant({String roomid}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -388,10 +388,10 @@ class _HomeState extends State<Home> {
             } else {
               hostJoined(value['roomid']);
             }
-            // _joinMeeting(
-            //     roomId: value['roomid'],
-            //     roomName: value['title'],
-            //     hostUserId: value['hostuserid']);
+            _joinMeeting(
+                roomId: value['roomid'],
+                roomName: value['title'],
+                hostUserId: value['hostuserid']);
           });
         }
         if (_latestUri.toString().contains('playlist') == true) {
@@ -492,10 +492,10 @@ class _HomeState extends State<Home> {
               } else {
                 hostJoined(value['roomid']);
               }
-              // _joinMeeting(
-              //     roomId: value['roomid'],
-              //     roomName: value['title'],
-              //     hostUserId: value['hostuserid']);
+              _joinMeeting(
+                  roomId: value['roomid'],
+                  roomName: value['title'],
+                  hostUserId: value['hostuserid']);
             });
           }
           if (uri.toString().contains('playlist') == true) {
@@ -596,11 +596,7 @@ class _HomeState extends State<Home> {
     int count = 0;
     return Scaffold(
       backgroundColor: Color(0xff161616),
-      appBar: _selectedIndex == 3? null:AppBar(
-        flexibleSpace: ClipRect(child: BackdropFilter(filter : ImageFilter.blur(
-          sigmaY: 15.0,
-          sigmaX: 15.0,
-        ),child: Container())),
+      appBar: _selectedIndex == 3 ? null :AppBar(
         backgroundColor: Color(0xff161616),
         elevation: 0.5,
         leading: Padding(
@@ -694,69 +690,7 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   backgroundColor:
-      //   Colors.black,
-      //   elevation: 10,
-      //   type: BottomNavigationBarType.fixed,
-      //   showUnselectedLabels: false,
-      //   showSelectedLabels: false,
-      //   unselectedItemColor:
-      //   Colors.white,
-      //   selectedItemColor: Colors.blue,
-      //   //Color(0xff5bc3ef),
-      //   // backgroundColor: Colors.transparent,
-      //   items: <BottomNavigationBarItem>[
-      //     // BottomNavigationBarItem(
-      //     //   icon: Icon(
-      //     //     Icons.stream,
-      //     //   ),
-      //     //   activeIcon: Icon(Icons.stream),
-      //     //   label: '',
-      //     // ),
-      //
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(
-      //         Icons.home_sharp,
-      //         size: 30,
-      //       ),
-      //       activeIcon: Icon(
-      //         Icons.home_rounded,
-      //         size: 30,
-      //       ),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(FontAwesomeIcons.compass),
-      //       activeIcon: Icon(FontAwesomeIcons.solidCompass),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(Icons.library_books_outlined),
-      //       activeIcon: Icon(Icons.library_books),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: Icon(Icons.casino_outlined),
-      //       activeIcon: Icon(Icons.casino_outlined),
-      //     )
-      //     // BottomNavigationBarItem(
-      //     //   label: "",
-      //     //   icon: Icon(
-      //     //     Icons.perm_identity,
-      //     //     size: 28,
-      //     //   ),
-      //     //   activeIcon: Icon(
-      //     //     Icons.person,
-      //     //     size: 28,
-      //     //   ),
-      //     // ),
-      //   ],
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      // ),
-      // bottomSheet: BottomPlayer(),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
@@ -781,76 +715,71 @@ class _HomeState extends State<Home> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            // color: Colors.black
+                            color: Colors.black
                           ),
-                          child: Theme(
-                            data: ThemeData(
-                              canvasColor: Colors.transparent
-                            ),
-                            child: BottomNavigationBar(
-                              selectedFontSize: 0,
-                              // backgroundColor:
-                              // Colors.transparent,
-                              elevation: 10,
-                              type: BottomNavigationBarType.shifting,
-                              showUnselectedLabels: false,
-                              showSelectedLabels: false,
-                              unselectedItemColor:
-                              Colors.white,
-                              selectedItemColor: Colors.blue,
-                              //Color(0xff5bc3ef),
-                              backgroundColor: Colors.transparent,
-                              items: <BottomNavigationBarItem>[
-                                // BottomNavigationBarItem(
-                                //   icon: Icon(
-                                //     Icons.stream,
-                                //   ),
-                                //   activeIcon: Icon(Icons.stream),
-                                //   label: '',
-                                // ),
+                          child: BottomNavigationBar(
+                            selectedFontSize: 0,
+                            backgroundColor:
+                            Colors.transparent,
+                            elevation: 10,
+                            type: BottomNavigationBarType.fixed,
+                            showUnselectedLabels: false,
+                            showSelectedLabels: false,
+                            unselectedItemColor:
+                            Colors.white,
+                            selectedItemColor: Colors.blue,
+                            //Color(0xff5bc3ef),
+                            // backgroundColor: Colors.transparent,
+                            items: <BottomNavigationBarItem>[
+                              // BottomNavigationBarItem(
+                              //   icon: Icon(
+                              //     Icons.stream,
+                              //   ),
+                              //   activeIcon: Icon(Icons.stream),
+                              //   label: '',
+                              // ),
 
-                                BottomNavigationBarItem(
+                              BottomNavigationBarItem(
 
-                                  label: "",
-                                  icon: Icon(
-                                    Icons.home_sharp,
-                                    size: 22,
-                                  ),
-                                  activeIcon: Icon(
-                                    Icons.home_rounded,
-                                    size: 22,
-                                  ),
+                                label: "",
+                                icon: Icon(
+                                  Icons.home_sharp,
+                                  size: 22,
                                 ),
-                                BottomNavigationBarItem(
-                                  label: "",
-                                  icon: Icon(FontAwesomeIcons.compass,size: 22,),
-                                  activeIcon: Icon(FontAwesomeIcons.solidCompass,size: 22,),
+                                activeIcon: Icon(
+                                  Icons.home_rounded,
+                                  size: 22,
                                 ),
-                                BottomNavigationBarItem(
-                                  label: "",
-                                  icon: Icon(Icons.library_books_outlined,size: 22,),
-                                  activeIcon: Icon(Icons.library_books,size: 22,),
-                                ),
-                                BottomNavigationBarItem(
-                                  label: "",
-                                  icon: Icon(Icons.casino_outlined,size: 22,),
-                                  activeIcon: Icon(Icons.casino_outlined,size: 22,),
-                                )
-                                // BottomNavigationBarItem(
-                                //   label: "",
-                                //   icon: Icon(
-                                //     Icons.perm_identity,
-                                //     size: 28,
-                                //   ),
-                                //   activeIcon: Icon(
-                                //     Icons.person,
-                                //     size: 28,
-                                //   ),
-                                // ),
-                              ],
-                              currentIndex: _selectedIndex,
-                              onTap: _onItemTapped,
-                            ),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(FontAwesomeIcons.compass,size: 22,),
+                                activeIcon: Icon(FontAwesomeIcons.solidCompass,size: 22,),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(Icons.library_books_outlined,size: 22,),
+                                activeIcon: Icon(Icons.library_books,size: 22,),
+                              ),
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(Icons.casino_outlined,size: 22,),
+                              //   activeIcon: Icon(Icons.casino_outlined,size: 22,),
+                              // )
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(
+                              //     Icons.perm_identity,
+                              //     size: 28,
+                              //   ),
+                              //   activeIcon: Icon(
+                              //     Icons.person,
+                              //     size: 28,
+                              //   ),
+                              // ),
+                            ],
+                            currentIndex: _selectedIndex,
+                            onTap: _onItemTapped,
                           ),
                         ),
                       )
@@ -940,6 +869,7 @@ class BottomPlayer extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.white.withOpacity(0.5)))
                   // color: Colors.transparent
                 ),
                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
