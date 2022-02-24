@@ -177,10 +177,10 @@ class _HomeState extends State<Home> {
         return LibraryPage();
         break;
 
-      case 3:
-        // return BrowsePage();
-        return Clips();
-        break;
+      // case 3:
+      //   // return BrowsePage();
+      //   return Clips();
+      //   break;
 
       // case 4:
       //   return RoomsPage();
@@ -761,11 +761,11 @@ class _HomeState extends State<Home> {
                                 icon: Icon(Icons.library_books_outlined,size: 22,),
                                 activeIcon: Icon(Icons.library_books,size: 22,),
                               ),
-                              BottomNavigationBarItem(
-                                label: "",
-                                icon: Icon(Icons.casino_outlined,size: 22,),
-                                activeIcon: Icon(Icons.casino_outlined,size: 22,),
-                              )
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(Icons.casino_outlined,size: 22,),
+                              //   activeIcon: Icon(Icons.casino_outlined,size: 22,),
+                              // )
                               // BottomNavigationBarItem(
                               //   label: "",
                               //   icon: Icon(
@@ -869,6 +869,7 @@ class BottomPlayer extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.white.withOpacity(0.5)))
                   // color: Colors.transparent
                 ),
                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(

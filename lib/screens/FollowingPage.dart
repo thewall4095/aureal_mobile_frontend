@@ -147,41 +147,40 @@ class Feed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
-          return <Widget>[
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
+            return <Widget>[
 
-          ];
-        },
-        body: FutureBuilder(
-          future: getFeedStructure(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              // return ListView(
-              //   addAutomaticKeepAlives: true,
-              //   children: [
-              //     for(var v in snapshot.data)
-              //       _feedBuilder(context, v),
-              //     SizedBox(height: 150,),
-              //   ],
-              // );
-              return ListView.builder(addAutomaticKeepAlives: true,itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
-                if(index == snapshot.data.length){
-                  return SizedBox(height: 50,);
-                }else{
-                  return _feedBuilder(context, snapshot.data[index]);
-                }
-
-              });
-            }else{
-              return SizedBox();
-            }
-
+            ];
           },
+          body: FutureBuilder(
+            future: getFeedStructure(),
+            builder: (context, snapshot){
+              try{
+                if(snapshot.hasData){
+
+                  return ListView.builder(shrinkWrap: true,addAutomaticKeepAlives: true,itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
+                    if(index == snapshot.data.length){
+                      return SizedBox(height: 50,);
+                    }else{
+                      return _feedBuilder(context, snapshot.data[index]);
+                    }
+
+                  });
+                }else{
+                  return SizedBox();
+                }
+              }catch(e){
+                return Container();
+              }
+            },
+
+          ),
+
 
         ),
-
-
       ),
     );
   }
@@ -2034,13 +2033,18 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
   bool get wantKeepAlive => true;
 }
 
-class PodcastWidget extends StatelessWidget {
-
-  AsyncMemoizer _memoizer = AsyncMemoizer();
+class PodcastWidget extends StatefulWidget {
 
   final data;
 
   PodcastWidget({@required this.data});
+
+  @override
+  State<PodcastWidget> createState() => _PodcastWidgetState();
+}
+
+class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveClientMixin{
+  AsyncMemoizer _memoizer = AsyncMemoizer();
 
   SharedPreferences prefs;
 
@@ -2070,7 +2074,7 @@ class PodcastWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generalisedApiCall(data['api']),
+      future: generalisedApiCall(widget.data['api']),
       builder: (context, snapshot){
         try{
           return Container(
@@ -2078,7 +2082,7 @@ class PodcastWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(title: Text("${data['name']}", style: TextStyle(
+                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                     fontSize: SizeConfig.safeBlockHorizontal * 5,
                     fontWeight: FontWeight.bold
                 )),trailing: ShaderMask(shaderCallback: (Rect bounds){
@@ -2088,7 +2092,7 @@ class PodcastWidget extends StatelessWidget {
                         0xff5d5da8)]).createShader(bounds);
                 },child: GestureDetector(onTap: (){
                   Navigator.push(context, CupertinoPageRoute(builder: (context){
-                    return SeeMore(data: data);
+                    return SeeMore(data: widget.data);
                   },),);
                 },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
                 SizedBox(height: 10,),
@@ -2117,7 +2121,7 @@ class PodcastWidget extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(title: Text("${data['name']}", style: TextStyle(
+              ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                   fontSize: SizeConfig.safeBlockHorizontal * 5,
                   fontWeight: FontWeight.bold
               )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
@@ -2260,6 +2264,10 @@ class PodcastWidget extends StatelessWidget {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class PlaylistWidget extends StatelessWidget {
@@ -2788,7 +2796,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
