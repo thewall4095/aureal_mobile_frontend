@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -313,6 +314,17 @@ class _BioState extends State<Bio> {
 
   }
 
+  void init(){
+    setState(() {
+      isLoading = true;
+    });
+    getUserDetails();
+    setState(() {
+      isLoading = false;
+    });
+
+  }
+
   Future<void> _pullRefreshEpisodes() async {
     // getCommunityEposidesForUser();
     await updateUserDetails();
@@ -328,212 +340,204 @@ class _BioState extends State<Bio> {
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldGlobalKey,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            leading: IconButton(
-              icon: Icon(
-                Icons.navigate_before,
-                //     color: Colors.white,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            title: Text(
-              'Edit Profile',
-              textScaleFactor: 0.75,
-              // style: TextStyle(color: Colors.white),
-            ),
-            actions: <Widget>[
-              isImageLoading == true
-                  ? SizedBox(
-                      height: 0,
-                      width: 0,
-                    )
-                  : IconButton(
+    try{
+      return Scaffold(
+        key: _scaffoldGlobalKey,
+        body: ModalProgressHUD(
+          inAsyncCall: isLoading,
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                leading: IconButton(
+                  icon: Icon(
+                    Icons.navigate_before,
+                    //     color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                title: Text(
+                  'Edit Profile',
+                  textScaleFactor: 0.75,
+                  // style: TextStyle(color: Colors.white),
+                ),
+                actions: <Widget>[
+                  isImageLoading == true
+                      ? SizedBox(
+                    height: 0,
+                    width: 0,
+                  )
+                      : IconButton(
                       onPressed: () {
                         updateUserDetails();
                       },
                       icon: Icon(FontAwesomeIcons.check))
-            ],
-            pinned: true,
-            expandedHeight: MediaQuery.of(context).size.height / 3.5,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      decoration: displayUrl == null
-                          ? BoxDecoration(
-                              image: DecorationImage(
-                                image: displayPicture != null
-                                    ? CachedNetworkImageProvider(
-                                        displayPicture)
-                                    // ? NetworkImage(widget.displayPicture)
-                                    : AssetImage('assets/images/person.png'),
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            )
-                          : BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
+                ],
+                pinned: true,
+                expandedHeight: MediaQuery.of(context).size.height / 3.5,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+
+                        Center(
+
+                        ),
+                        CachedNetworkImage(imageUrl: displayUrl == null ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png' : displayUrl, imageBuilder: (context, imageProvider){
+                          return Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            height: MediaQuery.of(context).size.width / 3,
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               image: DecorationImage(
-                                image: CachedNetworkImageProvider(displayUrl),
-                                fit: BoxFit.cover,
+                                image: imageProvider, fit: BoxFit.cover,
                               ),
                             ),
-                      height:MediaQuery.of(context).size.height/10,
-                      width: 100,
-                      child: isImageLoading == true
-                          ? SpinKitPulse(
-                              color: Colors.blue,
-                            )
-                          : SizedBox(
-                              height: 0,
-                              width: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.add_a_photo),
+                              onPressed: (){
+                                getImageFile();
+                              },
                             ),
+                          );
+                        },),
+
+                        Divider(
+                          color: kSecondaryColor,
+                        ),
+                        //     SizedBox(height: 10)
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                          onTap: () {
-                            getImageFile();
-                          },
-                          child: Text(
-                            "Change Profile Photo",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: SizeConfig.blockSizeHorizontal * 4),
-                          )),
-                    ),
-                    Divider(
-                      color: kSecondaryColor,
-                    ),
-                    //     SizedBox(height: 10)
-                  ],
+                  ),
                 ),
               ),
-            ),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(  hintText: data['bio'] != null
+                            ? data['bio']
+                            : 'Bio', labelText: 'Bio'),
+                        //       controller: bioTextEditingControler,
+                        autofocus: true,
+                        maxLines: null,
+                        initialValue: data['bio'],
+                        onChanged: (value) {
+                          setState(() {
+
+                            bio = value;
+                          });
+                          activeButtonState();
+                        },
+
+                      ),
+
+                    ),
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                            hintText:
+                            'Write a show description about you, this will be there on your podcast page',
+                            labelText: 'Description'),
+                        maxLines: null,
+                        onChanged: ((value) {
+                          setState(() {
+                            description = value;
+                            //_phoneController.text = value;
+                          });
+                        }),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    Divider(),
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
+                      child: Text("Profile Information"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            keyboardType: TextInputType.url,
+                            initialValue: data['instagram'],
+                            onChanged: (value) {
+                              setState(() {
+                                instagram = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(FontAwesomeIcons.instagram),
+                                hintText: data['instagram'] != null
+                                    ? data['instagram']
+                                    : 'https://instagram.com/john_snow'),
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.url,
+                            initialValue: data['twitter'],
+                            onChanged: (value) {
+                              setState(() {
+                                twitter = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(FontAwesomeIcons.twitter),
+                                hintText:
+                                '${data['twitter'] == null ? 'https://twitter.com/@john_snow' : data['twitter']} '),
+                          ),
+                          TextFormField(
+
+                            initialValue: data['linkedin'] ,
+                            onChanged: (value) {
+                              setState(() {
+                                linkedin = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(FontAwesomeIcons.linkedinIn),
+                                hintText:
+                                '${data['linkedin'] != null ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
+                          ),
+                          TextFormField(
+                            keyboardType: TextInputType.url,
+                            initialValue:  data['website'],
+                            onChanged: (value) {
+                              setState(() {
+                                website = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                icon: Icon(FontAwesomeIcons.link),
+                                hintText: data['website'] == null
+                                    ? 'https://aureal.one'
+                                    : data['website']),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]))
+            ],
           ),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-              child: TextFormField(
-                decoration: InputDecoration(  hintText: data['bio'] != null
-                      ? data['bio']
-                      : 'Bio', labelText: 'Bio'),
-         //       controller: bioTextEditingControler,
-                autofocus: true,
-                maxLines: null,
-                initialValue: data['bio'],
-                onChanged: (value) {
-                  setState(() {
+        ),
+      );
+    }catch(e){
+      return Scaffold(body: Container(),);
+    }
 
-                    bio = value;
-                  });
-                  activeButtonState();
-                },
-
-              ),
-
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText:
-                        'Write a show description about you, this will be there on your podcast page',
-                    labelText: 'Description'),
-                maxLines: null,
-                onChanged: ((value) {
-                  setState(() {
-                    description = value;
-                    //_phoneController.text = value;
-                  });
-                }),
-              ),
-            ),
-            SizedBox(height: 30),
-            Divider(),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8.0),
-              child: Text("Profile Information"),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  TextFormField(
-                    keyboardType: TextInputType.url,
-                    initialValue: data['instagram'],
-                    onChanged: (value) {
-                      setState(() {
-                        instagram = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        icon: Icon(FontAwesomeIcons.instagram),
-                        hintText: data['instagram'] != null
-                            ? data['instagram']
-                            : 'https://instagram.com/john_snow'),
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.url,
-                    initialValue: data['twitter'],
-                    onChanged: (value) {
-                      setState(() {
-                        twitter = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        icon: Icon(FontAwesomeIcons.twitter),
-                        hintText:
-                            '${data['twitter'] == null ? 'https://twitter.com/@john_snow' : data['twitter']} '),
-                  ),
-                  TextFormField(
-
-                    initialValue: data['linkedin'] ,
-                    onChanged: (value) {
-                      setState(() {
-                        linkedin = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        icon: Icon(FontAwesomeIcons.linkedinIn),
-                        hintText:
-                            '${data['linkedin'] != null ? data['linkedin'] : 'https://linkedin/com/john_snow'}'),
-                  ),
-                  TextFormField(
-                    keyboardType: TextInputType.url,
-                    initialValue:  data['website'],
-                    onChanged: (value) {
-                      setState(() {
-                        website = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                        icon: Icon(FontAwesomeIcons.link),
-                        hintText: data['website'] == null
-                            ? 'https://aureal.one'
-                            : data['website']),
-                  ),
-                ],
-              ),
-            )
-          ]))
-        ],
-      ),
-    );
   }
 
   Widget oldWidget() {

@@ -150,7 +150,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   var currentlyPlaying;
 
@@ -166,21 +166,21 @@ class _HomeState extends State<Home> {
   Widget _createPage(BuildContext context, int index) {
     switch (index) {
       case 0:
-        return FollowingPage();
+        return Feed();
         break;
 
       case 1:
-        return DiscoverPage();
+        return DiscoverScreen();
         break;
 
       case 2:
         return LibraryPage();
         break;
 
-      case 3:
-        // return BrowsePage();
-        return Clips();
-        break;
+      // case 3:
+      //   // return BrowsePage();
+      //   return Clips();
+      //   break;
 
       // case 4:
       //   return RoomsPage();
@@ -596,7 +596,7 @@ class _HomeState extends State<Home> {
     int count = 0;
     return Scaffold(
       backgroundColor: Color(0xff161616),
-      appBar: AppBar(
+      appBar: _selectedIndex == 3 ? null :AppBar(
         backgroundColor: Color(0xff161616),
         elevation: 0.5,
         leading: Padding(
@@ -604,7 +604,7 @@ class _HomeState extends State<Home> {
           child: IconButton(
             onPressed: () {
               Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (context) => Profile()));
+                  .push(CupertinoPageRoute(builder: (context) => PublicProfile(userId: prefs.getString('userId'))));
             },
             icon: CircleAvatar(
               radius: SizeConfig.safeBlockHorizontal * 6,
@@ -690,239 +690,496 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:
-            themeProvider.isLightTheme == false ? Colors.black : Colors.white,
-        elevation: 10,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        unselectedItemColor:
-            themeProvider.isLightTheme == true ? Colors.black : Colors.white,
-        selectedItemColor: Colors.blue,
-        //Color(0xff5bc3ef),
-        // backgroundColor: Colors.transparent,
-        items: <BottomNavigationBarItem>[
-          // BottomNavigationBarItem(
-          //   icon: Icon(
-          //     Icons.stream,
-          //   ),
-          //   activeIcon: Icon(Icons.stream),
-          //   label: '',
-          // ),
 
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(
-              Icons.home_sharp,
-              size: 30,
-            ),
-            activeIcon: Icon(
-              Icons.home_rounded,
-              size: 30,
-            ),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(FontAwesomeIcons.compass),
-            activeIcon: Icon(FontAwesomeIcons.solidCompass),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.library_books_outlined),
-            activeIcon: Icon(Icons.library_books),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: Icon(Icons.casino_outlined),
-            activeIcon: Icon(Icons.casino_outlined),
-          )
-          // BottomNavigationBarItem(
-          //   label: "",
-          //   icon: Icon(
-          //     Icons.perm_identity,
-          //     size: 28,
-          //   ),
-          //   activeIcon: Icon(
-          //     Icons.person,
-          //     size: 28,
-          //   ),
-          // ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
-      bottomSheet: BottomPlayer(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
             content: Text('Tap back again to leave'),
           ),
-          child: _createPage(context, _selectedIndex)),
+          child: Stack(children: [_createPage(context, _selectedIndex), Align(
+            alignment: Alignment.bottomCenter,
+            child: ClipRect(
+
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaY: 15.0,
+                  sigmaX: 15.0,
+                ),
+                child: Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _selectedIndex == 3? SizedBox():BottomPlayer(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black
+                          ),
+                          child: BottomNavigationBar(
+                            selectedFontSize: 0,
+                            backgroundColor:
+                            Colors.transparent,
+                            elevation: 10,
+                            type: BottomNavigationBarType.fixed,
+                            showUnselectedLabels: false,
+                            showSelectedLabels: false,
+                            unselectedItemColor:
+                            Colors.white,
+                            selectedItemColor: Colors.blue,
+                            //Color(0xff5bc3ef),
+                            // backgroundColor: Colors.transparent,
+                            items: <BottomNavigationBarItem>[
+                              // BottomNavigationBarItem(
+                              //   icon: Icon(
+                              //     Icons.stream,
+                              //   ),
+                              //   activeIcon: Icon(Icons.stream),
+                              //   label: '',
+                              // ),
+
+                              BottomNavigationBarItem(
+
+                                label: "",
+                                icon: Icon(
+                                  Icons.home_sharp,
+                                  size: 22,
+                                ),
+                                activeIcon: Icon(
+                                  Icons.home_rounded,
+                                  size: 22,
+                                ),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(FontAwesomeIcons.compass,size: 22,),
+                                activeIcon: Icon(FontAwesomeIcons.solidCompass,size: 22,),
+                              ),
+                              BottomNavigationBarItem(
+                                label: "",
+                                icon: Icon(Icons.library_books_outlined,size: 22,),
+                                activeIcon: Icon(Icons.library_books,size: 22,),
+                              ),
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(Icons.casino_outlined,size: 22,),
+                              //   activeIcon: Icon(Icons.casino_outlined,size: 22,),
+                              // )
+                              // BottomNavigationBarItem(
+                              //   label: "",
+                              //   icon: Icon(
+                              //     Icons.perm_identity,
+                              //     size: 28,
+                              //   ),
+                              //   activeIcon: Icon(
+                              //     Icons.person,
+                              //     size: 28,
+                              //   ),
+                              // ),
+                            ],
+                            currentIndex: _selectedIndex,
+                            onTap: _onItemTapped,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )])),
     );
   }
 }
 
-class BottomPlayer extends StatefulWidget {
-  @override
-  _BottomPlayerState createState() => _BottomPlayerState();
-}
+class BottomPlayer extends StatelessWidget {
+   BottomPlayer();
 
-class _BottomPlayerState extends State<BottomPlayer> {
-  // MusicPlayer player;
+   PlayerState playerstate = PlayerState.playing;
 
-  PlayerState playerstate = PlayerState.playing;
+   // ScrollController _controller = ScrollController();
+   //
+   // var status;
+   // bool _hasBeenPressed = false;
+   //
+   // SharedPreferences prefs;
+   //
+   // getLocalData() async {
+   //   prefs = await SharedPreferences.getInstance();
+   // }
+   //
+   // String changingDuration = '0.0';
+   //
+   // Duration _visibleValue;
+   // bool listenOnlyUserInteraction = false;
+   // double get percent => duration.inMilliseconds == 0
+   //     ? 0
+   //     : _visibleValue.inMilliseconds / duration.inMilliseconds;
+   //
+   // void durationToString(Duration duration) {
+   //   String twoDigits(int n) {
+   //     if (n >= 10) return "$n";
+   //     return "0$n";
+   //   }
+   //
+   //   String twoDigitMinutes =
+   //   twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+   //   String twoDigitSeconds =
+   //   twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+   //
+   //   setState(() {
+   //     changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+   //   });
+   // }
 
-  ScrollController _controller = ScrollController();
-
-  var status;
-  bool _hasBeenPressed = false;
-
-  SharedPreferences prefs;
-
-  getLocalData() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  String changingDuration = '0.0';
-
-  Duration _visibleValue;
-  bool listenOnlyUserInteraction = false;
-  double get percent => duration.inMilliseconds == 0
-      ? 0
-      : _visibleValue.inMilliseconds / duration.inMilliseconds;
-
-  void durationToString(Duration duration) {
-    String twoDigits(int n) {
-      if (n >= 10) return "$n";
-      return "0$n";
-    }
-
-    String twoDigitMinutes =
-        twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
-    String twoDigitSeconds =
-        twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
-
-    setState(() {
-      changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-    // episodeObject.episodeViewed(
-    //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
-
-    super.initState();
-  }
-
-  int count = 0;
+   int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     var episodeObject = Provider.of<PlayerChange>(context);
-
-    // if (episodeObject.episodeObject != null) {
-    //   episodeObject.audioPlayer.currentPosition.listen((event) {
-    //     if (episodeObject.audioPlayer.currentPosition.value ==
-    //         episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
-    //       episodeObject.customNextAction(episodeObject.audioPlayer);
-    //     }
-    //   });
-    // }
-
-    return GestureDetector(
-      onTap: () {
-        showBarModalBottomSheet(
-            bounce: true,
-            context: context,
-            builder: (context) {
-              return Player();
-            });
-        // Navigator.pushNamed(context, Player.id);
-      },
-      child: Dismissible(
-        key: UniqueKey(),
-        onDismissed: (direction) {
-          setState(() {
-            episodeObject.episodeName = null;
-            episodeObject.pause();
-          });
+    try{
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: Colors.transparent,
+              isDismissible: true,
+              // bounce: true,
+              context: context,
+              builder: (context) {
+                return Player2();
+              });
+          // Navigator.pushNamed(context, Player.id);
         },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Color(0xff161616),
-          ),
-          child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-              builder: (context, infos) {
-            if (infos == null) {
-              return SizedBox(
-                height: 0,
-                width: 0,
-              );
-            } else {
-              if (infos.isBuffering == true) {
-                return SizedBox();
-              } else {
-                if (count == 0) {
-                  episodeObject
-                      .episodeViewed(infos.current.audio.audio.metas.id);
-                  count++;
-                }
+        child: Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
 
-                return ListTile(
-                  trailing: infos.isPlaying == true
-                      ? IconButton(
-                          splashColor: Colors.transparent,
-                          icon: Icon(
-                            Icons.pause,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.audioPlayer.pause();
-                          },
-                        )
-                      : IconButton(
-                          splashColor: Colors.blue,
-                          icon: Icon(
-                            Icons.play_arrow,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            episodeObject.resume();
-                          },
-                        ),
-                  leading: CachedNetworkImage(
-                    width: 40,
-                    height: 40,
-                    imageUrl: infos.current.audio.audio.metas.image.path,
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover)),
-                      );
-                    },
-                  ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Text(
-                      "${infos.current.audio.audio.metas.title}",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                );
-              }
-            }
-          }),
+              // episodeObject.episodeName = null;
+              episodeObject.audioPlayer.pause();
+
+          },
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaY: 15.0,
+                sigmaX: 15.0,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(top: BorderSide(color: Colors.white.withOpacity(0.5)))
+                  // color: Colors.transparent
+                ),
+                child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                    builder: (context, infos) {
+                      if (infos == null) {
+                        return SizedBox(
+                          height: 0,
+                          width: 0,
+                        );
+                      } else {
+                        return ListTile(
+                            trailing: infos.isPlaying == true
+                                ? IconButton(
+                              splashColor: Colors.transparent,
+                              icon: Icon(
+                                Icons.pause,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.audioPlayer.pause();
+                              },
+                            )
+                                : IconButton(
+                              splashColor: Colors.blue,
+                              icon: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                episodeObject.resume();
+                              },
+                            ),
+                            leading: Builder(builder: (context){
+                              try{
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+                                  errorWidget: (context, url, e){
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        borderRadius: BorderRadius.circular(3),
+                                      ),
+                                    );
+                                  },
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider, fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }catch(e){
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider, fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }
+                            },),
+                            title: Builder(builder: (context){
+                              try{
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: infos.current.audio == null? Text(""):Text(
+                                    "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              }catch(e){
+                                return SizedBox();
+                              }
+                            },)
+                        );
+                      }
+                    }),
+              ),
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    }catch(e){
+      SizedBox();
+    }
   }
 }
+
+
+// class BottomPlayer extends StatefulWidget {
+//   @override
+//   _BottomPlayerState createState() => _BottomPlayerState();
+// }
+//
+// class _BottomPlayerState extends State<BottomPlayer> {
+//   // MusicPlayer player;
+//
+//   PlayerState playerstate = PlayerState.playing;
+//
+//   ScrollController _controller = ScrollController();
+//
+//   var status;
+//   bool _hasBeenPressed = false;
+//
+//   SharedPreferences prefs;
+//
+//   getLocalData() async {
+//     prefs = await SharedPreferences.getInstance();
+//   }
+//
+//   String changingDuration = '0.0';
+//
+//   Duration _visibleValue;
+//   bool listenOnlyUserInteraction = false;
+//   double get percent => duration.inMilliseconds == 0
+//       ? 0
+//       : _visibleValue.inMilliseconds / duration.inMilliseconds;
+//
+//   void durationToString(Duration duration) {
+//     String twoDigits(int n) {
+//       if (n >= 10) return "$n";
+//       return "0$n";
+//     }
+//
+//     String twoDigitMinutes =
+//         twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+//     String twoDigitSeconds =
+//         twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+//
+//     setState(() {
+//       changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+//     });
+//   }
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     // var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+//     // episodeObject.episodeViewed(
+//     //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
+//
+//     super.initState();
+//   }
+//
+//   int count = 0;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     SizeConfig().init(context);
+//     var episodeObject = Provider.of<PlayerChange>(context);
+//
+//     // if (episodeObject.episodeObject != null) {
+//     //   episodeObject.audioPlayer.currentPosition.listen((event) {
+//     //     if (episodeObject.audioPlayer.currentPosition.value ==
+//     //         episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
+//     //       episodeObject.customNextAction(episodeObject.audioPlayer);
+//     //     }
+//     //   });
+//     // }
+//     try{
+//       return GestureDetector(
+//         onTap: () {
+//           showModalBottomSheet(
+//               isScrollControlled: true,
+//               backgroundColor: Colors.transparent,
+//               barrierColor: Colors.transparent,
+//               isDismissible: true,
+//               // bounce: true,
+//               context: context,
+//               builder: (context) {
+//                 return Player2();
+//               });
+//           // Navigator.pushNamed(context, Player.id);
+//         },
+//         child: Dismissible(
+//           key: UniqueKey(),
+//           onDismissed: (direction) {
+//             setState(() {
+//               // episodeObject.episodeName = null;
+//               episodeObject.audioPlayer.pause();
+//             });
+//           },
+//           child: ClipRect(
+//             child: BackdropFilter(
+//               filter: ImageFilter.blur(
+//                 sigmaY: 15.0,
+//                 sigmaX: 15.0,
+//               ),
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                   // color: Colors.transparent
+//                 ),
+//                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+//                     builder: (context, infos) {
+//                       if (infos == null) {
+//                         return SizedBox(
+//                           height: 0,
+//                           width: 0,
+//                         );
+//                       } else {
+//                         return ListTile(
+//                           trailing: infos.isPlaying == true
+//                               ? IconButton(
+//                             splashColor: Colors.transparent,
+//                             icon: Icon(
+//                               Icons.pause,
+//                               color: Colors.white,
+//                             ),
+//                             onPressed: () {
+//                               episodeObject.audioPlayer.pause();
+//                             },
+//                           )
+//                               : IconButton(
+//                             splashColor: Colors.blue,
+//                             icon: Icon(
+//                               Icons.play_arrow,
+//                               color: Colors.white,
+//                             ),
+//                             onPressed: () {
+//                               episodeObject.resume();
+//                             },
+//                           ),
+//                           leading: Builder(builder: (context){
+//                             try{
+//                               return CachedNetworkImage(
+//                                 width: 40,
+//                                 height: 40,
+//                                 imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+//                                 errorWidget: (context, url, e){
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                       color: Color(0xff222222),
+//                                       borderRadius: BorderRadius.circular(3),
+//                                     ),
+//                                   );
+//                                 },
+//                                 imageBuilder: (context, imageProvider) {
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(3),
+//                                         image: DecorationImage(
+//                                             image: imageProvider, fit: BoxFit.cover)),
+//                                   );
+//                                 },
+//                               );
+//                             }catch(e){
+//                               return CachedNetworkImage(
+//                                 width: 40,
+//                                 height: 40,
+//                                 imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+//                                 imageBuilder: (context, imageProvider) {
+//                                   return Container(
+//                                     height: 40,
+//                                     width: 40,
+//                                     decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(3),
+//                                         image: DecorationImage(
+//                                             image: imageProvider, fit: BoxFit.cover)),
+//                                   );
+//                                 },
+//                               );
+//                             }
+//                           },),
+//                           title: Builder(builder: (context){
+//                             try{
+//                               return Padding(
+//                                 padding: const EdgeInsets.only(right: 10),
+//                                 child: infos.current.audio == null? Text(""):Text(
+//                                   "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
+//                                   maxLines: 2,
+//                                   overflow: TextOverflow.ellipsis,
+//                                 ),
+//                               );
+//                             }catch(e){
+//                               return SizedBox();
+//                             }
+//                           },)
+//                         );
+//                       }
+//                     }),
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     }catch(e){
+//       SizedBox();
+//     }
+//
+//
+//   }
+// }

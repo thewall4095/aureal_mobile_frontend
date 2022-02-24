@@ -1,4 +1,14 @@
 import 'dart:convert';
+<<<<<<< HEAD
+=======
+import 'package:auditory/Services/DurationCalculator.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/screens/buttonPages/Bio.dart';
+import 'package:auditory/screens/buttonPages/Referralprogram.dart';
+import 'package:auditory/screens/buttonPages/Settings.dart';
+import 'package:auditory/screens/buttonPages/search.dart';
+import 'package:auditory/utilities/Share.dart';
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
 import 'dart:io';
 
 import 'package:auditory/Services/DurationCalculator.dart';
@@ -21,12 +31,23 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+<<<<<<< HEAD
 import 'package:jitsi_meet/jitsi_meet.dart';
+=======
+// import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:line_icons/line_icon.dart';
+import 'package:line_icons/line_icons.dart';
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+<<<<<<< HEAD
+=======
+import '../Clips.dart';
+import '../RewardsScreen.dart';
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
 import 'Comments.dart';
 import 'PodcastView.dart';
 
@@ -177,6 +198,7 @@ class _PublicProfileState extends State<PublicProfile>
   SharedPreferences prefs;
 
   Widget bodyContainer() {
+    final mediaQueryData = MediaQuery.of(context);
     return Container(
       color: Color(0xff161616),
       child: Column(
@@ -187,171 +209,370 @@ class _PublicProfileState extends State<PublicProfile>
                 gradient: LinearGradient(
                     colors: [Color(0xff5d5da8), Color(0xff5bc3ef)])),
           ),
-          Container(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: userData['img'] == null
-                              ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                              : userData['img'],
-                          imageBuilder: (context, imageProvider) {
-                            return Container(
-                              height: MediaQuery.of(context).size.width / 5,
-                              width: MediaQuery.of(context).size.width / 5,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      color: Colors.blueAccent, width: 2),
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover)),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${userData['fullname']}",
-                              style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                  fontWeight: FontWeight.w600),
+          SizedBox(height: 20,),
+          ListTile(
+            title: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CachedNetworkImage(
+                        imageUrl: userData['img'] == null
+                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                            : userData['img'],
+                        imageBuilder: (context, imageProvider) {
+                          return Container(
+                            height: MediaQuery.of(context).size.width / 5,
+                            width: MediaQuery.of(context).size.width / 5,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: Colors.blueAccent, width: 2),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover)),
+                          );
+                        },
+                        placeholder: (context, url){
+                          return  Container(
+                            height: MediaQuery.of(context).size.width / 5,
+                            width: MediaQuery.of(context).size.width / 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xff222222),
+                              border: Border.all(
+                                  color: Colors.blueAccent, width: 2),
+                              // image: DecorationImage(
+                              //     image: imageProvider, fit: BoxFit.cover),
                             ),
-                            Text("@${userData['username']}"),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: InkWell(
-                                onTap: () {
-                                  follow();
-                                },
-                                child: ifFollowed == true
-                                    ? ShaderMask(
-                                        shaderCallback: (Rect bounds) {
-                                          return LinearGradient(colors: [
-                                            Color(0xff5d5da8),
-                                            Color(0xff5bc3ef)
-                                          ]).createShader(bounds);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(Icons.check_circle),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
-                                              child: Text("Followed"),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(Icons.add_circle),
-                                          Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Text("Follow"),
-                                          ),
-                                        ],
-                                      ),
+                          );
+                        },
+                        errorWidget: (context, url, e){
+                          return  Container(
+                            height: MediaQuery.of(context).size.width / 5,
+                            width: MediaQuery.of(context).size.width / 5,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color(0xff222222),
+                              border: Border.all(
+                                  color: Colors.blueAccent, width: 2),
+                              // image: DecorationImage(
+                              //     image: imageProvider, fit: BoxFit.cover),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${userData['fullname']}",
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Text("@${userData['username']}"),
+                          widget.userId == prefs.getString('userId') ?
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(
+                                        builder: (context) {
+                                          return Bio();
+                                        })).then((value) {
+                                  if(value == "done"){
+                                    init();
+                                  }
+                                });
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.edit, size: 17,),
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text("Edit Profile", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
+                          )
+                              :Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: InkWell(
+                              onTap: () {
+                                follow();
+                              },
+                              child: ifFollowed == true
+                                  ? ShaderMask(
+                                shaderCallback: (Rect bounds) {
+                                  return LinearGradient(colors: [
+                                    Color(0xff5d5da8),
+                                    Color(0xff5bc3ef)
+                                  ]).createShader(bounds);
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.check_circle),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.all(5.0),
+                                      child: Text("Followed"),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.add_circle),
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text("Follow"),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Row(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Followers(
-                                            userId: widget.userId,
-                                          );
-                                        });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${userData['followers']}",
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    4.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Followers",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    2.5),
-                                      )
-                                    ],
-                                  ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Followers(
+                                          userId: widget.userId,
+                                        );
+                                      });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${userData['followers']}",
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              4.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Followers",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              2.5),
+                                    )
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 20,
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Folllowing(
+                                          userId: widget.userId,
+                                        );
+                                      });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "${userData['following']}",
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              4.5,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "Following",
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                          fontSize:
+                                          SizeConfig.safeBlockHorizontal *
+                                              2.5),
+                                    )
+                                  ],
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Folllowing(
-                                            userId: widget.userId,
-                                          );
-                                        });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "${userData['following']}",
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    4.5,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Following",
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                            fontSize:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    2.5),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ],
               ),
             ),
+            trailing: widget.userId == prefs.getString("userId")?IconButton(
+              onPressed: (){
+                showBarModalBottomSheet(context: context, builder: (context){
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      Settings()));
+                        },
+                        title: Text(
+                          "Settings",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Your settings",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) =>
+                                      ReferralProgram()));
+                        },
+                        title: Text(
+                          "Invite ",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Invite friends and earn rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => Rewards()));
+                        },
+                        title: Text(
+                          "Your rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 1.5)
+                              .toDouble(),
+                          style: TextStyle(
+                            //  color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4),
+                        ),
+                        trailing: Icon(Icons.arrow_forward_ios_rounded,
+                            size: 15),
+                        subtitle: Text(
+                          "Check your rewards",
+                          textScaleFactor: mediaQueryData.textScaleFactor
+                              .clamp(0.5, 0.8)
+                              .toDouble(),
+                          style: TextStyle(
+                            //       color: Colors.white70,
+                              fontWeight: FontWeight.w300,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 3.4),
+                        ),
+                      ),
+                      // ListTile(
+                      //   onTap: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         CupertinoPageRoute(
+                      //             builder: (context) => PublicProfile(
+                      //                 userId:
+                      //                 prefs.getString("userId"))));
+                      //   },
+                      //   title: Text(
+                      //     "Public Profile",
+                      //     textScaleFactor: mediaQueryData.textScaleFactor
+                      //         .clamp(0.5, 1.5)
+                      //         .toDouble(),
+                      //     style: TextStyle(
+                      //       //  color: Colors.white,
+                      //         fontWeight: FontWeight.w700,
+                      //         fontSize:
+                      //         SizeConfig.safeBlockHorizontal * 4),
+                      //   ),
+                      //   trailing: Icon(Icons.arrow_forward_ios_rounded,
+                      //       size: 15),
+                      //   subtitle: Text(
+                      //     "See how others see you",
+                      //     textScaleFactor: mediaQueryData.textScaleFactor
+                      //         .clamp(0.5, 0.8)
+                      //         .toDouble(),
+                      //     style: TextStyle(
+                      //       //       color: Colors.white70,
+                      //         fontWeight: FontWeight.w300,
+                      //         fontSize:
+                      //         SizeConfig.safeBlockHorizontal * 3.4),
+                      //   ),
+                      // ),
+                    ],
+                  );
+                });
+              },
+              icon: Icon(Icons.more_horiz_rounded),
+            ): SizedBox(),
           ),
+
         ],
       ),
     );
@@ -379,13 +600,7 @@ class _PublicProfileState extends State<PublicProfile>
 
   List subscriptions = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    // getUserFollowers();
-    // getUserFollowing();
-
+  void init(){
     _episodeScrollController = ScrollController();
     subscriptionController = ScrollController();
     getProfileData();
@@ -395,6 +610,16 @@ class _PublicProfileState extends State<PublicProfile>
     userSnippet(widget.userId);
     userSubscriptions();
     _controller = TabController(vsync: this, length: 6);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    // getUserFollowers();
+    // getUserFollowing();
+
+    init();
     super.initState();
   }
 
@@ -431,6 +656,8 @@ class _PublicProfileState extends State<PublicProfile>
     }
   }
 
+
+
   ScrollController _episodeScrollController;
 
   PageController _pageController = PageController(viewportFraction: 0.8);
@@ -443,28 +670,30 @@ class _PublicProfileState extends State<PublicProfile>
       return Scaffold(
         backgroundColor: Color(0xff161616),
         body: NestedScrollView(
+          controller: _episodeScrollController,
           physics: BouncingScrollPhysics(),
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
+
                   forceElevated: isInnerBoxScrolled,
-                  expandedHeight: MediaQuery.of(context).size.height / 2.8,
+                  expandedHeight: MediaQuery.of(context).size.height / 2.5,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(children: [
                       Column(children: [
                         Container(
                           height:
-                              (MediaQuery.of(context).size.height / 3) * (0.45),
+                          (MediaQuery.of(context).size.height / 3) * (0.45),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
-                            Color(0xff5d5da8),
-                            Color(0xff5bc3ef)
-                          ])),
+                                Color(0xff5d5da8),
+                                Color(0xff5bc3ef)
+                              ])),
                         ),
                         Container(
                           height:
-                              (MediaQuery.of(context).size.height / 3) * (0.55),
+                          (MediaQuery.of(context).size.height / 3) * (0.55),
                         )
                       ]),
                       bodyContainer(),
@@ -472,7 +701,7 @@ class _PublicProfileState extends State<PublicProfile>
                   ),
                   bottom: PreferredSize(
                     preferredSize: Size.fromHeight(
-                      (MediaQuery.of(context).size.height / 3) * (0.15),
+                      (MediaQuery.of(context).size.height / 3) * (0.17),
                     ),
                     child: Container(
                       color: Color(0xff161616),
@@ -492,14 +721,15 @@ class _PublicProfileState extends State<PublicProfile>
                                     text: "About",
                                   ),
                                   Tab(
+                                    text: "Subscriptions",
+                                  ),
+                                  Tab(
                                     text: "Podcast",
                                   ),
                                   Tab(
                                     text: "Episode",
                                   ),
-                                  Tab(
-                                    text: "Subscriptions",
-                                  ),
+
                                   Tab(
                                     text: "Live",
                                   ),
@@ -527,18 +757,19 @@ class _PublicProfileState extends State<PublicProfile>
               ),
               Container(
                 child: ListView(
+                  controller: subscriptionController,
                   children: [
                     Column(
                       children: [
-                        for (var v in podcastList)
+                        for (var v in subscriptions)
                           Padding(
                             padding: const EdgeInsets.all(15),
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(context,
                                     CupertinoPageRoute(builder: (context) {
-                                  return PodcastView(v['id']);
-                                }));
+                                      return PodcastView(v['id']);
+                                    }));
                               },
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -547,12 +778,12 @@ class _PublicProfileState extends State<PublicProfile>
                                     errorWidget: (context, url, error) =>
                                         Container(
                                             width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                                .size
+                                                .width /
                                                 6,
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                                .size
+                                                .width /
                                                 6,
                                             child: Icon(
                                               Icons.error,
@@ -561,15 +792,15 @@ class _PublicProfileState extends State<PublicProfile>
                                     placeholder: (context, url) {
                                       return Container(
                                         height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
+                                        MediaQuery.of(context).size.width /
+                                            6,
                                         width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
+                                        MediaQuery.of(context).size.width /
+                                            6,
                                         decoration: BoxDecoration(
                                           color: Color(0xff222222),
                                           borderRadius:
-                                              BorderRadius.circular(5),
+                                          BorderRadius.circular(5),
                                         ),
                                       );
                                     },
@@ -577,14 +808,14 @@ class _PublicProfileState extends State<PublicProfile>
                                     imageBuilder: (context, imageProvider) {
                                       return Container(
                                         height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
+                                        MediaQuery.of(context).size.width /
+                                            6,
                                         width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
+                                        MediaQuery.of(context).size.width /
+                                            6,
                                         decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(5),
+                                            BorderRadius.circular(5),
                                             image: DecorationImage(
                                                 image: imageProvider,
                                                 fit: BoxFit.cover)),
@@ -596,7 +827,7 @@ class _PublicProfileState extends State<PublicProfile>
                                       padding: const EdgeInsets.all(10),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "${v['name']}",
@@ -606,7 +837,7 @@ class _PublicProfileState extends State<PublicProfile>
                                             style: TextStyle(
                                                 color: Color(0xffe8e8e8),
                                                 fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
+                                                    .safeBlockHorizontal *
                                                     3.5,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -619,7 +850,117 @@ class _PublicProfileState extends State<PublicProfile>
                                                 color: Color(0xffe8e8e8)
                                                     .withOpacity(0.5),
                                                 fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
+                                                    .safeBlockHorizontal *
+                                                    3),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: ListView(
+                  children: [
+                    Column(
+                      children: [
+                        for (var v in podcastList)
+                          Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                      return PodcastView(v['id']);
+                                    }));
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CachedNetworkImage(
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                6,
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                6,
+                                            child: Icon(
+                                              Icons.error,
+                                              color: Color(0xffe8e8e8),
+                                            )),
+                                    placeholder: (context, url) {
+                                      return Container(
+                                        height:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        width:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff222222),
+                                          borderRadius:
+                                          BorderRadius.circular(5),
+                                        ),
+                                      );
+                                    },
+                                    imageUrl: v['image'],
+                                    imageBuilder: (context, imageProvider) {
+                                      return Container(
+                                        height:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        width:
+                                        MediaQuery.of(context).size.width /
+                                            6,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5),
+                                            image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover)),
+                                      );
+                                    },
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${v['name']}",
+                                            textScaleFactor: 1.0,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8),
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    3.5,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "${v['author']}",
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8)
+                                                    .withOpacity(0.5),
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
                                                     3),
                                           )
                                         ],
@@ -648,10 +989,10 @@ class _PublicProfileState extends State<PublicProfile>
                           onTap: () {
                             Navigator.push(context,
                                 CupertinoPageRoute(builder: (context) {
-                              return EpisodeView(
-                                episodeId: v['id'],
-                              );
-                            }));
+                                  return EpisodeView(
+                                    episodeId: v['id'],
+                                  );
+                                }));
                           },
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -685,56 +1026,56 @@ class _PublicProfileState extends State<PublicProfile>
                                               return Container(
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                                   image: DecorationImage(
                                                       image: imageProvider,
                                                       fit: BoxFit.cover),
                                                 ),
                                                 width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
+                                                    .size
+                                                    .width /
                                                     7,
                                                 height: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
+                                                    .size
+                                                    .width /
                                                     7,
                                               );
                                             },
                                             imageUrl: v['image'],
                                             memCacheWidth:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width
-                                                    .floor(),
+                                            MediaQuery.of(context)
+                                                .size
+                                                .width
+                                                .floor(),
                                             memCacheHeight:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width
-                                                    .floor(),
+                                            MediaQuery.of(context)
+                                                .size
+                                                .width
+                                                .floor(),
                                             placeholder: (context, url) =>
                                                 Container(
-                                              width: MediaQuery.of(context)
+                                                  width: MediaQuery.of(context)
                                                       .size
                                                       .width /
-                                                  7,
-                                              height: MediaQuery.of(context)
+                                                      7,
+                                                  height: MediaQuery.of(context)
                                                       .size
                                                       .width /
-                                                  7,
-                                              child: Image.asset(
-                                                  'assets/images/Thumbnail.png'),
-                                            ),
+                                                      7,
+                                                  child: Image.asset(
+                                                      'assets/images/Thumbnail.png'),
+                                                ),
                                             errorWidget:
                                                 (context, url, error) =>
-                                                    Icon(Icons.error),
+                                                Icon(Icons.error),
                                           ),
                                           SizedBox(
                                               width:
-                                                  SizeConfig.screenWidth / 26),
+                                              SizeConfig.screenWidth / 26),
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                               children: [
                                                 GestureDetector(
                                                   onTap: () {
@@ -743,23 +1084,23 @@ class _PublicProfileState extends State<PublicProfile>
                                                         CupertinoPageRoute(
                                                             builder: (context) =>
                                                                 PodcastView(v[
-                                                                    'podcast_id'])));
+                                                                'podcast_id'])));
                                                   },
                                                   child: Text(
                                                     '${v['podcast_name']}',
                                                     textScaleFactor:
-                                                        mediaQueryData
-                                                            .textScaleFactor
-                                                            .clamp(0.1, 1.2)
-                                                            .toDouble(),
+                                                    mediaQueryData
+                                                        .textScaleFactor
+                                                        .clamp(0.1, 1.2)
+                                                        .toDouble(),
                                                     style: TextStyle(
                                                         color:
-                                                            Color(0xffe8e8e8),
+                                                        Color(0xffe8e8e8),
                                                         fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
+                                                            .safeBlockHorizontal *
                                                             5,
                                                         fontWeight:
-                                                            FontWeight.normal),
+                                                        FontWeight.normal),
                                                   ),
                                                 ),
                                                 // Text(
@@ -787,7 +1128,7 @@ class _PublicProfileState extends State<PublicProfile>
                                           width: double.infinity,
                                           child: Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 v['name'],
@@ -798,58 +1139,58 @@ class _PublicProfileState extends State<PublicProfile>
                                                 style: TextStyle(
                                                     color: Color(0xffe8e8e8),
                                                     fontSize: SizeConfig
-                                                            .safeBlockHorizontal *
+                                                        .safeBlockHorizontal *
                                                         4.5,
                                                     fontWeight:
-                                                        FontWeight.bold),
+                                                    FontWeight.bold),
                                               ),
                                               Padding(
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
+                                                const EdgeInsets.symmetric(
+                                                    vertical: 10),
                                                 child: v['summary'] == null
                                                     ? SizedBox(
-                                                        width: 0, height: 0)
+                                                    width: 0, height: 0)
                                                     : (htmlMatch.hasMatch(
-                                                                v['summary']) ==
-                                                            true
-                                                        ? Text(
-                                                            parse(v['summary'])
-                                                                .body
-                                                                .text,
-                                                            textScaleFactor:
-                                                                mediaQueryData
-                                                                    .textScaleFactor
-                                                                    .clamp(
-                                                                        0.5, 1)
-                                                                    .toDouble(),
-                                                            maxLines: 2,
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                        0xffe8e8e8)
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                fontSize: SizeConfig
-                                                                        .safeBlockHorizontal *
-                                                                    3.2),
-                                                          )
-                                                        : Text(
-                                                            '${v['summary']}',
-                                                            textScaleFactor:
-                                                                mediaQueryData
-                                                                    .textScaleFactor
-                                                                    .clamp(
-                                                                        0.5, 1)
-                                                                    .toDouble(),
-                                                            style: TextStyle(
-                                                                color: Color(
-                                                                        0xffe8e8e8)
-                                                                    .withOpacity(
-                                                                        0.5),
-                                                                fontSize: SizeConfig
-                                                                        .safeBlockHorizontal *
-                                                                    3.2),
-                                                          )),
+                                                    v['summary']) ==
+                                                    true
+                                                    ? Text(
+                                                  parse(v['summary'])
+                                                      .body
+                                                      .text,
+                                                  textScaleFactor:
+                                                  mediaQueryData
+                                                      .textScaleFactor
+                                                      .clamp(
+                                                      0.5, 1)
+                                                      .toDouble(),
+                                                  maxLines: 2,
+                                                  style: TextStyle(
+                                                      color: Color(
+                                                          0xffe8e8e8)
+                                                          .withOpacity(
+                                                          0.5),
+                                                      fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                          3.2),
+                                                )
+                                                    : Text(
+                                                  '${v['summary']}',
+                                                  textScaleFactor:
+                                                  mediaQueryData
+                                                      .textScaleFactor
+                                                      .clamp(
+                                                      0.5, 1)
+                                                      .toDouble(),
+                                                  style: TextStyle(
+                                                      color: Color(
+                                                          0xffe8e8e8)
+                                                          .withOpacity(
+                                                          0.5),
+                                                      fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                          3.2),
+                                                )),
                                               )
                                             ],
                                           ),
@@ -857,232 +1198,232 @@ class _PublicProfileState extends State<PublicProfile>
                                       ),
                                       Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 v['permlink'] == null
                                                     ? SizedBox()
                                                     : InkWell(
-                                                        onTap: () async {
-                                                          if (prefs.getString(
-                                                                  'HiveUserName') !=
-                                                              null) {
-                                                            setState(() {
-                                                              v['isLoading'] =
-                                                                  true;
-                                                            });
-                                                            double _value =
-                                                                50.0;
-                                                            showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return Dialog(
-                                                                          backgroundColor: Colors
-                                                                              .transparent,
-                                                                          child: UpvoteEpisode(
-                                                                              permlink: v['permlink'],
-                                                                              episode_id: v['id']));
-                                                                    })
-                                                                .then(
-                                                                    (value) async {
-                                                              print(value);
-                                                            });
-                                                            setState(() {
-                                                              v['ifVoted'] =
-                                                                  !v['ifVoted'];
-                                                            });
-                                                            setState(() {
-                                                              v['isLoading'] =
-                                                                  false;
-                                                            });
-                                                          } else {
-                                                            showBarModalBottomSheet(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return HiveDetails();
-                                                                });
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          decoration: v[
-                                                                      'ifVoted'] ==
-                                                                  true
-                                                              ? BoxDecoration(
-                                                                  gradient:
-                                                                      LinearGradient(
-                                                                          colors: [
-                                                                        Color(
-                                                                            0xff5bc3ef),
-                                                                        Color(
-                                                                            0xff5d5da8)
-                                                                      ]),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              30))
-                                                              : BoxDecoration(
-                                                                  border: Border
-                                                                      .all(
-                                                                          color:
-                                                                              kSecondaryColor),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              30)),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical: 5,
-                                                                    horizontal:
-                                                                        5),
-                                                            child: Row(
-                                                              children: [
-                                                                v['isLoading'] ==
-                                                                        true
-                                                                    ? Container(
-                                                                        height:
-                                                                            17,
-                                                                        width:
-                                                                            18,
-                                                                        child:
-                                                                            SpinKitPulse(
-                                                                          color:
-                                                                              Colors.blue,
-                                                                        ),
-                                                                      )
-                                                                    : Icon(
-                                                                        FontAwesomeIcons
-                                                                            .chevronCircleUp,
-                                                                        size:
-                                                                            15,
-                                                                        color: Color(
-                                                                            0xffe8e8e8),
-                                                                      ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      horizontal:
-                                                                          8),
-                                                                  child: Text(
-                                                                    v['votes']
-                                                                        .toString(),
-                                                                    textScaleFactor:
-                                                                        1.0,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      color: Color(
-                                                                          0xffe8e8e8),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .only(
-                                                                      right: 4),
-                                                                  child: Text(
-                                                                    '\$${v['payout_value'].toString().split(' ')[0]}',
-                                                                    textScaleFactor:
-                                                                        1.0,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: Color(
-                                                                            0xffe8e8e8)),
-                                                                  ),
-                                                                )
-                                                              ],
+                                                  onTap: () async {
+                                                    if (prefs.getString(
+                                                        'HiveUserName') !=
+                                                        null) {
+                                                      setState(() {
+                                                        v['isLoading'] =
+                                                        true;
+                                                      });
+                                                      double _value =
+                                                      50.0;
+                                                      showDialog(
+                                                          context:
+                                                          context,
+                                                          builder:
+                                                              (context) {
+                                                            return Dialog(
+                                                                backgroundColor: Colors
+                                                                    .transparent,
+                                                                child: UpvoteEpisode(
+                                                                    permlink: v['permlink'],
+                                                                    episode_id: v['id']));
+                                                          })
+                                                          .then(
+                                                              (value) async {
+                                                            print(value);
+                                                          });
+                                                      setState(() {
+                                                        v['ifVoted'] =
+                                                        !v['ifVoted'];
+                                                      });
+                                                      setState(() {
+                                                        v['isLoading'] =
+                                                        false;
+                                                      });
+                                                    } else {
+                                                      showBarModalBottomSheet(
+                                                          context:
+                                                          context,
+                                                          builder:
+                                                              (context) {
+                                                            return HiveDetails();
+                                                          });
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    decoration: v[
+                                                    'ifVoted'] ==
+                                                        true
+                                                        ? BoxDecoration(
+                                                        gradient:
+                                                        LinearGradient(
+                                                            colors: [
+                                                              Color(
+                                                                  0xff5bc3ef),
+                                                              Color(
+                                                                  0xff5d5da8)
+                                                            ]),
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            30))
+                                                        : BoxDecoration(
+                                                        border: Border
+                                                            .all(
+                                                            color:
+                                                            kSecondaryColor),
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            30)),
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 5,
+                                                          horizontal:
+                                                          5),
+                                                      child: Row(
+                                                        children: [
+                                                          v['isLoading'] ==
+                                                              true
+                                                              ? Container(
+                                                            height:
+                                                            17,
+                                                            width:
+                                                            18,
+                                                            child:
+                                                            SpinKitPulse(
+                                                              color:
+                                                              Colors.blue,
                                                             ),
+                                                          )
+                                                              : Icon(
+                                                            FontAwesomeIcons
+                                                                .chevronCircleUp,
+                                                            size:
+                                                            15,
+                                                            color: Color(
+                                                                0xffe8e8e8),
                                                           ),
-                                                        ),
-                                                      ),
-                                                v['permlink'] == null
-                                                    ? SizedBox()
-                                                    : InkWell(
-                                                        onTap: () {
-                                                          if (prefs.getString(
-                                                                  'HiveUserName') !=
-                                                              null) {
-                                                            Navigator.push(
-                                                                context,
-                                                                CupertinoPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            Comments(
-                                                                              episodeObject: v,
-                                                                            )));
-                                                          } else {
-                                                            showBarModalBottomSheet(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return HiveDetails();
-                                                                });
-                                                          }
-                                                        },
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color:
-                                                                        kSecondaryColor),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            30)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(4.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .mode_comment_outlined,
-                                                                    size: 14,
-                                                                    color: Color(
-                                                                        0xffe8e8e8),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                        horizontal:
-                                                                            7),
-                                                                    child: Text(
-                                                                      v['comments_count']
-                                                                          .toString(),
-                                                                      textScaleFactor:
-                                                                          1.0,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              10,
-                                                                          color:
-                                                                              Color(0xffe8e8e8)),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                8),
+                                                            child: Text(
+                                                              v['votes']
+                                                                  .toString(),
+                                                              textScaleFactor:
+                                                              1.0,
+                                                              style:
+                                                              TextStyle(
+                                                                fontSize:
+                                                                12,
+                                                                color: Color(
+                                                                    0xffe8e8e8),
                                                               ),
                                                             ),
                                                           ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .only(
+                                                                right: 4),
+                                                            child: Text(
+                                                              '\$${v['payout_value'].toString().split(' ')[0]}',
+                                                              textScaleFactor:
+                                                              1.0,
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                  12,
+                                                                  color: Color(
+                                                                      0xffe8e8e8)),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                v['permlink'] == null
+                                                    ? SizedBox()
+                                                    : InkWell(
+                                                  onTap: () {
+                                                    if (prefs.getString(
+                                                        'HiveUserName') !=
+                                                        null) {
+                                                      Navigator.push(
+                                                          context,
+                                                          CupertinoPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                  Comments(
+                                                                    episodeObject: v,
+                                                                  )));
+                                                    } else {
+                                                      showBarModalBottomSheet(
+                                                          context:
+                                                          context,
+                                                          builder:
+                                                              (context) {
+                                                            return HiveDetails();
+                                                          });
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets
+                                                        .all(8.0),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                              kSecondaryColor),
+                                                          borderRadius:
+                                                          BorderRadius
+                                                              .circular(
+                                                              30)),
+                                                      child: Padding(
+                                                        padding:
+                                                        const EdgeInsets
+                                                            .all(4.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .mode_comment_outlined,
+                                                              size: 14,
+                                                              color: Color(
+                                                                  0xffe8e8e8),
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  7),
+                                                              child: Text(
+                                                                v['comments_count']
+                                                                    .toString(),
+                                                                textScaleFactor:
+                                                                1.0,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                    10,
+                                                                    color:
+                                                                    Color(0xffe8e8e8)),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
+                                                    ),
+                                                  ),
+                                                ),
                                                 InkWell(
                                                   onTap: () {
                                                     // print(v
@@ -1158,21 +1499,21 @@ class _PublicProfileState extends State<PublicProfile>
                                                   },
                                                   child: Padding(
                                                     padding:
-                                                        const EdgeInsets.only(
-                                                            right: 60),
+                                                    const EdgeInsets.only(
+                                                        right: 60),
                                                     child: Container(
                                                       decoration: BoxDecoration(
                                                           border: Border.all(
                                                               color:
-                                                                  kSecondaryColor),
+                                                              kSecondaryColor),
                                                           borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      30)),
+                                                          BorderRadius
+                                                              .circular(
+                                                              30)),
                                                       child: Padding(
                                                         padding:
-                                                            const EdgeInsets
-                                                                .all(5),
+                                                        const EdgeInsets
+                                                            .all(5),
                                                         child: Row(
                                                           children: [
                                                             Icon(
@@ -1184,14 +1525,14 @@ class _PublicProfileState extends State<PublicProfile>
                                                             ),
                                                             Padding(
                                                               padding: const EdgeInsets
-                                                                      .symmetric(
+                                                                  .symmetric(
                                                                   horizontal:
-                                                                      8),
+                                                                  8),
                                                               child: Text(
                                                                 DurationCalculator(
                                                                     v['duration']),
                                                                 textScaleFactor:
-                                                                    0.75,
+                                                                0.75,
                                                                 style: TextStyle(
                                                                     color: Color(
                                                                         0xffe8e8e8)),
@@ -1229,117 +1570,7 @@ class _PublicProfileState extends State<PublicProfile>
                   ],
                 ),
               ),
-              Container(
-                child: ListView(
-                  controller: subscriptionController,
-                  children: [
-                    Column(
-                      children: [
-                        for (var v in subscriptions)
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(context,
-                                    CupertinoPageRoute(builder: (context) {
-                                  return PodcastView(v['id']);
-                                }));
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  CachedNetworkImage(
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                6,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                6,
-                                            child: Icon(
-                                              Icons.error,
-                                              color: Color(0xffe8e8e8),
-                                            )),
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xff222222),
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                      );
-                                    },
-                                    imageUrl: v['image'],
-                                    imageBuilder: (context, imageProvider) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                6,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover)),
-                                      );
-                                    },
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${v['name']}",
-                                            textScaleFactor: 1.0,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3.5,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "${v['author']}",
-                                            textScaleFactor: 1.0,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8)
-                                                    .withOpacity(0.5),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+
               Container(),
               Container(),
             ],
@@ -1349,82 +1580,82 @@ class _PublicProfileState extends State<PublicProfile>
     } catch (e) {
       return Scaffold(
         body: Container(
-          child: CircularProgressIndicator(),
+          child: Center(child: CircularProgressIndicator()),
         ),
       );
     }
   }
 }
 
-_joinMeeting({String roomId, String roomName, String hostUserId}) async {
-  // Enable or disable any feature flag here
-  // If feature flag are not provided, default values will be used
-  // Full list of feature flags (and defaults) available in the README
-  Map<FeatureFlagEnum, bool> featureFlags = {
-    FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-    FeatureFlagEnum.CHAT_ENABLED: false,
-  };
-  if (!kIsWeb) {
-    // Here is an example, disabling features for each platform
-    if (Platform.isAndroid) {
-      // Disable ConnectionService usage on Android to avoid issues (see README)
-      featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-    } else if (Platform.isIOS) {
-      // Disable PIP on iOS as it looks weird
-      featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-    }
-  }
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  var options = JitsiMeetingOptions(room: roomId)
-    ..serverURL = 'https://sessions.aureal.one'
-    ..subject = roomName
-    ..userDisplayName = prefs.getString("HiveUserName")
-    ..userEmail = 'emailText.text'
-    // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-    ..audioOnly = true
-    ..audioMuted = isAudioMuted
-    ..videoMuted = isVideoMuted
-    ..featureFlags.addAll(featureFlags)
-    ..webOptions = {
-      "roomName": roomName,
-      "width": "100%",
-      "height": "100%",
-      "enableWelcomePage": false,
-      "chromeExtensionBanner": null,
-      "userInfo": {
-        "displayName": prefs.getString('userName'),
-        'avatarUrl': prefs.getString('displayPicture')
-      }
-    };
-
-  debugPrint("JitsiMeetingOptions: $options");
-
-  await JitsiMeet.joinMeeting(
-    options,
-    listener: JitsiMeetingListener(
-        onConferenceWillJoin: (message) {
-          debugPrint("${options.room} will join with message: $message");
-        },
-        onConferenceJoined: (message) {
-          debugPrint("${options.room} joined with message: $message");
-        },
-        onConferenceTerminated: (message) {
-          debugPrint("${options.room} terminated with message: $message");
-        },
-        genericListeners: [
-          JitsiGenericListener(
-              eventName: 'onConferenceTerminated',
-              callback: (dynamic message) {
-                if (hostUserId == prefs.getString("userId")) {
-                  hostLeft(roomId);
-                }
-                debugPrint("readyToClose callback");
-              }),
-        ]),
-  );
-}
+// _joinMeeting({String roomId, String roomName, String hostUserId}) async {
+//   // Enable or disable any feature flag here
+//   // If feature flag are not provided, default values will be used
+//   // Full list of feature flags (and defaults) available in the README
+//   Map<FeatureFlagEnum, bool> featureFlags = {
+//     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+//     FeatureFlagEnum.CHAT_ENABLED: false,
+//   };
+//   if (!kIsWeb) {
+//     // Here is an example, disabling features for each platform
+//     if (Platform.isAndroid) {
+//       // Disable ConnectionService usage on Android to avoid issues (see README)
+//       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+//     } else if (Platform.isIOS) {
+//       // Disable PIP on iOS as it looks weird
+//       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+//     }
+//   }
+//
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//
+//   var options = JitsiMeetingOptions(room: roomId)
+//     ..serverURL = 'https://sessions.aureal.one'
+//     ..subject = roomName
+//     ..userDisplayName = prefs.getString("HiveUserName")
+//     ..userEmail = 'emailText.text'
+//     // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+//     ..audioOnly = true
+//     ..audioMuted = isAudioMuted
+//     ..videoMuted = isVideoMuted
+//     ..featureFlags.addAll(featureFlags)
+//     ..webOptions = {
+//       "roomName": roomName,
+//       "width": "100%",
+//       "height": "100%",
+//       "enableWelcomePage": false,
+//       "chromeExtensionBanner": null,
+//       "userInfo": {
+//         "displayName": prefs.getString('userName'),
+//         'avatarUrl': prefs.getString('displayPicture')
+//       }
+//     };
+//
+//   debugPrint("JitsiMeetingOptions: $options");
+//
+//   // await JitsiMeet.joinMeeting(
+//   //   options,
+//   //   listener: JitsiMeetingListener(
+//   //       onConferenceWillJoin: (message) {
+//   //         debugPrint("${options.room} will join with message: $message");
+//   //       },
+//   //       onConferenceJoined: (message) {
+//   //         debugPrint("${options.room} joined with message: $message");
+//   //       },
+//   //       onConferenceTerminated: (message) {
+//   //         debugPrint("${options.room} terminated with message: $message");
+//   //       },
+//   //       genericListeners: [
+//   //         JitsiGenericListener(
+//   //             eventName: 'onConferenceTerminated',
+//   //             callback: (dynamic message) {
+//   //               if (hostUserId == prefs.getString("userId")) {
+//   //                 hostLeft(roomId);
+//   //               }
+//   //               debugPrint("readyToClose callback");
+//   //             }),
+//   //       ]),
+//   // );
+// }
 
 void hostJoined(var roomId) async {
   Dio dio = Dio();
@@ -1574,10 +1805,10 @@ class _FollowersState extends State<Followers> {
                   onTap: () {
                     Navigator.push(context,
                         CupertinoPageRoute(builder: (context) {
-                      return PublicProfile(
-                        userId: v['id'],
-                      );
-                    }));
+                          return PublicProfile(
+                            userId: v['id'],
+                          );
+                        }));
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1616,13 +1847,14 @@ class _FollowersState extends State<Followers> {
                                       style: TextStyle(
                                           color: Color(0xffe8e8e8),
                                           fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3.5,
+                                          SizeConfig.safeBlockHorizontal *
+                                              3.5,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     v['hive_username'] == null
                                         ? SizedBox()
                                         : Text(
+<<<<<<< HEAD
                                             "${v['hive_username']}",
                                             textScaleFactor: 1.0,
                                             overflow: TextOverflow.ellipsis,
@@ -1634,6 +1866,19 @@ class _FollowersState extends State<Followers> {
                                                         .safeBlockHorizontal *
                                                     3),
                                           )
+=======
+                                      "${v['fullname']}",
+                                      textScaleFactor: 1.0,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: Color(0xffe8e8e8)
+                                              .withOpacity(0.5),
+                                          fontSize: SizeConfig
+                                              .safeBlockHorizontal *
+                                              3),
+                                    )
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
                                   ],
                                 ),
                               ),
@@ -1650,13 +1895,13 @@ class _FollowersState extends State<Followers> {
                         },
                         icon: v['ifFollowsAuthor'] == true
                             ? Icon(
-                                Icons.verified_user,
-                                color: Color(0xffe8e8e8),
-                              )
+                          Icons.verified_user,
+                          color: Color(0xffe8e8e8),
+                        )
                             : Icon(
-                                Icons.person_add,
-                                color: Color(0xffe8e8e8),
-                              ),
+                          Icons.person_add,
+                          color: Color(0xffe8e8e8),
+                        ),
                       )
                     ],
                   ),
@@ -1754,10 +1999,10 @@ class _FolllowingState extends State<Folllowing> {
                   onTap: () {
                     Navigator.push(context,
                         CupertinoPageRoute(builder: (context) {
-                      return PublicProfile(
-                        userId: v['id'],
-                      );
-                    }));
+                          return PublicProfile(
+                            userId: v['id'],
+                          );
+                        }));
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1796,24 +2041,24 @@ class _FolllowingState extends State<Folllowing> {
                                       style: TextStyle(
                                           color: Color(0xffe8e8e8),
                                           fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  3.5,
+                                          SizeConfig.safeBlockHorizontal *
+                                              3.5,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     v['fullname'] == null
                                         ? SizedBox()
                                         : Text(
-                                            "${v['fullname']}",
-                                            textScaleFactor: 1.0,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                color: Color(0xffe8e8e8)
-                                                    .withOpacity(0.5),
-                                                fontSize: SizeConfig
-                                                        .safeBlockHorizontal *
-                                                    3),
-                                          )
+                                      "${v['fullname']}",
+                                      textScaleFactor: 1.0,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: Color(0xffe8e8e8)
+                                              .withOpacity(0.5),
+                                          fontSize: SizeConfig
+                                              .safeBlockHorizontal *
+                                              3),
+                                    )
                                   ],
                                 ),
                               ),
@@ -1830,13 +2075,13 @@ class _FolllowingState extends State<Folllowing> {
                         },
                         icon: v['ifFollowsAuthor'] == true
                             ? Icon(
-                                Icons.verified_user,
-                                color: Color(0xffe8e8e8),
-                              )
+                          Icons.verified_user,
+                          color: Color(0xffe8e8e8),
+                        )
                             : Icon(
-                                Icons.person_add,
-                                color: Color(0xffe8e8e8),
-                              ),
+                          Icons.person_add,
+                          color: Color(0xffe8e8e8),
+                        ),
                       )
                     ],
                   ),

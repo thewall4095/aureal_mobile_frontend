@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'package:auditory/screens/Profiles/PlaylistView.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'dart:io';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
@@ -100,6 +103,69 @@ class SearchFunctionality extends SearchDelegate {
     }
   }
 
+  CancelToken _cancel = CancelToken();
+
+  Future getPodcast() async {
+    Dio dio = Dio();
+
+    // if (_pagePodcast != 0) {
+    //   cancelToken.cancel();
+    // }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/search?word=$query&loggedinuser${prefs.getString('userId')}&page=0";
+
+    try {
+      var response = await dio.get(url);
+      if(response.statusCode == 200){
+        return response.data['PodcastList'];
+      }
+
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  Future getUsers() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/userSearch?word=$query&loggedinuser=${prefs.getString('userId')}&page=0&pageSize=10";
+
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        return response.data['users'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  Future getEpisodes() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/searchEpisodes?word=$query&loggedinuser=${prefs.getString('userId')}&page=0";
+    print(url);
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        return response.data['episodes'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+    print("Episode Search Ended");
+  }
+
+
+
   List<Widget> buildActions(BuildContext context) {
     // TODO: implement buildActions
     // throw UnimplementedError();
@@ -116,6 +182,31 @@ class SearchFunctionality extends SearchDelegate {
     ];
   }
 
+  Future getSearchSnippets() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/searchSnippet?page=0&pageSize=15&user_id=${prefs.getString("userId")}&word=$query";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future getPlaylistSearch() async {
+    String url = "";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget buildLeading(BuildContext context) {
     // TODO: implement buildLeading
@@ -128,6 +219,8 @@ class SearchFunctionality extends SearchDelegate {
     );
   }
 
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
   @override
   Widget buildResults(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -137,30 +230,1709 @@ class SearchFunctionality extends SearchDelegate {
 
     return Container(
       color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
-      // child: FutureBuilder(
-      //     future: getSearch(),
-      //     builder: (context, snapshot) {
-      //       if (snapshot.connectionState == ConnectionState.done) {
-      //         // print(query);
-      //         print(snapshot.data);
-      //         return ResultsSection(
-      //           data: snapshot.data,
-      //           query: query,
-      //         );
-      //       } else {
-      //         return Center(
-      //             child: Container(
-      //                 height: 50,
-      //                 width: 50,
-      //                 child: CircularProgressIndicator(
-      //                     backgroundColor: Colors.black,
-      //                     valueColor: AlwaysStoppedAnimation<Color>(
-      //                         Color(0xffffffff)))));
-      //       }
-      //     }),
-      child: ResultsSection(
-        query: query,
-      ),
+
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        color: Color(0xff161616),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            FutureBuilder(
+              future: getPodcast(),
+              builder: (context, snapshot){
+
+                try{
+                  if(snapshot.hasData){
+                    // snapshot.data['type'] = "podcast";
+                    return Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // ListTile(title: Text("${data['name']}", style: TextStyle(
+                          //     fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          //     fontWeight: FontWeight.bold
+                          // )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                          //   return LinearGradient(colors: [Color(
+                          //       0xff5bc3ef),
+                          //     Color(
+                          //         0xff5d5da8)]).createShader(bounds);
+                          // },child: GestureDetector(onTap: (){
+                          //   Navigator.push(context, CupertinoPageRoute(builder: (context){
+                          //     return SeeMore(data: data);
+                          //   },),);
+                          // },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                          // SizedBox(height: 10,),
+                          ListTile(
+                            title: Text("Podcasts", textScaleFactor: 1.0, style: TextStyle(
+                                color: Colors.white,
+                                fontSize:
+                                SizeConfig.safeBlockHorizontal * 4,
+                                fontWeight: FontWeight.bold),),
+                            trailing: InkWell(onTap: (){
+                              Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                return SeeMore(type: 'podcast', query: query,);
+                              }));
+                            },child: Text("See More", style: TextStyle(color: Colors.white),)),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: SizeConfig.blockSizeVertical * 25,
+                            constraints: BoxConstraints(
+                                minHeight:
+                                MediaQuery.of(context).size.height *
+                                    0.17),
+                            child: ListView.builder(
+                              addAutomaticKeepAlives: true,
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, int index){
+                                return Padding(
+                                  padding:
+                                  const EdgeInsets.fromLTRB(
+                                      15, 0, 0, 8),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  PodcastView(
+                                                      snapshot.data[index]['id'])));
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        // x
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            15),
+                                      ),
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width *
+                                          0.38,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment
+                                            .start,
+                                        mainAxisSize:
+                                        MainAxisSize.min,
+                                        children: [
+                                          CachedNetworkImage(
+                                            errorWidget: (context,
+                                                url, error) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                        fit: BoxFit
+                                                            .cover),
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(
+                                                        3)),
+                                                width: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                                height: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                              );
+                                            },
+                                            imageBuilder: (context,
+                                                imageProvider) {
+                                              return Container(
+
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image:
+                                                        imageProvider,
+                                                        fit: BoxFit
+                                                            .cover),
+                                                    borderRadius:
+                                                    BorderRadius
+                                                        .circular(
+                                                        3)),
+                                                width: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                                height: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                              );
+                                            },
+                                            memCacheHeight:
+                                            (MediaQuery.of(
+                                                context)
+                                                .size
+                                                .height)
+                                                .floor(),
+                                            imageUrl:snapshot.data[index]['image'],
+
+                                            placeholder: (context,
+                                                imageProvider) {
+                                              return Container(
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            'assets/images/Thumbnail.png'),
+                                                        fit: BoxFit
+                                                            .cover)),
+                                                height: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                                width: MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width *
+                                                    0.38,
+                                              );
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            snapshot.data[index]['name'],
+                                            maxLines: 1,
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow
+                                                .ellipsis,
+                                            style:
+                                            TextStyle(color: Color(0xffe8e8e8)),
+                                          ),
+                                          Text(
+                                            snapshot.data[index]['author'],
+                                            maxLines: 2,
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                    .safeBlockHorizontal *
+                                                    2.5,
+                                                color: Color(
+                                                    0xffe777777)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              scrollDirection: Axis.horizontal,
+
+                            ),
+                          ),
+                          // Text("${snapshot.data}"),
+                        ],
+                      ),
+                    );
+                  }else{
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+
+                      children: [
+                        ListTile(
+                          title: Text(" ", textScaleFactor: 1.0, style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4,
+                              fontWeight: FontWeight.bold),),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: SizeConfig.blockSizeVertical * 25,
+                          constraints: BoxConstraints(
+                              minHeight:
+                              MediaQuery.of(context).size.height *
+                                  0.17),
+                          child: ListView.builder(
+
+                            addAutomaticKeepAlives: true,
+
+                            itemCount: 10,
+                            itemBuilder: (context, int index){
+                              return Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(
+                                    15, 0, 0, 8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    // x
+                                    borderRadius:
+                                    BorderRadius.circular(
+                                        15),
+                                  ),
+                                  width: MediaQuery.of(context)
+                                      .size
+                                      .width *
+                                      0.38,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment
+                                        .start,
+                                    mainAxisSize:
+                                    MainAxisSize.min,
+                                    children: [
+                                      CachedNetworkImage(
+                                        errorWidget: (context,
+                                            url, error) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                color: Color(0xff222222),
+                                                // image: DecorationImage(
+                                                //     image: NetworkImage(
+                                                //         "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                //     fit: BoxFit
+                                                //         .cover),
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    3)),
+                                            width: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                          );
+                                        },
+                                        imageBuilder: (context,
+                                            imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image:
+                                                    imageProvider,
+                                                    fit: BoxFit
+                                                        .cover),
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    3)),
+                                            width: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                          );
+                                        },
+                                        memCacheHeight:
+                                        (MediaQuery.of(
+                                            context)
+                                            .size
+                                            .height)
+                                            .floor(),
+                                        imageUrl: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                        placeholder: (context,
+                                            imageProvider) {
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              // image: DecorationImage(
+                                              //     image: AssetImage(
+                                              //         'assets/images/Thumbnail.png'),
+                                              //     fit: BoxFit
+                                              //         .cover),
+                                                color: Color(0xff222222)
+                                            ),
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                            width: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width *
+                                                0.38,
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            scrollDirection: Axis.horizontal,
+
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  }catch(e){
+                    return Container();
+                  }
+
+
+              },
+            ),
+            FutureBuilder(
+              future: getEpisodes(),
+              builder: (context, snapshot){
+                try{
+                  if(snapshot.hasData){
+                    // snapshot.data['type'] = "episode";
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text("Episodes", textScaleFactor: 1.0, style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4,
+                              fontWeight: FontWeight.bold),),
+                trailing: InkWell(onTap: (){
+                Navigator.push(context, CupertinoPageRoute(builder: (context){
+                return SeeMore(type: "episode", query: query,);
+                }));
+                },child: Text("See More", style: TextStyle(color: Colors.white),)
+                          ),
+                        ),
+                        ColumnBuilder(itemCount: snapshot.data.length,itemBuilder: (context, int index){
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                        builder: (context) =>
+                                            EpisodeView(
+                                                episodeId: snapshot.data[index]['id'])));
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      // boxShadow: [
+                                      //   new BoxShadow(
+                                      //     color: Colors.black54
+                                      //         .withOpacity(0.2),
+                                      //     blurRadius: 10.0,
+                                      //   ),
+                                      // ],
+                                      // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
+                                      color:
+                                      Color(0xff222222),
+                                      borderRadius:
+                                      BorderRadius.circular(5),
+                                    ),
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets
+                                          .symmetric(
+                                          vertical: 15,
+                                          horizontal: 15),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              CachedNetworkImage(
+                                                imageBuilder: (context,
+                                                    imageProvider) {
+                                                  return Container(
+                                                    decoration:
+                                                    BoxDecoration(
+                                                      borderRadius:
+                                                      BorderRadius
+                                                          .circular(
+                                                          3),
+                                                      image: DecorationImage(
+                                                          image:
+                                                          imageProvider,
+                                                          fit: BoxFit
+                                                              .cover),
+                                                    ),
+                                                    width: MediaQuery.of(
+                                                        context)
+                                                        .size
+                                                        .width /
+                                                        8,
+                                                    height: MediaQuery.of(
+                                                        context)
+                                                        .size
+                                                        .width /
+                                                        8,
+                                                  );
+                                                },
+                                                imageUrl:
+                                                snapshot.data[index]['image'] == null ? snapshot.data[index]['podcast_image'] : snapshot.data[index]['image'],
+                                                memCacheWidth:
+                                                MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width
+                                                    .floor(),
+                                                memCacheHeight:
+                                                MediaQuery.of(
+                                                    context)
+                                                    .size
+                                                    .width
+                                                    .floor(),
+                                                placeholder:
+                                                    (context,
+                                                    url) =>
+                                                    Container(
+                                                      width: MediaQuery.of(
+                                                          context)
+                                                          .size
+                                                          .width /
+                                                          8,
+                                                      height: MediaQuery.of(
+                                                          context)
+                                                          .size
+                                                          .width /
+                                                          8,
+                                                      child: Image.asset(
+                                                          'assets/images/Thumbnail.png'),
+                                                    ),
+                                                errorWidget:
+                                                    (context, url,
+                                                    error) =>
+                                                    Icon(Icons
+                                                        .error),
+                                              ),
+                                              SizedBox(
+                                                  width: SizeConfig
+                                                      .screenWidth /
+                                                      26),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                                builder: (context) =>
+                                                                    PodcastView(snapshot.data[index]['podcast_id'])));
+                                                      },
+                                                      child: Text(
+                                                        snapshot.data[index]['podcast_name'],
+                                                        textScaleFactor: 0.8,
+                                                        style: TextStyle(
+                                                          color: Color(
+                                                              0xffe8e8e8),
+                                                            fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                                            fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${timeago.format(DateTime.parse(snapshot.data[index]['published_at']))}',
+                                                      textScaleFactor: 0.8,
+                                                      style: TextStyle(
+                                                        color: Color(
+                                                            0xffe8e8e8),
+                                                          fontSize: SizeConfig.safeBlockHorizontal * 3),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets
+                                                .symmetric(
+                                                vertical: 15),
+                                            child: Container(
+                                              width:
+                                              double.infinity,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .start,
+                                                children: [
+                                                  Text(
+                                                    snapshot.data[index]['name'],
+                                                    textScaleFactor:
+                                                    0.8,
+                                                    style: TextStyle(
+                                                      color: Color(
+                                                          0xffe8e8e8),
+                                                        fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                                                        fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical:
+                                                        10),
+                                                    child: snapshot.data[index]['summary'] ==
+                                                        null
+                                                        ? SizedBox(
+                                                        width:
+                                                        0,
+                                                        height:
+                                                        0)
+                                                        : (htmlMatch.hasMatch(snapshot.data[index]['summary']) ==
+                                                        true
+                                                        ? Text(
+                                                      parse(snapshot.data[index]['summary']).body.text,
+                                                      textScaleFactor:
+                                                      0.8,
+                                                      maxLines:
+                                                      2,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                          fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                    )
+                                                        : Text(
+                                                      '${snapshot.data[index]['summary']}',
+                                                      textScaleFactor:
+                                                      1.0,
+                                                      style: TextStyle(
+                                                             color: Colors.white,
+                                                          fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                                                    )),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+
+                                          // PlaybackButtons(data: snapshot.data[index], index: index, playlist: playlist,)
+
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },),
+                      ],
+                    );
+                  }else{
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (int i = 0; i < 6; i++)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.circular(10),
+                                  color: Color(0xff222222)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          height:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          decoration: BoxDecoration(
+                                              color:
+                                              Color(0xff161616),
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(10)),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Container(
+                                              decoration:
+                                              BoxDecoration(
+                                                  color: Color(
+                                                      0xff161616)),
+                                              height: 16,
+                                              width: MediaQuery.of(
+                                                  context)
+                                                  .size
+                                                  .width /
+                                                  3,
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              decoration:
+                                              BoxDecoration(
+                                                  color: Color(
+                                                      0xff161616)),
+                                              height: 8,
+                                              width: MediaQuery.of(
+                                                  context)
+                                                  .size
+                                                  .width /
+                                                  4,
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 3),
+                                      child: Container(
+                                          color: Color(0xff161616),
+                                          height: 10,
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 3),
+                                      child: Container(
+                                          color: Color(0xff161616),
+                                          height: 10,
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              2),
+                                    ),
+                                    SizedBox(
+                                      height: 6,
+                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 3),
+                                    //   child: Container(
+                                    //       color: Color(0xff161616),
+                                    //       height: 6,
+                                    //       width:
+                                    //       MediaQuery.of(context)
+                                    //           .size
+                                    //           .width),
+                                    // ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(
+                                    //       top: 3),
+                                    //   child: Container(
+                                    //       color: Color(0xff161616),
+                                    //       height: 6,
+                                    //       width:
+                                    //       MediaQuery.of(context)
+                                    //           .size
+                                    //           .width *
+                                    //           0.75),
+                                    // ),
+                                    // Padding(
+                                    //   padding:
+                                    //   const EdgeInsets.symmetric(
+                                    //       vertical: 20),
+                                    //   child: Row(
+                                    //     mainAxisAlignment:
+                                    //     MainAxisAlignment.start,
+                                    //     children: [
+                                    //       Container(
+                                    //         decoration: BoxDecoration(
+                                    //           borderRadius:
+                                    //           BorderRadius
+                                    //               .circular(10),
+                                    //           color:
+                                    //           Color(0xff161616),
+                                    //         ),
+                                    //         height: 25,
+                                    //         width:
+                                    //         MediaQuery.of(context)
+                                    //             .size
+                                    //             .width /
+                                    //             8,
+                                    //         //    color: kSecondaryColor,
+                                    //       ),
+                                    //       Padding(
+                                    //         padding:
+                                    //         const EdgeInsets.only(
+                                    //             left: 10),
+                                    //         child: Container(
+                                    //           decoration:
+                                    //           BoxDecoration(
+                                    //             borderRadius:
+                                    //             BorderRadius
+                                    //                 .circular(10),
+                                    //             color:
+                                    //             Color(0xff161616),
+                                    //           ),
+                                    //           height: 25,
+                                    //           width: MediaQuery.of(
+                                    //               context)
+                                    //               .size
+                                    //               .width /
+                                    //               8,
+                                    //           //    color: kSecondaryColor,
+                                    //         ),
+                                    //       ),
+                                    //       Padding(
+                                    //         padding:
+                                    //         const EdgeInsets.only(
+                                    //             left: 10),
+                                    //         child: Container(
+                                    //           decoration:
+                                    //           BoxDecoration(
+                                    //             borderRadius:
+                                    //             BorderRadius
+                                    //                 .circular(8),
+                                    //             color:
+                                    //             Color(0xff161616),
+                                    //           ),
+                                    //           height: 20,
+                                    //           width: MediaQuery.of(
+                                    //               context)
+                                    //               .size
+                                    //               .width /
+                                    //               8,
+                                    //           //    color: kSecondaryColor,
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+
+                  }
+
+                }catch(e){
+                  return SizedBox();
+                }
+              },
+            ),
+            FutureBuilder(future: getUsers(),builder: (context, snapshot){
+              try{
+                if(snapshot.hasData){
+                  // snapshot.data['type'] = "user";
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text("Users", textScaleFactor: 1.0, style: TextStyle(
+                            color: Colors.white,
+                            fontSize:
+                            SizeConfig.safeBlockHorizontal * 4,
+                            fontWeight: FontWeight.bold),),
+                        // trailing: InkWell(onTap: (){
+                        //   Navigator.push(context, CupertinoPageRoute(builder: (context){
+                        //     return SeeMore(type: "user", query: query,);
+                        //   }));
+                        // },child: Text("See More", style: TextStyle(color: Colors.white),),
+                        // ),
+                      ),
+                      Container(
+                        height:
+                        MediaQuery.of(context).size.height / 5,
+                        // child: ListView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   children: [
+                        //     for (var v in peopleRecommendation)
+                        //       Padding(
+                        //         padding: const EdgeInsets.all(10),
+                        //         child: InkWell(
+                        //           onTap: () {
+                        //             Navigator.push(context,
+                        //                 CupertinoPageRoute(
+                        //                     builder: (context) {
+                        //                       return PublicProfile(
+                        //                         userId: v['id'],
+                        //                       );
+                        //                     }));
+                        //           },
+                        //           child: Column(
+                        //             mainAxisSize: MainAxisSize.min,
+                        //             children: [
+                        //               CachedNetworkImage(
+                        //                 imageBuilder:
+                        //                     (context, imageProvider) {
+                        //                   return Container(
+                        //                     decoration: BoxDecoration(
+                        //                       shape: BoxShape.circle,
+                        //                       image: DecorationImage(
+                        //                           image:
+                        //                           imageProvider,
+                        //                           fit: BoxFit.cover),
+                        //                     ),
+                        //                     width:
+                        //                     MediaQuery.of(context)
+                        //                         .size
+                        //                         .width /
+                        //                         4,
+                        //                     height:
+                        //                     MediaQuery.of(context)
+                        //                         .size
+                        //                         .width /
+                        //                         4,
+                        //                   );
+                        //                 },
+                        //                 imageUrl: v['img'],
+                        //                 memCacheWidth:
+                        //                 MediaQuery.of(context)
+                        //                     .size
+                        //                     .width
+                        //                     .floor(),
+                        //                 memCacheHeight:
+                        //                 MediaQuery.of(context)
+                        //                     .size
+                        //                     .width
+                        //                     .floor(),
+                        //                 placeholder: (context, url) =>
+                        //                     Container(
+                        //                       width:
+                        //                       MediaQuery.of(context)
+                        //                           .size
+                        //                           .width /
+                        //                           7,
+                        //                       height:
+                        //                       MediaQuery.of(context)
+                        //                           .size
+                        //                           .width /
+                        //                           7,
+                        //                       child: Image.asset(
+                        //                           'assets/images/Thumbnail.png'),
+                        //                     ),
+                        //                 errorWidget: (context, url,
+                        //                     error) =>
+                        //                     Container(
+                        //                         width:
+                        //                         MediaQuery.of(
+                        //                             context)
+                        //                             .size
+                        //                             .width /
+                        //                             4,
+                        //                         height: MediaQuery.of(
+                        //                             context)
+                        //                             .size
+                        //                             .width /
+                        //                             4,
+                        //                         child: Icon(
+                        //                           Icons.error,
+                        //                           color: Color(
+                        //                               0xffe8e8e8),
+                        //                         )),
+                        //               ),
+                        //               Padding(
+                        //                 padding:
+                        //                 const EdgeInsets.only(
+                        //                     top: 10),
+                        //                 child: Container(
+                        //                   width:
+                        //                   MediaQuery.of(context)
+                        //                       .size
+                        //                       .width /
+                        //                       4,
+                        //                   child: Text(
+                        //                     "${v['username']}",
+                        //                     textAlign:
+                        //                     TextAlign.center,
+                        //                     maxLines: 2,
+                        //                     overflow:
+                        //                     TextOverflow.ellipsis,
+                        //                     style: TextStyle(
+                        //                         color: Color(
+                        //                             0xffe8e8e8)),
+                        //                   ),
+                        //                 ),
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       )
+                        //   ],
+                        // ),
+                        child: ListView.builder(scrollDirection: Axis.horizontal,itemCount: snapshot.data.length,itemBuilder: (context, int index){
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(
+                                        builder: (context) {
+                                          return PublicProfile(
+                                            userId: snapshot.data[index]['id'],
+                                          );
+                                        }));
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CachedNetworkImage(
+                                    imageBuilder:
+                                        (context, imageProvider) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image:
+                                              imageProvider,
+                                              fit: BoxFit.cover),
+                                        ),
+                                        width:
+                                        MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                        height:
+                                        MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      );
+                                    },
+                                    imageUrl: snapshot.data[index]['img'],
+                                    memCacheWidth:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width
+                                        .floor(),
+                                    memCacheHeight:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width
+                                        .floor(),
+                                    placeholder: (context, url) =>
+                                        Container(
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          height:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          child: Image.asset(
+                                              'assets/images/Thumbnail.png'),
+                                        ),
+                                    errorWidget: (context, url,
+                                        error) =>
+                                        Container(
+                                            width:
+                                            MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+                                            child: Icon(
+                                              Icons.error,
+                                              color: Color(
+                                                  0xffe8e8e8),
+                                            )),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        top: 10),
+                                    child: Container(
+                                      width:
+                                      MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          4,
+                                      child: Text(
+                                        "${snapshot.data[index]['username']}",
+                                        textAlign:
+                                        TextAlign.center,
+                                        maxLines: 2,
+                                        overflow:
+                                        TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Color(
+                                                0xffe8e8e8)),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  );
+                }else{
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Text(
+                          " ",
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                              SizeConfig.safeBlockHorizontal * 4,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Container(
+                        height:
+                        MediaQuery.of(context).size.height / 5,
+                        // child: ListView(
+                        //   scrollDirection: Axis.horizontal,
+                        //   children: [
+                        //     for (var v in peopleRecommendation)
+                        //       Padding(
+                        //         padding: const EdgeInsets.all(10),
+                        //         child: InkWell(
+                        //           onTap: () {
+                        //             Navigator.push(context,
+                        //                 CupertinoPageRoute(
+                        //                     builder: (context) {
+                        //                       return PublicProfile(
+                        //                         userId: v['id'],
+                        //                       );
+                        //                     }));
+                        //           },
+                        //           child: Column(
+                        //             mainAxisSize: MainAxisSize.min,
+                        //             children: [
+                        //               CachedNetworkImage(
+                        //                 imageBuilder:
+                        //                     (context, imageProvider) {
+                        //                   return Container(
+                        //                     decoration: BoxDecoration(
+                        //                       shape: BoxShape.circle,
+                        //                       image: DecorationImage(
+                        //                           image:
+                        //                           imageProvider,
+                        //                           fit: BoxFit.cover),
+                        //                     ),
+                        //                     width:
+                        //                     MediaQuery.of(context)
+                        //                         .size
+                        //                         .width /
+                        //                         4,
+                        //                     height:
+                        //                     MediaQuery.of(context)
+                        //                         .size
+                        //                         .width /
+                        //                         4,
+                        //                   );
+                        //                 },
+                        //                 imageUrl: v['img'],
+                        //                 memCacheWidth:
+                        //                 MediaQuery.of(context)
+                        //                     .size
+                        //                     .width
+                        //                     .floor(),
+                        //                 memCacheHeight:
+                        //                 MediaQuery.of(context)
+                        //                     .size
+                        //                     .width
+                        //                     .floor(),
+                        //                 placeholder: (context, url) =>
+                        //                     Container(
+                        //                       width:
+                        //                       MediaQuery.of(context)
+                        //                           .size
+                        //                           .width /
+                        //                           7,
+                        //                       height:
+                        //                       MediaQuery.of(context)
+                        //                           .size
+                        //                           .width /
+                        //                           7,
+                        //                       child: Image.asset(
+                        //                           'assets/images/Thumbnail.png'),
+                        //                     ),
+                        //                 errorWidget: (context, url,
+                        //                     error) =>
+                        //                     Container(
+                        //                         width:
+                        //                         MediaQuery.of(
+                        //                             context)
+                        //                             .size
+                        //                             .width /
+                        //                             4,
+                        //                         height: MediaQuery.of(
+                        //                             context)
+                        //                             .size
+                        //                             .width /
+                        //                             4,
+                        //                         child: Icon(
+                        //                           Icons.error,
+                        //                           color: Color(
+                        //                               0xffe8e8e8),
+                        //                         )),
+                        //               ),
+                        //               Padding(
+                        //                 padding:
+                        //                 const EdgeInsets.only(
+                        //                     top: 10),
+                        //                 child: Container(
+                        //                   width:
+                        //                   MediaQuery.of(context)
+                        //                       .size
+                        //                       .width /
+                        //                       4,
+                        //                   child: Text(
+                        //                     "${v['username']}",
+                        //                     textAlign:
+                        //                     TextAlign.center,
+                        //                     maxLines: 2,
+                        //                     overflow:
+                        //                     TextOverflow.ellipsis,
+                        //                     style: TextStyle(
+                        //                         color: Color(
+                        //                             0xffe8e8e8)),
+                        //                   ),
+                        //                 ),
+                        //               )
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       )
+                        //   ],
+                        // ),
+                        child: ListView.builder(scrollDirection: Axis.horizontal,itemCount: snapshot.data.length,itemBuilder: (context, int index){
+                          return Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: InkWell(
+                              onTap: () {
+                                // Navigator.push(context,
+                                //     CupertinoPageRoute(
+                                //         builder: (context) {
+                                //           return PublicProfile(
+                                //             userId: snapshot.data[index]['id'],
+                                //           );
+                                //         }));
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CachedNetworkImage(
+                                    imageBuilder:
+                                        (context, imageProvider) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image:
+                                              imageProvider,
+                                              fit: BoxFit.cover),
+                                        ),
+                                        width:
+                                        MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                        height:
+                                        MediaQuery.of(context)
+                                            .size
+                                            .width /
+                                            4,
+                                      );
+                                    },
+                                    imageUrl: snapshot.data[index]['img'],
+                                    memCacheWidth:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width
+                                        .floor(),
+                                    memCacheHeight:
+                                    MediaQuery.of(context)
+                                        .size
+                                        .width
+                                        .floor(),
+                                    placeholder: (context, url) =>
+                                        Container(
+                                          width:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          height:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              7,
+                                          child: Image.asset(
+                                              'assets/images/Thumbnail.png'),
+                                        ),
+                                    errorWidget: (context, url,
+                                        error) =>
+                                        Container(
+                                            width:
+                                            MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+                                            height: MediaQuery.of(
+                                                context)
+                                                .size
+                                                .width /
+                                                4,
+                                            child: Icon(
+                                              Icons.error,
+                                              color: Color(
+                                                  0xffe8e8e8),
+                                            )),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(
+                                        top: 10),
+                                    child: Container(
+                                      width:
+                                      MediaQuery.of(context)
+                                          .size
+                                          .width /
+                                          4,
+                                      child: Text(
+                                        " ",
+                                        textAlign:
+                                        TextAlign.center,
+                                        maxLines: 2,
+                                        overflow:
+                                        TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Color(
+                                                0xffe8e8e8)),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ],
+                  );
+                }
+
+              }catch(e){
+                return Container();
+              }
+
+            }),
+            FutureBuilder(
+              future: getSearchSnippets(),
+              builder: (context, snapshot){
+                try{
+                  if(snapshot.hasData){
+                    // snapshot.data['type'] = "snippet";
+                    return Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text("Highlights", textScaleFactor: 1.0, style: TextStyle(
+                                color: Colors.white,
+                                fontSize:
+                                SizeConfig.safeBlockHorizontal * 4,
+                                fontWeight: FontWeight.bold),),
+                            trailing: InkWell(onTap: (){
+                              Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                return SeeMore(type: "snippet", query: query,);
+                              }));
+                            },child: Text("See More", style: TextStyle(color: Colors.white),)),
+                          ),
+                          // ListTile(title: Text("${['name']}", style: TextStyle(
+                          //     fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          //     fontWeight: FontWeight.bold
+                          // )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+                          //   return LinearGradient(colors: [Color(
+                          //       0xff5bc3ef),
+                          //     Color(
+                          //         0xff5d5da8)]).createShader(bounds);
+                          // },child: GestureDetector(onTap: (){
+                          //   Navigator.push(context, CupertinoPageRoute(builder: (context){
+                          //     return SeeMore(data: data);
+                          //   },),);
+                          // },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+                          Container(
+                            height: SizeConfig.blockSizeVertical * 32,
+                            constraints:  BoxConstraints(
+                                minHeight:
+                                MediaQuery.of(context).size.height *
+                                    0.17),
+                            child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                      return SnippetStoryView(data: snapshot.data,  index: index,);
+                                    }));
+                                  },
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 2,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          foregroundDecoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5),
+                                            gradient: LinearGradient(
+                                                colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                            ),
+                                          ),
+
+                                          decoration: BoxDecoration(
+
+                                            borderRadius: BorderRadius.circular(5),
+
+                                            image: DecorationImage(
+                                                image: CachedNetworkImageProvider(
+                                                    snapshot.data[index]['podcast_image']),
+                                                fit: BoxFit.cover),
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                ListTile(
+                                                  contentPadding: EdgeInsets.zero,
+                                                  title: Text("${snapshot.data[index]['episode_name']}", maxLines:  2, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                                                  subtitle: Text("${snapshot.data[index]['podcast_name']}", maxLines: 1, style: TextStyle(color: Colors.white.withOpacity(0.5)),),
+                                                )
+
+
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        // ClipRect(
+                                        //   child: BackdropFilter(
+                                        //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                                        //     child: Container(
+                                        //       decoration: BoxDecoration(
+                                        //         borderRadius: BorderRadius.circular(10),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+
+                                      ],
+
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, itemCount: snapshot.data.length,),
+                          ),
+                        ],
+                      ),
+                    );
+                  }else{
+                    return Container(
+                      height: SizeConfig.blockSizeVertical * 32,
+                      constraints:  BoxConstraints(
+                          minHeight:
+                          MediaQuery.of(context).size.height *
+                              0.17),
+
+                      child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: (){
+                              // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                              //   return SnippetStoryView(data: snapshot.data,  index: index,);
+                              // }));
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    foregroundDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      gradient: LinearGradient(
+                                          colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                      ),
+                                    ),
+
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff222222),
+
+                                      borderRadius: BorderRadius.circular(5),
+
+
+                                    ),
+                                  ),
+                                ],
+
+                              ),
+                            ),
+                          ),
+                        );
+                      }, itemCount: 10 ,),
+
+                    );
+                  }
+                }catch(e){
+                  return Container();
+                }
+              },
+            ),
+            FutureBuilder(
+              future: getPlaylistSearch(),
+              builder: (context, snapshot){
+                try{
+                  if(snapshot.hasData){
+                    // snapshot.data['type'] = "playlist";
+                    return Container(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(title: Text("Playlists", style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold
+                          )),
+                          //   trailing: ShaderMask(shaderCallback: (Rect bounds){
+                          //   return LinearGradient(colors: [Color(
+                          //       0xff5bc3ef),
+                          //     Color(
+                          //         0xff5d5da8)]).createShader(bounds);
+                          // },child: GestureDetector(onTap: (){
+                          //   Navigator.push(context, CupertinoPageRoute(builder: (context){
+                          //     return SeeMore(type: "playlist", query: query,);
+                          //   }));
+                          // },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: SizeConfig.blockSizeVertical * 25,
+                            constraints:  BoxConstraints(
+                                minHeight:
+                                MediaQuery.of(context).size.height *
+                                    0.17),
+                            child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                              return Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(
+                                    15, 0, 0, 8),
+                                child: InkWell(
+                                  onTap: (){
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                      return PlaylistView(playlistId: snapshot.data[index]['id']);
+                                    }));
+                                  },
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 3,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        int.parse(snapshot.data[index]['episodes_count']) <= 4 ? CachedNetworkImage(imageUrl: snapshot.data[index]['episodes_images'][0], imageBuilder: (context, imageProvider){
+                                          return Container(
+                                            height: MediaQuery.of(context).size.width / 3,
+                                            width: MediaQuery.of(context).size.width / 3,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: imageProvider, fit: BoxFit.cover
+                                                )
+                                            ),
+                                          );
+                                        },) : Container(child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageBuilder: (context, imageProvider){
+                                                    return Container(
+                                                      height: MediaQuery.of(context).size.width / 6,
+                                                      width: MediaQuery.of(context).size.width / 6,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: imageProvider,
+                                                              fit: BoxFit.cover
+                                                          )
+                                                      ),
+                                                    );
+                                                  },
+                                                  imageUrl: snapshot.data[index]['episodes_images'][0],
+                                                ),
+                                                CachedNetworkImage(
+                                                  imageBuilder: (context, imageProvider){
+                                                    return Container(
+                                                      height: MediaQuery.of(context).size.width / 6,
+                                                      width: MediaQuery.of(context).size.width / 6,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: imageProvider,
+                                                              fit: BoxFit.cover
+                                                          )
+                                                      ),
+                                                    );
+                                                  },
+                                                  imageUrl: snapshot.data[index]['episodes_images'][1],
+                                                )
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                CachedNetworkImage(
+                                                  imageBuilder: (context, imageProvider){
+                                                    return Container(
+                                                      height: MediaQuery.of(context).size.width / 6,
+                                                      width: MediaQuery.of(context).size.width / 6,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: imageProvider,
+                                                              fit: BoxFit.cover
+                                                          )
+                                                      ),
+                                                    );
+                                                  },
+                                                  imageUrl: snapshot.data[index]['episodes_images'][2],
+                                                ),
+                                                CachedNetworkImage(
+                                                  imageBuilder: (context, imageProvider){
+                                                    return Container(
+                                                      height: MediaQuery.of(context).size.width / 6,
+                                                      width: MediaQuery.of(context).size.width / 6,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: imageProvider,
+                                                              fit: BoxFit.cover
+                                                          )
+                                                      ),
+                                                    );
+                                                  },
+                                                  imageUrl: snapshot.data[index]['episodes_images'][3],
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }, itemCount: snapshot.data.length,),
+                          ),
+                        ],
+                      ),
+                    );
+                  }else{
+                    return Container(
+                      // child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                      //   mainAxisSize: MainAxisSize.min,
+                      //   children: [
+                      //     // ListTile(title: Text("${data['name']}", style: TextStyle(
+                      //     //     fontSize: SizeConfig.safeBlockHorizontal * 5,
+                      //     //     fontWeight: FontWeight.bold
+                      //     // )),),
+                      //     Container(
+                      //       width: double.infinity,
+                      //       height: SizeConfig.blockSizeVertical * 25,
+                      //       constraints:  BoxConstraints(
+                      //           minHeight:
+                      //           MediaQuery.of(context).size.height *
+                      //               0.17),
+                      //       child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                      //         return Padding(
+                      //           padding:
+                      //           const EdgeInsets.fromLTRB(
+                      //               15, 0, 0, 8),
+                      //           child: Container(
+                      //             width: MediaQuery.of(context).size.width / 3,
+                      //             child: Column(
+                      //               mainAxisSize: MainAxisSize.min,
+                      //               crossAxisAlignment: CrossAxisAlignment.start,
+                      //               children: [
+                      //                 Container(
+                      //                   height: MediaQuery.of(context).size.width / 3,
+                      //                   width: MediaQuery.of(context).size.width / 3,
+                      //                   decoration: BoxDecoration(
+                      //                       color: Color(0xff222222)
+                      //                   ),
+                      //                 )
+                      //                 // Padding(
+                      //                 //   padding: const EdgeInsets.symmetric(vertical: 5),
+                      //                 //   child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                      //                 // )
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         );
+                      //       }, itemCount: 10,),
+                      //     ),
+                      //   ],
+                      // ),
+                    );
+                  }
+                }catch(e){
+                  return Container();
+                }
+              },
+            ),
+          ],
+        ),
+      )
     );
   }
 
@@ -223,58 +1995,200 @@ class SearchFunctionality extends SearchDelegate {
     LineIcons.television
   ];
 
+  Dio dio = Dio();
+  // CancelToken _cancel = CancelToken();
+
+  Future getCategories() async {
+    String url = "https://api.aureal.one/public/getCategory";
+    print(url);
+
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        print(response.data);
+        return response.data['allCategory'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
+  Future getSubCategories() async {
+    String url = "https://api.aureal.one/public/getSubcategory";
+
+    try{
+      var response = await dio.get(url,cancelToken:  _cancel);
+      if(response.statusCode == 200){
+        return response.data['data'];
+      }
+    }catch(e){
+
+    }
+
+  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     // throw UnimplementedError();
-    var categories = Provider.of<CategoriesProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    var search = Provider.of<SearchResultProvider>(context, listen: false);
+
 
     return Container(
-      color: themeProvider.isLightTheme == true ? Colors.white : Colors.black,
-      child: ListView.builder(
-          itemCount: _icons.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, int index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Color(0xff161616),
-                    borderRadius: BorderRadius.circular(8)),
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(context,
-                        CupertinoPageRoute(builder: (context) {
-                      return CategoryView(
-                        categoryObject: categories.categoryList[index],
-                      );
-                    }));
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+      constraints: BoxConstraints(
+        minHeight: MediaQuery.of(context).size.height
+      ),
+      color: Colors.black,
+      height: MediaQuery.of(context).size.height,
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
 
-                  // selected: userselectedCategories
-                  //     .toSet()
-                  //     .toList()
-                  //     .contains(availableCategories[index]['id']),
-                  leading: Icon(
-                    _icons[index],
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "${categories.categoryList[index]['name']}",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return CategoryView(categoryObject: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container(
+
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: 18,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                  //   return CategoryView(categoryObject: snapshot.data[index],);
+                                  // }));
+                                },
+                                title: Text("", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }
+
+                },
               ),
-            );
-          }),
+            ],
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(title: Text("Sub Categories", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: SizeConfig.safeBlockHorizontal * 5),),),
+              FutureBuilder(
+                future: getSubCategories(),
+                builder: (context, snapshot){
+                  if(snapshot.hasData){
+                    return Container(
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: snapshot.data.length,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.blue)),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    return SubCategoryView(data: snapshot.data[index],);
+                                  }));
+                                },
+                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }else{
+                    return Container(
+                      child: GridView.builder(shrinkWrap: true,physics: NeverScrollableScrollPhysics(),itemCount: 60,gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 0,
+                          crossAxisSpacing: 0,
+                          childAspectRatio: 4 / 1.3), itemBuilder: (context, int index){
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border(left: BorderSide(width: 3,color: Colors.blue)),
+                                color: Color(0xff222222)
+                            ),
+                            child: Center(
+                              child: ListTile(
+                                onTap: (){
+                                  // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                  //   return SubCategoryView(data: snapshot.data[index],);
+                                  // }));
+                                },
+                                title: Text("", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }
+                },
+              ),
+            ],
+          )
+          ],
+
+      ),
     );
   }
 }
+
 
 class ResultsSection extends StatefulWidget {
   String query;
@@ -2855,76 +4769,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                   ),
                                                             InkWell(
                                                               onTap: () {
-                                                                // print(v
-                                                                //     .toString()
-                                                                //     .contains('.mp4'));
-                                                                // if (v
-                                                                //             .toString()
-                                                                //             .contains('.mp4') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.m4v') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.flv') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.f4v') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.ogv') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.ogx') ==
-                                                                //         true ||
-                                                                //     v
-                                                                //             .toString()
-                                                                //             .contains('.wmv') ==
-                                                                //         true ||
-                                                                //     v.toString().contains(
-                                                                //             '.webm') ==
-                                                                //         true) {
-                                                                //   currentlyPlaying.stop();
-                                                                //   Navigator.push(context,
-                                                                //       CupertinoPageRoute(
-                                                                //           builder: (context) {
-                                                                //     return PodcastVideoPlayer(
-                                                                //         episodeObject: v);
-                                                                //   }));
-                                                                // } else {
-                                                                //   if (v
-                                                                //           .toString()
-                                                                //           .contains('.pdf') ==
-                                                                //       true) {
-                                                                //     // Navigator.push(
-                                                                //     //     context,
-                                                                //     //     CupertinoPageRoute(
-                                                                //     // der:
-                                                                //     //             (context) {
-                                                                //     //   return PDFviewer(
-                                                                //     //       episodeObject:
-                                                                //     //           v);
-                                                                //     // }));
-                                                                //   } else {
-                                                                //     currentlyPlaying.stop();
-                                                                //     currentlyPlaying
-                                                                //         .episodeObject = v;
-                                                                //     print(currentlyPlaying
-                                                                //         .episodeObject
-                                                                //         .toString());
-                                                                //     currentlyPlaying.play();
-                                                                //     Navigator.push(context,
-                                                                //         CupertinoPageRoute(
-                                                                //             builder: (context) {
-                                                                //       return Player();
-                                                                //     }));
-                                                                //   }
-                                                                // }
+
                                                               },
                                                               child: Padding(
                                                                 padding:
@@ -3190,102 +5035,7 @@ class _ResultsSectionState extends State<ResultsSection>
                             ),
                           ),
 
-                    // Container(
-                    //   height: MediaQuery.of(context).size.height,
-                    //   child: ListView(
-                    //     controller: _communityScrollController,
-                    //     shrinkWrap: true,
-                    //     children: [
-                    //       for (var v in search.communityResult)
-                    //         Padding(
-                    //           padding: const EdgeInsets.all(15),
-                    //           child: Row(
-                    //             crossAxisAlignment: CrossAxisAlignment.center,
-                    //             children: [
-                    //               Expanded(
-                    //                 child: Row(
-                    //                   children: [
-                    //                     CachedNetworkImage(
-                    //                       imageUrl: v['profileImageUrl'] == null
-                    //                           ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
-                    //                           : v['profileImageUrl'],
-                    //                       imageBuilder:
-                    //                           (context, imageProvider) {
-                    //                         return Container(
-                    //                           height: MediaQuery.of(context)
-                    //                                   .size
-                    //                                   .width /
-                    //                               7,
-                    //                           width: MediaQuery.of(context)
-                    //                                   .size
-                    //                                   .width /
-                    //                               7,
-                    //                           decoration: BoxDecoration(
-                    //                               shape: BoxShape.circle,
-                    //                               image: DecorationImage(
-                    //                                   image: imageProvider,
-                    //                                   fit: BoxFit.cover)),
-                    //                         );
-                    //                       },
-                    //                     ),
-                    //                     Expanded(
-                    //                       child: Padding(
-                    //                         padding: const EdgeInsets.all(15),
-                    //                         child: Column(
-                    //                           mainAxisSize: MainAxisSize.min,
-                    //                           crossAxisAlignment:
-                    //                               CrossAxisAlignment.start,
-                    //                           children: [
-                    //                             Text(
-                    //                               "${v['name']}",
-                    //                               textScaleFactor: 1.0,
-                    //                               maxLines: 2,
-                    //                               overflow:
-                    //                                   TextOverflow.ellipsis,
-                    //                               style: TextStyle(
-                    //                                   color: Color(0xffe8e8e8),
-                    //                                   fontSize: SizeConfig
-                    //                                           .safeBlockHorizontal *
-                    //                                       3.5,
-                    //                                   fontWeight:
-                    //                                       FontWeight.bold),
-                    //                             ),
-                    //                             v['description'] == null
-                    //                                 ? SizedBox()
-                    //                                 : Text(
-                    //                                     "${v['description']}",
-                    //                                     textScaleFactor: 1.0,
-                    //                                     overflow: TextOverflow
-                    //                                         .ellipsis,
-                    //                                     maxLines: 2,
-                    //                                     style: TextStyle(
-                    //                                         color: Color(
-                    //                                                 0xffe8e8e8)
-                    //                                             .withOpacity(
-                    //                                                 0.5),
-                    //                                         fontSize: SizeConfig
-                    //                                                 .safeBlockHorizontal *
-                    //                                             3),
-                    //                                   )
-                    //                           ],
-                    //                         ),
-                    //                       ),
-                    //                     )
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //               IconButton(
-                    //                 icon: Icon(
-                    //                   Icons.add_circle,
-                    //                   color: Color(0xffe8e8e8),
-                    //                 ),
-                    //               )
-                    //             ],
-                    //           ),
-                    //         )
-                    //     ],
-                    //   ),
-                    // ),
+
                     search.roomResult.length == 0
                         ? Container(
                             child: Center(
@@ -3772,13 +5522,10 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    print("Episode Search Ended");
   }
 
   void getPodcast() async {
-    // if (_pagePodcast != 0) {
-    //   cancelToken.cancel();
-    // }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/search?word=$_query&loggedinuser${prefs.getString('userId')}&page=$_pagePodcast";
@@ -3824,7 +5571,6 @@ class SearchResultProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    print("User Search Ended");
   }
 
   void getCommunities() async {
@@ -3960,3 +5706,525 @@ void followUser({String authorUserId}) async {
     var response = await intercept.postRequest(formData, url);
   } catch (e) {}
 }
+
+class ResultSection extends StatelessWidget {
+  final query;
+  ResultSection({@required this.query});
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    var searchResult = Provider.of<SearchResultProvider>(context, listen: false);
+    searchResult.query = query;
+    return Scaffold(
+      body: Container(color: Color(0xff161616),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+
+        ],
+      ),),
+    );
+  }
+}
+
+
+class SeeMore extends StatefulWidget {
+
+  final Function searchFunction;
+  final String type;
+  String query;
+
+
+  SeeMore({this.searchFunction, this.type, this.query});
+
+  @override
+  _SeeMoreState createState() => _SeeMoreState();
+}
+
+class _SeeMoreState extends State<SeeMore> {
+
+
+  ScrollController _controller = ScrollController();
+
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+  CancelToken _cancel = CancelToken();
+
+  List feedData = [];
+  int page = 0;
+
+  // List<Audio> playlist;
+
+
+
+  Future getSearchSnippets() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/searchSnippet?page=$page&pageSize=15&user_id=${prefs.getString("userId")}&word=${widget.query}";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        setState(() {
+          feedData = feedData + response.data['data'];
+          page ++;
+        });
+
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future getPlaylistSearch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/searchPlaylist?page=$page&pageSize=20&user_id=${prefs.getString("userId")}&word=${widget.query}";
+    try{
+      var response = await dio.get(url, cancelToken: _cancel);
+      if(response.statusCode == 200){
+        setState(() {
+          feedData = feedData + response.data['data'];
+          page ++;
+        });
+
+        return response.data['data'];
+      }
+    }catch(e){
+      print(e);
+    }
+  }
+
+  Future getPodcast() async {
+    Dio dio = Dio();
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/search?word=${widget.query}&loggedinuser=${prefs.getString('userId')}&page=$page";
+
+    try {
+      var response = await dio.get(url);
+      if(response.statusCode == 200){
+        setState(() {
+          feedData = feedData + response.data['PodcastList'];
+          page ++;
+        });
+
+        return response.data['PodcastList'];
+      }
+
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  Future getUsers() async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/userSearch?word=${widget.query}&loggedinuser=${prefs.getString('userId')}&page=$page&pageSize=10";
+
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        setState(() {
+          feedData = feedData + response.data['users'];
+          page ++;
+        });
+
+        return response.data['users'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  Future getEpisodes() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/searchEpisodes?word=${widget.query}&loggedinuser=${prefs.getString('userId')}&page=$page";
+    print(url);
+    try {
+      var response = await dio.get(url);
+      if (response.statusCode == 200) {
+        setState(() {
+          feedData = feedData + response.data['data'];
+          page ++;
+        });
+
+        return response.data['episodes'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  Future getData() async {
+    switch(widget.type){
+      case "podcast":
+        getPodcast();
+        break;
+      case "episode":
+        getEpisodes();
+        break;
+      case "snippet":
+        getSearchSnippets();
+        break;
+      case "playlist":
+        getPlaylistSearch();
+        break;
+      case "user":
+        getUsers();
+        break;
+      default:
+        print("called some api or got some error");
+        break;
+    }
+  }
+
+  Widget _feedBuilder(){
+    switch(widget.type){
+      case "podcast":
+        return GridView.builder(controller: _controller,itemCount: feedData.length + 2,gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount:
+          MediaQuery.of(context)
+              .orientation ==
+              Orientation
+                  .landscape
+              ? 3
+              : 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: (1 / 1.36),
+        ), itemBuilder: (context, int index){
+          if(index > feedData.length - 1){
+            return AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                width: double.infinity,
+
+                decoration: BoxDecoration(
+                    color: Color(0xff121212),
+                    borderRadius: BorderRadius.circular(3),
+                    image: DecorationImage(
+                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                    )
+                ),
+              ),
+            );
+          }else{
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child:   InkWell(
+                onTap: (){
+                  Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    return PodcastView(feedData[index]['id']);
+                  }));
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CachedNetworkImage(
+                      placeholder: (context, String url){
+                        return AspectRatio(aspectRatio: 1.0, child: Container(width: double.infinity, decoration: BoxDecoration(color: Color(0xff121212), borderRadius: BorderRadius.circular(3)),));
+                      },
+
+                      imageUrl: feedData[index]['image'],
+                      imageBuilder: (context, imageProvider){
+                        return AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: double.infinity,
+
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover
+                                )
+                            ),
+                          ),
+                        );
+                      },
+                      errorWidget: (context,
+                          url,
+                          error) => AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
+                          width: double.infinity,
+
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              image: DecorationImage(
+                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                              )
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    // SizedBox(height: 5,),
+                    ListTile(contentPadding: EdgeInsets.zero,title: Text("${feedData[index]['name']}", maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold),), subtitle: Text('${feedData[index]['author']}', maxLines: 1, overflow: TextOverflow.ellipsis,),),
+
+
+                  ],
+                ),
+              ),
+            );
+          }
+
+        });
+        break;
+      case "episode":
+        return ListView.builder(controller: _controller,itemCount: feedData.length + 1,itemBuilder: (context, int index){
+          if(index > feedData.length -1){
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius:
+                    BorderRadius.circular(10),
+                    color: Color(0xff222222)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            height:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                7,
+                            decoration: BoxDecoration(
+                                color:
+                                Color(0xff161616),
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10)),
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+                            children: [
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 16,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    3,
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                decoration:
+                                BoxDecoration(
+                                    color: Color(
+                                        0xff161616)),
+                                height: 8,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    4,
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 10,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width /
+                                2),
+                      ),
+                      SizedBox(
+                        height: 6,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 3),
+                        child: Container(
+                            color: Color(0xff161616),
+                            height: 6,
+                            width:
+                            MediaQuery.of(context)
+                                .size
+                                .width *
+                                0.75),
+                      ),
+                      Padding(
+                        padding:
+                        const EdgeInsets.symmetric(
+                            vertical: 20),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius
+                                    .circular(10),
+                                color:
+                                Color(0xff161616),
+                              ),
+                              height: 25,
+                              width:
+                              MediaQuery.of(context)
+                                  .size
+                                  .width /
+                                  8,
+                              //    color: kSecondaryColor,
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(10),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 25,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(
+                                  left: 10),
+                              child: Container(
+                                decoration:
+                                BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius
+                                      .circular(8),
+                                  color:
+                                  Color(0xff161616),
+                                ),
+                                height: 20,
+                                width: MediaQuery.of(
+                                    context)
+                                    .size
+                                    .width /
+                                    8,
+                                //    color: kSecondaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }else{
+            return EpisodeCard(data: feedData[index], index: index);
+          }
+        });
+        break;
+      case "snippet":
+        return Container();
+        break;
+      case "playlist":
+        getPlaylistSearch();
+        break;
+      case "user":
+        getUsers();
+        break;
+      default:
+        print("called some api or got some error");
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getData();
+    super.initState();
+    _controller.addListener(() {
+      if(_controller.position.pixels == _controller.position.maxScrollExtent){
+        getData();
+      }
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Results for ${widget.query}"), backgroundColor: Colors.transparent, elevation: 0,),
+      body: _feedBuilder(),
+    );
+  }
+}
+
