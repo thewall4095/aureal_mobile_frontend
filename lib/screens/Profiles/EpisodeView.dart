@@ -7,6 +7,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/audioEditor.dart';
 import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:html/parser.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
@@ -780,6 +781,17 @@ class _EpisodeViewState extends State<EpisodeView>
                             ),
                             GestureDetector(
                               onTap: () {
+                                Vibrate.feedback(FeedbackType.impact);
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    barrierColor: Colors.transparent,
+                                    isDismissible: true,
+                                    // bounce: true,
+                                    context: context,
+                                    builder: (context) {
+                                      return Player2();
+                                    });
                                 episodeObject.stop();
                                 episodeObject.episodeObject =
                                     episodeContent;

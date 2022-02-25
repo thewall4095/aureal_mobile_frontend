@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:auditory/screens/Player/Player.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
@@ -854,6 +856,7 @@ class _PodcastViewState extends State<PodcastView>
                                             true
                                             ? InkWell(
                                           onTap: () {
+                                            Vibrate.feedback(FeedbackType.impact);
                                             currentlyPlaying
                                                 .audioPlayer
                                                 .pause();
@@ -885,7 +888,17 @@ class _PodcastViewState extends State<PodcastView>
                                             : InkWell(
                                           onTap: () {
 
-
+                                            Vibrate.feedback(FeedbackType.impact);
+                                            showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor: Colors.transparent,
+                                                barrierColor: Colors.transparent,
+                                                isDismissible: true,
+                                                // bounce: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return Player2();
+                                                });
                                             currentlyPlaying.audioPlayer.open(
                                                 Playlist(
                                                     audios:

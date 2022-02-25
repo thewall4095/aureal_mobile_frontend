@@ -52,43 +52,48 @@ class Player2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2)
-        ),
-        child: ClipRect(
-
-          child: BackdropFilter(filter:ImageFilter.blur(
-            sigmaY: 15.0,
-            sigmaX: 15.0,
+    try{
+      return Material(
+        color: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.2)
           ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaY: 15.0,
-                sigmaX: 15.0,
-              ),
-              child: Container(
-                color: Colors.transparent,
-                width: MediaQuery.of(context).size.height,
-                child: Stack(
-                  children: [Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Banner(),
-                      PlayerPlaybackButtons(),
-                    ],
-                  ),Align(alignment: Alignment.bottomCenter,child: PLayerBottomSheet())],
+          child: ClipRect(
 
+            child: BackdropFilter(filter:ImageFilter.blur(
+              sigmaY: 15.0,
+              sigmaX: 15.0,
+            ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaY: 15.0,
+                  sigmaX: 15.0,
+                ),
+                child: Container(
+                  color: Colors.transparent,
+                  width: MediaQuery.of(context).size.height,
+                  child: Stack(
+                    children: [Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Banner(),
+                        PlayerPlaybackButtons(),
+                      ],
+                    ),Align(alignment: Alignment.bottomCenter,child: PLayerBottomSheet())],
+
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }catch(e){
+      return Container();
+    }
+
   }
 }
 
@@ -2705,64 +2710,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                         ],
                                       ),
                                     ),
-                                    // DraggableScrollableSheet(
-                                    //     initialChildSize: 0.1,
-                                    //     maxChildSize: 1.0,
-                                    //     minChildSize: 0.1,
-                                    //     builder: (context, controller) {
-                                    //       return episodeObject.audioPlayer.builderCurrent(
-                                    //           builder: (context, Playing playing) {
-                                    //         return SongSelector(
-                                    //           audios: episodeObject.audioPlayer.playlist.audios ==
-                                    //                   null
-                                    //               ? <Audio>[]
-                                    //               : episodeObject.audioPlayer.playlist.audios,
-                                    //           onPlaylistSelected: (myAudios) {
-                                    //             episodeObject.audioPlayer.open(
-                                    //               Playlist(audios: myAudios),
-                                    //               showNotification: true,
-                                    //               headPhoneStrategy:
-                                    //                   HeadPhoneStrategy.pauseOnUnplugPlayOnPlug,
-                                    //               audioFocusStrategy: AudioFocusStrategy.request(
-                                    //                   resumeAfterInterruption: true),
-                                    //             );
-                                    //           },
-                                    //           onSelected: (myAudio) async {
-                                    //             try {
-                                    //               await episodeObject.audioPlayer.open(
-                                    //                 myAudio,
-                                    //                 autoStart: true,
-                                    //                 showNotification: true,
-                                    //                 playInBackground: PlayInBackground.enabled,
-                                    //                 audioFocusStrategy:
-                                    //                     AudioFocusStrategy.request(
-                                    //                         resumeAfterInterruption: true,
-                                    //                         resumeOthersPlayersAfterDone: true),
-                                    //                 headPhoneStrategy:
-                                    //                     HeadPhoneStrategy.pauseOnUnplug,
-                                    //                 notificationSettings: NotificationSettings(
-                                    //                     //seekBarEnabled: false,
-                                    //                     //stopEnabled: true,
-                                    //                     //customStopAction: (player){
-                                    //                     //  player.stop();
-                                    //                     //}
-                                    //                     //prevEnabled: false,
-                                    //                     //customNextAction: (player) {
-                                    //                     //  print('next');
-                                    //                     //}
-                                    //                     //customStopIcon: AndroidResDrawable(name: 'ic_stop_custom'),
-                                    //                     //customPauseIcon: AndroidResDrawable(name:'ic_pause_custom'),
-                                    //                     //customPlayIcon: AndroidResDrawable(name:'ic_play_custom'),
-                                    //                     ),
-                                    //               );
-                                    //             } catch (e) {
-                                    //               print(e);
-                                    //             }
-                                    //           },
-                                    //           playing: playing,
-                                    //         );
-                                    //       });
-                                    //     }),
+
                                   ],
                                 );
                               })),

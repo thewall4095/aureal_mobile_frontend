@@ -1348,6 +1348,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                 ):InkWell(
                   onTap:
                       () async {
+                        Vibrate.feedback(FeedbackType.impact);
                     if (prefs.getString(
                         'HiveUserName') !=
                         null) {
@@ -2931,7 +2932,7 @@ class _SubCategoryViewState extends State<SubCategoryView> {
                     borderRadius: BorderRadius.circular(3),
                     image: DecorationImage(
                         image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.contain
-                    )
+                    ),
                 ),
               ),
             );
@@ -3664,8 +3665,7 @@ class PodcastCard extends StatelessWidget {
                   return Container(
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(
-                                'assets/images/Thumbnail.png'),
+                            image: CachedNetworkImageProvider(placeholderUrl),
                             fit: BoxFit
                                 .cover)),
                     height: MediaQuery.of(
