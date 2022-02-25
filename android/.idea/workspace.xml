@@ -23,6 +23,86 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d502d464-b20e-4e5a-bd87-abcd845a9ec2" name="Default Changelist" comment="">
+<<<<<<< HEAD
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/.filecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/App.framework/App" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/aot_assembly_release.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/app.dill" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/arm64/App.framework/App" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/arm64/snapshot_assembly.S" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/arm64/snapshot_assembly.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/flutter_assets.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/gen_dart_plugin_registrant.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/gen_localizations.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/kernel_snapshot.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/kernel_snapshot.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/outputs.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/release_ios_bundle_flutter_assets.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/5d5b98f2a1219ca29cfa5ee033b12fd5/release_unpack_ios.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/.filecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/App.framework/App" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/app.dill" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/debug_ios_bundle_flutter_assets.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/debug_universal_framework.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/debug_unpack_ios.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/flutter_assets.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/gen_dart_plugin_registrant.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/gen_localizations.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/kernel_snapshot.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/kernel_snapshot.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/6bd505bfc57564b9a3c430d045787b9c/outputs.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/.filecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/App.framework/App" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/app.dill" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/debug_ios_bundle_flutter_assets.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/debug_universal_framework.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/debug_unpack_ios.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/flutter_assets.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/gen_dart_plugin_registrant.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/gen_localizations.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/kernel_snapshot.d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/kernel_snapshot.stamp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/f0daa05594f6109d87b353022caa26bc/outputs.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.dart_tool/flutter_build/a08a1fdc8f534c6697934754b7d21adc/debug_android_application.stamp" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/a08a1fdc8f534c6697934754b7d21adc/debug_android_application.stamp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.dart_tool/flutter_build/a08a1fdc8f534c6697934754b7d21adc/flutter_assets.d" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/flutter_build/a08a1fdc8f534c6697934754b7d21adc/flutter_assets.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/../.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.packages" beforeDir="false" afterPath="$PROJECT_DIR$/../.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1171339051/android.image_picker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1171339051/android.image_picker.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1211250704/android.flutter_plugin_android_lifecycle.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1211250704/android.flutter_plugin_android_lifecycle.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1353856394/android.in_app_update.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1353856394/android.in_app_update.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1395469864/android.share.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1395469864/android.share.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1522795126/android.assets_audio_player.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1522795126/android.assets_audio_player.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-1799891006/android.path_provider.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-1799891006/android.path_provider.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-184437911/android.permission_handler.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-184437911/android.permission_handler.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-2054337812/android.social_share.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-2054337812/android.social_share.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-260183600/android.firebase_messaging.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-260183600/android.firebase_messaging.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-321497870/android.firebase_analytics.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-321497870/android.firebase_analytics.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-446808638/android.google_sign_in.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-446808638/android.google_sign_in.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-618518879/android.image_cropper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-618518879/android.image_cropper.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-652669285/android.flutter_downloader.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-652669285/android.flutter_downloader.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-707741967/android.video_player.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-707741967/android.video_player.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/-932103320/android.add_2_calendar.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/-932103320/android.add_2_calendar.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1244704830/android.webview_flutter_android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1244704830/android.webview_flutter_android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1265096798/android.url_launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1265096798/android.url_launcher.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1347792840/android.in_app_review.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1347792840/android.in_app_review.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1569009146/android.jitsi_meet.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1569009146/android.jitsi_meet.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1574183946/com.arthenica.flutter.ffmpeg.android.flutter_ffmpeg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1574183946/com.arthenica.flutter.ffmpeg.android.flutter_ffmpeg.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1744988188/android.assets_audio_player_web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1744988188/android.assets_audio_player_web.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1748970007/android.sign_in_with_apple.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1748970007/android.sign_in_with_apple.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1800926243/android.uni_links.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1800926243/android.uni_links.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1825476533/android.fluttertoast.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1825476533/android.fluttertoast.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/1839122074/android.wakelock.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/1839122074/android.wakelock.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/2089144627/android.audioplayer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/2089144627/android.audioplayer.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/223384874/android.file_picker.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/223384874/android.file_picker.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/239654867/android.sqflite.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/239654867/android.sqflite.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/320771281/android.firebase_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/320771281/android.firebase_core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/35060229/android.flutter_inappwebview.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/35060229/android.flutter_inappwebview.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/814238001/android.flutter_share.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/814238001/android.flutter_share.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/859475543/android.firebase_auth.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/859475543/android.firebase_auth.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/884074242/android.shared_preferences.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/884074242/android.shared_preferences.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/906919829/android.flutter_local_notifications.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/906919829/android.flutter_local_notifications.iml" afterDir="false" />
+=======
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_annotation_annotation_experimental_1_1_0_aar.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__androidx_tracing_tracing_1_0_0_aar.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_play_core_1_10_0_aar.xml" afterDir="false" />
@@ -214,6 +294,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_robolectric_shadowapi_4_3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_robolectric_shadowapi_4_3.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__org_robolectric_utils_4_3.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__org_robolectric_utils_4_3.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
       <change beforePath="$PROJECT_DIR$/.idea/modules/app/android.app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/app/android.app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -269,7 +350,11 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+<<<<<<< HEAD
+    <property name="memory.settings.postsync.last.time.stamp" value="1645698428844" />
+=======
     <property name="memory.settings.postsync.last.time.stamp" value="1644426744151" />
+>>>>>>> e1183f5097eef88d4f5be6d6a4456cb032569157
     <property name="project.structure.last.edited" value="Build Variants" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />

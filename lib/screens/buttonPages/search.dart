@@ -324,7 +324,7 @@ class SearchFunctionality extends SearchDelegate {
                                                 decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                            placeholderUrl),
                                                         fit: BoxFit
                                                             .cover),
                                                     borderRadius:
@@ -491,7 +491,7 @@ class SearchFunctionality extends SearchDelegate {
                                                 color: Color(0xff222222),
                                                 // image: DecorationImage(
                                                 //     image: NetworkImage(
-                                                //         "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                //         placeholderUrl),
                                                 //     fit: BoxFit
                                                 //         .cover),
                                                 borderRadius:
@@ -541,7 +541,7 @@ class SearchFunctionality extends SearchDelegate {
                                             .size
                                             .height)
                                             .floor(),
-                                        imageUrl: 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                        imageUrl: placeholderUrl,
                                         placeholder: (context,
                                             imageProvider) {
                                           return Container(
@@ -3882,7 +3882,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                               },
                                                               imageUrl: v['profileImageUrl'] ==
                                                                       null
-                                                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                                  ? placeholderUrl
                                                                   : v['profileImageUrl'],
                                                               memCacheWidth:
                                                                   MediaQuery.of(
@@ -4205,7 +4205,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                               children: [
                                                 CachedNetworkImage(
                                                   imageUrl: v['img'] == null
-                                                      ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                                      ? placeholderUrl
                                                       : v['img'],
                                                   imageBuilder:
                                                       (context, imageProvider) {
@@ -5916,7 +5916,7 @@ class _SeeMoreState extends State<SeeMore> {
                     color: Color(0xff121212),
                     borderRadius: BorderRadius.circular(3),
                     image: DecorationImage(
-                        image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.contain
+                        image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.contain
                     )
                 ),
               ),
@@ -5964,7 +5964,7 @@ class _SeeMoreState extends State<SeeMore> {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(3),
                               image: DecorationImage(
-                                  image: CachedNetworkImageProvider("https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"), fit: BoxFit.cover
+                                  image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
                               )
                           ),
                         ),

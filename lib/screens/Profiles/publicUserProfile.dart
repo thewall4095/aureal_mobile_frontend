@@ -1,4 +1,6 @@
 import 'dart:convert';
+
+
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/buttonPages/Bio.dart';
@@ -6,19 +8,19 @@ import 'package:auditory/screens/buttonPages/Referralprogram.dart';
 import 'package:auditory/screens/buttonPages/Settings.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
 import 'package:auditory/utilities/Share.dart';
+
 import 'dart:io';
-import 'package:html/parser.dart';
-import 'package:assets_audio_player/assets_audio_player.dart';
+
+import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
-import 'package:auditory/screens/Player/Player.dart';
-import 'package:auditory/screens/Player/PlayerElements/Seekbar.dart';
-import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
+import 'package:auditory/screens/buttonPages/search.dart';
+import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,17 +29,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:jitsi_meet/jitsi_meet.dart';
+
 // import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
+
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+
+
 import '../Clips.dart';
 import '../RewardsScreen.dart';
+
 import 'Comments.dart';
 import 'PodcastView.dart';
 
@@ -210,7 +220,7 @@ class _PublicProfileState extends State<PublicProfile>
                     children: [
                       CachedNetworkImage(
                         imageUrl: userData['img'] == null
-                            ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                            ? placeholderUrl
                             : userData['img'],
                         imageBuilder: (context, imageProvider) {
                           return Container(
@@ -1808,7 +1818,7 @@ class _FollowersState extends State<Followers> {
                           children: [
                             CachedNetworkImage(
                               imageUrl: v['img'] == null
-                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  ? placeholderUrl
                                   : v['img'],
                               imageBuilder: (context, imageProvider) {
                                 return Container(
@@ -1841,9 +1851,22 @@ class _FollowersState extends State<Followers> {
                                               3.5,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                    v['fullname'] == null
+                                    v['hive_username'] == null
                                         ? SizedBox()
                                         : Text(
+
+                                            "${v['hive_username']}",
+                                            textScaleFactor: 1.0,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                                color: Color(0xffe8e8e8)
+                                                    .withOpacity(0.5),
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    3),
+                                          ),
+Text(
                                       "${v['fullname']}",
                                       textScaleFactor: 1.0,
                                       overflow: TextOverflow.ellipsis,
@@ -1855,6 +1878,7 @@ class _FollowersState extends State<Followers> {
                                               .safeBlockHorizontal *
                                               3),
                                     )
+
                                   ],
                                 ),
                               ),
@@ -1988,7 +2012,7 @@ class _FolllowingState extends State<Folllowing> {
                           children: [
                             CachedNetworkImage(
                               imageUrl: v['img'] == null
-                                  ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                  ? placeholderUrl
                                   : v['img'],
                               imageBuilder: (context, imageProvider) {
                                 return Container(

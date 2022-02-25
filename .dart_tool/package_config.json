@@ -422,6 +422,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_vibrate",
+      "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_vibrate-1.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_web_plugins",
       "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
@@ -902,12 +908,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "slider_controller",
-      "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/slider_controller-0.0.3",
-      "packageUri": "lib/",
-      "languageVersion": "2.15"
-    },
-    {
       "name": "social_share",
       "rootUri": "file:///Users/dhawalpatel/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/social_share-2.1.1",
       "packageUri": "lib/",
@@ -1172,7 +1172,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2022-02-21T08:40:31.368402Z",
+  "generated": "2022-02-24T21:39:52.357932Z",
   "generator": "pub",
   "generatorVersion": "2.15.1"
 }

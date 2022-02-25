@@ -392,7 +392,7 @@ class _BioState extends State<Bio> {
                         Center(
 
                         ),
-                        CachedNetworkImage(imageUrl: displayUrl == null ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png' : displayUrl, imageBuilder: (context, imageProvider){
+                        CachedNetworkImage(imageUrl: displayUrl == null ? placeholderUrl : displayUrl, imageBuilder: (context, imageProvider){
                           return Container(
                             width: MediaQuery.of(context).size.width / 3,
                             height: MediaQuery.of(context).size.width / 3,

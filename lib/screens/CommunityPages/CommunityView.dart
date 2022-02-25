@@ -278,7 +278,7 @@ class _CommunityViewState extends State<CommunityView>
                                 imageUrl: widget.communityObject[
                                             'bannerImageUrl'] ==
                                         null
-                                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                    ? placeholderUrl
                                     : widget.communityObject['bannerImageUrl'],
                               ),
                             )
@@ -304,7 +304,7 @@ class _CommunityViewState extends State<CommunityView>
                                       imageUrl: widget.communityObject[
                                                   'profileImageUrl'] ==
                                               null
-                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          ? placeholderUrl
                                           : widget.communityObject[
                                               'profileImageUrl'],
                                     ),

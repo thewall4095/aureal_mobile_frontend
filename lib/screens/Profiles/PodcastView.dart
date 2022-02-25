@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
+import 'package:auditory/screens/Player/Player.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayer/audioplayer.dart';
@@ -559,7 +561,7 @@ class _PodcastViewState extends State<PodcastView>
                                                 borderRadius:
                                                 BorderRadius.circular(5),
                                                 image: DecorationImage(
-                                                    image: CachedNetworkImageProvider('https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'),
+                                                    image: CachedNetworkImageProvider(placeholderUrl),
                                                     fit: BoxFit.cover)),
                                           );
                                         },
@@ -775,7 +777,7 @@ class _PodcastViewState extends State<PodcastView>
                                                 'assets/images/Thumbnail.png'),
                                           ),
                                       imageUrl: podcastData == null
-                                          ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                          ? placeholderUrl
                                           : podcastData['image'],
                                       fit: BoxFit.cover,
                                     ),
@@ -854,6 +856,7 @@ class _PodcastViewState extends State<PodcastView>
                                             true
                                             ? InkWell(
                                           onTap: () {
+                                            Vibrate.feedback(FeedbackType.impact);
                                             currentlyPlaying
                                                 .audioPlayer
                                                 .pause();
@@ -885,7 +888,17 @@ class _PodcastViewState extends State<PodcastView>
                                             : InkWell(
                                           onTap: () {
 
-
+                                            Vibrate.feedback(FeedbackType.impact);
+                                            showModalBottomSheet(
+                                                isScrollControlled: true,
+                                                backgroundColor: Colors.transparent,
+                                                barrierColor: Colors.transparent,
+                                                isDismissible: true,
+                                                // bounce: true,
+                                                context: context,
+                                                builder: (context) {
+                                                  return Player2();
+                                                });
                                             currentlyPlaying.audioPlayer.open(
                                                 Playlist(
                                                     audios:
@@ -1049,7 +1062,7 @@ class _PodcastViewState extends State<PodcastView>
                               //                               CachedNetworkImage(
                               //                                 imageUrl: podcastData ==
                               //                                     null
-                              //                                     ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                              //                                     ? placeholderUrl
                               //                                     : podcastData[
                               //                                 'image'],
                               //                                 imageBuilder:
@@ -1372,7 +1385,7 @@ class _PodcastViewState extends State<PodcastView>
                           }
                         }
 
-                        return EpisodeCard(data: episodeList[index - 1], index: index, playlist: playlist,);
+                        return EpisodeCard(data: episodeList[index - 1], index: index -1, playlist: playlist,);
                       }
                     }),
                 ListView(
@@ -1469,7 +1482,7 @@ class _PodcastViewState extends State<PodcastView>
                                               .floor(),
                                           imageUrl: a['image'] != null
                                               ? a['image']
-                                              : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                              : placeholderUrl,
                                           placeholder:
                                               (context, imageProvider) {
                                             return Container(
@@ -1578,7 +1591,7 @@ class _PodcastViewState extends State<PodcastView>
                                                         decoration: BoxDecoration(
                                                             image: DecorationImage(
                                                                 image: NetworkImage(
-                                                                    "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png"),
+                                                                    placeholderUrl),
                                                                 fit: BoxFit
                                                                     .cover),
                                                             borderRadius:
@@ -1631,7 +1644,7 @@ class _PodcastViewState extends State<PodcastView>
                                                     imageUrl: a['image'] !=
                                                         null
                                                         ? a['image']
-                                                        : 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png',
+                                                        : placeholderUrl,
                                                     placeholder: (context,
                                                         imageProvider) {
                                                       return Container(

@@ -348,7 +348,7 @@ class _DownloadPageState extends State<DownloadPage>
                                           child: Image.asset('assets/images/Thumbnail.png'),
                                         ),
                                       imageUrl: v['image']
-                                            // ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                            // ? placeholderUrl
                                             // : v['image'],
                                         //fit: BoxFit.cover,
                                       ),

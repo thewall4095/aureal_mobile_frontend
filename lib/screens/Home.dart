@@ -13,6 +13,7 @@ import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/UserProfile.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
@@ -610,7 +611,7 @@ class _HomeState extends State<Home> {
               radius: SizeConfig.safeBlockHorizontal * 6,
               backgroundImage: CachedNetworkImageProvider(
                 displayPicture == null
-                    ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                    ? placeholderUrl
                     : displayPicture,
                 scale: 0.5,
               ),
@@ -907,7 +908,7 @@ class BottomPlayer extends StatelessWidget {
                                 return CachedNetworkImage(
                                   width: 40,
                                   height: 40,
-                                  imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+                                  imageUrl: infos.current.audio == null ? placeholderUrl:infos.current.audio.audio.metas.image.path,
                                   errorWidget: (context, url, e){
                                     return Container(
                                       height: 40,
@@ -933,7 +934,7 @@ class BottomPlayer extends StatelessWidget {
                                 return CachedNetworkImage(
                                   width: 40,
                                   height: 40,
-                                  imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+                                  imageUrl: placeholderUrl,
                                   imageBuilder: (context, imageProvider) {
                                     return Container(
                                       height: 40,
@@ -1114,7 +1115,7 @@ class BottomPlayer extends StatelessWidget {
 //                               return CachedNetworkImage(
 //                                 width: 40,
 //                                 height: 40,
-//                                 imageUrl: infos.current.audio == null ? "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png":infos.current.audio.audio.metas.image.path,
+//                                 imageUrl: infos.current.audio == null ? placeholderUrl:infos.current.audio.audio.metas.image.path,
 //                                 errorWidget: (context, url, e){
 //                                   return Container(
 //                                     height: 40,
@@ -1140,7 +1141,7 @@ class BottomPlayer extends StatelessWidget {
 //                               return CachedNetworkImage(
 //                                 width: 40,
 //                                 height: 40,
-//                                 imageUrl: "https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png",
+//                                 imageUrl: placeholderUrl,
 //                                 imageBuilder: (context, imageProvider) {
 //                                   return Container(
 //                                     height: 40,

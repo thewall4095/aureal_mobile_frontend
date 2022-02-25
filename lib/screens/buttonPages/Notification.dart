@@ -5,6 +5,7 @@ import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -298,7 +299,7 @@ class _NotificationPageState extends State<NotificationPage>
                                       );
                                     },
                                     imageUrl: v['data']['image'] == null
-                                        ? 'https://aurealbucket.s3.us-east-2.amazonaws.com/Thumbnail.png'
+                                        ? placeholderUrl
                                         : v['data']['image'],
                                     fit: BoxFit.cover,
                                     // memCacheHeight:
