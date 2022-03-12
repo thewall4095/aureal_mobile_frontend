@@ -360,6 +360,7 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: NestedScrollView(
 
         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){

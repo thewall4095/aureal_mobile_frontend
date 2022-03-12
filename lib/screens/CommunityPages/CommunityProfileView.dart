@@ -480,13 +480,13 @@ class _CommunityProfileViewState extends State<CommunityProfileView>
                                                   .contains('.webm') ==
                                               true) {
                                         currentlyPlaying.stop();
-                                        Navigator.push(context,
-                                            CupertinoPageRoute(
-                                                builder: (context) {
-                                          return PodcastVideoPlayer(
-                                            episodeObject: v,
-                                          );
-                                        }));
+                                        // Navigator.push(context,
+                                        //     CupertinoPageRoute(
+                                        //         builder: (context) {
+                                        //   return PodcastVideoPlayer(
+                                        //     episodeObject: v,
+                                        //   );
+                                        // }));
                                       } else {
                                         if (v['url']
                                             .toString()

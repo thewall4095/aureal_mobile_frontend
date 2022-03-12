@@ -782,22 +782,29 @@ class _EpisodeViewState extends State<EpisodeView>
                             GestureDetector(
                               onTap: () {
                                 Vibrate.feedback(FeedbackType.impact);
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    barrierColor: Colors.transparent,
-                                    isDismissible: true,
-                                    // bounce: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return Player2();
-                                    });
-                                episodeObject.stop();
-                                episodeObject.episodeObject =
-                                    episodeContent;
-                                print(episodeObject.episodeObject
-                                    .toString());
-                                episodeObject.play();
+                                if(episodeContent['isvideo'] == true){
+                                  showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                                    return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
+                                  });
+                                }else{
+                                  showModalBottomSheet(
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.transparent,
+                                      barrierColor: Colors.transparent,
+                                      isDismissible: true,
+                                      // bounce: true,
+                                      context: context,
+                                      builder: (context) {
+                                        return Player2();
+                                      });
+                                  episodeObject.stop();
+                                  episodeObject.episodeObject =
+                                      episodeContent;
+                                  print(episodeObject.episodeObject
+                                      .toString());
+                                  episodeObject.play();
+                                }
+
                               },
                               child: Container(
                                 decoration: BoxDecoration(

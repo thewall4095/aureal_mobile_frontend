@@ -10,6 +10,7 @@ import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/screens/Clips.dart';
 import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
+import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/UserProfile.dart';
@@ -682,6 +683,19 @@ class _HomeState extends State<Home> {
                             },
                             leading: Icon(FontAwesomeIcons.hive),
                             title: Text("Wallet"),
+                          ),
+                          ListTile(
+                            onTap: () {
+                              Navigator.pop(context);
+                              showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                                return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer());
+                              });
+                              // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                              //   return VideoPlayer();
+                              // }));
+                            },
+                            leading: Icon(FontAwesomeIcons.hive),
+                            title: Text("Video Player Demo"),
                           )
                         ],
                       ),

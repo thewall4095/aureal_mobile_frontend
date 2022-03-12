@@ -148,10 +148,10 @@ class _HistoryState extends State<History> {
                           a.toString().contains('.wmv') == true ||
                           a.toString().contains('.webm') == true) {
                         currentlyPlaying.stop();
-                        Navigator.push(context,
-                            CupertinoPageRoute(builder: (context) {
-                          return PodcastVideoPlayer(episodeObject: a);
-                        }));
+                        // Navigator.push(context,
+                        //     CupertinoPageRoute(builder: (context) {
+                        //   return PodcastVideoPlayer(episodeObject: a);
+                        // }));
                       } else {
                         if (a.toString().contains('.pdf') == true) {
                         } else {

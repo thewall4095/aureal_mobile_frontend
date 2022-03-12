@@ -21,7 +21,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -29,6 +29,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -159,195 +160,48 @@ class Feed extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
-            return <Widget>[
+  Widget build(BuildContext context) => Material(
+    child: NestedScrollView(
 
-            ];
-          },
-          body: FutureBuilder(
-            future: getFeedStructure(),
-            builder: (context, snapshot){
-              try{
-                if(snapshot.hasData){
+      headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
+        return <Widget>[
 
-                  return ListView.builder(shrinkWrap: true,addAutomaticKeepAlives: true,itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
-                    if(index == snapshot.data.length){
-                      return SizedBox(height: 50,);
-                    }else{
-                      return _feedBuilder(context, snapshot.data[index]);
-                    }
-
-                  });
-                }else{
-                  return SizedBox();
-                }
-              }catch(e){
-                return Container();
-              }
-            },
-
-          ),
+        ];
+      },
+      body: FutureBuilder(
+        future: getFeedStructure(),
+        builder: (context, snapshot){
 
 
-        ),
+            if(snapshot.hasData){
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(shrinkWrap: true,addAutomaticKeepAlives: true,itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
+                  if(index == snapshot.data.length){
+                    return SizedBox(height: 50,);
+                  }else{
+                    return _feedBuilder(context, snapshot.data[index]);
+                  }
+                }),
+              );
+            }else{
+              return SizedBox(
+                // height: MediaQuery.of(context).size.height / 25,
+              );
+            }
+
+        },
+
       ),
-    );
-  }
+
+
+    ),
+  );
 }
 
 
-// class Feed extends StatefulWidget {
-//
-//   @override
-//   State<Feed> createState() => _FeedState();
-// }
-//
-// class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin{
-//   CancelToken _cancel = CancelToken();
-//
-//   final String baseUrl = "https://api.aureal.one/public";
-//
-//   var feedStructure = [];
-//
-//   RegExp htmlMatch = RegExp(r'(\w+)');
-//
-//   Future<List> getFeedStructure() async {
-//     Dio dio = Dio();
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     String url = "https://api.aureal.one/public/recommended?page=0&pageSize=5&user_id=${prefs.getString('userId')}";
-//
-//     try{
-//       var response = await dio.get(url);
-//       if(response.statusCode == 200){
-//
-//         return response.data['data'];
-//       }else{
-//
-//       }
-//     }catch(e){
-//       print(e);
-//     }
-//   }
-//
-//   SharedPreferences prefs;
-//
-//   Future generalisedApiCall(String apicall) async {
-//     Dio dio = Dio(
-//
-//     );
-//     prefs = await SharedPreferences.getInstance();
-//     String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
-//
-//     try{
-//       var response = await dio.get(url, cancelToken: _cancel);
-//       if(response.statusCode == 200){
-//         return response.data['data'];
-//       }
-//     }catch(e){
-//       print(e);
-//     }
-//
-//   }
-//
-//   Widget _feedBuilder(BuildContext context, var data){
-//
-//     var episodeObject = Provider.of<PlayerChange>(context);
-//     var currentlyPlaying = Provider.of<PlayerChange>(context);
-//
-//     switch(data['type']){
-//       case 'podcast':
-//         return PodcastWidget(data: data);
-//         break;
-//       case 'episode':
-//         return EpisodeWidget(data: data);
-//         break;
-//
-//       case "playlist":
-//         return PlaylistWidget(data: data);
-//         break;
-//       case 'snippet':
-//         return SnippetWidget(data: data);
-//         break;
-//       case 'user':
-//         return FutureBuilder(
-//           future: generalisedApiCall(data['api']),
-//           builder: (context, snapshot){
-//             return Container(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.all(15),
-//                     child: Text("${data['name']}", style: TextStyle(
-//                         fontSize: SizeConfig.safeBlockHorizontal * 5,
-//                         fontWeight: FontWeight.bold
-//                     )),
-//                   ),
-//                   Text("${snapshot.data}"),
-//                 ],
-//               ),
-//             );
-//           },
-//         );
-//         break;
-//       default:
-//         return Container();
-//         break;
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: NestedScrollView(
-//         headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled){
-//           return <Widget>[
-//
-//           ];
-//         },
-//         body: FutureBuilder(
-//           future: getFeedStructure(),
-//           builder: (context, snapshot){
-//             if(snapshot.hasData){
-//               // return ListView(
-//               //   addAutomaticKeepAlives: true,
-//               //   children: [
-//               //     for(var v in snapshot.data)
-//               //       _feedBuilder(context, v),
-//               //     SizedBox(height: 150,),
-//               //   ],
-//               // );
-//               return ListView.builder(itemCount: snapshot.data.length + 1,itemBuilder: (context, int index){
-//                 if(index == snapshot.data.length){
-//                   return SizedBox(height: 50,);
-//                 }else{
-//                   return _feedBuilder(context, snapshot.data[index]);
-//                 }
-//
-//               });
-//             }else{
-//               return SizedBox();
-//             }
-//
-//           },
-//
-//         ),
-//
-//
-//       ),
-//     );
-//   }
-//
-//   @override
-//   // TODO: implement wantKeepAlive
-//   bool get wantKeepAlive => true;
-// }
+
 
 class EpisodeWidget extends StatefulWidget {
 
@@ -360,7 +214,7 @@ class EpisodeWidget extends StatefulWidget {
   _EpisodeWidgetState createState() => _EpisodeWidgetState();
 }
 
-class _EpisodeWidgetState extends State<EpisodeWidget> {
+class _EpisodeWidgetState extends State<EpisodeWidget> with AutomaticKeepAliveClientMixin{
 
   SharedPreferences prefs;
 
@@ -490,6 +344,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
             );
           }catch(e){
             return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                     fontSize: SizeConfig.safeBlockHorizontal * 5,
@@ -701,6 +556,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
           }
         }else{
           return Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(title: Text("${widget.data['name']}", style: TextStyle(
                   fontSize: SizeConfig.safeBlockHorizontal * 5,
@@ -912,9 +768,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget> {
         }
 
 
+
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class ColumnBuilder extends StatelessWidget {
@@ -968,7 +829,7 @@ class EpisodeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           Navigator.push(
               context,
@@ -1334,7 +1195,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
               MainAxisAlignment
                   .spaceBetween,
               children: [
-                (episodeData['permlink'] == null ? SizedBox():(isLoading == true? Padding(
+                (episodeData['permlink'] == null ? SizedBox(height: 0,):(isLoading == true? Padding(
                   padding: const EdgeInsets.only(right: 5),
                   child: Container(
                     height: 25, width: MediaQuery.of(context).size.width / 6,
@@ -1345,7 +1206,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                         borderRadius: BorderRadius.circular(30)
                     ),
                   ),
-                ):InkWell(
+                ):GestureDetector(
                   onTap:
                       () async {
                         Vibrate.feedback(FeedbackType.impact);
@@ -1469,223 +1330,18 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                     ),
                   ),
                 ))),
-                // episodeData['permlink'] != null ?FutureBuilder(future: getLocalPreferences().then((value) {
-                //   getVotingValue();
-                // }),builder: (context, snapshot){
-                //   if(snapshot.hasData){
-                //     return InkWell(
-                //       onTap: (){
-                //         if (prefs.getString(
-                //             'HiveUserName') !=
-                //             null) {
-                //           setState(
-                //                   () {
-                //                 snapshot.data['isLoading'] =
-                //                 true;
-                //               });
-                //           double
-                //           _value =
-                //           50.0;
-                //           showDialog(
-                //               context:
-                //               context,
-                //               builder:
-                //                   (context) {
-                //                 return Dialog(
-                //                     backgroundColor: Colors.transparent,
-                //                     child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
-                //               }).then((value) async {
-                //             setState(
-                //                     () {
-                //                   snapshot.data['net_votes'] = snapshot.data['net_votes'] + 1;
-                //                   snapshot.data['ifVoted'] =
-                //                   true;
-                //
-                //                 });
-                //           });
-                //
-                //           setState(
-                //                   () {
-                //                 snapshot.data['isLoading'] =
-                //                 false;
-                //               });
-                //         } else {
-                //           showBarModalBottomSheet(
-                //               context:
-                //               context,
-                //               builder:
-                //                   (context) {
-                //                 return HiveDetails();
-                //               });
-                //         }
-                //       },
-                //       child: Container(
-                //         decoration: snapshot.data['ifVoted'] ==
-                //             true
-                //             ? BoxDecoration(
-                //             gradient:
-                //             LinearGradient(colors: [
-                //               Color(0xff5bc3ef),
-                //               Color(0xff5d5da8)
-                //             ]),
-                //             borderRadius: BorderRadius.circular(
-                //                 30))
-                //             : BoxDecoration(
-                //             border:
-                //             Border.all(color: kSecondaryColor),
-                //             borderRadius: BorderRadius.circular(30)),
-                //         child:
-                //         Padding(
-                //           padding: const EdgeInsets
-                //               .symmetric(
-                //               vertical:
-                //               5,
-                //               horizontal:
-                //               5),
-                //           child:
-                //           Row(
-                //             children: [
-                //               episodeData['isLoading'] == true
-                //                   ? Container(
-                //                 height: 17,
-                //                 width: 18,
-                //                 child: SpinKitPulse(
-                //                   color: Colors.blue,
-                //                 ),
-                //               )
-                //                   : Icon(
-                //                 FontAwesomeIcons.chevronCircleUp,
-                //                 size: 15,
-                //                 // color:
-                //                 //     Color(0xffe8e8e8),
-                //               ),
-                //               Padding(
-                //                 padding:
-                //                 const EdgeInsets.symmetric(horizontal: 8),
-                //                 child:
-                //                 Text(
-                //                   "${snapshot.data['net_votes']}",
-                //                   textScaleFactor: 1.0,
-                //                   style: TextStyle(fontSize: 12
-                //                     // color:
-                //                     //     Color(0xffe8e8e8)
-                //                   ),
-                //                 ),
-                //               ),
-                //               Padding(
-                //                 padding:
-                //                 const EdgeInsets.only(right: 4),
-                //                 child:
-                //                 Text(
-                //                   '\$${snapshot.data['hive_earnings']}',
-                //                   textScaleFactor: 1.0,
-                //                   style: TextStyle(
-                //                     fontSize: 12,
-                //
-                //                     // color:
-                //                     //     Color(0xffe8e8e8)
-                //                   ),
-                //                 ),
-                //               )
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     );
-                //   }else{
-                //     return Container(
-                //       decoration:
-                //            BoxDecoration(
-                //           border:
-                //           Border.all(color: kSecondaryColor),
-                //           borderRadius: BorderRadius.circular(30)),
-                //       child:
-                //       Padding(
-                //         padding: const EdgeInsets
-                //             .symmetric(
-                //             vertical:
-                //             5,
-                //             horizontal:
-                //             5),
-                //         child:
-                //         Row(
-                //           children: [
-                //              Icon(
-                //               FontAwesomeIcons.chevronCircleUp,
-                //               size: 15,
-                //               // color:
-                //               //     Color(0xffe8e8e8),
-                //             ),
-                //             Padding(
-                //               padding:
-                //               const EdgeInsets.symmetric(horizontal: 8),
-                //               child:
-                //               Text(
-                //                 "${''}",
-                //                 textScaleFactor: 1.0,
-                //                 style: TextStyle(fontSize: 12
-                //                   // color:
-                //                   //     Color(0xffe8e8e8)
-                //                 ),
-                //               ),
-                //             ),
-                //             Padding(
-                //               padding:
-                //               const EdgeInsets.only(right: 4),
-                //               child:
-                //               Text(
-                //                 ' ',
-                //                 textScaleFactor: 1.0,
-                //                 style: TextStyle(
-                //                   fontSize: 12,
-                //
-                //                   // color:
-                //                   //     Color(0xffe8e8e8)
-                //                 ),
-                //               ),
-                //             )
-                //           ],
-                //         ),
-                //       ),
-                //     );
-                //   }
-                // }): SizedBox(),
-                episodeData['permlink'] == null ? SizedBox():InkWell(
+
+                episodeData['permlink'] == null ? SizedBox(height: 0,):GestureDetector(
                   onTap: () {
                     if (prefs.getString(
                         'HiveUserName') !=
                         null) {
-                      setState(
-                              () {
-                            episodeData['isLoading'] =
-                            true;
-                          });
-                      double
-                      _value =
-                      50.0;
-                      showDialog(
-                          context:
+                      Navigator.push(
                           context,
-                          builder:
-                              (context) {
-                            return Dialog(
-                                backgroundColor: Colors.transparent,
-                                child: UpvoteEpisode(permlink: widget.data['permlink'], episode_id: widget.data['id']));
-                          }).then((value) async {
-                        setState(
-                                () {
-                              episodeData['votes'] = episodeData['votes'] + 1;
-                              episodeData['ifVoted'] =
-                              !episodeData['ifVoted'];
-
-                            });
-                      });
-
-                      setState(
-                              () {
-                            episodeData['isLoading'] =
-                            false;
-                          });
+                          CupertinoPageRoute(
+                              builder: (context) => Comments(
+                                episodeObject: episodeData,
+                              )));
                     } else {
                       showBarModalBottomSheet(
                           context:
@@ -1739,33 +1395,42 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                 ),
                 Container(
 
-                  child: episodeObject.audioPlayer.isPlaying.value == true? InkWell(
+                  child: episodeObject.audioPlayer.isPlaying.value == true? GestureDetector(
 
-                    splashColor: Colors.blue,
-                    splashFactory: InkRipple.splashFactory,
+                    // splashColor: Colors.blue,
+                    // splashFactory: InkRipple.splashFactory,
                     onTap: () {
+
+                      print("///////////////////////////////////////////// ${lookupMimeType(widget.data['url'])}");
                       setState(() {
                         isPlaying = true;
                       });
                       FeedbackType _vibtype = FeedbackType.impact;
                       Vibrate.feedback(FeedbackType.impact);
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          barrierColor: Colors.transparent,
-                          isDismissible: true,
-                          // bounce: true,
-                          context: context,
-                          builder: (context) {
-                            return Player2();
-                          });
-                      episodeObject.audioPlayer.open(
-                          Playlist(
-                              audios: widget.playlist,
-                              startIndex: widget.index),
-                          showNotification: true).then((value) {
+                      if(episodeData['isvideo'] == true){
+                        showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                          return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: widget.data,));
+                        });
+                      }else{
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            barrierColor: Colors.transparent,
+                            isDismissible: true,
+                            // bounce: true,
+                            context: context,
+                            builder: (context) {
+                              return Player2();
+                            });
+                        episodeObject.audioPlayer.open(
+                            Playlist(
+                                audios: widget.playlist,
+                                startIndex: widget.index),
+                            showNotification: true).then((value) {
 
-                      });
+                        });
+                      }
+
                     },
                     child:
                     Padding(
@@ -1876,9 +1541,9 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                         ),
                       ),
                     ),
-                  ) : InkWell(
-                    splashColor: Colors.blue,
-                    splashFactory: InkRipple.splashFactory,
+                  ) : GestureDetector(
+                    // splashColor: Colors.blue,
+                    // splashFactory: InkRipple.splashFactory,
 
                     onTap: () {
                       setState(() {
@@ -1886,34 +1551,41 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                       });
                       FeedbackType _vibtype = FeedbackType.impact;
                       Vibrate.feedback(FeedbackType.impact);
-                      if(widget.playlist == null){
-                        episodeObject.stop();
-                        episodeObject.episodeObject =
-                            episodeData;
-                        print(episodeObject.episodeObject
-                            .toString());
-                        episodeObject.play();
-                      }else{
-
-                        showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            barrierColor: Colors.transparent,
-                            isDismissible: true,
-                            // bounce: true,
-                            context: context,
-                            builder: (context) {
-                              return Player2();
-                            });
-
-                        episodeObject.audioPlayer.open(
-                            Playlist(
-                                audios: widget.playlist,
-                                startIndex: widget.index),
-                            showNotification: true).then((value) {
-
+                      if(widget.data['isvideo'] == true){
+                        showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                          return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: widget.data,));
                         });
+                      }else{
+                        if(widget.playlist == null){
+                          episodeObject.stop();
+                          episodeObject.episodeObject =
+                              episodeData;
+                          print(episodeObject.episodeObject
+                              .toString());
+                          episodeObject.play();
+                        }else{
+
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              barrierColor: Colors.transparent,
+                              isDismissible: true,
+                              // bounce: true,
+                              context: context,
+                              builder: (context) {
+                                return Player2();
+                              });
+
+                          episodeObject.audioPlayer.open(
+                              Playlist(
+                                  audios: widget.playlist,
+                                  startIndex: widget.index),
+                              showNotification: true).then((value) {
+
+                          });
+                        }
                       }
+
 
                     },
                     child:
@@ -2029,7 +1701,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                 ),
               ],
             ),
-            InkWell(
+            GestureDetector(
               onTap: () {
                 share(
                     episodeObject:
@@ -2044,7 +1716,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
         ),
       );
     }catch(e){
-      return SizedBox();
+      return SizedBox(height: 0,);
     }
 
   }
@@ -2097,7 +1769,197 @@ class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveCl
     return FutureBuilder(
       future: generalisedApiCall(widget.data['api']),
       builder: (context, snapshot){
-        try{
+        // try{
+        //   if(snapshot.hasData){
+        //     return Container(
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         mainAxisSize: MainAxisSize.min,
+        //         children: [
+        //           ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+        //               fontSize: SizeConfig.safeBlockHorizontal * 5,
+        //               fontWeight: FontWeight.bold
+        //           )),trailing: ShaderMask(shaderCallback: (Rect bounds){
+        //             return LinearGradient(colors: [Color(
+        //                 0xff5bc3ef),
+        //               Color(
+        //                   0xff5d5da8)]).createShader(bounds);
+        //           },child: GestureDetector(onTap: (){
+        //             Navigator.push(context, CupertinoPageRoute(builder: (context){
+        //               return SeeMore(data: widget.data);
+        //             },),);
+        //           },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
+        //           SizedBox(height: 10,),
+        //           Container(
+        //             width: double.infinity,
+        //             height: SizeConfig.blockSizeVertical * 25,
+        //             constraints: BoxConstraints(
+        //                 minHeight:
+        //                 MediaQuery.of(context).size.height *
+        //                     0.17),
+        //             child: ListView.builder(
+        //               shrinkWrap: true,
+        //               addAutomaticKeepAlives: true,
+        //               itemCount: snapshot.data.length,
+        //               itemBuilder: (context, int index){
+        //                 return PodcastCard(data: snapshot.data[index]);
+        //               },
+        //               scrollDirection: Axis.horizontal,
+        //
+        //             ),
+        //           ),
+        //           // Text("${snapshot.data}"),
+        //         ],
+        //       ),
+        //     );
+        //   }else{
+        //     return Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+        //             fontSize: SizeConfig.safeBlockHorizontal * 5,
+        //             fontWeight: FontWeight.bold
+        //         )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
+        //         SizedBox(height: 10,),
+        //         Container(
+        //           width: double.infinity,
+        //           height: SizeConfig.blockSizeVertical * 25,
+        //           constraints: BoxConstraints(
+        //               minHeight:
+        //               MediaQuery.of(context).size.height *
+        //                   0.17),
+        //           child: ListView.builder(
+        //             shrinkWrap: true,
+        //             addAutomaticKeepAlives: true,
+        //
+        //             itemCount: 10,
+        //             itemBuilder: (context, int index){
+        //               return Padding(
+        //                 padding:
+        //                 const EdgeInsets.fromLTRB(
+        //                     15, 0, 0, 8),
+        //                 child: Container(
+        //                   decoration: BoxDecoration(
+        //                     // x
+        //                     borderRadius:
+        //                     BorderRadius.circular(
+        //                         15),
+        //                   ),
+        //                   width: MediaQuery.of(context)
+        //                       .size
+        //                       .width *
+        //                       0.38,
+        //                   child: Column(
+        //                     crossAxisAlignment:
+        //                     CrossAxisAlignment
+        //                         .start,
+        //                     mainAxisSize:
+        //                     MainAxisSize.min,
+        //                     children: [
+        //                       CachedNetworkImage(
+        //                         errorWidget: (context,
+        //                             url, error) {
+        //                           return Container(
+        //                             decoration: BoxDecoration(
+        //                                 color: Color(0xff222222),
+        //                                 // image: DecorationImage(
+        //                                 //     image: NetworkImage(
+        //                                 //         placeholderUrl),
+        //                                 //     fit: BoxFit
+        //                                 //         .cover),
+        //                                 borderRadius:
+        //                                 BorderRadius
+        //                                     .circular(
+        //                                     3)),
+        //                             width: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                             height: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                           );
+        //                         },
+        //                         imageBuilder: (context,
+        //                             imageProvider) {
+        //                           return Container(
+        //                             decoration: BoxDecoration(
+        //                                 image: DecorationImage(
+        //                                     image:
+        //                                     imageProvider,
+        //                                     fit: BoxFit
+        //                                         .cover),
+        //                                 borderRadius:
+        //                                 BorderRadius
+        //                                     .circular(
+        //                                     3)),
+        //                             width: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                             height: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                           );
+        //                         },
+        //                         memCacheHeight:
+        //                         (MediaQuery.of(
+        //                             context)
+        //                             .size
+        //                             .height)
+        //                             .floor(),
+        //                         imageUrl: placeholderUrl,
+        //                         placeholder: (context,
+        //                             imageProvider) {
+        //                           return Container(
+        //                             decoration: BoxDecoration(
+        //                               // image: DecorationImage(
+        //                               //     image: AssetImage(
+        //                               //         'assets/images/Thumbnail.png'),
+        //                               //     fit: BoxFit
+        //                               //         .cover),
+        //                                 color: Color(0xff222222)
+        //                             ),
+        //                             height: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                             width: MediaQuery.of(
+        //                                 context)
+        //                                 .size
+        //                                 .width *
+        //                                 0.38,
+        //                           );
+        //                         },
+        //                       ),
+        //                       SizedBox(
+        //                         height: 5,
+        //                       ),
+        //
+        //                     ],
+        //                   ),
+        //                 ),
+        //               );
+        //             },
+        //             scrollDirection: Axis.horizontal,
+        //
+        //           ),
+        //         ),
+        //       ],
+        //     );
+        //   }
+        //
+        // }catch(e){
+        //
+        // }
+        if(snapshot.hasData){
           return Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -2125,6 +1987,7 @@ class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveCl
                       MediaQuery.of(context).size.height *
                           0.17),
                   child: ListView.builder(
+                    shrinkWrap: true,
                     addAutomaticKeepAlives: true,
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, int index){
@@ -2138,147 +2001,149 @@ class _PodcastWidgetState extends State<PodcastWidget> with AutomaticKeepAliveCl
               ],
             ),
           );
-        }catch(e){
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(title: Text("${widget.data['name']}", style: TextStyle(
-                  fontSize: SizeConfig.safeBlockHorizontal * 5,
-                  fontWeight: FontWeight.bold
-              )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
-              SizedBox(height: 10,),
-              Container(
-                width: double.infinity,
-                height: SizeConfig.blockSizeVertical * 25,
-                constraints: BoxConstraints(
-                    minHeight:
-                    MediaQuery.of(context).size.height *
-                        0.17),
-                child: ListView.builder(
+        }else{
+          return Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(title: Text("${widget.data['name']}", style: TextStyle(
+                    fontSize: SizeConfig.safeBlockHorizontal * 5,
+                    fontWeight: FontWeight.bold
+                )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
+                SizedBox(height: 10,),
+                Container(
+                  width: double.infinity,
+                  height: SizeConfig.blockSizeVertical * 25,
+                  constraints: BoxConstraints(
+                      minHeight:
+                      MediaQuery.of(context).size.height *
+                          0.17),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    addAutomaticKeepAlives: true,
 
-                  addAutomaticKeepAlives: true,
-
-                  itemCount: 10,
-                  itemBuilder: (context, int index){
-                    return Padding(
-                      padding:
-                      const EdgeInsets.fromLTRB(
-                          15, 0, 0, 8),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          // x
-                          borderRadius:
-                          BorderRadius.circular(
-                              15),
-                        ),
-                        width: MediaQuery.of(context)
-                            .size
-                            .width *
-                            0.38,
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment
-                              .start,
-                          mainAxisSize:
-                          MainAxisSize.min,
-                          children: [
-                            CachedNetworkImage(
-                              errorWidget: (context,
-                                  url, error) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(0xff222222),
-                                      // image: DecorationImage(
-                                      //     image: NetworkImage(
-                                      //         placeholderUrl),
-                                      //     fit: BoxFit
-                                      //         .cover),
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          3)),
-                                  width: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                  height: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                );
-                              },
-                              imageBuilder: (context,
-                                  imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image:
-                                          imageProvider,
-                                          fit: BoxFit
-                                              .cover),
-                                      borderRadius:
-                                      BorderRadius
-                                          .circular(
-                                          3)),
-                                  width: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                  height: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                );
-                              },
-                              memCacheHeight:
-                              (MediaQuery.of(
-                                  context)
-                                  .size
-                                  .height)
-                                  .floor(),
-                              imageUrl: placeholderUrl,
-                              placeholder: (context,
-                                  imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
+                    itemCount: 10,
+                    itemBuilder: (context, int index){
+                      return Padding(
+                        padding:
+                        const EdgeInsets.fromLTRB(
+                            15, 0, 0, 8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            // x
+                            borderRadius:
+                            BorderRadius.circular(
+                                15),
+                          ),
+                          width: MediaQuery.of(context)
+                              .size
+                              .width *
+                              0.38,
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment
+                                .start,
+                            mainAxisSize:
+                            MainAxisSize.min,
+                            children: [
+                              CachedNetworkImage(
+                                errorWidget: (context,
+                                    url, error) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        // image: DecorationImage(
+                                        //     image: NetworkImage(
+                                        //         placeholderUrl),
+                                        //     fit: BoxFit
+                                        //         .cover),
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(
+                                            3)),
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                    height: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                  );
+                                },
+                                imageBuilder: (context,
+                                    imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image:
+                                            imageProvider,
+                                            fit: BoxFit
+                                                .cover),
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(
+                                            3)),
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                    height: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                  );
+                                },
+                                memCacheHeight:
+                                (MediaQuery.of(
+                                    context)
+                                    .size
+                                    .height)
+                                    .floor(),
+                                imageUrl: placeholderUrl,
+                                placeholder: (context,
+                                    imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
                                       // image: DecorationImage(
                                       //     image: AssetImage(
                                       //         'assets/images/Thumbnail.png'),
                                       //     fit: BoxFit
                                       //         .cover),
-                                    color: Color(0xff222222)
-                                  ),
-                                  height: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                  width: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width *
-                                      0.38,
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
+                                        color: Color(0xff222222)
+                                    ),
+                                    height: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                    width: MediaQuery.of(
+                                        context)
+                                        .size
+                                        .width *
+                                        0.38,
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
 
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
+                      );
+                    },
+                    scrollDirection: Axis.horizontal,
 
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         }
 
@@ -2351,12 +2216,12 @@ class PlaylistWidget extends StatelessWidget {
                         minHeight:
                         MediaQuery.of(context).size.height *
                             0.17),
-                    child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                    child: ListView.builder(shrinkWrap: true,scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
                       return Padding(
                         padding:
                         const EdgeInsets.fromLTRB(
                             15, 0, 0, 8),
-                        child: InkWell(
+                        child: GestureDetector(
                           onTap: (){
                             Navigator.push(context, CupertinoPageRoute(builder: (context){
                               return PlaylistView(playlistId: snapshot.data[index]['id']);
@@ -2379,8 +2244,10 @@ class PlaylistWidget extends StatelessWidget {
                                     ),
                                   );
                                 },) : Container(child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         CachedNetworkImage(
                                           imageBuilder: (context, imageProvider){
@@ -2415,6 +2282,7 @@ class PlaylistWidget extends StatelessWidget {
                                       ],
                                     ),
                                     Row(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         CachedNetworkImage(
                                           imageBuilder: (context, imageProvider){
@@ -2554,7 +2422,7 @@ class PlaylistWidget extends StatelessWidget {
                         ),
                       ),
                     );
-                  }, itemCount: 10,),
+                  }, itemCount: 10,shrinkWrap: true,),
                 ),
               ],
             ),
@@ -2628,7 +2496,7 @@ class SnippetWidget extends StatelessWidget {
                       minHeight:
                       MediaQuery.of(context).size.height *
                           0.17),
-                  child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                  child: ListView.builder(shrinkWrap: true,scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
@@ -2715,7 +2583,7 @@ class SnippetWidget extends StatelessWidget {
                     MediaQuery.of(context).size.height *
                         0.17),
 
-                child: ListView.builder(scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
+                child: ListView.builder(shrinkWrap: true,scrollDirection: Axis.horizontal,itemBuilder: (context, int index){
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GestureDetector(
@@ -2939,7 +2807,7 @@ class _SubCategoryViewState extends State<SubCategoryView> {
           }else{
             return Padding(
               padding: const EdgeInsets.all(4.0),
-              child:   InkWell(
+              child:   GestureDetector(
                 onTap: (){
                   Navigator.push(context, CupertinoPageRoute(builder: (context){
                     return PodcastView(feedData[index]['id']);
@@ -3141,7 +3009,7 @@ class _SeeMoreState extends State<SeeMore> {
           }else{
             return Padding(
               padding: const EdgeInsets.all(4.0),
-              child:   InkWell(
+              child:   GestureDetector(
                 onTap: (){
                   Navigator.push(context, CupertinoPageRoute(builder: (context){
                     return PodcastView(feedData[index]['id']);
@@ -3466,7 +3334,7 @@ class PodcastCard extends StatelessWidget {
       padding:
       const EdgeInsets.fromLTRB(
           15, 0, 0, 8),
-      child: InkWell(
+      child: GestureDetector(
         onTap: () {
           Navigator.push(
               context,
@@ -3477,7 +3345,7 @@ class PodcastCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            // x
+
             borderRadius:
             BorderRadius.circular(
                 15),
@@ -3528,7 +3396,7 @@ class PodcastCard extends StatelessWidget {
                     //   children: [
                     //     Padding(
                     //       padding: const EdgeInsets.all(3),
-                    //       child: InkWell(
+                    //       child: GestureDetector(
                     //         onTap: (){
                     //           showModalBottomSheet(
                     //               context: context,
@@ -4121,7 +3989,7 @@ class _FollowingPageState extends State<FollowingPage>
                                           scrollDirection: Axis.horizontal,
                                           children: [
                                             for (var v in favPodcast)
-                                              InkWell(
+                                              GestureDetector(
                                                 onTap: () {
                                                   Navigator.push(
                                                       context,
@@ -4475,7 +4343,7 @@ class _FollowingPageState extends State<FollowingPage>
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     for (var v in hiveEpisodes)
-                                      InkWell(
+                                      GestureDetector(
                                         onTap: () {
                                           Navigator.push(
                                               context,
@@ -4716,7 +4584,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   MainAxisAlignment
                                                                       .spaceBetween,
                                                               children: [
-                                                                InkWell(
+                                                                GestureDetector(
                                                                   onTap:
                                                                       () async {
                                                                     if (prefs.getString(
@@ -4836,7 +4704,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                InkWell(
+                                                                GestureDetector(
                                                                   onTap: () {
                                                                     if (prefs.getString(
                                                                             'HiveUserName') !=
@@ -4898,7 +4766,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                InkWell(
+                                                                GestureDetector(
                                                                   onTap: () {
                                                                     print(v
                                                                         .toString()
@@ -4921,14 +4789,14 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             true) {
                                                                       currentlyPlaying
                                                                           .stop();
-                                                                      Navigator.push(
-                                                                          context,
-                                                                          CupertinoPageRoute(builder:
-                                                                              (context) {
-                                                                        return PodcastVideoPlayer(
-                                                                            episodeObject:
-                                                                                v);
-                                                                      }));
+                                                                      // Navigator.push(
+                                                                      //     context,
+                                                                      //     CupertinoPageRoute(builder:
+                                                                      //         (context) {
+                                                                      //   return PodcastVideoPlayer(
+                                                                      //       episodeObject:
+                                                                      //           v);
+                                                                      // }));
                                                                     } else {
                                                                       if (v.toString().contains(
                                                                               '.pdf') ==
@@ -5015,7 +4883,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                 ),
                                                               ],
                                                             ),
-                                                            InkWell(
+                                                            GestureDetector(
                                                               onTap: () {
                                                                 share(
                                                                     episodeObject:
