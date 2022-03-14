@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 // import 'package:chewie_example/app/theme.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ class VideoPlayer extends StatefulWidget {
   }
 }
 
-class _VideoPlayerState extends State<VideoPlayer> {
+class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin{
   TargetPlatform _platform;
   VideoPlayerController _videoPlayerController1;
   VideoPlayerController _videoPlayerController2;
@@ -31,8 +33,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
     initializePlayer();
+
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     //   SystemUiOverlay.bottom,
     // ]);
@@ -46,10 +50,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
     super.dispose();
   }
 
-  List<String> srcs = [
-    "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
-    "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4"
-  ];
+
 
   ScrollController _controller = ScrollController();
 
@@ -156,6 +157,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   int currPlayIndex = 0;
 
+  TabController _tabController;
   Future<void> toggleVideo() async {
     await _videoPlayerController1.pause();
     currPlayIndex = currPlayIndex == 0 ? 1 : 0;
@@ -219,8 +221,86 @@ class _VideoPlayerState extends State<VideoPlayer> {
                           child: ListView(
                             children: [
 ListTile(
-title: Text("${widget.episodeObject['name']}"),
+title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextStyle(
+  fontSize: SizeConfig.safeBlockHorizontal * 3.5, fontWeight: FontWeight.bold
+),),
+  trailing: IconButton(
+    onPressed: (){
+
+    },
+    icon: Icon(Icons.arrow_drop_down),
+  ),
 ),
+                              ListTile(
+                                leading: CachedNetworkImage(
+                                  imageBuilder: (context,
+                                      imageProvider) {
+                                    return Container(
+                                      decoration:
+                                      BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius
+                                            .circular(
+                                            3),
+                                        image: DecorationImage(
+                                            image:
+                                            imageProvider,
+                                            fit: BoxFit
+                                                .cover),
+                                      ),
+                                      width: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                      height: MediaQuery.of(
+                                          context)
+                                          .size
+                                          .width /
+                                          8,
+                                    );
+                                  },
+                                  imageUrl:
+                                  widget.episodeObject['image'] == null ? widget.episodeObject['podcast_image'] : widget.episodeObject['image'],
+                                  memCacheWidth:
+                                  MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width
+                                      .floor(),
+                                  memCacheHeight:
+                                  MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width
+                                      .floor(),
+                                  placeholder:
+                                      (context,
+                                      url) =>
+                                      Container(
+                                        width: MediaQuery.of(
+                                            context)
+                                            .size
+                                            .width /
+                                            8,
+                                        height: MediaQuery.of(
+                                            context)
+                                            .size
+                                            .width /
+                                            8,
+                                        child: Image.asset(
+                                            'assets/images/Thumbnail.png'),
+                                      ),
+                                  errorWidget:
+                                      (context, url,
+                                      error) =>
+                                      Icon(Icons
+                                          .error),
+                                ),
+                                title: Text("${widget.episodeObject['podcast_name']}"),
+                                subtitle: Text("${widget.episodeObject['author']}"),
+                              ),
+
                             ],
                           ),
                         )),
@@ -238,27 +318,3 @@ title: Text("${widget.episodeObject['name']}"),
   }
 }
 
-// Stack(
-// children: [Column(
-// mainAxisSize: MainAxisSize.min,
-// children: [
-// Flexible(
-// child: _chewieController != null &&
-// _chewieController
-//     .videoPlayerController.value.isInitialized
-// ? Chewie(
-// controller: _chewieController,
-// )
-// : Column(
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: const [
-// CircularProgressIndicator(),
-// SizedBox(height: 20),
-// Text('Loading'),
-// ],
-// ),
-// ),
-// ],
-// ),],
-//
-// ),

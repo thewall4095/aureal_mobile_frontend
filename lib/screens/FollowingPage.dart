@@ -867,6 +867,125 @@ class EpisodeCard extends StatelessWidget {
                   MainAxisAlignment
                       .center,
                   children: [
+                    data['isvideo'] == true ? InkWell(
+                      onTap: (){
+                        showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                          return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: data,));
+                        });
+                      },
+                      child: CachedNetworkImage(
+                        imageBuilder: (context,
+                            imageProvider) {
+                          return Stack(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Container(
+                                  foregroundDecoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.bottomLeft,
+                                      end: Alignment.topRight,
+                                      colors: [
+                                        Colors.black.withOpacity(0.8),
+                                        Colors.transparent
+                                      ]
+                                    )
+                                  ),
+                                  decoration:
+                                  BoxDecoration(
+
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(
+                                        3),
+                                    image: DecorationImage(
+                                        image:
+                                        imageProvider,
+                                        fit: BoxFit
+                                            .cover),
+                                  ),
+                                  width: double.infinity,
+                                  height: MediaQuery.of(
+                                      context)
+                                      .size
+                                      .width /
+                                      8,
+                                ),
+                              ),
+                              AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                            ],
+
+                          );
+                        },
+                        imageUrl:
+                        data['image'] == null ? data['podcast_image'] : data['image'],
+                        memCacheWidth:
+                        MediaQuery.of(
+                            context)
+                            .size
+                            .width
+                            .floor(),
+                        memCacheHeight:
+                        MediaQuery.of(
+                            context)
+                            .size
+                            .width
+                            .floor(),
+                        placeholder:
+                            (context,
+                            url) =>
+                            Stack(
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: 1.0,
+                                  child: Container(
+                                    width: double.infinity,
+                                    // height: MediaQuery.of(
+                                    //     context)
+                                    //     .size
+                                    //     .width /
+                                    //     8,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
+                                        )
+                                    ),
+
+                                  ),
+                                ),
+                                AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                              ],
+
+                            ),
+                        errorWidget:
+                            (context, url,
+                            error) {
+                          return Stack(
+                            children: [
+                              AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Container(
+                                    width: double.infinity,
+                                    // height: MediaQuery.of(
+                                    //     context)
+                                    //     .size
+                                    //     .width /
+                                    //     8,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
+                                        )
+
+                                    )),
+                              ),
+                              AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                            ],
+
+                          );
+                            },
+                      ),
+                    ): SizedBox(),
+                    SizedBox(height: 20,),
                     Row(
                       children: [
                         CachedNetworkImage(
