@@ -4582,7 +4582,10 @@ class _RelatedState extends State<Related> with AutomaticKeepAliveClientMixin {
 }
 
 class Banner extends StatelessWidget {
-  const Banner();
+
+  bool isVideo;
+
+  Banner({this.isVideo = false});
 
   @override
   Widget build(BuildContext context) {

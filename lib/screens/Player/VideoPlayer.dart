@@ -1,13 +1,18 @@
 import 'dart:ui';
 
+import 'package:auditory/screens/FollowingPage.dart';
+import 'package:auditory/screens/Home.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
-// import 'package:chewie_example/app/theme.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter_html/flutter_html.dart';
+
 import 'package:video_player/video_player.dart';
+import 'package:pip_view/pip_view.dart';
 
 class VideoPlayer extends StatefulWidget {
 
@@ -27,151 +32,87 @@ class VideoPlayer extends StatefulWidget {
 
 class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin{
   TargetPlatform _platform;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
-  ChewieController _chewieController;
+
+
+  BetterPlayerController _betterPlayerController;
+  BetterPlayerDataSource _betterPlayerDataSource;
+  GlobalKey _betterPlayerKey = GlobalKey();
 
   @override
   void initState() {
+    BetterPlayerConfiguration betterPlayerConfiguration =
+    BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      autoPlay: true,
+      looping: true,
+      deviceOrientationsAfterFullScreen: [
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ],
+
+    );
+    _betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      widget.episodeObject['url'],
+      notificationConfiguration: BetterPlayerNotificationConfiguration(
+        showNotification: true,
+        title: "${widget.episodeObject['name']}",
+        author: "${widget.episodeObject['author']}",
+        imageUrl: widget.episodeObject['image'],
+      ),
+    );
+    _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+    _betterPlayerController.setBetterPlayerGlobalKey(_betterPlayerKey);
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
-    initializePlayer();
+    // initializePlayer();
 
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
     //   SystemUiOverlay.bottom,
     // ]);
   }
 
-  @override
-  void dispose() {
-    _videoPlayerController1.dispose();
-    _videoPlayerController2.dispose();
-    _chewieController?.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //
+  //   super.dispose();
+  // }
 
 
 
   ScrollController _controller = ScrollController();
 
-  Future<void> initializePlayer() async {
-    _videoPlayerController1 =
-        VideoPlayerController.network(widget.episodeObject['url']);
-    // _videoPlayerController2 =
-    //     VideoPlayerController.network(srcs[currPlayIndex]);
-    await Future.wait([
-      _videoPlayerController1.initialize(),
-      // _videoPlayerController2.initialize()
-    ]);
-    _createChewieController();
-    setState(() {});
-  }
 
-  void _createChewieController() {
-    // final subtitles = [
-    //     Subtitle(
-    //       index: 0,
-    //       start: Duration.zero,
-    //       end: const Duration(seconds: 10),
-    //       text: 'Hello from subtitles',
-    //     ),
-    //     Subtitle(
-    //       index: 0,
-    //       start: const Duration(seconds: 10),
-    //       end: const Duration(seconds: 20),
-    //       text: 'Whats up? :)',
-    //     ),
-    //   ];
-
-    final subtitles = [
-      Subtitle(
-        index: 0,
-        start: Duration.zero,
-        end: const Duration(seconds: 10),
-        text: const TextSpan(
-          children: [
-            TextSpan(
-              text: 'Hello',
-              style: TextStyle(color: Colors.red, fontSize: 22),
-            ),
-            TextSpan(
-              text: ' from ',
-              style: TextStyle(color: Colors.green, fontSize: 20),
-            ),
-            TextSpan(
-              text: 'subtitles',
-              style: TextStyle(color: Colors.blue, fontSize: 18),
-            )
-          ],
-        ),
-      ),
-      Subtitle(
-        index: 0,
-        start: const Duration(seconds: 10),
-        end: const Duration(seconds: 20),
-        text: 'Whats up? :)',
-        // text: const TextSpan(
-        //   text: 'Whats up? :)',
-        //   style: TextStyle(color: Colors.amber, fontSize: 22, fontStyle: FontStyle.italic),
-        // ),
-      ),
-    ];
-
-    _chewieController = ChewieController(
-      placeholder: Container(
-        height: MediaQuery.of(context).size.height / 3,
-      ),
-      // aspectRatio: 16/9,
-      videoPlayerController: _videoPlayerController1,
-
-      autoPlay: true,
-      looping: true,
-
-      additionalOptions: (context) {
-        return <OptionItem>[
-          OptionItem(
-            onTap: toggleVideo,
-            iconData: Icons.live_tv_sharp,
-            title: 'Toggle Video Src',
-          ),
-        ];
-      },
-      // subtitle: Subtitles(subtitles),
-
-
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
-  }
 
   int currPlayIndex = 0;
 
   TabController _tabController;
-  Future<void> toggleVideo() async {
-    await _videoPlayerController1.pause();
-    currPlayIndex = currPlayIndex == 0 ? 1 : 0;
-    await initializePlayer();
-  }
+
+  // Future<bool> willPopScope() async {
+  //   PIPView.of(context).presentBelow(Home());
+  //   Navigator.of(context).pop(true);
+  //   return true;
+  // }
+
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return WillPopScope(
+      onWillPop: () async{
+        PIPView.of(context).presentBelow(Home());
+        Navigator.pop(context);
+        return false;
+      },
+      child: PIPView(
+builder: (context, isFloating){
+  return Scaffold(
+      resizeToAvoidBottomInset: isFloating,
 
-      color: Colors.transparent,
-      child: SafeArea(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
         child: ClipRect(
-
           child: BackdropFilter(
             filter: ImageFilter.blur(
               sigmaY: 15.0,
@@ -193,44 +134,40 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-
-                            Flexible(
-                              child: _chewieController != null &&
-                                  _chewieController
-                                      .videoPlayerController.value.isInitialized
-                                  ? Chewie(
-
-                                controller: _chewieController,
-                              )
-                                  : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 20),
-                                  Text('Loading'),
-                                ],
-                              ),
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: BetterPlayer(controller: _betterPlayerController, key: _betterPlayerKey,),
                             ),
                           ],
                         ),
                       ),
+                      IconButton(onPressed: (){
+                        PIPView.of(context).presentBelow(Home());
+                      }, icon: Icon(Icons.height)),
                       Container(
                         // color: Colors.transparent,
                         child: Expanded(child: Container(
-
                           child: ListView(
                             children: [
-ListTile(
-title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextStyle(
-  fontSize: SizeConfig.safeBlockHorizontal * 3.5, fontWeight: FontWeight.bold
-),),
-  trailing: IconButton(
-    onPressed: (){
+                              ListTile(
+                                title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextStyle(
+                                    fontSize: SizeConfig.safeBlockHorizontal * 3.5, fontWeight: FontWeight.bold
+                                ),),
+                                trailing: IconButton(
+                                  onPressed: (){
 
-    },
-    icon: Icon(Icons.arrow_drop_down),
-  ),
-),
+                                  },
+                                  icon: Icon(Icons.arrow_drop_down),
+                                ),
+                              ),
+                              ListTile(
+                                title: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+
+                                  ],
+                                ),
+                              ),
                               ListTile(
                                 leading: CachedNetworkImage(
                                   imageBuilder: (context,
@@ -301,6 +238,7 @@ title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextS
                                 subtitle: Text("${widget.episodeObject['author']}"),
                               ),
 
+
                             ],
                           ),
                         )),
@@ -313,6 +251,10 @@ title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextS
             ),
           ),
         ),
+      ),
+  );
+},
+
       ),
     );
   }

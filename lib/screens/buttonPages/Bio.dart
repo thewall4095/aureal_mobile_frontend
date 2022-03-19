@@ -605,29 +605,7 @@ class _BioState extends State<Bio> {
                           border: OutlineInputBorder(),
                         ),
 
-                        // Container(
-                        //   width: double.infinity,
-                        //   height: 80,
-                        //   decoration: BoxDecoration(
-                        //     borderRadius: BorderRadius.circular(8),
-                        //     //  color: kSecondaryColor
-                        //   ),
-                        //   child: TextField(
-                        //     controller: fullNameTextEditingControler,
-                        //     style: TextStyle(color: Colors.white54),
-                        //     onChanged: (value) {
-                        //       setState(() {
-                        //         fullname = value;
-                        //       });
-                        //       activeButtonState();
-                        //     },
-                        //     decoration: InputDecoration(
-                        //          hintText: widget.fullname,
-                        //         hintStyle: TextStyle(
-                        //           color: Colors.white,
-                        //         ),
-                        //         contentPadding:
-                        //             EdgeInsets.fromLTRB(10, 0, 10, 10)),
+
                       ),
                     ),
                     SizedBox(
@@ -659,25 +637,7 @@ class _BioState extends State<Bio> {
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      // child: TextField(
-                      //   controller: bioTextEditingControler,
-                      //   style: TextStyle(color: Colors.white54),
-                      //   maxLines: 6,
-                      //   onChanged: (value) {
-                      //     setState(() {
-                      //       bio = value;
-                      //     });
-                      //     activeButtonState();
-                      //   },
-                      //   decoration: InputDecoration(
-                      //       //   hintText: widget.bio,
-                      //       hintStyle: TextStyle(
-                      //         color: Colors.white54,
-                      //       ),
-                      //       border: InputBorder.none,
-                      //       contentPadding: EdgeInsets.symmetric(
-                      //           horizontal: 10, vertical: 10)),
-                      // ),
+
                     ),
                   ],
                 )

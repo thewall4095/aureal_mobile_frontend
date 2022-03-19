@@ -786,6 +786,18 @@ class _EpisodeViewState extends State<EpisodeView>
                                   showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
                                     return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
                                   });
+                                  // showModalBottomSheet(
+                                  //     isScrollControlled: true,
+                                  //     backgroundColor: Colors.transparent,
+                                  //     barrierColor: Colors.transparent,
+                                  //     isDismissible: true,
+                                  //     // bounce: true,
+                                  //     context: context,
+                                  //     builder: (context) {
+                                  //       return Player2(isVideo: true, episodeObject: episodeContent,);
+                                  //     });
+                                  // episodeObject.episodeObject = episodeContent;
+                                  // episodeObject.play();
                                 }else{
                                   showModalBottomSheet(
                                       isScrollControlled: true,

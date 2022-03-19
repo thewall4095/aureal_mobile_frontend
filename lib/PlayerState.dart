@@ -1,5 +1,6 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
+import 'package:better_player/better_player.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
@@ -36,6 +37,12 @@ class PlayerChange extends ChangeNotifier {
   String permlink = '';
 
   int currentIndex = 0;
+
+  //VideoPlayer Controls
+
+  BetterPlayerController _betterPlayerController;
+  BetterPlayerDataSource _betterPlayerDataSource;
+
 
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();

@@ -827,6 +827,8 @@ class EpisodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -838,162 +840,63 @@ class EpisodeCard extends StatelessWidget {
                       EpisodeView(
                           episodeId: data['id'])));
         },
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                // boxShadow: [
-                //   new BoxShadow(
-                //     color: Colors.black54
-                //         .withOpacity(0.2),
-                //     blurRadius: 10.0,
-                //   ),
-                // ],
-                // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
-                color:
-                Color(0xff222222),
-                borderRadius:
-                BorderRadius.circular(5),
-              ),
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets
-                    .symmetric(
-                    vertical: 15,
-                    horizontal: 15),
-                child: Column(
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .center,
-                  children: [
-                    data['isvideo'] == true ? InkWell(
-                      onTap: (){
-                        showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
-                          return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: data,));
-                        });
-                      },
-                      child: CachedNetworkImage(
-                        imageBuilder: (context,
-                            imageProvider) {
-                          return Stack(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Container(
-                                  foregroundDecoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.bottomLeft,
-                                      end: Alignment.topRight,
-                                      colors: [
-                                        Colors.black.withOpacity(0.8),
-                                        Colors.transparent
-                                      ]
-                                    )
-                                  ),
-                                  decoration:
-                                  BoxDecoration(
-
-                                    borderRadius:
-                                    BorderRadius
-                                        .circular(
-                                        3),
-                                    image: DecorationImage(
-                                        image:
-                                        imageProvider,
-                                        fit: BoxFit
-                                            .cover),
-                                  ),
-                                  width: double.infinity,
-                                  height: MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width /
-                                      8,
-                                ),
+        child: Container(
+          decoration: BoxDecoration(
+            // boxShadow: [
+            //   new BoxShadow(
+            //     color: Colors.black54
+            //         .withOpacity(0.2),
+            //     blurRadius: 10.0,
+            //   ),
+            // ],
+            // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
+            color:
+            Color(0xff222222),
+            borderRadius:
+            BorderRadius.circular(5),
+          ),
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets
+                .symmetric(
+                vertical: 15,
+                horizontal: 15),
+            child: Column(
+              mainAxisAlignment:
+              MainAxisAlignment
+                  .center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                data['isvideo'] == true ? InkWell(
+                  onTap: (){
+                    Navigator.push(context, CupertinoPageRoute(builder: (context){
+                      return VideoPlayer(episodeObject: data,);
+                    }));
+                    // showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                    //   return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: data,));
+                    // });
+                  },
+                  child: CachedNetworkImage(
+                    imageBuilder: (context,
+                        imageProvider) {
+                      return Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Container(
+                              foregroundDecoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomLeft,
+                                  end: Alignment.topRight,
+                                  colors: [
+                                    Colors.black.withOpacity(0.8),
+                                    Colors.transparent
+                                  ]
+                                )
                               ),
-                              AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
-                            ],
-
-                          );
-                        },
-                        imageUrl:
-                        data['image'] == null ? data['podcast_image'] : data['image'],
-                        memCacheWidth:
-                        MediaQuery.of(
-                            context)
-                            .size
-                            .width
-                            .floor(),
-                        memCacheHeight:
-                        MediaQuery.of(
-                            context)
-                            .size
-                            .width
-                            .floor(),
-                        placeholder:
-                            (context,
-                            url) =>
-                            Stack(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Container(
-                                    width: double.infinity,
-                                    // height: MediaQuery.of(
-                                    //     context)
-                                    //     .size
-                                    //     .width /
-                                    //     8,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
-                                        )
-                                    ),
-
-                                  ),
-                                ),
-                                AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
-                              ],
-
-                            ),
-                        errorWidget:
-                            (context, url,
-                            error) {
-                          return Stack(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Container(
-                                    width: double.infinity,
-                                    // height: MediaQuery.of(
-                                    //     context)
-                                    //     .size
-                                    //     .width /
-                                    //     8,
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
-                                        )
-
-                                    )),
-                              ),
-                              AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
-                            ],
-
-                          );
-                            },
-                      ),
-                    ): SizedBox(),
-                    SizedBox(height: 20,),
-                    Row(
-                      children: [
-                        CachedNetworkImage(
-                          imageBuilder: (context,
-                              imageProvider) {
-                            return Container(
                               decoration:
                               BoxDecoration(
+
                                 borderRadius:
                                 BorderRadius
                                     .circular(
@@ -1004,164 +907,262 @@ class EpisodeCard extends StatelessWidget {
                                     fit: BoxFit
                                         .cover),
                               ),
-                              width: MediaQuery.of(
-                                  context)
-                                  .size
-                                  .width /
-                                  8,
+                              width: double.infinity,
                               height: MediaQuery.of(
                                   context)
                                   .size
                                   .width /
                                   8,
-                            );
-                          },
-                          imageUrl:
-                          data['image'] == null ? data['podcast_image'] : data['image'],
-                          memCacheWidth:
-                          MediaQuery.of(
-                              context)
-                              .size
-                              .width
-                              .floor(),
-                          memCacheHeight:
-                          MediaQuery.of(
-                              context)
-                              .size
-                              .width
-                              .floor(),
-                          placeholder:
-                              (context,
-                              url) =>
-                              Container(
-                                width: MediaQuery.of(
-                                    context)
-                                    .size
-                                    .width /
-                                    8,
-                                height: MediaQuery.of(
-                                    context)
-                                    .size
-                                    .width /
-                                    8,
-                                child: Image.asset(
-                                    'assets/images/Thumbnail.png'),
-                              ),
-                          errorWidget:
-                              (context, url,
-                              error) =>
-                              Icon(Icons
-                                  .error),
-                        ),
-                        SizedBox(
-                            width: SizeConfig
-                                .screenWidth /
-                                26),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              PodcastView(data['podcast_id'])));
-                                },
-                                child: Text(
-                                  data['podcast_name'],
-                                  textScaleFactor: 0.8,
-                                  style: TextStyle(
-                                    // color: Color(
-                                    //     0xffe8e8e8),
-                                      fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Text(
-                                '${timeago.format(DateTime.parse(data['published_at']))}',
-                                textScaleFactor: 0.8,
-                                style: TextStyle(
-                                  // color: Color(
-                                  //     0xffe8e8e8),
-                                    fontSize: SizeConfig.safeBlockHorizontal * 3),
-                              ),
-                            ],
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding:
-                      const EdgeInsets
-                          .symmetric(
-                          vertical: 15),
-                      child: Container(
-                        width:
-                        double.infinity,
-                        child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment
-                              .start,
+                          AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                        ],
+
+                      );
+                    },
+                    imageUrl:
+                    data['image'] == null ? data['podcast_image'] : data['image'],
+                    memCacheWidth:
+                    MediaQuery.of(
+                        context)
+                        .size
+                        .width
+                        .floor(),
+                    memCacheHeight:
+                    MediaQuery.of(
+                        context)
+                        .size
+                        .width
+                        .floor(),
+                    placeholder:
+                        (context,
+                        url) =>
+                        Stack(
                           children: [
-                            Text(
-                              data['name'],
-                              textScaleFactor:
-                              0.8,
+                            AspectRatio(
+                              aspectRatio: 1.0,
+                              child: Container(
+                                width: double.infinity,
+                                // height: MediaQuery.of(
+                                //     context)
+                                //     .size
+                                //     .width /
+                                //     8,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
+                                    )
+                                ),
+
+                              ),
+                            ),
+                            AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                          ],
+
+                        ),
+                    errorWidget:
+                        (context, url,
+                        error) {
+                      return Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Container(
+                                width: double.infinity,
+                                // height: MediaQuery.of(
+                                //     context)
+                                //     .size
+                                //     .width /
+                                //     8,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(placeholderUrl), fit: BoxFit.cover
+                                    )
+
+                                )),
+                          ),
+                          AspectRatio(aspectRatio: 1.0 ,child: Container(width: double.infinity,child: Center(child: Icon(Icons.play_circle_fill, size: 80, color: Colors.white.withOpacity(0.9),))))
+                        ],
+
+                      );
+                        },
+                  ),
+                ): SizedBox(),
+                SizedBox(height: 20,),
+                Row(
+                  children: [
+                    CachedNetworkImage(
+                      imageBuilder: (context,
+                          imageProvider) {
+                        return Container(
+                          decoration:
+                          BoxDecoration(
+                            borderRadius:
+                            BorderRadius
+                                .circular(
+                                3),
+                            image: DecorationImage(
+                                image:
+                                imageProvider,
+                                fit: BoxFit
+                                    .cover),
+                          ),
+                          width: MediaQuery.of(
+                              context)
+                              .size
+                              .width /
+                              8,
+                          height: MediaQuery.of(
+                              context)
+                              .size
+                              .width /
+                              8,
+                        );
+                      },
+                      imageUrl:
+                      data['image'] == null ? data['podcast_image'] : data['image'],
+                      memCacheWidth:
+                      MediaQuery.of(
+                          context)
+                          .size
+                          .width
+                          .floor(),
+                      memCacheHeight:
+                      MediaQuery.of(
+                          context)
+                          .size
+                          .width
+                          .floor(),
+                      placeholder:
+                          (context,
+                          url) =>
+                          Container(
+                            width: MediaQuery.of(
+                                context)
+                                .size
+                                .width /
+                                8,
+                            height: MediaQuery.of(
+                                context)
+                                .size
+                                .width /
+                                8,
+                            child: Image.asset(
+                                'assets/images/Thumbnail.png'),
+                          ),
+                      errorWidget:
+                          (context, url,
+                          error) =>
+                          Icon(Icons
+                              .error),
+                    ),
+                    SizedBox(
+                        width: SizeConfig
+                            .screenWidth /
+                            26),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          PodcastView(data['podcast_id'])));
+                            },
+                            child: Text(
+                              data['podcast_name'],
+                              textScaleFactor: 0.8,
                               style: TextStyle(
                                 // color: Color(
                                 //     0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
                                   fontWeight: FontWeight.bold),
                             ),
-                            Padding(
-                              padding: const EdgeInsets
-                                  .symmetric(
-                                  vertical:
-                                  10),
-                              child: data['summary'] ==
-                                  null
-                                  ? SizedBox(
-                                  width:
-                                  0,
-                                  height:
-                                  0)
-                                  : (htmlMatch.hasMatch(data['summary']) ==
-                                  true
-                                  ? Text(
-                                parse(data['summary']).body.text,
-                                textScaleFactor:
-                                0.8,
-                                maxLines:
-                                2,
-                                style: TextStyle(
-                                  // color: Colors.white,
-                                    fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                              )
-                                  : Text(
-                                '${data['summary']}',
-                                textScaleFactor:
-                                1.0,
-                                style: TextStyle(
-                                  //      color: Colors.white,
-                                    fontSize: SizeConfig.safeBlockHorizontal * 3.2),
-                              )),
-                            )
-                          ],
-                        ),
+                          ),
+                          Text(
+                            '${timeago.format(DateTime.parse(data['published_at']))}',
+                            textScaleFactor: 0.8,
+                            style: TextStyle(
+                              // color: Color(
+                              //     0xffe8e8e8),
+                                fontSize: SizeConfig.safeBlockHorizontal * 3),
+                          ),
+                        ],
                       ),
-                    ),
-
-                    PlaybackButtons(data: data, index: index, playlist: playlist,)
-
+                    )
                   ],
                 ),
-              ),
+                Padding(
+                  padding:
+                  const EdgeInsets
+                      .symmetric(
+                      vertical: 15),
+                  child: Container(
+                    width:
+                    double.infinity,
+                    child: Column(
+                      crossAxisAlignment:
+                      CrossAxisAlignment
+                          .start,
+                      children: [
+                        Text(
+                          data['name'],
+                          textScaleFactor:
+                          0.8,
+                          style: TextStyle(
+                            // color: Color(
+                            //     0xffe8e8e8),
+                              fontSize: SizeConfig.safeBlockHorizontal * 4.5,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets
+                              .symmetric(
+                              vertical:
+                              10),
+                          child: data['summary'] ==
+                              null
+                              ? SizedBox(
+                              width:
+                              0,
+                              height:
+                              0)
+                              : (htmlMatch.hasMatch(data['summary']) ==
+                              true
+                              ? Text(
+                            parse(data['summary']).body.text,
+                            textScaleFactor:
+                            0.8,
+                            maxLines:
+                            2,
+                            style: TextStyle(
+                              // color: Colors.white,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                          )
+                              : Text(
+                            '${data['summary']}',
+                            textScaleFactor:
+                            1.0,
+                            style: TextStyle(
+                              //      color: Colors.white,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.2),
+                          )),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+
+                PlaybackButtons(data: data, index: index, playlist: playlist,)
+
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -1530,6 +1531,9 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                         showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
                           return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: widget.data,));
                         });
+                        // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                        //   return VideoPlauer
+                        // }))
                       }else{
                         showModalBottomSheet(
                             isScrollControlled: true,
@@ -1590,72 +1594,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                               ),
                             ],
                           )
-    //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
-    //                             if(infos == null){
-    //                               return Row(
-    //                                 children: [
-    //
-    //                                   Icon(
-    //                                     Icons.play_circle_outline,
-    //                                     size: 15,
-    //                                   ),
-    //                                   Padding(
-    //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
-    //                                     child: Text(
-    //                                       DurationCalculator(widget.data['duration']),
-    //                                       textScaleFactor: 0.75,
-    //                                       // style: TextStyle(
-    //                                       //      color: Color(0xffe8e8e8)
-    //                                       //     ),
-    //                                     ),
-    //                                   ),
-    //                                 ],
-    //                               );
-    //                             }else{
-    //                               if(infos.index == widget.index){
-    //                                 return Row(
-    //                                   children: [
-    //
-    //                                     Icon(
-    //                                       Icons.play_circle_outline,
-    //                                       size: 15,
-    //                                     ),
-    //                                     Padding(
-    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
-    //                                       child: Text(
-    //                                         DurationCalculator(widget.data['duration']),
-    //                                         textScaleFactor: 0.75,
-    //                                         // style: TextStyle(
-    //                                         //      color: Color(0xffe8e8e8)
-    //                                         //     ),
-    //                                       ),
-    //                                     ),
-    //                                   ],
-    //                                 );
-    //                               }else{
-    //                                 return Row(
-    //                                   children: [
-    //
-    //                                     Icon(
-    //                                       Icons.play_circle_outline,
-    //                                       size: 15,
-    //                                     ),
-    //                                     Padding(
-    //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
-    //                                       child: Text(
-    //                                         DurationCalculator(widget.data['duration']),
-    //                                         textScaleFactor: 0.75,
-    //                                         // style: TextStyle(
-    //                                         //      color: Color(0xffe8e8e8)
-    //                                         //     ),
-    //                                       ),
-    //                                     ),
-    //                                   ],
-    //                                 );
-    //                               }
-    //                             }
-    //
-    // }),
+
 
                         ),
                       ),
@@ -1746,72 +1685,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                                 ),
                               ],
                             )
-                          //                           episodeObject.audioPlayer.builderCurrent(builder: (context, infos){
-                          //                             if(infos == null){
-                          //                               return Row(
-                          //                                 children: [
-                          //
-                          //                                   Icon(
-                          //                                     Icons.play_circle_outline,
-                          //                                     size: 15,
-                          //                                   ),
-                          //                                   Padding(
-                          //                                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //                                     child: Text(
-                          //                                       DurationCalculator(widget.data['duration']),
-                          //                                       textScaleFactor: 0.75,
-                          //                                       // style: TextStyle(
-                          //                                       //      color: Color(0xffe8e8e8)
-                          //                                       //     ),
-                          //                                     ),
-                          //                                   ),
-                          //                                 ],
-                          //                               );
-                          //                             }else{
-                          //                               if(infos.index == widget.index){
-                          //                                 return Row(
-                          //                                   children: [
-                          //
-                          //                                     Icon(
-                          //                                       Icons.play_circle_outline,
-                          //                                       size: 15,
-                          //                                     ),
-                          //                                     Padding(
-                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //                                       child: Text(
-                          //                                         DurationCalculator(widget.data['duration']),
-                          //                                         textScaleFactor: 0.75,
-                          //                                         // style: TextStyle(
-                          //                                         //      color: Color(0xffe8e8e8)
-                          //                                         //     ),
-                          //                                       ),
-                          //                                     ),
-                          //                                   ],
-                          //                                 );
-                          //                               }else{
-                          //                                 return Row(
-                          //                                   children: [
-                          //
-                          //                                     Icon(
-                          //                                       Icons.play_circle_outline,
-                          //                                       size: 15,
-                          //                                     ),
-                          //                                     Padding(
-                          //                                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                          //                                       child: Text(
-                          //                                         DurationCalculator(widget.data['duration']),
-                          //                                         textScaleFactor: 0.75,
-                          //                                         // style: TextStyle(
-                          //                                         //      color: Color(0xffe8e8e8)
-                          //                                         //     ),
-                          //                                       ),
-                          //                                     ),
-                          //                                   ],
-                          //                                 );
-                          //                               }
-                          //                             }
-                          //
-                          // }),
+
 
                         ),
                       ),
@@ -2628,22 +2502,24 @@ class SnippetWidget extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 2,
                           child: Stack(
                             children: [
-                              Container(
-                                foregroundDecoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  gradient: LinearGradient(
-                                      colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                              Expanded(
+                                child: Container(
+                                  foregroundDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    gradient: LinearGradient(
+                                        colors: [Colors.transparent, Colors.black], begin: Alignment.topCenter, end: Alignment.bottomCenter
+                                    ),
                                   ),
-                                ),
 
-                                decoration: BoxDecoration(
+                                  decoration: BoxDecoration(
 
-                                  borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(5),
 
-                                  image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                          snapshot.data[index]['podcast_image']),
-                                      fit: BoxFit.cover),
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            snapshot.data[index]['podcast_image']),
+                                        fit: BoxFit.cover),
+                                  ),
                                 ),
                               ),
                               Container(
