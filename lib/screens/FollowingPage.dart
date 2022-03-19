@@ -869,12 +869,13 @@ class EpisodeCard extends StatelessWidget {
               children: [
                 data['isvideo'] == true ? InkWell(
                   onTap: (){
-                    Navigator.push(context, CupertinoPageRoute(builder: (context){
-                      return VideoPlayer(episodeObject: data,);
-                    }));
-                    // showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
-                    //   return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: data,));
-                    // });
+                    episodeObject.episodeObject = data;
+                    // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                    //   return VideoPlayer(episodeObject: data,);
+                    // }));
+                    showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                      return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: data,));
+                    });
                   },
                   child: CachedNetworkImage(
                     imageBuilder: (context,
@@ -1528,6 +1529,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons> with AutomaticKeepAli
                       FeedbackType _vibtype = FeedbackType.impact;
                       Vibrate.feedback(FeedbackType.impact);
                       if(episodeData['isvideo'] == true){
+                        episodeObject.episodeObject = widget.data;
                         showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
                           return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: widget.data,));
                         });

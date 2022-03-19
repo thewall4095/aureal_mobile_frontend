@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auditory/PlayerState.dart';
 import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
@@ -8,8 +9,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:provider/provider.dart';
 
 import 'package:video_player/video_player.dart';
 import 'package:pip_view/pip_view.dart';
@@ -30,41 +33,41 @@ class VideoPlayer extends StatefulWidget {
   }
 }
 
-class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin{
+class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin{
   TargetPlatform _platform;
 
 
-  BetterPlayerController _betterPlayerController;
-  BetterPlayerDataSource _betterPlayerDataSource;
+  // BetterPlayerController _betterPlayerController;
+  // BetterPlayerDataSource _betterPlayerDataSource;
   GlobalKey _betterPlayerKey = GlobalKey();
 
   @override
   void initState() {
-    BetterPlayerConfiguration betterPlayerConfiguration =
-    BetterPlayerConfiguration(
-      aspectRatio: 16 / 9,
-      fit: BoxFit.contain,
-      autoPlay: true,
-      looping: true,
-      deviceOrientationsAfterFullScreen: [
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.portraitUp
-      ],
-
-    );
-    _betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      widget.episodeObject['url'],
-      notificationConfiguration: BetterPlayerNotificationConfiguration(
-        showNotification: true,
-        title: "${widget.episodeObject['name']}",
-        author: "${widget.episodeObject['author']}",
-        imageUrl: widget.episodeObject['image'],
-      ),
-    );
-    _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    _betterPlayerController.setupDataSource(_betterPlayerDataSource);
-    _betterPlayerController.setBetterPlayerGlobalKey(_betterPlayerKey);
+    // BetterPlayerConfiguration betterPlayerConfiguration =
+    // BetterPlayerConfiguration(
+    //   aspectRatio: 16 / 9,
+    //   fit: BoxFit.contain,
+    //   autoPlay: true,
+    //   looping: true,
+    //   deviceOrientationsAfterFullScreen: [
+    //     DeviceOrientation.portraitDown,
+    //     DeviceOrientation.portraitUp
+    //   ],
+    //
+    // );
+    // _betterPlayerDataSource = BetterPlayerDataSource(
+    //   BetterPlayerDataSourceType.network,
+    //   widget.episodeObject['url'],
+    //   notificationConfiguration: BetterPlayerNotificationConfiguration(
+    //     showNotification: true,
+    //     title: "${widget.episodeObject['name']}",
+    //     author: "${widget.episodeObject['author']}",
+    //     imageUrl: widget.episodeObject['image'],
+    //   ),
+    // );
+    // _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    // _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+    // _betterPlayerController.setBetterPlayerGlobalKey(_betterPlayerKey);
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
     // initializePlayer();
@@ -99,17 +102,8 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async{
-        PIPView.of(context).presentBelow(Home());
-        Navigator.pop(context);
-        return false;
-      },
-      child: PIPView(
-builder: (context, isFloating){
-  return Scaffold(
-      resizeToAvoidBottomInset: isFloating,
-
+    var episodeObject = Provider.of<PlayerChange>(context);
+    return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: ClipRect(
@@ -136,14 +130,14 @@ builder: (context, isFloating){
                           children: [
                             AspectRatio(
                               aspectRatio: 16 / 9,
-                              child: BetterPlayer(controller: _betterPlayerController, key: _betterPlayerKey,),
+                              child: BetterPlayer(controller: episodeObject.betterPlayerController, key: _betterPlayerKey,),
                             ),
                           ],
                         ),
                       ),
-                      IconButton(onPressed: (){
-                        PIPView.of(context).presentBelow(Home());
-                      }, icon: Icon(Icons.height)),
+                      // IconButton(onPressed: (){
+                      //   PIPView.of(context).presentBelow(Home());
+                      // }, icon: Icon(Icons.height)),
                       Container(
                         // color: Colors.transparent,
                         child: Expanded(child: Container(
@@ -252,11 +246,11 @@ builder: (context, isFloating){
           ),
         ),
       ),
-  );
-},
-
-      ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 

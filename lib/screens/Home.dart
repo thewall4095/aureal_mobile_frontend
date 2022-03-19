@@ -16,6 +16,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/UserProfile.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
@@ -849,6 +850,7 @@ class BottomPlayer extends StatelessWidget {
    // }
 
    int count = 0;
+
 
   @override
   Widget build(BuildContext context) {

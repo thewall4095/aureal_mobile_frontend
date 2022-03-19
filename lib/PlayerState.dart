@@ -3,6 +3,7 @@ import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:better_player/better_player.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,8 +41,42 @@ class PlayerChange extends ChangeNotifier {
 
   //VideoPlayer Controls
 
-  BetterPlayerController _betterPlayerController;
-  BetterPlayerDataSource _betterPlayerDataSource;
+  BetterPlayerController betterPlayerController;
+  BetterPlayerDataSource betterPlayerDataSource;
+  BetterPlayerConfiguration betterPlayerConfiguration;
+
+  Future setVideoPlayerConfiguration()async{
+    betterPlayerConfiguration = BetterPlayerConfiguration(
+      aspectRatio: 16 / 9,
+      fit: BoxFit.contain,
+      autoPlay: true,
+      looping: false,
+      allowedScreenSleep: false,
+      autoDispose: false,
+      deviceOrientationsAfterFullScreen: [
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ],
+
+    );
+
+  }
+
+  Future setVideoPlayerDataSource(){
+    betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      _episodeObject['url'],
+      notificationConfiguration: BetterPlayerNotificationConfiguration(
+        showNotification: true,
+        title: "${_episodeObject['name']}",
+        author: "${_episodeObject['author']}",
+        imageUrl: _episodeObject['image'],
+      ),
+    );
+    betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    betterPlayerController.setupDataSource(betterPlayerDataSource);
+  }
+
 
 
   // MusicPlayer musicPlayer = MusicPlayer();
@@ -84,14 +119,17 @@ class PlayerChange extends ChangeNotifier {
 
   set episodeObject(var newValue) {
     _episodeObject = newValue;
-    episodeName = _episodeObject['name'];
-    podcastName = _episodeObject['podcast_name'];
-    author = _episodeObject['author'];
-//    duration = Duration(seconds: _episodeObject['duration'].toInt());
-    id = _episodeObject['id'];
-    permlink = _episodeObject['permlink'];
-    _ifVoted = _episodeObject['ifVoted'];
-    print("ifVoted is $ifVoted");
+    setVideoPlayerConfiguration().then((value) {
+      setVideoPlayerDataSource();
+    });
+//     episodeName = _episodeObject['name'];
+//     podcastName = _episodeObject['podcast_name'];
+//     author = _episodeObject['author'];
+// //    duration = Duration(seconds: _episodeObject['duration'].toInt());
+//     id = _episodeObject['id'];
+//     permlink = _episodeObject['permlink'];
+//     _ifVoted = _episodeObject['ifVoted'];
+//     print("ifVoted is $ifVoted");
 
     notifyListeners();
   }
