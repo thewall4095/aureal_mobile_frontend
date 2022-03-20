@@ -45,7 +45,7 @@ class PlayerChange extends ChangeNotifier {
   BetterPlayerDataSource betterPlayerDataSource;
   BetterPlayerConfiguration betterPlayerConfiguration;
 
-  Future setVideoPlayerConfiguration()async{
+  Future setVideoPlayerConfiguration() async {
     betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
@@ -57,12 +57,10 @@ class PlayerChange extends ChangeNotifier {
         DeviceOrientation.portraitDown,
         DeviceOrientation.portraitUp
       ],
-
     );
-
   }
 
-  Future setVideoPlayerDataSource(){
+  Future setVideoPlayerDataSource() {
     betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       _episodeObject['url'],
@@ -76,8 +74,6 @@ class PlayerChange extends ChangeNotifier {
     betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     betterPlayerController.setupDataSource(betterPlayerDataSource);
   }
-
-
 
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
@@ -198,7 +194,9 @@ class PlayerChange extends ChangeNotifier {
             title: _episodeObject['name'],
             album: _episodeObject['podcast_name'],
             artist: _episodeObject['author'],
-            image: _episodeObject['image'] == null ? MetasImage.network(_episodeObject['podcast_image']):MetasImage.network(_episodeObject['image']),
+            image: _episodeObject['image'] == null
+                ? MetasImage.network(_episodeObject['podcast_image'])
+                : MetasImage.network(_episodeObject['image']),
           )),
       seek: dur,
       showNotification: true,

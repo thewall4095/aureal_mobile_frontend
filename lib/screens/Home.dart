@@ -2,21 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
+
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/CategoriesProvider.dart';
-import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
-import 'package:auditory/screens/Clips.dart';
 import 'package:auditory/screens/Library.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/PlaylistView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/UserProfile.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
-import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
@@ -24,14 +21,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_media_notification/flutter_media_notification.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as featureflag;
 import 'package:jitsi_meet/jitsi_meet.dart';
-import 'package:marquee/marquee.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,16 +36,12 @@ import 'DiscoverPage.dart';
 import 'FollowingPage.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Player/Player.dart';
-import 'Player/PlayerElements/Seekbar.dart';
 import 'Profiles/EpisodeView.dart';
 import 'Profiles/PodcastView.dart';
 import 'Profiles/publicUserProfile.dart';
-import 'RoomsPage.dart';
-import 'RouteAnimation.dart';
 import 'buttonPages/Downloads.dart';
 import 'buttonPages/HiveWallet.dart';
 import 'buttonPages/Notification.dart';
-import 'buttonPages/Profile.dart';
 import 'buttonPages/search.dart';
 import 'buttonPages/settings/Theme-.dart';
 
@@ -599,263 +587,283 @@ class _HomeState extends State<Home> {
     int count = 0;
     return Scaffold(
       backgroundColor: Color(0xff161616),
-      appBar: _selectedIndex == 3 ? null :AppBar(
-        backgroundColor: Color(0xff161616),
-        elevation: 0.5,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .push(CupertinoPageRoute(builder: (context) => PublicProfile(userId: prefs.getString('userId'))));
-            },
-            icon: CircleAvatar(
-              radius: SizeConfig.safeBlockHorizontal * 6,
-              backgroundImage: CachedNetworkImageProvider(
-                displayPicture == null
-                    ? placeholderUrl
-                    : displayPicture,
-                scale: 0.5,
+      appBar: _selectedIndex == 3
+          ? null
+          : AppBar(
+              backgroundColor: Color(0xff161616),
+              elevation: 0.5,
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) =>
+                            PublicProfile(userId: prefs.getString('userId'))));
+                  },
+                  icon: CircleAvatar(
+                    radius: SizeConfig.safeBlockHorizontal * 6,
+                    backgroundImage: CachedNetworkImageProvider(
+                      displayPicture == null ? placeholderUrl : displayPicture,
+                      scale: 0.5,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.notifications_none),
-            onPressed: () {
-              Navigator.pushNamed(context, NotificationPage.id);
-            },
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              //     color: Colors.white,
-            ),
-            onPressed: () async {
-              await showSearch(
-                  context: context, delegate: SearchFunctionality());
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.more_vert_outlined),
-            onPressed: () {
-              showBarModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Platform.isAndroid != true
-                              ? SizedBox()
-                              : ListTile(
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.notifications_none),
+                  onPressed: () {
+                    Navigator.pushNamed(context, NotificationPage.id);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    //     color: Colors.white,
+                  ),
+                  onPressed: () async {
+                    await showSearch(
+                        context: context, delegate: SearchFunctionality());
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.more_vert_outlined),
+                  onPressed: () {
+                    showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Platform.isAndroid != true
+                                    ? SizedBox()
+                                    : ListTile(
+                                        onTap: () {
+                                          Navigator.push(context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return DownloadPage();
+                                          }));
+                                        },
+                                        leading: Icon(Icons.arrow_circle_down),
+                                        title: Text("Downloads"),
+                                      ),
+                                ListTile(
                                   onTap: () {
                                     Navigator.push(context,
                                         CupertinoPageRoute(builder: (context) {
-                                      return DownloadPage();
+                                      return ClipScreen();
                                     }));
                                   },
-                                  leading: Icon(Icons.arrow_circle_down),
-                                  title: Text("Downloads"),
+                                  leading: Icon(Icons.text_snippet),
+                                  title: Text("Clips"),
                                 ),
-                          ListTile(
-                            onTap: () {
-                              Navigator.push(context,
-                                  CupertinoPageRoute(builder: (context) {
-                                return ClipScreen();
-                              }));
-                            },
-                            leading: Icon(Icons.text_snippet),
-                            title: Text("Clips"),
-                          ),
-                          ListTile(
-                            onTap: () {
-                              if (prefs.getString('HiveUserName') != null) {
-                                print('Wallet Pressed');
-                                Navigator.pushNamed(context, Wallet.id);
-                              } else {
-                                showBarModalBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return HiveDetails();
-                                    });
-                              }
-                            },
-                            leading: Icon(FontAwesomeIcons.hive),
-                            title: Text("Wallet"),
-                          ),
-                          ListTile(
-                            onTap: () {
-                              Navigator.pop(context);
-                              showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
-                                return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer());
-                              });
-                              // Navigator.push(context, CupertinoPageRoute(builder: (context){
-                              //   return VideoPlayer();
-                              // }));
-                            },
-                            leading: Icon(FontAwesomeIcons.hive),
-                            title: Text("Video Player Demo"),
-                          )
-                        ],
-                      ),
-                    );
-                  });
-            },
-          )
-        ],
-      ),
-
+                                ListTile(
+                                  onTap: () {
+                                    if (prefs.getString('HiveUserName') !=
+                                        null) {
+                                      print('Wallet Pressed');
+                                      Navigator.pushNamed(context, Wallet.id);
+                                    } else {
+                                      showBarModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return HiveDetails();
+                                          });
+                                    }
+                                  },
+                                  leading: Icon(FontAwesomeIcons.hive),
+                                  title: Text("Wallet"),
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    showModalBottomSheet(
+                                        backgroundColor: Colors.transparent,
+                                        isScrollControlled: true,
+                                        isDismissible: true,
+                                        context: context,
+                                        builder: (context) {
+                                          return FractionallySizedBox(
+                                              heightFactor: 0.95,
+                                              child: VideoPlayer());
+                                        });
+                                    // Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                    //   return VideoPlayer();
+                                    // }));
+                                  },
+                                  leading: Icon(FontAwesomeIcons.hive),
+                                  title: Text("Video Player Demo"),
+                                )
+                              ],
+                            ),
+                          );
+                        });
+                  },
+                )
+              ],
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       body: DoubleBackToCloseApp(
           snackBar: const SnackBar(
             content: Text('Tap back again to leave'),
           ),
-          child: Stack(children: [_createPage(context, _selectedIndex), Align(
-            alignment: Alignment.bottomCenter,
-            child: ClipRect(
+          child: Stack(children: [
+            _createPage(context, _selectedIndex),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaY: 15.0,
+                    sigmaX: 15.0,
+                  ),
+                  child: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _selectedIndex == 3 ? SizedBox() : BottomPlayer(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.black),
+                            child: BottomNavigationBar(
+                              selectedFontSize: 0,
+                              backgroundColor: Colors.transparent,
+                              elevation: 10,
+                              type: BottomNavigationBarType.fixed,
+                              showUnselectedLabels: false,
+                              showSelectedLabels: false,
+                              unselectedItemColor: Colors.white,
+                              selectedItemColor: Colors.blue,
+                              //Color(0xff5bc3ef),
+                              // backgroundColor: Colors.transparent,
+                              items: <BottomNavigationBarItem>[
+                                // BottomNavigationBarItem(
+                                //   icon: Icon(
+                                //     Icons.stream,
+                                //   ),
+                                //   activeIcon: Icon(Icons.stream),
+                                //   label: '',
+                                // ),
 
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaY: 15.0,
-                  sigmaX: 15.0,
-                ),
-                child: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _selectedIndex == 3? SizedBox():BottomPlayer(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.black
-                          ),
-                          child: BottomNavigationBar(
-                            selectedFontSize: 0,
-                            backgroundColor:
-                            Colors.transparent,
-                            elevation: 10,
-                            type: BottomNavigationBarType.fixed,
-                            showUnselectedLabels: false,
-                            showSelectedLabels: false,
-                            unselectedItemColor:
-                            Colors.white,
-                            selectedItemColor: Colors.blue,
-                            //Color(0xff5bc3ef),
-                            // backgroundColor: Colors.transparent,
-                            items: <BottomNavigationBarItem>[
-                              // BottomNavigationBarItem(
-                              //   icon: Icon(
-                              //     Icons.stream,
-                              //   ),
-                              //   activeIcon: Icon(Icons.stream),
-                              //   label: '',
-                              // ),
-
-                              BottomNavigationBarItem(
-
-                                label: "",
-                                icon: Icon(
-                                  Icons.home_sharp,
-                                  size: 22,
+                                BottomNavigationBarItem(
+                                  label: "",
+                                  icon: Icon(
+                                    Icons.home_sharp,
+                                    size: 22,
+                                  ),
+                                  activeIcon: Icon(
+                                    Icons.home_rounded,
+                                    size: 22,
+                                  ),
                                 ),
-                                activeIcon: Icon(
-                                  Icons.home_rounded,
-                                  size: 22,
+                                BottomNavigationBarItem(
+                                  label: "",
+                                  icon: Icon(
+                                    FontAwesomeIcons.compass,
+                                    size: 22,
+                                  ),
+                                  activeIcon: Icon(
+                                    FontAwesomeIcons.solidCompass,
+                                    size: 22,
+                                  ),
                                 ),
-                              ),
-                              BottomNavigationBarItem(
-                                label: "",
-                                icon: Icon(FontAwesomeIcons.compass,size: 22,),
-                                activeIcon: Icon(FontAwesomeIcons.solidCompass,size: 22,),
-                              ),
-                              BottomNavigationBarItem(
-                                label: "",
-                                icon: Icon(Icons.library_books_outlined,size: 22,),
-                                activeIcon: Icon(Icons.library_books,size: 22,),
-                              ),
-                              // BottomNavigationBarItem(
-                              //   label: "",
-                              //   icon: Icon(Icons.casino_outlined,size: 22,),
-                              //   activeIcon: Icon(Icons.casino_outlined,size: 22,),
-                              // )
-                              // BottomNavigationBarItem(
-                              //   label: "",
-                              //   icon: Icon(
-                              //     Icons.perm_identity,
-                              //     size: 28,
-                              //   ),
-                              //   activeIcon: Icon(
-                              //     Icons.person,
-                              //     size: 28,
-                              //   ),
-                              // ),
-                            ],
-                            currentIndex: _selectedIndex,
-                            onTap: _onItemTapped,
+                                BottomNavigationBarItem(
+                                  label: "",
+                                  icon: Icon(
+                                    Icons.library_books_outlined,
+                                    size: 22,
+                                  ),
+                                  activeIcon: Icon(
+                                    Icons.library_books,
+                                    size: 22,
+                                  ),
+                                ),
+                                // BottomNavigationBarItem(
+                                //   label: "",
+                                //   icon: Icon(Icons.casino_outlined,size: 22,),
+                                //   activeIcon: Icon(Icons.casino_outlined,size: 22,),
+                                // )
+                                // BottomNavigationBarItem(
+                                //   label: "",
+                                //   icon: Icon(
+                                //     Icons.perm_identity,
+                                //     size: 28,
+                                //   ),
+                                //   activeIcon: Icon(
+                                //     Icons.person,
+                                //     size: 28,
+                                //   ),
+                                // ),
+                              ],
+                              currentIndex: _selectedIndex,
+                              onTap: _onItemTapped,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          )])),
+            )
+          ])),
     );
   }
 }
 
 class BottomPlayer extends StatelessWidget {
-   BottomPlayer();
+  BottomPlayer();
 
-   PlayerState playerstate = PlayerState.playing;
+  PlayerState playerstate = PlayerState.playing;
 
-   // ScrollController _controller = ScrollController();
-   //
-   // var status;
-   // bool _hasBeenPressed = false;
-   //
-   // SharedPreferences prefs;
-   //
-   // getLocalData() async {
-   //   prefs = await SharedPreferences.getInstance();
-   // }
-   //
-   // String changingDuration = '0.0';
-   //
-   // Duration _visibleValue;
-   // bool listenOnlyUserInteraction = false;
-   // double get percent => duration.inMilliseconds == 0
-   //     ? 0
-   //     : _visibleValue.inMilliseconds / duration.inMilliseconds;
-   //
-   // void durationToString(Duration duration) {
-   //   String twoDigits(int n) {
-   //     if (n >= 10) return "$n";
-   //     return "0$n";
-   //   }
-   //
-   //   String twoDigitMinutes =
-   //   twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
-   //   String twoDigitSeconds =
-   //   twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
-   //
-   //   setState(() {
-   //     changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
-   //   });
-   // }
+  // ScrollController _controller = ScrollController();
+  //
+  // var status;
+  // bool _hasBeenPressed = false;
+  //
+  // SharedPreferences prefs;
+  //
+  // getLocalData() async {
+  //   prefs = await SharedPreferences.getInstance();
+  // }
+  //
+  // String changingDuration = '0.0';
+  //
+  // Duration _visibleValue;
+  // bool listenOnlyUserInteraction = false;
+  // double get percent => duration.inMilliseconds == 0
+  //     ? 0
+  //     : _visibleValue.inMilliseconds / duration.inMilliseconds;
+  //
+  // void durationToString(Duration duration) {
+  //   String twoDigits(int n) {
+  //     if (n >= 10) return "$n";
+  //     return "0$n";
+  //   }
+  //
+  //   String twoDigitMinutes =
+  //   twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
+  //   String twoDigitSeconds =
+  //   twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
+  //
+  //   setState(() {
+  //     changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
+  //   });
+  // }
 
-   int count = 0;
-
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
-    try{
+    try {
+      // episodeObject.betterPlayerController.setControlsVisibility(false);
       return GestureDetector(
         onTap: () {
           showModalBottomSheet(
@@ -873,10 +881,8 @@ class BottomPlayer extends StatelessWidget {
         child: Dismissible(
           key: UniqueKey(),
           onDismissed: (direction) {
-
-              // episodeObject.episodeName = null;
-              episodeObject.audioPlayer.pause();
-
+            // episodeObject.episodeName = null;
+            episodeObject.audioPlayer.pause();
           },
           child: ClipRect(
             child: BackdropFilter(
@@ -886,112 +892,122 @@ class BottomPlayer extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border(top: BorderSide(color: Colors.white.withOpacity(0.5)))
-                  // color: Colors.transparent
-                ),
+                    border: Border(
+                        top: BorderSide(color: Colors.white.withOpacity(0.5)))
+                    // color: Colors.transparent
+                    ),
                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
                     builder: (context, infos) {
-                      if (infos == null) {
-                        return SizedBox(
-                          height: 0,
-                          width: 0,
-                        );
-                      } else {
-                        return ListTile(
-                            trailing: infos.isPlaying == true
-                                ? IconButton(
-                              splashColor: Colors.transparent,
-                              icon: Icon(
-                                Icons.pause,
-                                color: Colors.white,
+                  if (infos == null) {
+                    return SizedBox(
+                      height: 0,
+                      width: 0,
+                    );
+                  } else {
+                    return ListTile(
+                        trailing: infos.isPlaying == true
+                            ? IconButton(
+                                splashColor: Colors.transparent,
+                                icon: Icon(
+                                  Icons.pause,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  episodeObject.audioPlayer.pause();
+                                },
+                              )
+                            : IconButton(
+                                splashColor: Colors.blue,
+                                icon: Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  episodeObject.resume();
+                                },
                               ),
-                              onPressed: () {
-                                episodeObject.audioPlayer.pause();
-                              },
-                            )
-                                : IconButton(
-                              splashColor: Colors.blue,
-                              icon: Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                episodeObject.resume();
-                              },
-                            ),
-                            leading: Builder(builder: (context){
-                              try{
-                                return CachedNetworkImage(
-                                  width: 40,
-                                  height: 40,
-                                  imageUrl: infos.current.audio == null ? placeholderUrl:infos.current.audio.audio.metas.image.path,
-                                  errorWidget: (context, url, e){
-                                    return Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff222222),
+                        leading: Builder(
+                          builder: (context) {
+                            try {
+                              return CachedNetworkImage(
+                                width: 40,
+                                height: 40,
+                                imageUrl: infos.current.audio == null
+                                    ? placeholderUrl
+                                    : infos
+                                        .current.audio.audio.metas.image.path,
+                                errorWidget: (context, url, e) {
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff222222),
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                  );
+                                },
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(3),
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover)),
+                                  );
+                                },
+                              );
+                            } catch (e) {
+                              return CachedNetworkImage(
+                                width: 40,
+                                height: 40,
+                                imageUrl: placeholderUrl,
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3),
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover)),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                        title: Builder(
+                          builder: (context) {
+                            try {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: infos.current.audio == null
+                                    ? Text("")
+                                    : Text(
+                                        "${infos.current.audio == null ? "" : infos.current.audio.audio.metas.title}",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    );
-                                  },
-                                  imageBuilder: (context, imageProvider) {
-                                    return Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          image: DecorationImage(
-                                              image: imageProvider, fit: BoxFit.cover)),
-                                    );
-                                  },
-                                );
-                              }catch(e){
-                                return CachedNetworkImage(
-                                  width: 40,
-                                  height: 40,
-                                  imageUrl: placeholderUrl,
-                                  imageBuilder: (context, imageProvider) {
-                                    return Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(3),
-                                          image: DecorationImage(
-                                              image: imageProvider, fit: BoxFit.cover)),
-                                    );
-                                  },
-                                );
-                              }
-                            },),
-                            title: Builder(builder: (context){
-                              try{
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: infos.current.audio == null? Text(""):Text(
-                                    "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                );
-                              }catch(e){
-                                return SizedBox();
-                              }
-                            },)
-                        );
-                      }
-                    }),
+                              );
+                            } catch (e) {
+                              return SizedBox();
+                            }
+                          },
+                        ));
+                  }
+                }),
               ),
             ),
           ),
         ),
       );
-    }catch(e){
+    } catch (e) {
       SizedBox();
     }
   }
 }
-
 
 // class BottomPlayer extends StatefulWidget {
 //   @override
