@@ -4,6 +4,7 @@ import 'package:better_player/better_player.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:miniplayer/miniplayer.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,7 +53,19 @@ class PlayerChange extends ChangeNotifier {
 
   //VideoPlayer Controls
 
-  BetterPlayerController betterPlayerController;
+  BetterPlayerController betterPlayerController =
+      BetterPlayerController(BetterPlayerConfiguration(
+    aspectRatio: 16 / 9,
+    fit: BoxFit.contain,
+    autoPlay: true,
+    looping: false,
+    allowedScreenSleep: false,
+    autoDispose: false,
+    deviceOrientationsAfterFullScreen: [
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ],
+  ));
   BetterPlayerDataSource betterPlayerDataSource;
   BetterPlayerConfiguration betterPlayerConfiguration;
 
@@ -89,6 +102,8 @@ class PlayerChange extends ChangeNotifier {
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
   AssetsAudioPlayer snippetPlayer = AssetsAudioPlayer();
+
+  MiniplayerController miniplayerController = MiniplayerController();
   Dio dio = Dio();
 
   Video _videoSource;

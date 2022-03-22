@@ -18,6 +18,7 @@ import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,6 +32,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
+import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart' as pro;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -669,7 +671,7 @@ class EpisodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var episodeObject = pro.Provider.of<PlayerChange>(context);
+    final episodeObject = pro.Provider.of<PlayerChange>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -719,14 +721,31 @@ class EpisodeCard extends StatelessWidget {
                           //       });
                           // });
                           episodeObject.isVideo = true;
-                          // episodeObject.episodeObject = data;
+                          episodeObject.episodeObject = data;
                           episodeObject.videoSource = Video(
                               id: data['id'],
                               title: data['name'],
                               thumbnailUrl: data['podcast_image'],
                               author: data['author'],
                               url: data['url'],
-                              album: data['podcast_name']);
+                              album: data['podcast_name'],
+                              podcastid: data['podcast_id'],
+                              author_id: data['author_user_id']);
+                          episodeObject.miniplayerController
+                              .animateToHeight(state: PanelState.MAX);
+                          episodeObject.betterPlayerController
+                              .setupDataSource(BetterPlayerDataSource(
+                            BetterPlayerDataSourceType.network,
+                            episodeObject.videoSource.url,
+                            notificationConfiguration:
+                                BetterPlayerNotificationConfiguration(
+                              showNotification: true,
+                              title: "${episodeObject.videoSource.title}",
+                              author: "${episodeObject.videoSource.author}",
+                              imageUrl:
+                                  "${episodeObject.videoSource.thumbnailUrl}",
+                            ),
+                          ));
                           // context.read(selectedVideoProvider).state = data;
                         },
                         child: CachedNetworkImage(
@@ -1292,21 +1311,26 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                               //       });
                               // });
                               episodeObject.isVideo = true;
-                              // episodeObject.episodeObject = widget.data;
+                              episodeObject.episodeObject = widget.data;
                               episodeObject.videoSource = Video(
                                   id: widget.data['id'],
                                   title: widget.data['name'],
                                   thumbnailUrl: widget.data['podcast_image'],
                                   author: widget.data['author'],
                                   url: widget.data['url'],
-                                  album: widget.data['podcast_name']);
+                                  album: widget.data['podcast_name'],
+                                  podcastid: widget.data['podcast_id'],
+                                  author_id: widget.data['author_user_id'],
+                                  permlink: widget.data['permlink']);
+                              episodeObject.miniplayerController
+                                  .animateToHeight(state: PanelState.MAX);
 
                               // Navigator.push(context, CupertinoPageRoute(builder: (context){
                               //   return VideoPlauer
                               // }))
                             } else {
-                              episodeObject.betterPlayerController
-                                  .dispose(forceDispose: true);
+                              episodeObject.isVideo = false;
+                              episodeObject.betterPlayerController.pause();
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
@@ -1377,25 +1401,15 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   thumbnailUrl: widget.data['podcast_image'],
                                   author: widget.data['author'],
                                   url: widget.data['url'],
-                                  album: widget.data['podcast_name']);
-                              // episodeObject.audioPlayer.stop().then((value) {
-                              //   episodeObject.episodeObject = widget.data;
-                              //   showModalBottomSheet(
-                              //       backgroundColor: Colors.transparent,
-                              //       isScrollControlled: true,
-                              //       isDismissible: true,
-                              //       context: context,
-                              //       builder: (context) {
-                              //         return FractionallySizedBox(
-                              //             heightFactor: 0.95,
-                              //             child: VideoPlayer(
-                              //               episodeObject: widget.data,
-                              //             ));
-                              //       });
-                              // });
+                                  album: widget.data['podcast_name'],
+                                  podcastid: widget.data['podcast_id'],
+                                  author_id: widget.data['author_user_id'],
+                                  permlink: widget.data['permlink']);
+                              episodeObject.miniplayerController
+                                  .animateToHeight(state: PanelState.MAX);
                             } else {
-                              episodeObject.betterPlayerController
-                                  .dispose(forceDispose: true);
+                              episodeObject.isVideo = false;
+                              episodeObject.betterPlayerController.pause();
                               if (widget.playlist == null) {
                                 episodeObject.stop();
                                 episodeObject.episodeObject = episodeData;

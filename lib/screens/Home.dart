@@ -864,67 +864,88 @@ class BottomPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
+
     try {
       if (episodeObject.isVideo == true) {
         return Consumer<PlayerChange>(
           builder: (context, watch, _) {
             // final videoObject = Provider.of<PlayerChange>(context).videoSource;
             final videoObject = watch.videoSource;
+            final miniPlayerController = watch.miniplayerController;
+
             print(videoObject);
             return Offstage(
               offstage: episodeObject.videoSource == null,
               child: Miniplayer(
+                  backgroundColor: Colors.transparent,
+                  controller: miniPlayerController,
                   minHeight: _playerHeight,
                   maxHeight: MediaQuery.of(context).size.height,
                   builder: (height, percentage) {
                     if (videoObject == null) {
                       return SizedBox.shrink();
                     } else {
-                      return Container(
-                        child: Row(
-                          children: [
-                            CachedNetworkImage(
-                              width: 120,
-                              imageUrl: videoObject.thumbnailUrl,
-                              fit: BoxFit.cover,
+                      if (height <= _playerHeight) {
+                        return ClipRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaY: 15.0,
+                              sigmaX: 15.0,
                             ),
-                            Expanded(
-                                child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
+                            child: Container(
+                              // color: Colors.transparent,
+                              child: Row(
                                 children: [
-                                  Flexible(
-                                      child: Text(
-                                    "${videoObject.title}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .caption
-                                        .copyWith(fontSize: 15),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  )),
-                                  Flexible(
-                                    child: Text(
-                                      "${videoObject.album}",
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                  CachedNetworkImage(
+                                    width: 120,
+                                    imageUrl: videoObject.thumbnailUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Expanded(
+                                      child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                            child: Text(
+                                          "${videoObject.title}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption
+                                              .copyWith(fontSize: 15),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                        Flexible(
+                                          child: Text(
+                                            "${videoObject.album}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .caption,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  )
+                                  )),
+                                  IconButton(
+                                      onPressed: () {
+                                        watch.videoSource = null;
+                                        watch.betterPlayerController.pause();
+                                      },
+                                      icon: Icon(Icons.close))
                                 ],
                               ),
-                            )),
-                            IconButton(
-                                onPressed: () {
-                                  watch.videoSource = null;
-                                },
-                                icon: Icon(Icons.close))
-                          ],
-                        ),
-                      );
+                            ),
+                          ),
+                        );
+                      } else {
+                        return VideoPlayer();
+                      }
                     }
                   }),
             );

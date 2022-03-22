@@ -3,39 +3,38 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:auditory/Services/audioEditor.dart';
-import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
-import 'package:auditory/screens/Profiles/publicUserProfile.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:html/parser.dart';
+
 import 'package:auditory/DatabaseFunctions/EpisodesBloc.dart';
 import 'package:auditory/DatabaseFunctions/EpisodesProvider.dart';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/Services/audioEditor.dart';
+import 'package:auditory/data/Datasource.dart';
 import 'package:auditory/models/Episode.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Player/Player.dart';
-import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/Profiles/Comments.dart';
+import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
+import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkable/linkable.dart';
+import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -45,7 +44,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Home.dart';
-import '../RoomsPage.dart';
 import 'PodcastView.dart';
 
 enum Like {
@@ -89,14 +87,14 @@ class _EpisodeViewState extends State<EpisodeView>
 
   var recommendations = [];
 
-  Future<Color> getColor (String url) async {
-    final PaletteGenerator paletteGenerator = await PaletteGenerator
-        .fromImageProvider(CachedNetworkImageProvider(url));
+  Future<Color> getColor(String url) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(
+            CachedNetworkImageProvider(url));
 
     setState(() {
-      dominantColor =  paletteGenerator.dominantColor.color.value;
+      dominantColor = paletteGenerator.dominantColor.color.value;
     });
-
   }
 
   void getRecommendations() async {
@@ -153,13 +151,11 @@ class _EpisodeViewState extends State<EpisodeView>
     getRecommendations();
     getPlaylistRecommendations(
         podcastId: episodeContent['podcast_id'], episodeId: widget.episodeId);
-
   }
 
   List playlist = [];
 
   void getPlaylistRecommendations({int podcastId, int episodeId}) async {
-
     String url =
         "https://api.aureal.one/public/getPrevNextEpisode/$podcastId/$episodeId?type=prev";
 
@@ -345,11 +341,6 @@ class _EpisodeViewState extends State<EpisodeView>
     super.initState();
 
     init();
-
-
-
-
-
   }
 
   bool isDownloading = false;
@@ -416,14 +407,14 @@ class _EpisodeViewState extends State<EpisodeView>
     // });
     print(episodeContent);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String url =  "https://rpc.ecency.com";
+    String url = "https://rpc.ecency.com";
     print(url);
     var map = Map<String, dynamic>();
     map = {
       "jsonrpc": "2.0",
       "method": "bridge.get_post",
       "params": {
-        'author' : episodeContent['author_hiveusername'],
+        'author': episodeContent['author_hiveusername'],
         'permlink': episodeContent['permlink'],
         'observer': ""
       },
@@ -431,13 +422,10 @@ class _EpisodeViewState extends State<EpisodeView>
     };
     print(map);
 
-
-
-    try{
-      await dio.post(url, data: map).then((value)async {
+    try {
+      await dio.post(url, data: map).then((value) async {
         // print(value.data);
-        if(value.data['result'] != null){
-
+        if (value.data['result'] != null) {
           var responsedata = {
             'hive_earnings': value.data['result']['payout'],
             'net_votes': value.data['result']['active_votes'].length,
@@ -448,25 +436,24 @@ class _EpisodeViewState extends State<EpisodeView>
             data = responsedata;
           });
           print(data);
-
-
         }
       });
-    }catch(e){
+    } catch (e) {
       print(e);
     }
     // setState(() {
     //   isLoading = false;
     // });
-
   }
 
   Future getIfVoted(List activeVotes) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.getString('HiveUserName') != null){
-      if(activeVotes.toString().contains("${prefs.getString("HiveUserName")}")){
+    if (prefs.getString('HiveUserName') != null) {
+      if (activeVotes
+          .toString()
+          .contains("${prefs.getString("HiveUserName")}")) {
         return true;
-      }else{
+      } else {
         return false;
       }
     }
@@ -501,12 +488,11 @@ class _EpisodeViewState extends State<EpisodeView>
     var episodeObject = Provider.of<PlayerChange>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     SizeConfig().init(context);
-    try{
+    try {
       return Scaffold(
         appBar: AppBar(
-
           backgroundColor:
-          dominantColor == null ? Colors.transparent : Color(dominantColor),
+              dominantColor == null ? Colors.transparent : Color(dominantColor),
           elevation: 0,
           leading: IconButton(
             onPressed: () {
@@ -525,948 +511,1027 @@ class _EpisodeViewState extends State<EpisodeView>
               inAsyncCall: isLoading,
               child: isLoading == true
                   ? Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: Colors.black,
-              )
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.black,
+                    )
                   : ListView(
-                physics: BouncingScrollPhysics(),
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(dominantColor), Colors.transparent],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Container(
-                        width: double.infinity,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CachedNetworkImage(
-                              placeholder: (context, String url){
-                                return Container(
-                                  height: MediaQuery.of(context).size.width / 2,
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Color(0xff222222)
-                                    // image: DecorationImage(
-                                    //     image: imageProvider,
-                                    //     fit: BoxFit.cover),
-                                  ),
-                                );
-                              },
-                              imageUrl: episodeContent['image'] == null
-                                  ? episodeContent['podcast_image']
-                                  : episodeContent['image'],
-                              imageBuilder: (context, imageProvider) {
-                                try{
-                                  return Container(
-                                    height: MediaQuery.of(context).size.width / 2,
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover)),
-                                  );
-                                }catch(e){
-                                  return Container(
-                                    height: MediaQuery.of(context).size.width / 2,
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Color(0xff222222)
-
-                                    ),
-                                  );
-                                }
-
-                              },
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 80,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                '${episodeContent['name']}',
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize:
-                                    SizeConfig.safeBlockHorizontal * 4,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xffe8e8e8)),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      CupertinoPageRoute(builder: (context) {
-                                        return PodcastView(
-                                            episodeContent['podcast_id']);
-                                      }));
-                                },
-                                child: Text(
-                                  '${episodeContent['podcast_name']}',
-                                  textAlign: TextAlign.center,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3,
-                                      color:
-                                      Color(0xffe8e8e8).withOpacity(0.5)),
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${DurationCalculator(episodeContent['duration'])}',
-                                  textAlign: TextAlign.center,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3,
-                                      color:
-                                      Color(0xffe8e8e8).withOpacity(0.5)),
-                                ),
+                      physics: BouncingScrollPhysics(),
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                Color(dominantColor),
+                                Colors.transparent
                               ],
-                            ),
-                            Platform.isIOS?Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.crop),
-                                  onPressed: () {
-                                    Navigator.push(context,
-                                        CupertinoPageRoute(builder: (context) {
-                                          return AudioEditor(
-                                            episodeObject: episodeContent,
-                                          );
-                                        }));
-                                  },
-                                ),
-                                // Platform.isAndroid == true
-                                //     ? GestureDetector(
-                                //   onTap: () {
-                                //     startDownload();
-                                //     setState(() {
-                                //       _loading = !_loading;
-                                //       _updateProgress();
-                                //     });
-                                //   },
-                                //   child: Container(
-                                //       padding: EdgeInsets.all(15.0),
-                                //       child: _loading
-                                //           ? Column(
-                                //         mainAxisAlignment:
-                                //         MainAxisAlignment
-                                //             .center,
-                                //         children: <Widget>[
-                                //           CircularProgressIndicator(
-                                //             value: _progressValue,
-                                //           ),
-                                //           Text(
-                                //               '${(_progressValue * 100).round()}%'),
-                                //         ],
-                                //       )
-                                //           : Icon(Icons.arrow_circle_down,
-                                //           color: isDownloading == true
-                                //               ? Colors.blue
-                                //               : Colors.white)),
-                                // )
-                                //     : SizedBox(
-                                //   height: 0,
-                                //   width: 0,
-                                // ),
-                                IconButton(
-                                  onPressed: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Createplaylist(
-                                              episodeId: widget.episodeId);
-                                        });
-                                  },
-                                  icon: Icon(Icons.playlist_add),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    share1(
-                                        episodeObject:
-                                        episodeObject.episodeObject);
-                                  },
-                                  icon: Icon(Icons.ios_share),
-                                )
-                              ],
-                            ):Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.crop),
-                                  onPressed: () {
-                                    Navigator.push(context,
-                                        CupertinoPageRoute(builder: (context) {
-                                          return AudioEditor(
-                                            episodeObject: episodeContent,
-                                          );
-                                        }));
-                                  },
-                                ),
-                                Platform.isAndroid == true
-                                    ? GestureDetector(
-                                  onTap: () {
-                                    startDownload();
-                                    setState(() {
-                                      _loading = !_loading;
-                                      _updateProgress();
-                                    });
-                                  },
-                                  child: Container(
-                                      padding: EdgeInsets.all(15.0),
-                                      child: _loading
-                                          ? Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .center,
-                                        children: <Widget>[
-                                          CircularProgressIndicator(
-                                            value: _progressValue,
-                                          ),
-                                          Text(
-                                              '${(_progressValue * 100).round()}%'),
-                                        ],
-                                      )
-                                          : Icon(Icons.arrow_circle_down,
-                                          color: isDownloading == true
-                                              ? Colors.blue
-                                              : Colors.white)),
-                                )
-                                    : SizedBox(
-                                  height: 0,
-                                  width: 0,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    showBarModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Createplaylist(
-                                              episodeId: widget.episodeId);
-                                        });
-                                  },
-                                  icon: Icon(Icons.playlist_add),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    share1(
-                                        episodeObject:
-                                        episodeObject.episodeObject);
-                                  },
-                                  icon: Icon(Icons.ios_share),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Vibrate.feedback(FeedbackType.impact);
-                                if(episodeContent['isvideo'] == true){
-                                  showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
-                                    return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
-                                  });
-                                  // showModalBottomSheet(
-                                  //     isScrollControlled: true,
-                                  //     backgroundColor: Colors.transparent,
-                                  //     barrierColor: Colors.transparent,
-                                  //     isDismissible: true,
-                                  //     // bounce: true,
-                                  //     context: context,
-                                  //     builder: (context) {
-                                  //       return Player2(isVideo: true, episodeObject: episodeContent,);
-                                  //     });
-                                  // episodeObject.episodeObject = episodeContent;
-                                  // episodeObject.play();
-                                }else{
-                                  showModalBottomSheet(
-                                      isScrollControlled: true,
-                                      backgroundColor: Colors.transparent,
-                                      barrierColor: Colors.transparent,
-                                      isDismissible: true,
-                                      // bounce: true,
-                                      context: context,
-                                      builder: (context) {
-                                        return Player2();
-                                      });
-                                  episodeObject.stop();
-                                  episodeObject.episodeObject =
-                                      episodeContent;
-                                  print(episodeObject.episodeObject
-                                      .toString());
-                                  episodeObject.play();
-                                }
-
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(5),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Color(0xff5d5da8),
-                                        Color(0xff5bc3ef)
-                                      ],
-                                    )),
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                      child: Padding(
-                                        padding:
-                                        const EdgeInsets.all(7.0),
-                                        child: Text("GET STARTED"),
-                                      )),
-                                ),
-                              ),
-                            ),
-                            // widget.episodeId == episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id ? (episodeObject.audioPlayer.isPlaying.value == true ? GestureDetector(
-                            //   onTap: () {
-                            //     setState(() {
-                            //       episodeObject.pause();
-                            //     });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding:
-                            //       const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Text("PAUSE"),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // ): GestureDetector(
-                            //   onTap: () {
-                            //     setState(() {
-                            //       episodeObject.resume();
-                            //     });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding:
-                            //       const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Row(
-                            //               mainAxisSize:
-                            //               MainAxisSize.min,
-                            //               children: [
-                            //                 // Padding(
-                            //                 //   padding: const EdgeInsets
-                            //                 //           .symmetric(
-                            //                 //       horizontal:
-                            //                 //           5),
-                            //                 //   child: Icon(Icons
-                            //                 //       .play_arrow_rounded),
-                            //                 // ),
-                            //                 Text("RESUME"),
-                            //               ],
-                            //             ),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // )) : GestureDetector(
-                            //   onTap: () {
-                            //     episodeObject.stop();
-                            //     episodeObject.episodeObject =
-                            //         episodeContent;
-                            //     print(episodeObject.episodeObject
-                            //         .toString());
-                            //     episodeObject.play();
-                            //     showBarModalBottomSheet(
-                            //         context: context,
-                            //         builder: (context) {
-                            //           return Player();
-                            //         });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding: const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Text("GET STARTED"),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // ),
-                            // episodeObject.episodeObject == null
-                            //     ? GestureDetector(
-                            //   onTap: () {
-                            //     print(episodeContent['url']
-                            //         .toString()
-                            //         .contains('.mp4'));
-                            //     if (episodeContent['url']
-                            //         .toString()
-                            //         .contains('.mp4') ==
-                            //         true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.m4v') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.flv') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.f4v') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.ogv') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.ogx') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.wmv') ==
-                            //             true ||
-                            //         episodeContent['url']
-                            //             .toString()
-                            //             .contains('.webm') ==
-                            //             true) {
-                            //       episodeObject.stop();
-                            //       Navigator.push(context,
-                            //           CupertinoPageRoute(
-                            //               builder: (context) {
-                            //                 return PodcastVideoPlayer(
-                            //                   episodeObject: episodeContent,
-                            //                 );
-                            //               }));
-                            //     } else {
-                            //       if (episodeContent['url']
-                            //           .toString()
-                            //           .contains('.pdf') ==
-                            //           true) {
-                            //         // Navigator.push(context,
-                            //         //     CupertinoPageRoute(
-                            //         //         builder: (context) {
-                            //         //   return PDFviewer(
-                            //         //     episodeObject:
-                            //         //         widget.episodeObject,
-                            //         //   );
-                            //         // }));
-                            //       } else {
-                            //         List<Audio> playable = [];
-                            //         playable.add(Audio.network(
-                            //             episodeContent['url'],
-                            //             metas: Metas(
-                            //               id: '${episodeContent['id']}',
-                            //               title:
-                            //               '${episodeContent['name']}',
-                            //               artist:
-                            //               '${episodeContent['author']}',
-                            //               album:
-                            //               '${episodeContent['podcast_name']}',
-                            //               // image: MetasImage.network('https://www.google.com')
-                            //               image: MetasImage.network(
-                            //                   '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
-                            //             )));
-                            //         for (var v in playlist) {
-                            //           playable.add(Audio.network(
-                            //             v['url'],
-                            //             metas: Metas(
-                            //               id: '${v['id']}',
-                            //               title: '${v['name']}',
-                            //               artist: '${v['author']}',
-                            //               album: '${v['podcast_name']}',
-                            //               // image: MetasImage.network('https://www.google.com')
-                            //               image: MetasImage.network(
-                            //                   '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                            //             ),
-                            //           ));
-                            //         }
-                            //         episodeObject.audioPlayer.open(
-                            //             Playlist(
-                            //                 audios:
-                            //                 playable,
-                            //                 startIndex: 0),
-                            //             showNotification: true);
-                            //       }
-                            //     }
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding: const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.all(7.0),
-                            //             child: Text("GET STARTED"),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // )
-                            //     : (episodeObject.episodeObject['id'] == null ||
-                            //     episodeObject.episodeObject['id'] ==
-                            //         episodeContent['id']
-                            //     ? (episodeObject
-                            //     .audioPlayer
-                            //     .realtimePlayingInfos
-                            //     .value
-                            //     .isPlaying ==
-                            //     true
-                            //     ? GestureDetector(
-                            //   onTap: () {
-                            //     setState(() {
-                            //       episodeObject.pause();
-                            //     });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding:
-                            //       const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Text("PAUSE"),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // )
-                            //     : GestureDetector(
-                            //   onTap: () {
-                            //     setState(() {
-                            //       episodeObject.resume();
-                            //     });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding:
-                            //       const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Row(
-                            //               mainAxisSize:
-                            //               MainAxisSize.min,
-                            //               children: [
-                            //                 // Padding(
-                            //                 //   padding: const EdgeInsets
-                            //                 //           .symmetric(
-                            //                 //       horizontal:
-                            //                 //           5),
-                            //                 //   child: Icon(Icons
-                            //                 //       .play_arrow_rounded),
-                            //                 // ),
-                            //                 Text("RESUME"),
-                            //               ],
-                            //             ),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // ))
-                            //     : GestureDetector(
-                            //   onTap: () {
-                            //     episodeObject.stop();
-                            //     episodeObject.episodeObject =
-                            //         episodeContent;
-                            //     print(episodeObject.episodeObject
-                            //         .toString());
-                            //     episodeObject.play();
-                            //     showBarModalBottomSheet(
-                            //         context: context,
-                            //         builder: (context) {
-                            //           return Player();
-                            //         });
-                            //   },
-                            //   child: Container(
-                            //     decoration: BoxDecoration(
-                            //         borderRadius:
-                            //         BorderRadius.circular(5),
-                            //         gradient: LinearGradient(
-                            //           colors: [
-                            //             Color(0xff5d5da8),
-                            //             Color(0xff5bc3ef)
-                            //           ],
-                            //         )),
-                            //     width: double.infinity,
-                            //     child: Padding(
-                            //       padding: const EdgeInsets.all(8.0),
-                            //       child: Center(
-                            //           child: Padding(
-                            //             padding:
-                            //             const EdgeInsets.all(7.0),
-                            //             child: Text("GET STARTED"),
-                            //           )),
-                            //     ),
-                            //   ),
-                            // )),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height / 30,
-                            ),
-                            episodeContent['permlink'] == null
-                                ? SizedBox()
-                                : InkWell(
-                              onTap: () async {
-                                if (prefs.getString('HiveUserName') !=
-                                    null) {
-                                  setState(() {
-                                    isUpvoteButtonLoading = true;
-                                  });
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Dialog(
-                                            backgroundColor:
-                                            Colors.transparent,
-                                            child: UpvoteEpisode(
-                                                permlink: episodeContent[
-                                                'permlink'],
-                                                episode_id:
-                                                episodeContent[
-                                                'id']));
-                                      }).then((value) async {
-                                    print(value);
-                                  });
-                                  await upvoteEpisode(
-                                      permlink:
-                                      episodeContent['permlink'],
-                                      episode_id: episodeContent['id']);
-                                  setState(() {
-                                    episodeContent['ifVoted'] =
-                                    !episodeContent['ifVoted'];
-                                    isUpvoteButtonLoading = false;
-                                  });
-                                } else {
-                                  showBarModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return HiveDetails();
-                                      });
-                                }
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: episodeContent['ifVoted'] ==
-                                      true
-                                      ? BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Color(dominantColor),
-                                            Color(0xff5d5da8)
-                                          ]),
-                                      borderRadius:
-                                      BorderRadius.circular(8))
-                                      : BoxDecoration(
-                                      border: Border.all(
-                                          color: kSecondaryColor),
-                                      borderRadius:
-                                      BorderRadius.circular(8)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(14),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        isUpvoteButtonLoading == true
-                                            ? Container(
-                                          height: 18,
-                                          width: 18,
-                                          child: SpinKitPulse(
-                                            color: Colors.blue,
-                                          ),
-                                        )
-                                            : Icon(
-                                          FontAwesomeIcons
-                                              .chevronCircleUp,
-                                          size: 15,
-                                        ),
-                                        data['ifVoted'] == false
-                                            ? Padding(
-                                          padding: const EdgeInsets
-                                              .symmetric(
-                                              horizontal: 10),
-                                          child: Text("UPVOTE"),
-                                        )
-                                            : Row(
-                                          mainAxisSize:
-                                          MainAxisSize.min,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets
-                                                  .symmetric(
-                                                  horizontal:
-                                                  8),
-                                              child: Text(
-                                                '${data['net_votes'] == null ? " ": data['net_votes']}',
-                                                textScaleFactor:
-                                                1.0,
-                                                style: TextStyle(
-                                                  //        color: Color(
-                                                  // 0xffe8e8e8)
-                                                ),
-                                              ),
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Container(
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CachedNetworkImage(
+                                    placeholder: (context, String url) {
+                                      return Container(
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            color: Color(0xff222222)
+                                            // image: DecorationImage(
+                                            //     image: imageProvider,
+                                            //     fit: BoxFit.cover),
                                             ),
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets
-                                                  .only(
-                                                  right: 4),
-                                              child: Text(
-                                                '\$${data['hive_earnings'] == null ? "":data['hive_earnings'] }',
-                                                textScaleFactor:
-                                                1.0,
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      ],
+                                      );
+                                    },
+                                    imageUrl: episodeContent['image'] == null
+                                        ? episodeContent['podcast_image']
+                                        : episodeContent['image'],
+                                    imageBuilder: (context, imageProvider) {
+                                      try {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              image: DecorationImage(
+                                                  image: imageProvider,
+                                                  fit: BoxFit.cover)),
+                                        );
+                                      } catch (e) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: Color(0xff222222)),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 80,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      '${episodeContent['name']}',
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize:
+                                              SizeConfig.safeBlockHorizontal *
+                                                  4,
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xffe8e8e8)),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            episodeContent['permlink'] == null
-                                ? SizedBox()
-                                : Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Community",
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      fontSize:
-                                      SizeConfig.safeBlockHorizontal *
-                                          4,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Color(0xff222222),
-                                        borderRadius:
-                                        BorderRadius.circular(10)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: ListTile(
-                                        onTap: () {
-                                          Navigator.push(context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) {
-                                                    return Comments(
-                                                      episodeObject:
-                                                      episodeContent,
-                                                    );
-                                                  }));
-                                        },
-                                        title:
-                                        Text("Join the conversation"),
-                                        trailing:
-                                        Icon(Icons.arrow_forward_ios),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            CupertinoPageRoute(
+                                                builder: (context) {
+                                          return PodcastView(
+                                              episodeContent['podcast_id']);
+                                        }));
+                                      },
+                                      child: Text(
+                                        '${episodeContent['podcast_name']}',
+                                        textAlign: TextAlign.center,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3,
+                                            color: Color(0xffe8e8e8)
+                                                .withOpacity(0.5)),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            episodeContent['summary'] == null
-                                ? SizedBox()
-                                : ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                "About",
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                    fontSize:
-                                    SizeConfig.safeBlockHorizontal *
-                                        4,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15),
-                                // child: htmlMatch.hasMatch(
-                                //             episodeContent['summary']) ==
-                                //         true
-                                //     ? Text(
-                                //         (parse(episodeContent['summary'])
-                                //             .body
-                                //             .text))
-                                //     : Text(
-                                //         '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
-                                child: htmlMatch.hasMatch(
-                                    episodeContent['summary']) ==
-                                    true
-                                    ? Linkable(
-                                  text:
-                                  '${(parse(episodeContent['summary']).body.text)}',
-                                  textScaleFactor: 1.0,
-                                  textColor: Color(0xffe8e8e8),
-                                  style: TextStyle(
-                                    fontSize: SizeConfig
-                                        .blockSizeHorizontal *
-                                        3,
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${DurationCalculator(episodeContent['duration'])}',
+                                        textAlign: TextAlign.center,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    3,
+                                            color: Color(0xffe8e8e8)
+                                                .withOpacity(0.5)),
+                                      ),
+                                    ],
                                   ),
-                                )
-                                    : Linkable(
-                                  text:
-                                  "${episodeContent['summary']}",
-                                  textScaleFactor: 1.0,
-                                  textColor: Color(0xffe8e8e8),
-                                  style: TextStyle(
-                                    fontSize: SizeConfig
-                                        .blockSizeHorizontal *
-                                        3,
+                                  Platform.isIOS
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.crop),
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                  return AudioEditor(
+                                                    episodeObject:
+                                                        episodeContent,
+                                                  );
+                                                }));
+                                              },
+                                            ),
+                                            // Platform.isAndroid == true
+                                            //     ? GestureDetector(
+                                            //   onTap: () {
+                                            //     startDownload();
+                                            //     setState(() {
+                                            //       _loading = !_loading;
+                                            //       _updateProgress();
+                                            //     });
+                                            //   },
+                                            //   child: Container(
+                                            //       padding: EdgeInsets.all(15.0),
+                                            //       child: _loading
+                                            //           ? Column(
+                                            //         mainAxisAlignment:
+                                            //         MainAxisAlignment
+                                            //             .center,
+                                            //         children: <Widget>[
+                                            //           CircularProgressIndicator(
+                                            //             value: _progressValue,
+                                            //           ),
+                                            //           Text(
+                                            //               '${(_progressValue * 100).round()}%'),
+                                            //         ],
+                                            //       )
+                                            //           : Icon(Icons.arrow_circle_down,
+                                            //           color: isDownloading == true
+                                            //               ? Colors.blue
+                                            //               : Colors.white)),
+                                            // )
+                                            //     : SizedBox(
+                                            //   height: 0,
+                                            //   width: 0,
+                                            // ),
+                                            IconButton(
+                                              onPressed: () {
+                                                showBarModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Createplaylist(
+                                                          episodeId:
+                                                              widget.episodeId);
+                                                    });
+                                              },
+                                              icon: Icon(Icons.playlist_add),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                share1(
+                                                    episodeObject: episodeObject
+                                                        .episodeObject);
+                                              },
+                                              icon: Icon(Icons.ios_share),
+                                            )
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.crop),
+                                              onPressed: () {
+                                                Navigator.push(context,
+                                                    CupertinoPageRoute(
+                                                        builder: (context) {
+                                                  return AudioEditor(
+                                                    episodeObject:
+                                                        episodeContent,
+                                                  );
+                                                }));
+                                              },
+                                            ),
+                                            Platform.isAndroid == true
+                                                ? GestureDetector(
+                                                    onTap: () {
+                                                      startDownload();
+                                                      setState(() {
+                                                        _loading = !_loading;
+                                                        _updateProgress();
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                        padding: EdgeInsets.all(
+                                                            15.0),
+                                                        child: _loading
+                                                            ? Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: <
+                                                                    Widget>[
+                                                                  CircularProgressIndicator(
+                                                                    value:
+                                                                        _progressValue,
+                                                                  ),
+                                                                  Text(
+                                                                      '${(_progressValue * 100).round()}%'),
+                                                                ],
+                                                              )
+                                                            : Icon(
+                                                                Icons
+                                                                    .arrow_circle_down,
+                                                                color: isDownloading ==
+                                                                        true
+                                                                    ? Colors
+                                                                        .blue
+                                                                    : Colors
+                                                                        .white)),
+                                                  )
+                                                : SizedBox(
+                                                    height: 0,
+                                                    width: 0,
+                                                  ),
+                                            IconButton(
+                                              onPressed: () {
+                                                showBarModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Createplaylist(
+                                                          episodeId:
+                                                              widget.episodeId);
+                                                    });
+                                              },
+                                              icon: Icon(Icons.playlist_add),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                share1(
+                                                    episodeObject: episodeObject
+                                                        .episodeObject);
+                                              },
+                                              icon: Icon(Icons.ios_share),
+                                            )
+                                          ],
+                                        ),
+                                  SizedBox(
+                                    height: 20,
                                   ),
-                                ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Vibrate.feedback(FeedbackType.impact);
+                                      if (episodeContent['isvideo'] == true) {
+                                        // showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
+                                        //   return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
+                                        // });
+                                        episodeObject.isVideo = true;
+                                        // episodeObject.episodeObject = widget.data;
+                                        episodeObject.videoSource = Video(
+                                            id: episodeContent['id'],
+                                            title: episodeContent['name'],
+                                            thumbnailUrl:
+                                                episodeContent['podcast_image'],
+                                            author: episodeContent['author'],
+                                            url: episodeContent['url'],
+                                            album:
+                                                episodeContent['podcast_name']);
+                                        episodeObject.miniplayerController
+                                            .animateToHeight(
+                                                state: PanelState.MAX);
+                                        // showModalBottomSheet(
+                                        //     isScrollControlled: true,
+                                        //     backgroundColor: Colors.transparent,
+                                        //     barrierColor: Colors.transparent,
+                                        //     isDismissible: true,
+                                        //     // bounce: true,
+                                        //     context: context,
+                                        //     builder: (context) {
+                                        //       return Player2(isVideo: true, episodeObject: episodeContent,);
+                                        //     });
+                                        // episodeObject.episodeObject = episodeContent;
+                                        // episodeObject.play();
+                                      } else {
+                                        showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            barrierColor: Colors.transparent,
+                                            isDismissible: true,
+                                            // bounce: true,
+                                            context: context,
+                                            builder: (context) {
+                                              return Player2();
+                                            });
+                                        episodeObject.stop();
+                                        episodeObject.episodeObject =
+                                            episodeContent;
+                                        print(episodeObject.episodeObject
+                                            .toString());
+                                        episodeObject.play();
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Color(0xff5d5da8),
+                                              Color(0xff5bc3ef)
+                                            ],
+                                          )),
+                                      width: double.infinity,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                            child: Padding(
+                                          padding: const EdgeInsets.all(7.0),
+                                          child: Text("GET STARTED"),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                  // widget.episodeId == episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id ? (episodeObject.audioPlayer.isPlaying.value == true ? GestureDetector(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       episodeObject.pause();
+                                  //     });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding:
+                                  //       const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Text("PAUSE"),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // ): GestureDetector(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       episodeObject.resume();
+                                  //     });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding:
+                                  //       const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Row(
+                                  //               mainAxisSize:
+                                  //               MainAxisSize.min,
+                                  //               children: [
+                                  //                 // Padding(
+                                  //                 //   padding: const EdgeInsets
+                                  //                 //           .symmetric(
+                                  //                 //       horizontal:
+                                  //                 //           5),
+                                  //                 //   child: Icon(Icons
+                                  //                 //       .play_arrow_rounded),
+                                  //                 // ),
+                                  //                 Text("RESUME"),
+                                  //               ],
+                                  //             ),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // )) : GestureDetector(
+                                  //   onTap: () {
+                                  //     episodeObject.stop();
+                                  //     episodeObject.episodeObject =
+                                  //         episodeContent;
+                                  //     print(episodeObject.episodeObject
+                                  //         .toString());
+                                  //     episodeObject.play();
+                                  //     showBarModalBottomSheet(
+                                  //         context: context,
+                                  //         builder: (context) {
+                                  //           return Player();
+                                  //         });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Text("GET STARTED"),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // episodeObject.episodeObject == null
+                                  //     ? GestureDetector(
+                                  //   onTap: () {
+                                  //     print(episodeContent['url']
+                                  //         .toString()
+                                  //         .contains('.mp4'));
+                                  //     if (episodeContent['url']
+                                  //         .toString()
+                                  //         .contains('.mp4') ==
+                                  //         true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.m4v') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.flv') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.f4v') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.ogv') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.ogx') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.wmv') ==
+                                  //             true ||
+                                  //         episodeContent['url']
+                                  //             .toString()
+                                  //             .contains('.webm') ==
+                                  //             true) {
+                                  //       episodeObject.stop();
+                                  //       Navigator.push(context,
+                                  //           CupertinoPageRoute(
+                                  //               builder: (context) {
+                                  //                 return PodcastVideoPlayer(
+                                  //                   episodeObject: episodeContent,
+                                  //                 );
+                                  //               }));
+                                  //     } else {
+                                  //       if (episodeContent['url']
+                                  //           .toString()
+                                  //           .contains('.pdf') ==
+                                  //           true) {
+                                  //         // Navigator.push(context,
+                                  //         //     CupertinoPageRoute(
+                                  //         //         builder: (context) {
+                                  //         //   return PDFviewer(
+                                  //         //     episodeObject:
+                                  //         //         widget.episodeObject,
+                                  //         //   );
+                                  //         // }));
+                                  //       } else {
+                                  //         List<Audio> playable = [];
+                                  //         playable.add(Audio.network(
+                                  //             episodeContent['url'],
+                                  //             metas: Metas(
+                                  //               id: '${episodeContent['id']}',
+                                  //               title:
+                                  //               '${episodeContent['name']}',
+                                  //               artist:
+                                  //               '${episodeContent['author']}',
+                                  //               album:
+                                  //               '${episodeContent['podcast_name']}',
+                                  //               // image: MetasImage.network('https://www.google.com')
+                                  //               image: MetasImage.network(
+                                  //                   '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
+                                  //             )));
+                                  //         for (var v in playlist) {
+                                  //           playable.add(Audio.network(
+                                  //             v['url'],
+                                  //             metas: Metas(
+                                  //               id: '${v['id']}',
+                                  //               title: '${v['name']}',
+                                  //               artist: '${v['author']}',
+                                  //               album: '${v['podcast_name']}',
+                                  //               // image: MetasImage.network('https://www.google.com')
+                                  //               image: MetasImage.network(
+                                  //                   '${v['image'] == null ? v['podcast_image'] : v['image']}'),
+                                  //             ),
+                                  //           ));
+                                  //         }
+                                  //         episodeObject.audioPlayer.open(
+                                  //             Playlist(
+                                  //                 audios:
+                                  //                 playable,
+                                  //                 startIndex: 0),
+                                  //             showNotification: true);
+                                  //       }
+                                  //     }
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding: const EdgeInsets.all(7.0),
+                                  //             child: Text("GET STARTED"),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // )
+                                  //     : (episodeObject.episodeObject['id'] == null ||
+                                  //     episodeObject.episodeObject['id'] ==
+                                  //         episodeContent['id']
+                                  //     ? (episodeObject
+                                  //     .audioPlayer
+                                  //     .realtimePlayingInfos
+                                  //     .value
+                                  //     .isPlaying ==
+                                  //     true
+                                  //     ? GestureDetector(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       episodeObject.pause();
+                                  //     });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding:
+                                  //       const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Text("PAUSE"),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // )
+                                  //     : GestureDetector(
+                                  //   onTap: () {
+                                  //     setState(() {
+                                  //       episodeObject.resume();
+                                  //     });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding:
+                                  //       const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Row(
+                                  //               mainAxisSize:
+                                  //               MainAxisSize.min,
+                                  //               children: [
+                                  //                 // Padding(
+                                  //                 //   padding: const EdgeInsets
+                                  //                 //           .symmetric(
+                                  //                 //       horizontal:
+                                  //                 //           5),
+                                  //                 //   child: Icon(Icons
+                                  //                 //       .play_arrow_rounded),
+                                  //                 // ),
+                                  //                 Text("RESUME"),
+                                  //               ],
+                                  //             ),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // ))
+                                  //     : GestureDetector(
+                                  //   onTap: () {
+                                  //     episodeObject.stop();
+                                  //     episodeObject.episodeObject =
+                                  //         episodeContent;
+                                  //     print(episodeObject.episodeObject
+                                  //         .toString());
+                                  //     episodeObject.play();
+                                  //     showBarModalBottomSheet(
+                                  //         context: context,
+                                  //         builder: (context) {
+                                  //           return Player();
+                                  //         });
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //         borderRadius:
+                                  //         BorderRadius.circular(5),
+                                  //         gradient: LinearGradient(
+                                  //           colors: [
+                                  //             Color(0xff5d5da8),
+                                  //             Color(0xff5bc3ef)
+                                  //           ],
+                                  //         )),
+                                  //     width: double.infinity,
+                                  //     child: Padding(
+                                  //       padding: const EdgeInsets.all(8.0),
+                                  //       child: Center(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //             const EdgeInsets.all(7.0),
+                                  //             child: Text("GET STARTED"),
+                                  //           )),
+                                  //     ),
+                                  //   ),
+                                  // )),
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(context).size.height / 30,
+                                  ),
+                                  episodeContent['permlink'] == null
+                                      ? SizedBox()
+                                      : InkWell(
+                                          onTap: () async {
+                                            if (prefs.getString(
+                                                    'HiveUserName') !=
+                                                null) {
+                                              setState(() {
+                                                isUpvoteButtonLoading = true;
+                                              });
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        child: UpvoteEpisode(
+                                                            permlink:
+                                                                episodeContent[
+                                                                    'permlink'],
+                                                            episode_id:
+                                                                episodeContent[
+                                                                    'id']));
+                                                  }).then((value) async {
+                                                print(value);
+                                              });
+                                              await upvoteEpisode(
+                                                  permlink: episodeContent[
+                                                      'permlink'],
+                                                  episode_id:
+                                                      episodeContent['id']);
+                                              setState(() {
+                                                episodeContent['ifVoted'] =
+                                                    !episodeContent['ifVoted'];
+                                                isUpvoteButtonLoading = false;
+                                              });
+                                            } else {
+                                              showBarModalBottomSheet(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return HiveDetails();
+                                                  });
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: episodeContent[
+                                                          'ifVoted'] ==
+                                                      true
+                                                  ? BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                          colors: [
+                                                            Color(
+                                                                dominantColor),
+                                                            Color(0xff5d5da8)
+                                                          ]),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8))
+                                                  : BoxDecoration(
+                                                      border: Border.all(
+                                                          color:
+                                                              kSecondaryColor),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(14),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    isUpvoteButtonLoading ==
+                                                            true
+                                                        ? Container(
+                                                            height: 18,
+                                                            width: 18,
+                                                            child: SpinKitPulse(
+                                                              color:
+                                                                  Colors.blue,
+                                                            ),
+                                                          )
+                                                        : Icon(
+                                                            FontAwesomeIcons
+                                                                .chevronCircleUp,
+                                                            size: 15,
+                                                          ),
+                                                    data['ifVoted'] == false
+                                                        ? Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        10),
+                                                            child:
+                                                                Text("UPVOTE"),
+                                                          )
+                                                        : Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        8),
+                                                                child: Text(
+                                                                  '${data['net_votes'] == null ? " " : data['net_votes']}',
+                                                                  textScaleFactor:
+                                                                      1.0,
+                                                                  style: TextStyle(
+                                                                      //        color: Color(
+                                                                      // 0xffe8e8e8)
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            4),
+                                                                child: Text(
+                                                                  '\$${data['hive_earnings'] == null ? "" : data['hive_earnings']}',
+                                                                  textScaleFactor:
+                                                                      1.0,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              child: ListTile(
-                                onTap: () {
-                                  if (episodeContent['author_hiveusername'] !=
-                                      null) {
-                                    Navigator.push(context,
-                                        CupertinoPageRoute(builder: (context) {
-                                          return PublicProfile(
-                                            userId: episodeContent['user_id'],
-                                          );
-                                        }));
-                                  }
-                                },
-                                contentPadding: EdgeInsets.zero,
-                                leading: CircleAvatar(
-                                  backgroundImage: CachedNetworkImageProvider(
-                                      episodeContent['author_image'],
-                                      imageRenderMethodForWeb:
-                                      ImageRenderMethodForWeb.HtmlImage),
-                                ),
-                                title: Text("${episodeContent['author']}"),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  episodeContent['permlink'] == null
+                                      ? SizedBox()
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              "Community",
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                  fontSize: SizeConfig
+                                                          .safeBlockHorizontal *
+                                                      4,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 15),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Color(0xff222222),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10)),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 8),
+                                                  child: ListTile(
+                                                    onTap: () {
+                                                      Navigator.push(context,
+                                                          CupertinoPageRoute(
+                                                              builder:
+                                                                  (context) {
+                                                        return Comments(
+                                                          episodeObject:
+                                                              episodeContent,
+                                                        );
+                                                      }));
+                                                    },
+                                                    title: Text(
+                                                        "Join the conversation"),
+                                                    trailing: Icon(Icons
+                                                        .arrow_forward_ios),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                  episodeContent['summary'] == null
+                                      ? SizedBox()
+                                      : ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          title: Text(
+                                            "About",
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                                fontSize: SizeConfig
+                                                        .safeBlockHorizontal *
+                                                    4,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          subtitle: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 15),
+                                            // child: htmlMatch.hasMatch(
+                                            //             episodeContent['summary']) ==
+                                            //         true
+                                            //     ? Text(
+                                            //         (parse(episodeContent['summary'])
+                                            //             .body
+                                            //             .text))
+                                            //     : Text(
+                                            //         '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                                            child: htmlMatch.hasMatch(
+                                                        episodeContent[
+                                                            'summary']) ==
+                                                    true
+                                                ? Linkable(
+                                                    text:
+                                                        '${(parse(episodeContent['summary']).body.text)}',
+                                                    textScaleFactor: 1.0,
+                                                    textColor:
+                                                        Color(0xffe8e8e8),
+                                                    style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          3,
+                                                    ),
+                                                  )
+                                                : Linkable(
+                                                    text:
+                                                        "${episodeContent['summary']}",
+                                                    textScaleFactor: 1.0,
+                                                    textColor:
+                                                        Color(0xffe8e8e8),
+                                                    style: TextStyle(
+                                                      fontSize: SizeConfig
+                                                              .blockSizeHorizontal *
+                                                          3,
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 15),
+                                    child: ListTile(
+                                      onTap: () {
+                                        if (episodeContent[
+                                                'author_hiveusername'] !=
+                                            null) {
+                                          Navigator.push(context,
+                                              CupertinoPageRoute(
+                                                  builder: (context) {
+                                            return PublicProfile(
+                                              userId: episodeContent['user_id'],
+                                            );
+                                          }));
+                                        }
+                                      },
+                                      contentPadding: EdgeInsets.zero,
+                                      leading: CircleAvatar(
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                episodeContent['author_image'],
+                                                imageRenderMethodForWeb:
+                                                    ImageRenderMethodForWeb
+                                                        .HtmlImage),
+                                      ),
+                                      title:
+                                          Text("${episodeContent['author']}"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
-
-            Align(alignment: Alignment.bottomCenter,child: BottomPlayer())
+            Align(alignment: Alignment.bottomCenter, child: BottomPlayer())
           ],
-
         ),
-
       );
-    }catch(e){
+    } catch (e) {
       return Scaffold(
         body: Container(),
       );
     }
-
   }
 }
 
