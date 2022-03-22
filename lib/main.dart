@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Accounts/HiveAccount.dart';
 import 'package:auditory/BrowseProvider.dart';
 import 'package:auditory/CategoriesProvider.dart';
@@ -11,6 +9,7 @@ import 'package:auditory/DiscoverProvider.dart';
 import 'package:auditory/FilterState.dart';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/SelectedCommunitiesProvider.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Wrapper.dart';
 import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
@@ -36,11 +35,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:in_app_update/in_app_update.dart';
-import 'package:jitsi_meet/feature_flag/feature_flag_enum.dart' as feature;
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
+import 'package:provider/provider.dart' as pro;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,7 +53,6 @@ import 'screens/LoginSignup/SignUp.dart';
 import 'screens/LoginSignup/WelcomeScreen.dart';
 import 'screens/Onboarding/Categories.dart';
 import 'screens/Onboarding/LanguageSelection.dart';
-import 'screens/Player/Player.dart';
 import 'screens/buttonPages/Downloads.dart';
 import 'screens/buttonPages/Messages.dart';
 import 'screens/buttonPages/Notification.dart';
@@ -136,7 +135,7 @@ class AppStart extends StatelessWidget {
   const AppStart({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
+    ThemeProvider themeProvider = pro.Provider.of<ThemeProvider>(context);
     return MyApp(
       themeProvider: themeProvider,
     );
@@ -247,27 +246,27 @@ class _MyAppState extends State<MyApp> {
       DeviceOrientation.portraitUp,
     ]);
 
-    return ChangeNotifierProvider(
+    return pro.ChangeNotifierProvider(
       create: (context) => SearchResultProvider(),
-      child: ChangeNotifierProvider(
+      child: pro.ChangeNotifierProvider(
           create: (context) => SearchProvider(),
-          child: ChangeNotifierProvider(
+          child: pro.ChangeNotifierProvider(
             create: (context) => SelectedCommunityProvider(),
             // child:   ChangeNotifierProvider(
             //    create: (context) => FileDownloaderProvider(),
-            child: ChangeNotifierProvider(
+            child: pro.ChangeNotifierProvider(
               create: (context) => CommunityProvider(),
-              child: ChangeNotifierProvider(
+              child: pro.ChangeNotifierProvider(
                   create: (context) => CategoriesProvider(),
-                  child: ChangeNotifierProvider(
+                  child: pro.ChangeNotifierProvider(
                       create: (context) => DiscoverProvider(),
-                      child: ChangeNotifierProvider(
+                      child: pro.ChangeNotifierProvider(
                         create: (context) => BrowseProvider(),
-                        child: ChangeNotifierProvider(
+                        child: pro.ChangeNotifierProvider(
                             create: (context) => PlayerChange(),
-                            child: Provider(
+                            child: pro.Provider(
                                 create: (context) => AuthBloc(),
-                                child: ChangeNotifierProvider(
+                                child: pro.ChangeNotifierProvider(
                                   create: (context) => SortFilterPreferences(),
                                   child: MaterialApp(
                                     debugShowCheckedModeBanner: false,
@@ -738,13 +737,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
           print('${prefs.getString('userId')} /////////////////////');
 
-
-
-            setState(() {
-              _home = Home();
-            });
-
-
+          setState(() {
+            _home = Home();
+          });
         } else {
           setState(() {
             _home = Welcome();
@@ -761,8 +756,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         _home = Welcome();
       });
     }
-
-
 
     setState(() {
       counter = counter + 1;

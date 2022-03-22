@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:assets_audio_player/src/builders/player_builders_ext.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:jitsi_meet/jitsi_meet.dart';
+import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -858,151 +859,222 @@ class BottomPlayer extends StatelessWidget {
   // }
 
   int count = 0;
+  static const double _playerHeight = 60.0;
 
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
     try {
-      // episodeObject.betterPlayerController.setControlsVisibility(false);
-      return GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              barrierColor: Colors.transparent,
-              isDismissible: true,
-              // bounce: true,
-              context: context,
-              builder: (context) {
-                return Player2();
-              });
-          // Navigator.pushNamed(context, Player.id);
-        },
-        child: Dismissible(
-          key: UniqueKey(),
-          onDismissed: (direction) {
-            // episodeObject.episodeName = null;
-            episodeObject.audioPlayer.pause();
-          },
-          child: ClipRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaY: 15.0,
-                sigmaX: 15.0,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(color: Colors.white.withOpacity(0.5)))
-                    // color: Colors.transparent
-                    ),
-                child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-                    builder: (context, infos) {
-                  if (infos == null) {
-                    return SizedBox(
-                      height: 0,
-                      width: 0,
-                    );
-                  } else {
-                    return ListTile(
-                        trailing: infos.isPlaying == true
-                            ? IconButton(
-                                splashColor: Colors.transparent,
-                                icon: Icon(
-                                  Icons.pause,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  episodeObject.audioPlayer.pause();
-                                },
-                              )
-                            : IconButton(
-                                splashColor: Colors.blue,
-                                icon: Icon(
-                                  Icons.play_arrow,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  episodeObject.resume();
-                                },
-                              ),
-                        leading: Builder(
-                          builder: (context) {
-                            try {
-                              return CachedNetworkImage(
-                                width: 40,
-                                height: 40,
-                                imageUrl: infos.current.audio == null
-                                    ? placeholderUrl
-                                    : infos
-                                        .current.audio.audio.metas.image.path,
-                                errorWidget: (context, url, e) {
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff222222),
-                                      borderRadius: BorderRadius.circular(3),
+      if (episodeObject.isVideo == true) {
+        return Consumer<PlayerChange>(
+          builder: (context, watch, _) {
+            // final videoObject = Provider.of<PlayerChange>(context).videoSource;
+            final videoObject = watch.videoSource;
+            print(videoObject);
+            return Offstage(
+              offstage: episodeObject.videoSource == null,
+              child: Miniplayer(
+                  minHeight: _playerHeight,
+                  maxHeight: MediaQuery.of(context).size.height,
+                  builder: (height, percentage) {
+                    if (videoObject == null) {
+                      return SizedBox.shrink();
+                    } else {
+                      return Container(
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              width: 120,
+                              imageUrl: videoObject.thumbnailUrl,
+                              fit: BoxFit.cover,
+                            ),
+                            Expanded(
+                                child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    "${videoObject.title}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        .copyWith(fontSize: 15),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                                  Flexible(
+                                    child: Text(
+                                      "${videoObject.album}",
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  );
+                                  )
+                                ],
+                              ),
+                            )),
+                            IconButton(
+                                onPressed: () {
+                                  watch.videoSource = null;
                                 },
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover)),
-                                  );
-                                },
-                              );
-                            } catch (e) {
-                              return CachedNetworkImage(
-                                width: 40,
-                                height: 40,
-                                imageUrl: placeholderUrl,
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover)),
-                                  );
-                                },
-                              );
-                            }
-                          },
+                                icon: Icon(Icons.close))
+                          ],
                         ),
-                        title: Builder(
-                          builder: (context) {
-                            try {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: infos.current.audio == null
-                                    ? Text("")
-                                    : Text(
-                                        "${infos.current.audio == null ? "" : infos.current.audio.audio.metas.title}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
+                      );
+                    }
+                  }),
+            );
+          },
+        );
+      } else {
+        return GestureDetector(
+          onTap: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                barrierColor: Colors.transparent,
+                isDismissible: true,
+                // bounce: true,
+                context: context,
+                builder: (context) {
+                  return Player2();
+                });
+            // Navigator.pushNamed(context, Player.id);
+          },
+          child: Dismissible(
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              // episodeObject.episodeName = null;
+              episodeObject.audioPlayer.pause();
+            },
+            child: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaY: 15.0,
+                  sigmaX: 15.0,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(color: Colors.white.withOpacity(0.5)))
+                      // color: Colors.transparent
+                      ),
+                  child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
+                      builder: (context, infos) {
+                    if (infos == null) {
+                      return SizedBox(
+                        height: 0,
+                        width: 0,
+                      );
+                    } else {
+                      return ListTile(
+                          trailing: infos.isPlaying == true
+                              ? IconButton(
+                                  splashColor: Colors.transparent,
+                                  icon: Icon(
+                                    Icons.pause,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.audioPlayer.pause();
+                                  },
+                                )
+                              : IconButton(
+                                  splashColor: Colors.blue,
+                                  icon: Icon(
+                                    Icons.play_arrow,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    episodeObject.resume();
+                                  },
+                                ),
+                          leading: Builder(
+                            builder: (context) {
+                              try {
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: infos.current.audio == null
+                                      ? placeholderUrl
+                                      : infos
+                                          .current.audio.audio.metas.image.path,
+                                  errorWidget: (context, url, e) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff222222),
+                                        borderRadius: BorderRadius.circular(3),
                                       ),
-                              );
-                            } catch (e) {
-                              return SizedBox();
-                            }
-                          },
-                        ));
-                  }
-                }),
+                                    );
+                                  },
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
+                                return CachedNetworkImage(
+                                  width: 40,
+                                  height: 40,
+                                  imageUrl: placeholderUrl,
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover)),
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                          title: Builder(
+                            builder: (context) {
+                              try {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: infos.current.audio == null
+                                      ? Text("")
+                                      : Text(
+                                          "${infos.current.audio == null ? "" : infos.current.audio.audio.metas.title}",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                );
+                              } catch (e) {
+                                return SizedBox();
+                              }
+                            },
+                          ));
+                    }
+                  }),
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      }
+      // episodeObject.betterPlayerController.setControlsVisibility(false);
+
     } catch (e) {
       SizedBox();
     }

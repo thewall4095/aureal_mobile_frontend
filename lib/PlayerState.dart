@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 // import 'package:music_player/music_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'data/Datasource.dart';
+
 enum PlayerState {
   playing,
   paused,
@@ -20,6 +22,15 @@ class PlayerChange extends ChangeNotifier {
   RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
 
   double position;
+
+  bool _isVideo;
+
+  bool get isVideo => _isVideo;
+
+  set isVideo(bool newValue) {
+    _isVideo = newValue;
+    notifyListeners();
+  }
 
   var _episodeObject;
   var _currentPosition;
@@ -80,6 +91,15 @@ class PlayerChange extends ChangeNotifier {
   AssetsAudioPlayer snippetPlayer = AssetsAudioPlayer();
   Dio dio = Dio();
 
+  Video _videoSource;
+
+  Video get videoSource => _videoSource;
+
+  set videoSource(Video newValue) {
+    _videoSource = newValue;
+    notifyListeners();
+  }
+
   Map<String, dynamic> get episodeObject => _episodeObject;
 
   bool get ifVoted => _ifVoted;
@@ -115,9 +135,9 @@ class PlayerChange extends ChangeNotifier {
 
   set episodeObject(var newValue) {
     _episodeObject = newValue;
-    setVideoPlayerConfiguration().then((value) {
-      setVideoPlayerDataSource();
-    });
+    // setVideoPlayerConfiguration().then((value) {
+    //   setVideoPlayerDataSource();
+    // });
 //     episodeName = _episodeObject['name'];
 //     podcastName = _episodeObject['podcast_name'];
 //     author = _episodeObject['author'];

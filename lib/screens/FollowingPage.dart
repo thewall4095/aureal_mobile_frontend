@@ -8,6 +8,7 @@ import 'package:auditory/CommunityService.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/LaunchUrl.dart';
+import 'package:auditory/data/Datasource.dart';
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart' as rp;
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -30,18 +32,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as pro;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
 import 'Clips.dart';
 import 'Onboarding/HiveDetails.dart';
-import 'Player/VideoPlayer.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
 import 'RouteAnimation.dart';
 import 'buttonPages/settings/Theme-.dart';
+
+// final selectedVideoProvider = rp.StateProvider<Video>((ref) => null);
 
 // enum FeedbackType {
 //   success,
@@ -100,9 +103,6 @@ class Feed extends StatelessWidget {
   }
 
   Widget _feedBuilder(BuildContext context, var data) {
-    var episodeObject = Provider.of<PlayerChange>(context);
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
-
     switch (data['type']) {
       case 'podcast':
         return PodcastWidget(data: data);
@@ -265,8 +265,8 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
 
   @override
   Widget build(BuildContext context) {
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
-    var episodeObject = Provider.of<PlayerChange>(context);
+    // var currentlyPlaying = Provider.of<PlayerChange>(context);
+    // var episodeObject = Provider.of<PlayerChange>(context);
     return FutureBuilder(
       future: generalisedApiCall(widget.data['api']),
       builder: (context, snapshot) {
@@ -669,7 +669,7 @@ class EpisodeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var episodeObject = Provider.of<PlayerChange>(context);
+    var episodeObject = pro.Provider.of<PlayerChange>(context);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -703,21 +703,31 @@ class EpisodeCard extends StatelessWidget {
                 data['isvideo'] == true
                     ? InkWell(
                         onTap: () {
-                          episodeObject.audioPlayer.stop().then((value) {
-                            episodeObject.episodeObject = data;
-                            showModalBottomSheet(
-                                backgroundColor: Colors.transparent,
-                                isScrollControlled: true,
-                                isDismissible: true,
-                                context: context,
-                                builder: (context) {
-                                  return FractionallySizedBox(
-                                      heightFactor: 0.95,
-                                      child: VideoPlayer(
-                                        episodeObject: data,
-                                      ));
-                                });
-                          });
+                          // episodeObject.audioPlayer.stop().then((value) {
+                          //   episodeObject.episodeObject = data;
+                          //   showModalBottomSheet(
+                          //       backgroundColor: Colors.transparent,
+                          //       isScrollControlled: true,
+                          //       isDismissible: true,
+                          //       context: context,
+                          //       builder: (context) {
+                          //         return FractionallySizedBox(
+                          //             heightFactor: 0.95,
+                          //             child: VideoPlayer(
+                          //               episodeObject: data,
+                          //             ));
+                          //       });
+                          // });
+                          episodeObject.isVideo = true;
+                          // episodeObject.episodeObject = data;
+                          episodeObject.videoSource = Video(
+                              id: data['id'],
+                              title: data['name'],
+                              thumbnailUrl: data['podcast_image'],
+                              author: data['author'],
+                              url: data['url'],
+                              album: data['podcast_name']);
+                          // context.read(selectedVideoProvider).state = data;
                         },
                         child: CachedNetworkImage(
                           imageBuilder: (context, imageProvider) {
@@ -1066,8 +1076,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
 
   @override
   Widget build(BuildContext context) {
-    var currentlyPlaying = Provider.of<PlayerChange>(context);
-    var episodeObject = Provider.of<PlayerChange>(context);
+    // var currentlyPlaying = Provider.of<PlayerChange>(context);
+    var episodeObject = pro.Provider.of<PlayerChange>(context);
     try {
       return Container(
         width: MediaQuery.of(context).size.width,
@@ -1266,21 +1276,30 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             FeedbackType _vibtype = FeedbackType.impact;
                             Vibrate.feedback(FeedbackType.impact);
                             if (episodeData['isvideo'] == true) {
-                              episodeObject.audioPlayer.stop().then((value) {
-                                episodeObject.episodeObject = widget.data;
-                                showModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    isScrollControlled: true,
-                                    isDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                          heightFactor: 0.95,
-                                          child: VideoPlayer(
-                                            episodeObject: widget.data,
-                                          ));
-                                    });
-                              });
+                              // episodeObject.audioPlayer.stop().then((value) {
+                              //   episodeObject.episodeObject = widget.data;
+                              //   showModalBottomSheet(
+                              //       backgroundColor: Colors.transparent,
+                              //       isScrollControlled: true,
+                              //       isDismissible: true,
+                              //       context: context,
+                              //       builder: (context) {
+                              //         return FractionallySizedBox(
+                              //             heightFactor: 0.95,
+                              //             child: VideoPlayer(
+                              //               episodeObject: widget.data,
+                              //             ));
+                              //       });
+                              // });
+                              episodeObject.isVideo = true;
+                              // episodeObject.episodeObject = widget.data;
+                              episodeObject.videoSource = Video(
+                                  id: widget.data['id'],
+                                  title: widget.data['name'],
+                                  thumbnailUrl: widget.data['podcast_image'],
+                                  author: widget.data['author'],
+                                  url: widget.data['url'],
+                                  album: widget.data['podcast_name']);
 
                               // Navigator.push(context, CupertinoPageRoute(builder: (context){
                               //   return VideoPlauer
@@ -1350,21 +1369,30 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             FeedbackType _vibtype = FeedbackType.impact;
                             Vibrate.feedback(FeedbackType.impact);
                             if (widget.data['isvideo'] == true) {
-                              episodeObject.audioPlayer.stop().then((value) {
-                                episodeObject.episodeObject = widget.data;
-                                showModalBottomSheet(
-                                    backgroundColor: Colors.transparent,
-                                    isScrollControlled: true,
-                                    isDismissible: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return FractionallySizedBox(
-                                          heightFactor: 0.95,
-                                          child: VideoPlayer(
-                                            episodeObject: widget.data,
-                                          ));
-                                    });
-                              });
+                              episodeObject.isVideo = true;
+                              // episodeObject.episodeObject = widget.data;
+                              episodeObject.videoSource = Video(
+                                  id: widget.data['id'],
+                                  title: widget.data['name'],
+                                  thumbnailUrl: widget.data['podcast_image'],
+                                  author: widget.data['author'],
+                                  url: widget.data['url'],
+                                  album: widget.data['podcast_name']);
+                              // episodeObject.audioPlayer.stop().then((value) {
+                              //   episodeObject.episodeObject = widget.data;
+                              //   showModalBottomSheet(
+                              //       backgroundColor: Colors.transparent,
+                              //       isScrollControlled: true,
+                              //       isDismissible: true,
+                              //       context: context,
+                              //       builder: (context) {
+                              //         return FractionallySizedBox(
+                              //             heightFactor: 0.95,
+                              //             child: VideoPlayer(
+                              //               episodeObject: widget.data,
+                              //             ));
+                              //       });
+                              // });
                             } else {
                               episodeObject.betterPlayerController
                                   .dispose(forceDispose: true);
@@ -2462,7 +2490,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   var episodeObject;
 
   Future getSnippetPlayer(BuildContext context) async {
-    snippetPlayer = await Provider.of<PlayerChange>(context, listen: false);
+    snippetPlayer = await pro.Provider.of<PlayerChange>(context, listen: false);
   }
 
   @override
@@ -2473,7 +2501,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
     super.initState();
 
     getSnippetPlayer(context).then((value) {
-      Provider.of<PlayerChange>(context, listen: false).audioPlayer.stop();
+      pro.Provider.of<PlayerChange>(context, listen: false).audioPlayer.stop();
     });
   }
 
@@ -2705,7 +2733,7 @@ class _SeeMoreState extends State<SeeMore> {
   List<Audio> playlist;
 
   void playListGenerator({List data}) async {
-    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+    var episodeObject = pro.Provider.of<PlayerChange>(context, listen: false);
     List<Audio> playable = [];
     for (int i = 0; i < data.length; i++) {
       var v = data[i];
@@ -3463,7 +3491,7 @@ class _FollowingPageState extends State<FollowingPage>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    var categories = Provider.of<CategoriesProvider>(context);
+    var categories = pro.Provider.of<CategoriesProvider>(context);
 
     Future<void> _pullRefreshEpisodes() async {
       getFollowedPodcasts();
@@ -3478,9 +3506,9 @@ class _FollowingPageState extends State<FollowingPage>
       return false; // return true if the route to be popped
     }
 
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = pro.Provider.of<ThemeProvider>(context);
     RecentlyPlayedProvider dursaver = RecentlyPlayedProvider.getInstance();
-    var episodeObject = Provider.of<PlayerChange>(context);
+    var episodeObject = pro.Provider.of<PlayerChange>(context);
     final mediaQueryData = MediaQuery.of(context);
     return WillPopScope(
       onWillPop: _onBackPressed,

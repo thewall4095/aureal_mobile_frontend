@@ -772,6 +772,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  miniplayer:
+    dependency: "direct main"
+    description:
+      name: miniplayer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
@@ -940,13 +947,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.2.0"
-  pip_view:
-    dependency: "direct main"
-    description:
-      name: pip_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.5"
   platform:
     dependency: transitive
     description:

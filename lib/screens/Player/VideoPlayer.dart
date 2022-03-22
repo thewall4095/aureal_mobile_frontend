@@ -1,29 +1,17 @@
 import 'dart:ui';
 
 import 'package:auditory/PlayerState.dart';
-import 'package:auditory/screens/FollowingPage.dart';
-import 'package:auditory/screens/Home.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 
-import 'package:video_player/video_player.dart';
-import 'package:pip_view/pip_view.dart';
-
 class VideoPlayer extends StatefulWidget {
-
-
   const VideoPlayer({
     this.episodeObject,
     this.title = 'Chewie Demo',
-  }) ;
+  });
   final episodeObject;
   final String title;
 
@@ -33,9 +21,9 @@ class VideoPlayer extends StatefulWidget {
   }
 }
 
-class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin{
+class _VideoPlayerState extends State<VideoPlayer>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   TargetPlatform _platform;
-
 
   // BetterPlayerController _betterPlayerController;
   // BetterPlayerDataSource _betterPlayerDataSource;
@@ -83,11 +71,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   //   super.dispose();
   // }
 
-
-
   ScrollController _controller = ScrollController();
-
-
 
   int currPlayIndex = 0;
 
@@ -98,7 +82,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   //   Navigator.of(context).pop(true);
   //   return true;
   // }
-
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +113,11 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                           children: [
                             AspectRatio(
                               aspectRatio: 16 / 9,
-                              child: BetterPlayer(controller: episodeObject.betterPlayerController, key: _betterPlayerKey,),
+                              child: BetterPlayer(
+                                controller:
+                                    episodeObject.betterPlayerController,
+                                key: _betterPlayerKey,
+                              ),
                             ),
                           ],
                         ),
@@ -140,104 +127,74 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                       // }, icon: Icon(Icons.height)),
                       Container(
                         // color: Colors.transparent,
-                        child: Expanded(child: Container(
+                        child: Expanded(
+                            child: Container(
                           child: ListView(
                             children: [
                               ListTile(
-                                title: Text("${widget.episodeObject['name']}",textScaleFactor: 1.0, style: TextStyle(
-                                    fontSize: SizeConfig.safeBlockHorizontal * 3.5, fontWeight: FontWeight.bold
-                                ),),
+                                title: Text(
+                                  "${widget.episodeObject['name']}",
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 3.5,
+                                      fontWeight: FontWeight.bold),
+                                ),
                                 trailing: IconButton(
-                                  onPressed: (){
-
-                                  },
+                                  onPressed: () {},
                                   icon: Icon(Icons.arrow_drop_down),
                                 ),
                               ),
                               ListTile(
                                 title: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [
-
-                                  ],
+                                  children: [],
                                 ),
                               ),
                               ListTile(
                                 leading: CachedNetworkImage(
-                                  imageBuilder: (context,
-                                      imageProvider) {
+                                  imageBuilder: (context, imageProvider) {
                                     return Container(
-                                      decoration:
-                                      BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius
-                                            .circular(
-                                            3),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(3),
                                         image: DecorationImage(
-                                            image:
-                                            imageProvider,
-                                            fit: BoxFit
-                                                .cover),
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
                                       ),
-                                      width: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width /
-                                          8,
-                                      height: MediaQuery.of(
-                                          context)
-                                          .size
-                                          .width /
-                                          8,
+                                      width:
+                                          MediaQuery.of(context).size.width / 8,
+                                      height:
+                                          MediaQuery.of(context).size.width / 8,
                                     );
                                   },
-                                  imageUrl:
-                                  widget.episodeObject['image'] == null ? widget.episodeObject['podcast_image'] : widget.episodeObject['image'],
+                                  imageUrl: widget.episodeObject['image'] ==
+                                          null
+                                      ? widget.episodeObject['podcast_image']
+                                      : widget.episodeObject['image'],
                                   memCacheWidth:
-                                  MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width
-                                      .floor(),
+                                      MediaQuery.of(context).size.width.floor(),
                                   memCacheHeight:
-                                  MediaQuery.of(
-                                      context)
-                                      .size
-                                      .width
-                                      .floor(),
-                                  placeholder:
-                                      (context,
-                                      url) =>
-                                      Container(
-                                        width: MediaQuery.of(
-                                            context)
-                                            .size
-                                            .width /
-                                            8,
-                                        height: MediaQuery.of(
-                                            context)
-                                            .size
-                                            .width /
-                                            8,
-                                        child: Image.asset(
-                                            'assets/images/Thumbnail.png'),
-                                      ),
-                                  errorWidget:
-                                      (context, url,
-                                      error) =>
-                                      Icon(Icons
-                                          .error),
+                                      MediaQuery.of(context).size.width.floor(),
+                                  placeholder: (context, url) => Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 8,
+                                    height:
+                                        MediaQuery.of(context).size.width / 8,
+                                    child: Image.asset(
+                                        'assets/images/Thumbnail.png'),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
-                                title: Text("${widget.episodeObject['podcast_name']}"),
-                                subtitle: Text("${widget.episodeObject['author']}"),
+                                title: Text(
+                                    "${widget.episodeObject['podcast_name']}"),
+                                subtitle:
+                                    Text("${widget.episodeObject['author']}"),
                               ),
-
-
                             ],
                           ),
                         )),
                       ),
-
                     ],
                   ),
                 ),
@@ -253,4 +210,3 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
-

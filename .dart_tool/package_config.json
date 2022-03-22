@@ -668,6 +668,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "miniplayer",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/miniplayer-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "modal_bottom_sheet",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/modal_bottom_sheet-2.0.0",
       "packageUri": "lib/",
@@ -810,12 +816,6 @@
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pin_code_fields-7.2.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
-    },
-    {
-      "name": "pip_view",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/pip_view-0.9.5",
-      "packageUri": "lib/",
-      "languageVersion": "2.7"
     },
     {
       "name": "platform",
@@ -1226,7 +1226,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2022-03-20T12:33:59.503062Z",
+  "generated": "2022-03-21T19:54:42.484813Z",
   "generator": "pub",
   "generatorVersion": "2.15.1"
 }
