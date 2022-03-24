@@ -35,6 +35,7 @@ import 'package:http/http.dart' as http;
 import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart' as pro;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -187,74 +188,96 @@ class Feed extends StatelessWidget {
 
 class VideoCard extends StatelessWidget {
   final Video video;
-  const VideoCard({@required this.video});
+  final episodeObject;
+  const VideoCard({@required this.video, this.episodeObject});
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: CachedNetworkImage(
-              imageUrl: video.thumbnailUrl,
-              errorWidget: (context, url, e) {
-                return Container(
-                  width: double.infinity,
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width,
-                      maxHeight: MediaQuery.of(context).size.height / 3),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: CachedNetworkImageProvider(placeholderUrl),
-                          fit: BoxFit.cover)),
-                );
-              },
-              placeholder: (context, url) {
-                return Container(
-                  width: double.infinity,
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width,
-                      maxHeight: MediaQuery.of(context).size.height / 3),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: CachedNetworkImageProvider(placeholderUrl),
-                          fit: BoxFit.cover)),
-                );
-              },
-              imageBuilder: (context, imageProvider) {
-                return Container(
-                  width: double.infinity,
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width,
-                      maxHeight: MediaQuery.of(context).size.height / 3),
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover)),
-                );
-              },
-            ),
+    final episodeObject = Provider.of<PlayerChange>(context);
+    return GestureDetector(
+      onTap: () {
+        episodeObject.isVideo = true;
+        episodeObject.episodeObject = episodeObject;
+        episodeObject.videoSource = video;
+        episodeObject.miniplayerController
+            .animateToHeight(state: PanelState.MAX);
+        episodeObject.betterPlayerController
+            .setupDataSource(BetterPlayerDataSource(
+          BetterPlayerDataSourceType.network,
+          episodeObject.videoSource.url,
+          notificationConfiguration: BetterPlayerNotificationConfiguration(
+            showNotification: true,
+            title: "${episodeObject.videoSource.title}",
+            author: "${episodeObject.videoSource.author}",
+            imageUrl: "${episodeObject.videoSource.thumbnailUrl}",
           ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              "${video.title}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+        ));
+      },
+      child: AspectRatio(
+        aspectRatio: 16 / 9,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: CachedNetworkImage(
+                imageUrl: video.thumbnailUrl,
+                errorWidget: (context, url, e) {
+                  return Container(
+                    width: double.infinity,
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width,
+                        maxHeight: MediaQuery.of(context).size.height / 3),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: CachedNetworkImageProvider(placeholderUrl),
+                            fit: BoxFit.cover)),
+                  );
+                },
+                placeholder: (context, url) {
+                  return Container(
+                    width: double.infinity,
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width,
+                        maxHeight: MediaQuery.of(context).size.height / 3),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: CachedNetworkImageProvider(placeholderUrl),
+                            fit: BoxFit.cover)),
+                  );
+                },
+                imageBuilder: (context, imageProvider) {
+                  return Container(
+                    width: double.infinity,
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width,
+                        maxHeight: MediaQuery.of(context).size.height / 3),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.cover)),
+                  );
+                },
+              ),
             ),
-            subtitle: Text(
-              "${video.album}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ],
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                "${video.title}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1
+                    .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                "${video.album}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -262,6 +285,7 @@ class VideoCard extends StatelessWidget {
 
 class VideoListWidget extends StatelessWidget {
   final data;
+
   VideoListWidget({@required this.data});
 
   SharedPreferences prefs;
@@ -291,35 +315,86 @@ class VideoListWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
-            height: MediaQuery.of(context).size.height / 4,
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
+            height: MediaQuery.of(context).size.height / 3,
+            child: Column(
               children: [
-                for (var v in snapshot.data)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      child: VideoCard(
-                          video: Video(
-                              id: v['id'],
-                              title: v['name'],
-                              author: v['author'],
-                              permlink: v['permlink'],
-                              thumbnailUrl: v['podcast_image'],
-                              author_id: v['author_user_id'],
-                              podcastid: v['podcast_id'],
-                              album: v['podcast_name'],
-                              url: v['url'])),
-                    ),
+                ListTile(
+                  title: Text("${data['name']}",
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          fontWeight: FontWeight.bold)),
+                  trailing: ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                                colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])
+                            .createShader(bounds);
+                      },
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) {
+                                  return SeeMore(data: data);
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "See more",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ))),
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: VideoCard(
+                              episodeObject: snapshot.data[index],
+                              video: Video(
+                                  id: snapshot.data[index]['id'],
+                                  title: snapshot.data[index]['name'],
+                                  author: snapshot.data[index]['author'],
+                                  permlink: snapshot.data[index]['permlink'],
+                                  thumbnailUrl: snapshot.data[index]
+                                      ['podcast_image'],
+                                  author_id: snapshot.data[index]
+                                      ['author_user_id'],
+                                  podcastid: snapshot.data[index]['podcast_id'],
+                                  album: snapshot.data[index]['podcast_name'],
+                                  url: snapshot.data[index]['url'])),
+                        ),
+                      );
+                    },
                   ),
+                ),
               ],
             ),
           );
         } else {
           return Container(
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 4,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (int i = 0; i < 10; i++)
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: Container(
+                        color: Color(0xff222222),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           );
         }
       },

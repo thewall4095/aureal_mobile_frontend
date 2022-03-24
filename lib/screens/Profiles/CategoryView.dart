@@ -1,32 +1,16 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:auditory/screens/Home.dart';
-import 'package:auditory/screens/buttonPages/search.dart';
-import 'package:auditory/screens/buttonPages/settings/Prefrences.dart';
-import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/constants.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:color_thief_flutter/color_thief_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart' as http;
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 
-import '../../CategoriesProvider.dart';
 import '../../PlayerState.dart';
-import '../../SearchProvider.dart';
 import '../DiscoverPage.dart';
 import '../FollowingPage.dart';
-import '../RouteAnimation.dart';
-import 'PodcastView.dart';
 
 // class CategoryView extends StatefulWidget {
 //   static const String id = "CategoryView";
@@ -696,37 +680,36 @@ class CategoryView extends StatelessWidget {
 
   Future getCategoryStructure({var categoryObject}) async {
     prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/public/explore?category_id=${categoryObject['id']}&user_id=${prefs.getString('userId')}";
+    String url =
+        "https://api.aureal.one/public/explore?category_id=${categoryObject['id']}&user_id=${prefs.getString('userId')}";
 
-    try{
+    try {
       var response = await dio.get(url, cancelToken: _cancel);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         print(response.data);
         return response.data['data'];
-      }else{
+      } else {
         print(response.statusCode);
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
   }
 
   Future generalisedApiCall(String apicall) async {
-    Dio dio = Dio(
-
-    );
+    Dio dio = Dio();
     prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+    String url =
+        "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
 
-    try{
+    try {
       var response = await dio.get(url, cancelToken: _cancel);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data['data'];
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
-
   }
 
   // Future getCategories() async {
@@ -745,29 +728,26 @@ class CategoryView extends StatelessWidget {
   //
   // }
 
-  Widget _feedBuilder(BuildContext context, var data){
-
+  Widget _feedBuilder(BuildContext context, var data) {
     SharedPreferences prefs;
     CancelToken _cancel = CancelToken();
 
     Future generalisedApiCall(String apicall) async {
-      Dio dio = Dio(
-
-      );
+      Dio dio = Dio();
       prefs = await SharedPreferences.getInstance();
-      String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}&category_id=${categoryObject['id']}";
+      String url =
+          "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}&category_id=${categoryObject['id']}";
 
       print(url);
 
-      try{
+      try {
         var response = await dio.get(url, cancelToken: _cancel);
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           return response.data['data'];
         }
-      }catch(e){
+      } catch (e) {
         print(e);
       }
-
     }
 
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -776,12 +756,15 @@ class CategoryView extends StatelessWidget {
     List colors = [Colors.red, Colors.green, Colors.yellow];
     Random random = Random();
 
-    switch(data['type']){
+    switch (data['type']) {
       case 'podcast':
         return PodcastWidget(data: data);
         break;
       case 'episode':
-        return EpisodeWidget(data: data, categoryId: categoryObject['id'],);
+        return EpisodeWidget(
+          data: data,
+          categoryId: categoryObject['id'],
+        );
         break;
       case "playlist":
         return PlaylistWidget(data: data);
@@ -792,7 +775,7 @@ class CategoryView extends StatelessWidget {
       case 'user':
         return FutureBuilder(
           future: generalisedApiCall(data['api']),
-          builder: (context, snapshot){
+          builder: (context, snapshot) {
             return Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -800,10 +783,10 @@ class CategoryView extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(15),
-                    child: Text("${data['name']}", style: TextStyle(
-                        fontSize: SizeConfig.safeBlockHorizontal * 5,
-                        fontWeight: FontWeight.bold
-                    )),
+                    child: Text("${data['name']}",
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            fontWeight: FontWeight.bold)),
                   ),
                   Text("${snapshot.data}"),
                 ],
@@ -818,45 +801,51 @@ class CategoryView extends StatelessWidget {
       case 'subcategory':
         return FutureBuilder(
           future: generalisedApiCall(data['api']),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(title: Text("${data['name']}",style: TextStyle(
-                      fontSize: SizeConfig.safeBlockHorizontal * 5,
-                      fontWeight: FontWeight.bold
-                  )),),
+                  ListTile(
+                    title: Text("${data['name']}",
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            fontWeight: FontWeight.bold)),
+                  ),
                   Container(
-                    height:
-                    MediaQuery.of(context).size.height / 2.8,
+                    height: MediaQuery.of(context).size.height / 2.8,
                     child: GridView.builder(
                       itemCount: snapshot.data.length,
                       scrollDirection: Axis.horizontal,
-                      gridDelegate:
-                      SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           mainAxisSpacing: 0,
                           crossAxisSpacing: 0,
                           childAspectRatio: 1 / 4),
-                      itemBuilder: (context, int index){
+                      itemBuilder: (context, int index) {
                         // return Container(child: Text("${snapshot.data[index]['name']}"),);
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border(left: BorderSide(width: 3,color: Colors.primaries[4])),
-                                color: Color(0xff222222)
-                            ),
+                                border: Border(
+                                    left: BorderSide(
+                                        width: 3, color: Colors.primaries[4])),
+                                color: Color(0xff222222)),
                             child: Center(
                               child: ListTile(
-                                onTap: (){
-                                  Navigator.push(context, CupertinoPageRoute(builder: (context){
-                                    return SubCategoryView(data: snapshot.data[index],);
+                                onTap: () {
+                                  Navigator.push(context,
+                                      CupertinoPageRoute(builder: (context) {
+                                    return SubCategoryView(
+                                      data: snapshot.data[index],
+                                    );
                                   }));
                                 },
-
-                                title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold),),
+                                title: Text(
+                                  "${snapshot.data[index]['name']}",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
@@ -866,19 +855,20 @@ class CategoryView extends StatelessWidget {
                   ),
                 ],
               );
-            }else{
+            } else {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ListTile(title: Text("${data['name']}",style: TextStyle(
-                      fontSize: SizeConfig.safeBlockHorizontal * 5,
-                      fontWeight: FontWeight.bold
-                  )),),
+                  ListTile(
+                    title: Text("${data['name']}",
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            fontWeight: FontWeight.bold)),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height:
-                      MediaQuery.of(context).size.height / 2.8,
+                      height: MediaQuery.of(context).size.height / 2.8,
                       width: double.infinity,
                       color: Color(0xff222222),
                     ),
@@ -886,9 +876,11 @@ class CategoryView extends StatelessWidget {
                 ],
               );
             }
-
           },
         );
+        break;
+      case 'videoepisode':
+        return VideoListWidget(data: data);
         break;
       default:
         return Container();
@@ -905,26 +897,29 @@ class CategoryView extends StatelessWidget {
         title: Text("${categoryObject['name']}"),
       ),
       body: Stack(
-        children: [Container(
-          // height: MediaQuery.of(context).size.height,
-          child: FutureBuilder(
-            future: getCategoryStructure(categoryObject: categoryObject),
-            builder: (context, snapshot){
-              if(snapshot.hasData){
-                return ListView.builder(addAutomaticKeepAlives: true,itemBuilder: (context, int index){
-                  return _feedBuilder(context, snapshot.data[index]);
-                }, itemCount: snapshot.data.length,);
-              }else{
-                return SizedBox();
-              }
-
-            },
-
+        children: [
+          Container(
+            // height: MediaQuery.of(context).size.height,
+            child: FutureBuilder(
+              future: getCategoryStructure(categoryObject: categoryObject),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    addAutomaticKeepAlives: true,
+                    itemBuilder: (context, int index) {
+                      return _feedBuilder(context, snapshot.data[index]);
+                    },
+                    itemCount: snapshot.data.length,
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            ),
           ),
-        ), Align(alignment: Alignment.bottomCenter,child: BottomPlayer())],
-
+          Align(alignment: Alignment.bottomCenter, child: BottomPlayer())
+        ],
       ),
     );
   }
 }
-
