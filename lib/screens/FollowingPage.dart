@@ -142,6 +142,9 @@ class Feed extends StatelessWidget {
           },
         );
         break;
+      case 'videoepisode':
+        return VideoListWidget(data: data);
+        break;
       default:
         return Container();
         break;
@@ -158,23 +161,19 @@ class Feed extends StatelessWidget {
             future: getFeedStructure(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      addAutomaticKeepAlives: true,
-                      itemCount: snapshot.data.length + 1,
-                      itemBuilder: (context, int index) {
-                        if (index == snapshot.data.length) {
-                          return SizedBox(
-                            height: 50,
-                          );
-                        } else {
-                          return _feedBuilder(context, snapshot.data[index]);
-                        }
-                      }),
-                );
+                return ListView.builder(
+                    shrinkWrap: true,
+                    addAutomaticKeepAlives: true,
+                    itemCount: snapshot.data.length + 1,
+                    itemBuilder: (context, int index) {
+                      if (index == snapshot.data.length) {
+                        return SizedBox(
+                          height: 50,
+                        );
+                      } else {
+                        return _feedBuilder(context, snapshot.data[index]);
+                      }
+                    });
               } else {
                 return SizedBox(
                     // height: MediaQuery.of(context).size.height / 25,
@@ -184,6 +183,148 @@ class Feed extends StatelessWidget {
           ),
         ),
       );
+}
+
+class VideoCard extends StatelessWidget {
+  final Video video;
+  const VideoCard({@required this.video});
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: CachedNetworkImage(
+              imageUrl: video.thumbnailUrl,
+              errorWidget: (context, url, e) {
+                return Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width,
+                      maxHeight: MediaQuery.of(context).size.height / 3),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(placeholderUrl),
+                          fit: BoxFit.cover)),
+                );
+              },
+              placeholder: (context, url) {
+                return Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width,
+                      maxHeight: MediaQuery.of(context).size.height / 3),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: CachedNetworkImageProvider(placeholderUrl),
+                          fit: BoxFit.cover)),
+                );
+              },
+              imageBuilder: (context, imageProvider) {
+                return Container(
+                  width: double.infinity,
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width,
+                      maxHeight: MediaQuery.of(context).size.height / 3),
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover)),
+                );
+              },
+            ),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              "${video.title}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              "${video.album}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class VideoListWidget extends StatelessWidget {
+  final data;
+  VideoListWidget({@required this.data});
+
+  SharedPreferences prefs;
+
+  CancelToken _cancel = CancelToken();
+
+  Future generalisedApiCall(String apicall) async {
+    Dio dio = Dio();
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+
+    try {
+      var response = await dio.get(url, cancelToken: _cancel);
+      if (response.statusCode == 200) {
+        return response.data['data'];
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: generalisedApiCall(data['api']),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Container(
+            height: MediaQuery.of(context).size.height / 4,
+            child: ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              children: [
+                for (var v in snapshot.data)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: VideoCard(
+                          video: Video(
+                              id: v['id'],
+                              title: v['name'],
+                              author: v['author'],
+                              permlink: v['permlink'],
+                              thumbnailUrl: v['podcast_image'],
+                              author_id: v['author_user_id'],
+                              podcastid: v['podcast_id'],
+                              album: v['podcast_name'],
+                              url: v['url'])),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        } else {
+          return Container(
+            height: MediaQuery.of(context).size.height / 3,
+          );
+        }
+      },
+    );
+  }
 }
 
 class EpisodeWidget extends StatefulWidget {
@@ -307,16 +448,6 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ))),
                   ),
-                  // Container(
-                  //   child: Column(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                  //       for (var v in snapshot.data)
-                  //         EpisodeCard(data: v,),
-                  //
-                  //     ],
-                  //   ),
-                  // ),
                   ColumnBuilder(
                       itemBuilder: (context, int index) {
                         return EpisodeCard(
@@ -888,38 +1019,36 @@ class EpisodeCard extends StatelessWidget {
                       errorWidget: (context, url, error) => Icon(Icons.error),
                     ),
                     SizedBox(width: SizeConfig.screenWidth / 26),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                      builder: (context) =>
-                                          PodcastView(data['podcast_id'])));
-                            },
-                            child: Text(
-                              data['podcast_name'],
-                              textScaleFactor: 0.8,
-                              style: TextStyle(
-                                  // color: Color(
-                                  //     0xffe8e8e8),
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Text(
-                            '${timeago.format(DateTime.parse(data['published_at']))}',
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) =>
+                                        PodcastView(data['podcast_id'])));
+                          },
+                          child: Text(
+                            data['podcast_name'],
                             textScaleFactor: 0.8,
                             style: TextStyle(
                                 // color: Color(
                                 //     0xffe8e8e8),
-                                fontSize: SizeConfig.safeBlockHorizontal * 3),
+                                fontSize: SizeConfig.safeBlockHorizontal * 4,
+                                fontWeight: FontWeight.bold),
                           ),
-                        ],
-                      ),
+                        ),
+                        Text(
+                          '${timeago.format(DateTime.parse(data['published_at']))}',
+                          textScaleFactor: 0.8,
+                          style: TextStyle(
+                              // color: Color(
+                              //     0xffe8e8e8),
+                              fontSize: SizeConfig.safeBlockHorizontal * 3),
+                        ),
+                      ],
                     )
                   ],
                 ),
@@ -2348,26 +2477,24 @@ class SnippetWidget extends StatelessWidget {
                             width: MediaQuery.of(context).size.width / 2,
                             child: Stack(
                               children: [
-                                Expanded(
-                                  child: Container(
-                                    foregroundDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      gradient: LinearGradient(
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.black
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              snapshot.data[index]
-                                                  ['podcast_image']),
-                                          fit: BoxFit.cover),
-                                    ),
+                                Container(
+                                  foregroundDecoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    gradient: LinearGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            snapshot.data[index]
+                                                ['podcast_image']),
+                                        fit: BoxFit.cover),
                                   ),
                                 ),
                                 Container(
@@ -3150,114 +3277,6 @@ class PodcastCard extends StatelessWidget {
                 },
                 imageBuilder: (context, imageProvider) {
                   return Container(
-                    // child: Column(
-                    //   crossAxisAlignment: CrossAxisAlignment.end,
-                    //   mainAxisAlignment: MainAxisAlignment.start,
-                    //   children: [
-                    //     Padding(
-                    //       padding: const EdgeInsets.all(3),
-                    //       child: GestureDetector(
-                    //         onTap: (){
-                    //           showModalBottomSheet(
-                    //               context: context,
-                    //               builder: (context) {
-                    //                 return Column(
-                    //                   mainAxisSize: MainAxisSize.min,
-                    //                   children: [
-                    //                     Padding(
-                    //                       padding:
-                    //                       const EdgeInsets.symmetric(vertical: 10),
-                    //                       child: ListTile(
-                    //                         leading: CachedNetworkImage(
-                    //                           memCacheHeight:
-                    //                           (MediaQuery.of(context).size.width /
-                    //                               2)
-                    //                               .floor(),
-                    //                           imageUrl: data['image'],
-                    //                           imageBuilder: (context, imageProvider) {
-                    //                             return Container(
-                    //                               height: 50,
-                    //                               width: 50,
-                    //                               decoration: BoxDecoration(
-                    //                                   borderRadius:
-                    //                                   BorderRadius.circular(5),
-                    //                                   image: DecorationImage(
-                    //                                       image: imageProvider,
-                    //                                       fit: BoxFit.cover)),
-                    //                             );
-                    //                           },
-                    //                         ),
-                    //                         title: Text(
-                    //                           "${data['name']}",
-                    //                           style: TextStyle(
-                    //                               fontWeight: FontWeight.w600),
-                    //                         ),
-                    //                         subtitle: Text("${data['author']}"),
-                    //                       ),
-                    //                     ),
-                    //                     Divider(),
-                    //                     ListTile(
-                    //                       leading: Icon(Icons.ios_share),
-                    //                       title: Text("Share"),
-                    //                       onTap: () {
-                    //                         podcastShare();
-                    //                       },
-                    //                     ),
-                    //                     ListTile(
-                    //                       onTap: () {
-                    //                         follow();
-                    //                         // setState(() {
-                    //                         //   if (followState == FollowState.follow) {
-                    //                         //     followState = FollowState.following;
-                    //                         //   } else {
-                    //                         //     followState = FollowState.follow;
-                    //                         //   }
-                    //                         // });
-                    //                         Navigator.pop(context);
-                    //                       },
-                    //                       leading: Icon(Icons.add_circle_outline),
-                    //                       title: Text("Subscribe"),
-                    //                     ),
-                    //                     // ListTile(
-                    //                     //   leading: Icon(Icons.notification_add),
-                    //                     //   title: Text("Get Notified"),
-                    //                     // ),
-                    //                     //     ListTile(
-                    //                     //       onTap:() {
-                    //                     //
-                    //                     // },
-                    //                     //       leading: Icon(Icons.playlist_add),
-                    //                     //       title: Text("Add to podcast playlist"),
-                    //                     //     ),
-                    //                     // ListTile(
-                    //                     //   leading: Icon(Icons.animation),
-                    //                     //   title: Text("More like these"),
-                    //                     // ),
-                    //                     // ListTile(
-                    //                     //   leading: Icon(Icons.send),
-                    //                     //   title: Text("Invite this podcast to Aureal"),
-                    //                     // ),
-                    //                   ],
-                    //                 );
-                    //               });
-                    //         },
-                    //         child: ClipOval(
-                    //
-                    //           child: BackdropFilter(
-                    //             filter:  ImageFilter.blur(
-                    //             sigmaY: 10.0,
-                    //             sigmaX: 10.0,
-                    //           ),
-                    //             child: Container(decoration: BoxDecoration(shape: BoxShape.circle), child: Padding(
-                    //               padding: const EdgeInsets.all(2),
-                    //               child: Icon(Icons.more_vert_outlined, color: Colors.white.withOpacity(0.7),),
-                    //             )),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: imageProvider, fit: BoxFit.cover),
@@ -4175,50 +4194,49 @@ class _FollowingPageState extends State<FollowingPage>
                                                               width: SizeConfig
                                                                       .screenWidth /
                                                                   26),
-                                                          Expanded(
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.push(
-                                                                        context,
-                                                                        CupertinoPageRoute(
-                                                                            builder: (context) =>
-                                                                                PodcastView(v['podcast_id'])));
-                                                                  },
-                                                                  child: Text(
-                                                                    v['podcast_name'],
-                                                                    textScaleFactor: mediaQueryData
-                                                                        .textScaleFactor
-                                                                        .clamp(
-                                                                            0.1,
-                                                                            1.2)
-                                                                        .toDouble(),
-                                                                    style: TextStyle(
-                                                                        // color: Color(
-                                                                        //     0xffe8e8e8),
-                                                                        fontSize: SizeConfig.safeBlockHorizontal * 5,
-                                                                        fontWeight: FontWeight.normal),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  '${timeago.format(DateTime.parse(v['published_at']))}',
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      CupertinoPageRoute(
+                                                                          builder: (context) =>
+                                                                              PodcastView(v['podcast_id'])));
+                                                                },
+                                                                child: Text(
+                                                                  v['podcast_name'],
                                                                   textScaleFactor: mediaQueryData
                                                                       .textScaleFactor
                                                                       .clamp(
-                                                                          0.5,
-                                                                          0.9)
+                                                                          0.1,
+                                                                          1.2)
                                                                       .toDouble(),
                                                                   style: TextStyle(
                                                                       // color: Color(
                                                                       //     0xffe8e8e8),
-                                                                      fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                                                                      fontSize: SizeConfig.safeBlockHorizontal * 5,
+                                                                      fontWeight: FontWeight.normal),
                                                                 ),
-                                                              ],
-                                                            ),
+                                                              ),
+                                                              Text(
+                                                                '${timeago.format(DateTime.parse(v['published_at']))}',
+                                                                textScaleFactor:
+                                                                    mediaQueryData
+                                                                        .textScaleFactor
+                                                                        .clamp(
+                                                                            0.5,
+                                                                            0.9)
+                                                                        .toDouble(),
+                                                                style: TextStyle(
+                                                                    // color: Color(
+                                                                    //     0xffe8e8e8),
+                                                                    fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                                                              ),
+                                                            ],
                                                           )
                                                         ],
                                                       ),
