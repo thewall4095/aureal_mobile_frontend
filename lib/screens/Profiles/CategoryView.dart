@@ -831,7 +831,7 @@ class CategoryView extends StatelessWidget {
                                 border: Border(
                                     left: BorderSide(
                                         width: 3, color: Colors.primaries[4])),
-                                color: Color(0xff222222)),
+                                color: Color(0xff1a1a1a)),
                             child: Center(
                               child: ListTile(
                                 onTap: () {
@@ -870,7 +870,7 @@ class CategoryView extends StatelessWidget {
                     child: Container(
                       height: MediaQuery.of(context).size.height / 2.8,
                       width: double.infinity,
-                      color: Color(0xff222222),
+                      color: Color(0xff1a1a1a),
                     ),
                   ),
                 ],

@@ -212,7 +212,7 @@ class _CommentsState extends State<Comments> {
           ],
           color: themeProvider.isLightTheme == true
               ? Colors.white
-              : Color(0xff222222),
+              : Color(0xff1a1a1a),
         ),
         child: Stack(
           children: <Widget>[
@@ -320,10 +320,11 @@ class _CommentsState extends State<Comments> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
-
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.all(8.0),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
                                                     child: Icon(
                                                       FontAwesomeIcons
                                                           .chevronCircleUp,
@@ -331,7 +332,9 @@ class _CommentsState extends State<Comments> {
                                                       // color: Colors.white,
                                                     ),
                                                   ),
-                                                  SizedBox(width: 5,),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
                                                   Text(
                                                     'Upvote ',
                                                     style: TextStyle(
@@ -963,7 +966,7 @@ class _CommentsState extends State<Comments> {
 //               themeProvider.isLightTheme ==
 //                   true
 //                   ? Colors.white
-//                   : Color(0xff222222),
+//                   : Color(0xff1a1a1a),
 //
 //             ),
 //             child: Stack(
@@ -1665,7 +1668,7 @@ class _CommentsState extends State<Comments> {
 //       //                 ],
 //       //                 color: themeProvider.isLightTheme == true
 //       //                     ? Colors.white
-//       //                     : Color(0xff222222),
+//       //                     : Color(0xff1a1a1a),
 //       //                 borderRadius: BorderRadius.circular(8),
 //       //               ),
 //       //               child: Padding(

@@ -451,7 +451,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           color:
                                               themeProvider.isLightTheme == true
                                                   ? Colors.white
-                                                  : Color(0xff222222),
+                                                  : Color(0xff1a1a1a),
                                         ),
                                         height:
                                             MediaQuery.of(context).size.height /
@@ -686,7 +686,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                     .isLightTheme ==
                                                                 true
                                                             ? Colors.white
-                                                            : Color(0xff222222),
+                                                            : Color(0xff1a1a1a),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(15),
@@ -785,7 +785,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                                                 .isLightTheme ==
                                                             true
                                                         ? Colors.white
-                                                        : Color(0xff222222),
+                                                        : Color(0xff1a1a1a),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             15),
@@ -830,7 +830,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         //
                                         //       Container(
                                         //         decoration: BoxDecoration(
-                                        //             color: Color(0xff222222),
+                                        //             color: Color(0xff1a1a1a),
                                         //             borderRadius:
                                         //                 BorderRadius.circular(10)),
                                         //         width:
@@ -886,7 +886,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //                             .isLightTheme ==
                             //                             true
                             //                             ? Color(0xffE8E8E8)
-                            //                             : Color(0xff222222),
+                            //                             : Color(0xff1a1a1a),
                             //                         borderRadius:
                             //                             BorderRadius.circular(10)),
                             //                     width:
@@ -911,7 +911,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //                 children: [
                             //                   Container(
                             //                     decoration: BoxDecoration(
-                            //                         color: Color(0xff222222),
+                            //                         color: Color(0xff1a1a1a),
                             //                         borderRadius:
                             //                             BorderRadius.circular(10)),
                             //                     width:
@@ -936,7 +936,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //                 children: [
                             //                   Container(
                             //                     decoration: BoxDecoration(
-                            //                         color: Color(0xff222222),
+                            //                         color: Color(0xff1a1a1a),
                             //                         borderRadius:
                             //                             BorderRadius.circular(10)),
                             //                     width:
@@ -965,7 +965,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             //                             .isLightTheme ==
                             //                             true
                             //                             ? Color(0xffE8E8E8)
-                            //                             : Color(0xff222222),
+                            //                             : Color(0xff1a1a1a),
                             //                         borderRadius:
                             //                             BorderRadius.circular(10)),
                             //                     width:
@@ -2037,7 +2037,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                   child: Container(
                         //                                     decoration: BoxDecoration(
                         //                                         color:
-                        //                                             Color(0xff222222),
+                        //                                             Color(0xff1a1a1a),
                         //                                         borderRadius:
                         //                                             BorderRadius
                         //                                                 .circular(8)),
@@ -2259,7 +2259,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         //                                                         color: themeProvider.isLightTheme ==
                         //                                                                 true
                         //                                                             ? Colors.white
-                        //                                                             : Color(0xff222222),
+                        //                                                             : Color(0xff1a1a1a),
                         //                                                       ),
                         //                                                       child:
                         //                                                           Padding(

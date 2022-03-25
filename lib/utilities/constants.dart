@@ -4,7 +4,7 @@ const Color kActiveColor = Color(0xFF1765F2);
 const Color kSecondaryColor = Color(0xff606060);
 // const Color kPrimaryColor = kSecondaryColor;
 
-const Color kPrimaryColor = Color(0xff161616);
+const Color kPrimaryColor = Colors.black;
 
 const String communityView = "/CommunityView";
 const String hiveSigner = '/HiveSigner';
@@ -50,7 +50,8 @@ const String selectPodcast = '/selectPodcast';
 const String tagSelection = '/TagSelection';
 const String tagSearch = '/TagSearch';
 const String home = '/';
-const String placeholderUrl = "https://aurealbucket.s3.us-east-2.amazonaws.com/placeholder.gif";
+const String placeholderUrl =
+    "https://aurealbucket.s3.us-east-2.amazonaws.com/placeholder.gif";
 
 const LinearGradient kGradient =
     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]);

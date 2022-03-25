@@ -1,5 +1,5 @@
-
 import 'dart:math';
+
 import 'package:auditory/screens/DiscoverPage.dart';
 import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Profiles/CategoryView.dart';
@@ -12,27 +12,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../PlayerState.dart';
 import 'SizeConfig.dart';
 
-Widget _feedBuilder(BuildContext context, var data){
-
+Widget _feedBuilder(BuildContext context, var data) {
   SharedPreferences prefs;
   CancelToken _cancel = CancelToken();
 
   Future generalisedApiCall(String apicall) async {
-    Dio dio = Dio(
-
-    );
+    Dio dio = Dio();
     prefs = await SharedPreferences.getInstance();
-    String url = "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+    String url =
+        "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
 
-    try{
+    try {
       var response = await dio.get(url, cancelToken: _cancel);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         return response.data['data'];
       }
-    }catch(e){
+    } catch (e) {
       print(e);
     }
-
   }
 
   var episodeObject = Provider.of<PlayerChange>(context);
@@ -41,7 +38,7 @@ Widget _feedBuilder(BuildContext context, var data){
   List colors = [Colors.red, Colors.green, Colors.yellow];
   Random random = Random();
 
-  switch(data['type']){
+  switch (data['type']) {
     case 'podcast':
       return PodcastWidget(data: data);
       break;
@@ -57,7 +54,7 @@ Widget _feedBuilder(BuildContext context, var data){
     case 'user':
       return FutureBuilder(
         future: generalisedApiCall(data['api']),
-        builder: (context, snapshot){
+        builder: (context, snapshot) {
           return Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,10 +62,10 @@ Widget _feedBuilder(BuildContext context, var data){
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15),
-                  child: Text("${data['name']}", style: TextStyle(
-                      fontSize: SizeConfig.safeBlockHorizontal * 5,
-                      fontWeight: FontWeight.bold
-                  )),
+                  child: Text("${data['name']}",
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          fontWeight: FontWeight.bold)),
                 ),
                 Text("${snapshot.data}"),
               ],
@@ -83,45 +80,52 @@ Widget _feedBuilder(BuildContext context, var data){
     case 'category':
       return FutureBuilder(
         future: generalisedApiCall(data['api']),
-        builder: (context, snapshot){
-          if(snapshot.hasData){
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(title: Text("${data['name']}",style: TextStyle(
-                    fontSize: SizeConfig.safeBlockHorizontal * 5,
-                    fontWeight: FontWeight.bold
-                )),),
+                ListTile(
+                  title: Text("${data['name']}",
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          fontWeight: FontWeight.bold)),
+                ),
                 Container(
-                  height:
-                  MediaQuery.of(context).size.height / 2.8,
+                  height: MediaQuery.of(context).size.height / 2.8,
                   child: GridView.builder(
                     itemCount: snapshot.data.length,
                     scrollDirection: Axis.horizontal,
-                    gridDelegate:
-                    SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
                         mainAxisSpacing: 0,
                         crossAxisSpacing: 0,
                         childAspectRatio: 1 / 4),
-                    itemBuilder: (context, int index){
+                    itemBuilder: (context, int index) {
                       // return Container(child: Text("${snapshot.data[index]['name']}"),);
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                              border: Border(left: BorderSide(width: 3,color: Colors.primaries[index])),
-                              color: Color(0xff222222)
-                          ),
+                              border: Border(
+                                  left: BorderSide(
+                                      width: 3,
+                                      color: Colors.primaries[index])),
+                              color: Color(0xff1a1a1a)),
                           child: Center(
                             child: ListTile(
-                              onTap: (){
-                                Navigator.push(context, CupertinoPageRoute(builder: (context){
-                                  return CategoryView(categoryObject: snapshot.data[index],);
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return CategoryView(
+                                    categoryObject: snapshot.data[index],
+                                  );
                                 }));
                               },
-
-                              title: Text("${snapshot.data[index]['name']}", style: TextStyle(fontWeight: FontWeight.bold),),
+                              title: Text(
+                                "${snapshot.data[index]['name']}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
@@ -131,27 +135,27 @@ Widget _feedBuilder(BuildContext context, var data){
                 ),
               ],
             );
-          }else{
+          } else {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ListTile(title: Text("${data['name']}",style: TextStyle(
-                    fontSize: SizeConfig.safeBlockHorizontal * 5,
-                    fontWeight: FontWeight.bold
-                )),),
+                ListTile(
+                  title: Text("${data['name']}",
+                      style: TextStyle(
+                          fontSize: SizeConfig.safeBlockHorizontal * 5,
+                          fontWeight: FontWeight.bold)),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    height:
-                    MediaQuery.of(context).size.height / 2.8,
+                    height: MediaQuery.of(context).size.height / 2.8,
                     width: double.infinity,
-                    color: Color(0xff222222),
+                    color: Color(0xff1a1a1a),
                   ),
                 ),
               ],
             );
           }
-
         },
       );
       break;

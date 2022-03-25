@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Home.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
@@ -8,8 +6,6 @@ import 'package:auditory/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,14 +19,11 @@ class OnboardingCategories extends StatefulWidget {
 class _OnboardingCategoriesState extends State<OnboardingCategories> {
   var categories = [];
 
-
   postreq.Interceptor intercept = postreq.Interceptor();
-
 
   SharedPreferences prefs;
 
   List allCategories = [];
-
 
   Dio dio = Dio();
 
@@ -41,7 +34,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
     print(url);
     try {
       var response = await dio.get(url);
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         setState(() {
           allCategories = response.data['data'];
         });
@@ -52,14 +45,12 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
     }
   }
 
-
-
   Future sendCategories(var categoryObject) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/private/addUserCategory';
     var map = Map<String, dynamic>();
     map['user_id'] = prefs.getString('userId');
-    if(categoryObject['isselected'] == true){
+    if (categoryObject['isselected'] == true) {
       map['operation'] = 'remove';
     }
 
@@ -69,7 +60,6 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 
     var response = await intercept.postRequest(formData, url);
     return response;
-
   }
 
   List _icons = [
@@ -112,7 +102,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            color: Color(0xff161616),
+            color: Colors.black,
             child: ListTile(
               title: Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -150,45 +140,42 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
                           onTap: () {
                             sendCategories(allCategories[index]).then((value) {
                               setState(() {
-                                allCategories[index]['isselected'] = !allCategories[index]['isselected'];
+                                allCategories[index]['isselected'] =
+                                    !allCategories[index]['isselected'];
                               });
                             });
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
-                          selectedTileColor: Color(0xff222222),
+                          selectedTileColor: Color(0xff1a1a1a),
                           selected: allCategories[index]['isselected'],
-
                           title: Text("${allCategories[index]['name']}"),
                         ),
                       );
                     }),
           ),
           Container(
-            color: Color(0xff161616),
+            color: Colors.black,
             child: Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: InkWell(
                     onTap: () async {
-
-                        if(prefs.getString('HiveUserName') == null){
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              HiveDetails.id, (Route<dynamic> route) => false);
-                        }else{
-                          Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context){
-                            return Home();
-                          }), (route) => false);
-                        }
-
-
-
+                      if (prefs.getString('HiveUserName') == null) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            HiveDetails.id, (Route<dynamic> route) => false);
+                      } else {
+                        Navigator.pushAndRemoveUntil(context,
+                            CupertinoPageRoute(builder: (context) {
+                          return Home();
+                        }), (route) => false);
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: kGradient),
+                          borderRadius: BorderRadius.circular(10),
+                          gradient: kGradient),
                       width: double.infinity,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +329,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 //         mainAxisSize: MainAxisSize.min,
 //         children: [
 //           Container(
-//             color: Color(0xff161616),
+//             color: Colors.black,
 //             child: ListTile(
 //               title: Padding(
 //                 padding: const EdgeInsets.only(top: 20),
@@ -391,7 +378,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 //                 //           },
 //                 //           shape: RoundedRectangleBorder(
 //                 //               borderRadius: BorderRadius.circular(8)),
-//                 //           selectedTileColor: Color(0xff222222),
+//                 //           selectedTileColor: Color(0xff1a1a1a),
 //                 //           selected: userselectedCategories
 //                 //               .toSet()
 //                 //               .toList()
@@ -421,7 +408,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 //                     },
 //                     shape: RoundedRectangleBorder(
 //                         borderRadius: BorderRadius.circular(8)),
-//                     selectedTileColor: Color(0xff222222),
+//                     selectedTileColor: Color(0xff1a1a1a),
 //                     selected: userselectedCategories
 //                         .toSet()
 //                         .toList()
@@ -434,7 +421,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 //             )
 //           ),
 //           Container(
-//             color: Color(0xff161616),
+//             color: Colors.black,
 //             child: Column(
 //               children: [
 //                 Padding(
@@ -447,7 +434,7 @@ class _OnboardingCategoriesState extends State<OnboardingCategories> {
 //                       decoration: userselectedCategories.isEmpty
 //                           ? BoxDecoration(
 //                               borderRadius: BorderRadius.circular(10),
-//                               color: Color(0xff222222))
+//                               color: Color(0xff1a1a1a))
 //                           : BoxDecoration(
 //                               borderRadius: BorderRadius.circular(10),
 //                               gradient: kGradient),

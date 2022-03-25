@@ -285,7 +285,7 @@ class DiscoverScreen extends StatelessWidget {
                                     left: BorderSide(
                                         width: 3,
                                         color: Colors.primaries[index])),
-                                color: Color(0xff222222)),
+                                color: Color(0xff1a1a1a)),
                             child: Center(
                               child: ListTile(
                                 onTap: () {
@@ -324,7 +324,7 @@ class DiscoverScreen extends StatelessWidget {
                     child: Container(
                       height: MediaQuery.of(context).size.height / 2.8,
                       width: double.infinity,
-                      color: Color(0xff222222),
+                      color: Color(0xff1a1a1a),
                     ),
                   ),
                 ],

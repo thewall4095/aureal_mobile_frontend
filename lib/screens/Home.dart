@@ -587,11 +587,9 @@ class _HomeState extends State<Home> {
     SizeConfig().init(context);
     int count = 0;
     return Scaffold(
-      backgroundColor: Color(0xff161616),
       appBar: _selectedIndex == 3
           ? null
           : AppBar(
-              backgroundColor: Color(0xff161616),
               elevation: 0.5,
               leading: Padding(
                 padding: const EdgeInsets.only(left: 8),
@@ -1029,7 +1027,7 @@ class BottomPlayer extends StatelessWidget {
                                       height: 40,
                                       width: 40,
                                       decoration: BoxDecoration(
-                                        color: Color(0xff222222),
+                                        color: Color(0xff1a1a1a),
                                         borderRadius: BorderRadius.circular(3),
                                       ),
                                     );
@@ -1246,7 +1244,7 @@ class BottomPlayer extends StatelessWidget {
 //                                     height: 40,
 //                                     width: 40,
 //                                     decoration: BoxDecoration(
-//                                       color: Color(0xff222222),
+//                                       color: Color(0xff1a1a1a),
 //                                       borderRadius: BorderRadius.circular(3),
 //                                     ),
 //                                   );

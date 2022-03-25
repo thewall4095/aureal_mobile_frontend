@@ -202,7 +202,7 @@ class _NotificationPageState extends State<NotificationPage>
                 textScaleFactor: 1.0,
                 style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
               ),
-              backgroundColor: Color(0xff161616),
+              // backgroundColor: Colors.black,
               elevation: 0,
               //  backgroundColor: Colors.transparent,
               // leading: IconButton(

@@ -1,4 +1,4 @@
-import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/History.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/screens/buttonPages/Downloads.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
+
 import 'Profiles/CreatePlaylist.dart';
 import 'Profiles/PlaylistView.dart';
 
@@ -159,7 +159,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff161616),
+        backgroundColor: Colors.black,
         title: Text(
           "Your Playlists",
           textScaleFactor: 1.0,

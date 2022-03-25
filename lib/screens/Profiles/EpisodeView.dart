@@ -546,7 +546,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            color: Color(0xff222222)
+                                            color: Color(0xff1a1a1a)
                                             // image: DecorationImage(
                                             //     image: imageProvider,
                                             //     fit: BoxFit.cover),
@@ -587,7 +587,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
-                                              color: Color(0xff222222)),
+                                              color: Color(0xff1a1a1a)),
                                         );
                                       }
                                     },
@@ -1401,7 +1401,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                       vertical: 15),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                    color: Color(0xff222222),
+                                                    color: Color(0xff1a1a1a),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10)),

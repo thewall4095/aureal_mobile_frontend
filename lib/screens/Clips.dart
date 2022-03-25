@@ -11,7 +11,6 @@ import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Player/Player.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,7 +54,7 @@ class _ClipsState extends State<Clips> {
 
   var snippetPlayer;
 
-  void getSnippetPlayer(BuildContext context){
+  void getSnippetPlayer(BuildContext context) {
     snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
   }
 
@@ -144,8 +143,6 @@ class _ClipsState extends State<Clips> {
 
   @override
   void initState() {
-
-
     // TODO: implement initState
 
     getAllSnippetsWOCategory();
@@ -167,11 +164,10 @@ class _ClipsState extends State<Clips> {
 
   @override
   void dispose() {
-print("dispose is getting called on Clips");
+    print("dispose is getting called on Clips");
     super.dispose();
     // var snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
     snippetPlayer.snippetPlayer.stop();
-
   }
 
   Future<PaletteGenerator> getColor(String url) async {
@@ -270,7 +266,7 @@ print("dispose is getting called on Clips");
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               // SliverAppBar(
-              //   backgroundColor: Color(0xff161616),
+              //   backgroundColor: Colors.black,
               //   automaticallyImplyLeading: false,
               //   expandedHeight: 20,
               //   pinned: true,
@@ -378,7 +374,10 @@ print("dispose is getting called on Clips");
               // ),
             ];
           },
-          body: SnippetStoryView(data: snippets, index: 0,)),
+          body: SnippetStoryView(
+            data: snippets,
+            index: 0,
+          )),
     );
   }
 
@@ -431,9 +430,6 @@ print("dispose is getting called on Clips");
   // }
 }
 
-
-
-
 class SwipeCard extends StatefulWidget {
   final clipObject;
 
@@ -447,28 +443,17 @@ class SwipeCard extends StatefulWidget {
   _SwipeCardState createState() => _SwipeCardState();
 }
 
-class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
-
-
-
-
+class _SwipeCardState extends State<SwipeCard> with WidgetsBindingObserver {
   SharedPreferences pref;
-
-
 
   void play(BuildContext context) async {
     final snippetPlayer = Provider.of<PlayerChange>(context, listen: false);
     snippetPlayer.snippetPlayer.open(Audio.network(widget.clipObject['url']));
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
-
-
-
-
 
     setState(() {
       isLiked = widget.clipObject['isLiked'];
@@ -482,9 +467,6 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
 
   bool isLiked;
   bool ifFollowed;
-
-
-
 
   int index;
 
@@ -504,23 +486,14 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
     print(response);
   }
 
-  Color bgColor = Color(0xff222222);
-
-
-
-
-
+  Color bgColor = Color(0xff1a1a1a);
 
   @override
   void dispose() {
     // TODO: implement dispose
 
-
     print("Dispose getting called right now");
     super.dispose();
-
-
-
   }
 
   // void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -570,8 +543,6 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var snippetPlayer = Provider.of<PlayerChange>(context);
@@ -579,7 +550,6 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
       children: [
         Container(
           decoration: BoxDecoration(
-
             gradient:
                 LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]),
             borderRadius: BorderRadius.circular(10),
@@ -603,13 +573,10 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
             ),
           ),
         ),
-
         Center(
           child: Container(
-
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -638,18 +605,17 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
                       },
                     ),
                   ),
-                  snippetPlayer.snippetPlayer
-                      .builderRealtimePlayingInfos(
+                  snippetPlayer.snippetPlayer.builderRealtimePlayingInfos(
                       builder: (context, infos) {
-                        if (infos != null) {
-                          return ClipSeekBar(
-                              currentPosition: infos.currentPosition,
-                              duration: infos.duration,
-                              audioplayer: snippetPlayer.snippetPlayer);
-                        } else {
-                          return SizedBox();
-                        }
-                      }),
+                    if (infos != null) {
+                      return ClipSeekBar(
+                          currentPosition: infos.currentPosition,
+                          duration: infos.duration,
+                          audioplayer: snippetPlayer.snippetPlayer);
+                    } else {
+                      return SizedBox();
+                    }
+                  }),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -671,69 +637,67 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
                         ),
                       ),
                       ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  snippetPlayer.snippetPlayer
-                                      .builderRealtimePlayingInfos(
-                                          builder: (context, infos) {
-                                    if (infos.isPlaying == true) {
-                                      return InkWell(
-                                          onTap: () {
-                                            snippetPlayer.snippetPlayer.pause();
-                                          },
-                                          child: Icon(
-                                              Icons.pause_circle_filled,
-                                              color: Color(0xffe8e8e8)));
-                                    }
-                                    if (infos.isBuffering == true) {
-                                      return SizedBox(
-                                          width: 15,
-                                          height: 15,
-                                          child: CircularProgressIndicator(
-                                            color: Color(0xffe8e8e8),
-                                            strokeWidth: 1,
-                                          ));
-                                    } else {
-                                      return InkWell(
-                                          onTap: () {
-                                            snippetPlayer.snippetPlayer.play();
-                                          },
-                                          child: Icon(Icons.play_circle_fill,
-                                              color: Color(0xffe8e8e8)));
-                                    }
-                                  }),
-                                  // Text(
-                                  //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
-                                ],
+                        contentPadding: EdgeInsets.zero,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                snippetPlayer.snippetPlayer
+                                    .builderRealtimePlayingInfos(
+                                        builder: (context, infos) {
+                                  if (infos.isPlaying == true) {
+                                    return InkWell(
+                                        onTap: () {
+                                          snippetPlayer.snippetPlayer.pause();
+                                        },
+                                        child: Icon(Icons.pause_circle_filled,
+                                            color: Color(0xffe8e8e8)));
+                                  }
+                                  if (infos.isBuffering == true) {
+                                    return SizedBox(
+                                        width: 15,
+                                        height: 15,
+                                        child: CircularProgressIndicator(
+                                          color: Color(0xffe8e8e8),
+                                          strokeWidth: 1,
+                                        ));
+                                  } else {
+                                    return InkWell(
+                                        onTap: () {
+                                          snippetPlayer.snippetPlayer.play();
+                                        },
+                                        child: Icon(Icons.play_circle_fill,
+                                            color: Color(0xffe8e8e8)));
+                                  }
+                                }),
+                                // Text(
+                                //     "${widget.audioPlayer.realtimePlayingInfos.value.currentPosition}")
+                              ],
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return EpisodeView(
+                                      episodeId:
+                                          widget.clipObject['episode_id']);
+                                }));
+                              },
+                              child: Text(
+                                "CONTINUE LISTENING",
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                    color: Color(0xffe8e8e8),
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 2.5,
+                                    fontWeight: FontWeight.w600),
                               ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(context,
-                                      CupertinoPageRoute(builder: (context) {
-                                    return EpisodeView(
-                                        episodeId:
-                                            widget.clipObject['episode_id']);
-                                  }));
-                                },
-                                child: Text(
-                                  "CONTINUE LISTENING",
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                      color: Color(0xffe8e8e8),
-                                      fontSize:
-                                          SizeConfig.safeBlockHorizontal *
-                                              2.5,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              )
-                            ],
-                          ),
-                          ),
+                            )
+                          ],
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -766,8 +730,7 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
                                         color: Color(0xffe8e8e8),
                                         fontWeight: FontWeight.w700,
                                         fontSize:
-                                            SizeConfig.safeBlockHorizontal *
-                                                3),
+                                            SizeConfig.safeBlockHorizontal * 3),
                                   )
                                 : Text(
                                     "SUBSCRIBE",
@@ -776,8 +739,7 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
                                         color: Color(0xffe8e8e8),
                                         fontWeight: FontWeight.w700,
                                         fontSize:
-                                            SizeConfig.safeBlockHorizontal *
-                                                3),
+                                            SizeConfig.safeBlockHorizontal * 3),
                                   ),
                           ),
                           // Icon(Icons.ios_share, color: Color(0xffe8e8e8))
@@ -790,12 +752,9 @@ class _SwipeCardState extends State<SwipeCard> with  WidgetsBindingObserver{
             ),
           ),
         ),
-
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-
-          ],
+          children: [],
         )
       ],
     );
@@ -878,14 +837,12 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
   @override
   Widget build(BuildContext context) {
     return SliderTheme(
-
       data: SliderThemeData(
-
         trackShape: CustomTrackShape(),
         trackHeight: 1,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 0.0),
         activeTrackColor: Color(0xffe8e8e8),
-           inactiveTrackColor: Colors.transparent,
+        inactiveTrackColor: Colors.transparent,
         thumbColor: Colors.transparent,
         //  thumbShape: SliderComponentShape
         // thumbShape: RoundSliderThumbShape(
@@ -916,9 +873,7 @@ class _ClipSeekBarState extends State<ClipSeekBar> {
             _visibleValue = to;
           });
         },
-
       ),
-
     );
   }
 }
@@ -1060,7 +1015,7 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Color(0xff222222),
+                      color: Color(0xff1a1a1a),
                     ),
                     child: TextField(
                       onChanged: (value) {

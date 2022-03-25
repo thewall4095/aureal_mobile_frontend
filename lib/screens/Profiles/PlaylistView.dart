@@ -1,38 +1,24 @@
 // import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
-import 'package:auditory/Services/HiveOperations.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/screens/Home.dart';
-import 'package:auditory/screens/Onboarding/HiveDetails.dart';
-import 'package:auditory/screens/Player/Player.dart';
-import 'package:auditory/screens/Player/VideoPlayer.dart';
 import 'package:auditory/screens/buttonPages/search.dart';
-import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
-import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
-import 'Comments.dart';
 import 'CreatePlaylist.dart';
-import 'EpisodeView.dart';
 import 'PodcastView.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:html/parser.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 
 class PlaylistView extends StatefulWidget {
   final playlistId;
@@ -255,10 +241,10 @@ class _PlaylistViewState extends State<PlaylistView> {
         ),
         body: ModalProgressHUD(
           inAsyncCall: isLoading,
-          color: Color(0xff161616),
+          color: Colors.black,
           child: isLoading == true
               ? Container(
-                  color: Color(0xff161616),
+                  color: Colors.black,
                 )
               : NotificationListener<OverscrollIndicatorNotification>(
                   onNotification: (overscroll) {
@@ -808,8 +794,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                 TextSpan(
                                                     text: "SHUFFLE",
                                                     style: TextStyle(
-                                                        color:
-                                                            Color(0xff161616)))
+                                                        color: Colors.black))
                                               ])),
                                             ),
                                           ),

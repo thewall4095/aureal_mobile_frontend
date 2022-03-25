@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Services/LaunchUrl.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -20,7 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
+
 import 'Home.dart';
 
 class RoomsPage extends StatefulWidget {
@@ -456,7 +457,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                   isExtended: !upDirection,
                 ),
                 appBar: AppBar(
-                  backgroundColor: Color(0xff161616),
+                  backgroundColor: Colors.black,
                   elevation: 0,
                   automaticallyImplyLeading: false,
                   title: Align(
@@ -491,7 +492,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff222222),
+                                    color: Color(0xff1a1a1a),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),
@@ -509,7 +510,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8),
-                                                    color: Color(0xff161616)),
+                                                    color: Colors.black),
                                                 height: 15,
                                                 width: 60,
                                               ),
@@ -523,7 +524,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8),
-                                                    color: Color(0xff161616)),
+                                                    color: Colors.black),
                                               ),
                                             ],
                                           ),
@@ -554,8 +555,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                               ),
                                               itemBuilder: (context, index) {
                                                 return CircleAvatar(
-                                                  backgroundColor:
-                                                      Color(0xff161616),
+                                                  backgroundColor: Colors.black,
                                                 );
                                               },
                                               itemCount: 10,
@@ -574,7 +574,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                color: Color(0xff161616)),
+                                                color: Colors.black),
                                           ),
                                         ),
                                         Padding(
@@ -589,14 +589,14 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                color: Color(0xff161616)),
+                                                color: Colors.black),
                                           ),
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
-                                              color: Color(0xff161616)),
+                                              color: Colors.black),
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
@@ -615,7 +615,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
-                                              color: Color(0xff161616)),
+                                              color: Colors.black),
                                         )
                                       ],
                                     ),
@@ -633,7 +633,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff222222),
+                                      color: Color(0xff1a1a1a),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(15),
@@ -843,7 +843,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(30),
-                                                color: Color(0xff191919),
+                                                color: Color(0xff1a1a1a),
                                               ),
                                               child: Padding(
                                                 padding:
@@ -872,7 +872,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff222222),
+                                    color: Color(0xff1a1a1a),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(15),
@@ -890,7 +890,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8),
-                                                    color: Color(0xff161616)),
+                                                    color: Colors.black),
                                                 height: 15,
                                                 width: 60,
                                               ),
@@ -904,7 +904,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             8),
-                                                    color: Color(0xff161616)),
+                                                    color: Colors.black),
                                               ),
                                             ],
                                           ),
@@ -935,8 +935,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                               ),
                                               itemBuilder: (context, index) {
                                                 return CircleAvatar(
-                                                  backgroundColor:
-                                                      Color(0xff161616),
+                                                  backgroundColor: Colors.black,
                                                 );
                                               },
                                               itemCount: 10,
@@ -955,7 +954,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                color: Color(0xff161616)),
+                                                color: Colors.black),
                                           ),
                                         ),
                                         Padding(
@@ -970,14 +969,14 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                color: Color(0xff161616)),
+                                                color: Colors.black),
                                           ),
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
-                                              color: Color(0xff161616)),
+                                              color: Colors.black),
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
@@ -996,7 +995,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
-                                              color: Color(0xff161616)),
+                                              color: Colors.black),
                                         )
                                       ],
                                     ),
@@ -1014,7 +1013,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff222222),
+                                      color: Color(0xff1a1a1a),
                                     ),
                                     child: Padding(
                                       padding: const EdgeInsets.all(15),
@@ -1224,7 +1223,7 @@ class _RoomsPageState extends State<RoomsPage> with TickerProviderStateMixin {
                                               decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(30),
-                                                color: Color(0xff191919),
+                                                color: Color(0xff1a1a1a),
                                               ),
                                               child: Padding(
                                                 padding:
@@ -1436,7 +1435,7 @@ class _CreateRoomState extends State<CreateRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xff161616),
+      backgroundColor: Colors.black,
       appBar: AppBar(
         elevation: 0,
         leading: IconButton(
@@ -1469,7 +1468,7 @@ class _CreateRoomState extends State<CreateRoom> {
                     ),
                     Container(
                         decoration: BoxDecoration(
-                            color: Color(0xff222222),
+                            color: Color(0xff1a1a1a),
                             borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -1511,7 +1510,7 @@ class _CreateRoomState extends State<CreateRoom> {
                     ),
                     Container(
                         decoration: BoxDecoration(
-                            color: Color(0xff222222),
+                            color: Color(0xff1a1a1a),
                             borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -1569,7 +1568,7 @@ class _CreateRoomState extends State<CreateRoom> {
                         children: [
                           Container(
                               decoration: BoxDecoration(
-                                  color: Color(0xff222222),
+                                  color: Color(0xff1a1a1a),
                                   borderRadius: BorderRadius.circular(10)),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -1827,7 +1826,7 @@ class _CommunitySelectorState extends State<CommunitySelector>
                         ),
                         Container(
                           decoration: BoxDecoration(
-                              color: Color(0xff222222),
+                              color: Color(0xff1a1a1a),
                               borderRadius: BorderRadius.circular(8)),
                           child: Padding(
                             padding: const EdgeInsets.only(right: 15),
@@ -2326,7 +2325,7 @@ class _ScheduleEventState extends State<ScheduleEvent> {
             Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Color(0xff222222)),
+                  color: Color(0xff1a1a1a)),
               child: Column(
                 children: [
                   TextField(),

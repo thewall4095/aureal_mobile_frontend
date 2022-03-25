@@ -196,6 +196,7 @@ class VideoCard extends StatelessWidget {
     final episodeObject = Provider.of<PlayerChange>(context);
     return GestureDetector(
       onTap: () {
+        episodeObject.audioPlayer.stop();
         episodeObject.isVideo = true;
         episodeObject.episodeObject = episodeObject;
         episodeObject.videoSource = video;
@@ -389,7 +390,7 @@ class VideoListWidget extends StatelessWidget {
                     child: AspectRatio(
                       aspectRatio: 16 / 9,
                       child: Container(
-                        color: Color(0xff222222),
+                        color: Color(0xff080808),
                       ),
                     ),
                   ),
@@ -551,7 +552,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color(0xff222222)),
+                          color: Color(0xff080808)),
                       child: Padding(
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -564,7 +565,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   width: MediaQuery.of(context).size.width / 7,
                                   height: MediaQuery.of(context).size.width / 7,
                                   decoration: BoxDecoration(
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                       borderRadius: BorderRadius.circular(10)),
                                 ),
                                 SizedBox(width: 10),
@@ -572,8 +573,8 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      decoration: BoxDecoration(
-                                          color: Color(0xff161616)),
+                                      decoration:
+                                          BoxDecoration(color: Colors.black),
                                       height: 16,
                                       width:
                                           MediaQuery.of(context).size.width / 3,
@@ -582,8 +583,8 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                       height: 5,
                                     ),
                                     Container(
-                                      decoration: BoxDecoration(
-                                          color: Color(0xff161616)),
+                                      decoration:
+                                          BoxDecoration(color: Colors.black),
                                       height: 8,
                                       width:
                                           MediaQuery.of(context).size.width / 4,
@@ -598,14 +599,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
                               child: Container(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   height: 10,
                                   width: MediaQuery.of(context).size.width),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
                               child: Container(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   height: 10,
                                   width: MediaQuery.of(context).size.width / 2),
                             ),
@@ -615,14 +616,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
                               child: Container(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   height: 6,
                                   width: MediaQuery.of(context).size.width),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 3),
                               child: Container(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   height: 6,
                                   width:
                                       MediaQuery.of(context).size.width * 0.75),
@@ -635,7 +636,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                     ),
                                     height: 25,
                                     width:
@@ -647,7 +648,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        color: Color(0xff161616),
+                                        color: Colors.black,
                                       ),
                                       height: 25,
                                       width:
@@ -660,7 +661,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(8),
-                                        color: Color(0xff161616),
+                                        color: Colors.black,
                                       ),
                                       height: 20,
                                       width:
@@ -695,7 +696,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xff222222)),
+                        color: Color(0xff080808)),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
@@ -708,7 +709,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                 width: MediaQuery.of(context).size.width / 7,
                                 height: MediaQuery.of(context).size.width / 7,
                                 decoration: BoxDecoration(
-                                    color: Color(0xff161616),
+                                    color: Colors.black,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
                               SizedBox(width: 10),
@@ -717,7 +718,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                 children: [
                                   Container(
                                     decoration:
-                                        BoxDecoration(color: Color(0xff161616)),
+                                        BoxDecoration(color: Colors.black),
                                     height: 16,
                                     width:
                                         MediaQuery.of(context).size.width / 3,
@@ -727,7 +728,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   ),
                                   Container(
                                     decoration:
-                                        BoxDecoration(color: Color(0xff161616)),
+                                        BoxDecoration(color: Colors.black),
                                     height: 8,
                                     width:
                                         MediaQuery.of(context).size.width / 4,
@@ -742,14 +743,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 10,
                                 width: MediaQuery.of(context).size.width),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 10,
                                 width: MediaQuery.of(context).size.width / 2),
                           ),
@@ -759,14 +760,14 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 6,
                                 width: MediaQuery.of(context).size.width),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 6,
                                 width:
                                     MediaQuery.of(context).size.width * 0.75),
@@ -779,7 +780,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff161616),
+                                    color: Colors.black,
                                   ),
                                   height: 25,
                                   width: MediaQuery.of(context).size.width / 8,
@@ -790,7 +791,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                     ),
                                     height: 25,
                                     width:
@@ -803,7 +804,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                     ),
                                     height: 20,
                                     width:
@@ -898,7 +899,7 @@ class EpisodeCard extends StatelessWidget {
             //   ),
             // ],
             // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
-            color: Color(0xff222222),
+            color: Color(0xff080808),
             borderRadius: BorderRadius.circular(5),
           ),
           width: double.infinity,
@@ -926,6 +927,7 @@ class EpisodeCard extends StatelessWidget {
                           //             ));
                           //       });
                           // });
+                          episodeObject.audioPlayer.stop();
                           episodeObject.isVideo = true;
                           episodeObject.episodeObject = data;
                           episodeObject.videoSource = Video(
@@ -1324,7 +1326,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   border: Border.all(
                                       color: Color(0xffe8e8e8).withOpacity(0.5),
                                       width: 0.5),
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   borderRadius: BorderRadius.circular(30)),
                             ),
                           )
@@ -1558,7 +1560,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             padding: const EdgeInsets.only(right: 60),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   border: Border.all(color: kSecondaryColor),
                                   borderRadius: BorderRadius.circular(30)),
                               child: Padding(
@@ -1597,6 +1599,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             FeedbackType _vibtype = FeedbackType.impact;
                             Vibrate.feedback(FeedbackType.impact);
                             if (widget.data['isvideo'] == true) {
+                              episodeObject.audioPlayer.stop();
                               episodeObject.isVideo = true;
                               // episodeObject.episodeObject = widget.data;
                               episodeObject.videoSource = Video(
@@ -1645,7 +1648,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             padding: const EdgeInsets.only(right: 60),
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Color(0xff161616),
+                                  color: Colors.black,
                                   border: Border.all(color: kSecondaryColor),
                                   borderRadius: BorderRadius.circular(30)),
                               child: Padding(
@@ -1832,7 +1835,7 @@ class _PodcastWidgetState extends State<PodcastWidget>
         //                             url, error) {
         //                           return Container(
         //                             decoration: BoxDecoration(
-        //                                 color: Color(0xff222222),
+        //                                 color: Color(0xff080808),
         //                                 // image: DecorationImage(
         //                                 //     image: NetworkImage(
         //                                 //         placeholderUrl),
@@ -1895,7 +1898,7 @@ class _PodcastWidgetState extends State<PodcastWidget>
         //                               //         'assets/images/Thumbnail.png'),
         //                               //     fit: BoxFit
         //                               //         .cover),
-        //                                 color: Color(0xff222222)
+        //                                 color: Color(0xff080808)
         //                             ),
         //                             height: MediaQuery.of(
         //                                 context)
@@ -2029,7 +2032,7 @@ class _PodcastWidgetState extends State<PodcastWidget>
                                 errorWidget: (context, url, error) {
                                   return Container(
                                     decoration: BoxDecoration(
-                                        color: Color(0xff222222),
+                                        color: Color(0xff080808),
                                         // image: DecorationImage(
                                         //     image: NetworkImage(
                                         //         placeholderUrl),
@@ -2067,7 +2070,7 @@ class _PodcastWidgetState extends State<PodcastWidget>
                                         //         'assets/images/Thumbnail.png'),
                                         //     fit: BoxFit
                                         //         .cover),
-                                        color: Color(0xff222222)),
+                                        color: Color(0xff080808)),
                                     height: MediaQuery.of(context).size.width *
                                         0.38,
                                     width: MediaQuery.of(context).size.width *
@@ -2391,7 +2394,7 @@ class PlaylistWidget extends StatelessWidget {
                                   height: MediaQuery.of(context).size.width / 3,
                                   width: MediaQuery.of(context).size.width / 3,
                                   decoration:
-                                      BoxDecoration(color: Color(0xff222222)),
+                                      BoxDecoration(color: Color(0xff080808)),
                                 )
                                 // Padding(
                                 //   padding: const EdgeInsets.symmetric(vertical: 5),
@@ -2441,7 +2444,7 @@ class PlaylistWidget extends StatelessWidget {
                                 height: MediaQuery.of(context).size.width / 3,
                                 width: MediaQuery.of(context).size.width / 3,
                                 decoration:
-                                    BoxDecoration(color: Color(0xff222222)),
+                                    BoxDecoration(color: Color(0xff080808)),
                               )
                               // Padding(
                               //   padding: const EdgeInsets.symmetric(vertical: 5),
@@ -2665,7 +2668,7 @@ class SnippetWidget extends StatelessWidget {
                                       end: Alignment.bottomCenter),
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Color(0xff222222),
+                                  color: Color(0xff080808),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                               ),
@@ -3133,7 +3136,7 @@ class _SeeMoreState extends State<SeeMore> {
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xff222222)),
+                        color: Color(0xff080808)),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
@@ -3146,7 +3149,7 @@ class _SeeMoreState extends State<SeeMore> {
                                 width: MediaQuery.of(context).size.width / 7,
                                 height: MediaQuery.of(context).size.width / 7,
                                 decoration: BoxDecoration(
-                                    color: Color(0xff161616),
+                                    color: Colors.black,
                                     borderRadius: BorderRadius.circular(10)),
                               ),
                               SizedBox(width: 10),
@@ -3155,7 +3158,7 @@ class _SeeMoreState extends State<SeeMore> {
                                 children: [
                                   Container(
                                     decoration:
-                                        BoxDecoration(color: Color(0xff161616)),
+                                        BoxDecoration(color: Colors.black),
                                     height: 16,
                                     width:
                                         MediaQuery.of(context).size.width / 3,
@@ -3165,7 +3168,7 @@ class _SeeMoreState extends State<SeeMore> {
                                   ),
                                   Container(
                                     decoration:
-                                        BoxDecoration(color: Color(0xff161616)),
+                                        BoxDecoration(color: Colors.black),
                                     height: 8,
                                     width:
                                         MediaQuery.of(context).size.width / 4,
@@ -3180,14 +3183,14 @@ class _SeeMoreState extends State<SeeMore> {
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 10,
                                 width: MediaQuery.of(context).size.width),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 10,
                                 width: MediaQuery.of(context).size.width / 2),
                           ),
@@ -3197,14 +3200,14 @@ class _SeeMoreState extends State<SeeMore> {
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 6,
                                 width: MediaQuery.of(context).size.width),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 3),
                             child: Container(
-                                color: Color(0xff161616),
+                                color: Colors.black,
                                 height: 6,
                                 width:
                                     MediaQuery.of(context).size.width * 0.75),
@@ -3217,7 +3220,7 @@ class _SeeMoreState extends State<SeeMore> {
                                 Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Color(0xff161616),
+                                    color: Colors.black,
                                   ),
                                   height: 25,
                                   width: MediaQuery.of(context).size.width / 8,
@@ -3228,7 +3231,7 @@ class _SeeMoreState extends State<SeeMore> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                     ),
                                     height: 25,
                                     width:
@@ -3241,7 +3244,7 @@ class _SeeMoreState extends State<SeeMore> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color: Color(0xff161616),
+                                      color: Colors.black,
                                     ),
                                     height: 20,
                                     width:
@@ -3626,7 +3629,7 @@ class _FollowingPageState extends State<FollowingPage>
           headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
             return <Widget>[
               SliverAppBar(
-                backgroundColor: Color(0xff161616),
+                backgroundColor: Colors.black,
                 automaticallyImplyLeading: false,
                 expandedHeight: 30,
                 pinned: true,
@@ -3741,7 +3744,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(10),
-                                                  color: Color(0xff222222),
+                                                  color: Color(0xff080808),
                                                 ),
                                                 width: MediaQuery.of(context)
                                                         .size
@@ -3761,7 +3764,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               10),
-                                                      color: Color(0xff222222)),
+                                                      color: Color(0xff080808)),
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width /
@@ -3774,7 +3777,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10),
-                                                    color: Color(0xff222222)),
+                                                    color: Color(0xff080808)),
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width /
@@ -3954,7 +3957,7 @@ class _FollowingPageState extends State<FollowingPage>
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            color: Color(0xff222222)),
+                                            color: Color(0xff080808)),
                                         child: Padding(
                                           padding: const EdgeInsets.all(20),
                                           child: Column(
@@ -3977,8 +3980,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                 .width /
                                                             7,
                                                     decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xff161616),
+                                                        color: Colors.black,
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10)),
@@ -4027,7 +4029,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                 padding: const EdgeInsets.only(
                                                     top: 3),
                                                 child: Container(
-                                                    color: Color(0xff161616),
+                                                    color: Colors.black,
                                                     height: 10,
                                                     width:
                                                         MediaQuery.of(context)
@@ -4038,7 +4040,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                 padding: const EdgeInsets.only(
                                                     top: 3),
                                                 child: Container(
-                                                    color: Color(0xff161616),
+                                                    color: Colors.black,
                                                     height: 10,
                                                     width:
                                                         MediaQuery.of(context)
@@ -4053,7 +4055,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                 padding: const EdgeInsets.only(
                                                     top: 3),
                                                 child: Container(
-                                                    color: Color(0xff161616),
+                                                    color: Colors.black,
                                                     height: 6,
                                                     width:
                                                         MediaQuery.of(context)
@@ -4064,7 +4066,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                 padding: const EdgeInsets.only(
                                                     top: 3),
                                                 child: Container(
-                                                    color: Color(0xff161616),
+                                                    color: Colors.black,
                                                     height: 6,
                                                     width:
                                                         MediaQuery.of(context)
@@ -4085,8 +4087,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10),
-                                                        color:
-                                                            Color(0xff161616),
+                                                        color: Colors.black,
                                                       ),
                                                       height: 25,
                                                       width:
@@ -4106,8 +4107,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(10),
-                                                          color:
-                                                              Color(0xff161616),
+                                                          color: Colors.black,
                                                         ),
                                                         height: 25,
                                                         width: MediaQuery.of(
@@ -4128,8 +4128,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(8),
-                                                          color:
-                                                              Color(0xff161616),
+                                                          color: Colors.black,
                                                         ),
                                                         height: 20,
                                                         width: MediaQuery.of(
@@ -4183,7 +4182,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                               .isLightTheme ==
                                                           true
                                                       ? Colors.white
-                                                      : Color(0xff222222),
+                                                      : Color(0xff080808),
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                 ),
@@ -4723,7 +4722,7 @@ class _FollowingPageState extends State<FollowingPage>
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              color: Color(0xff222222)),
+                                              color: Color(0xff080808)),
                                           child: Padding(
                                             padding: const EdgeInsets.all(20),
                                             child: Column(
@@ -4746,8 +4745,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                   .width /
                                                               7,
                                                       decoration: BoxDecoration(
-                                                          color:
-                                                              Color(0xff161616),
+                                                          color: Colors.black,
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(
@@ -4798,7 +4796,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                       const EdgeInsets.only(
                                                           top: 3),
                                                   child: Container(
-                                                      color: Color(0xff161616),
+                                                      color: Colors.black,
                                                       height: 10,
                                                       width:
                                                           MediaQuery.of(context)
@@ -4810,7 +4808,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                       const EdgeInsets.only(
                                                           top: 3),
                                                   child: Container(
-                                                      color: Color(0xff161616),
+                                                      color: Colors.black,
                                                       height: 10,
                                                       width:
                                                           MediaQuery.of(context)
@@ -4826,7 +4824,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                       const EdgeInsets.only(
                                                           top: 3),
                                                   child: Container(
-                                                      color: Color(0xff161616),
+                                                      color: Colors.black,
                                                       height: 6,
                                                       width:
                                                           MediaQuery.of(context)
@@ -4838,7 +4836,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                       const EdgeInsets.only(
                                                           top: 3),
                                                   child: Container(
-                                                      color: Color(0xff161616),
+                                                      color: Colors.black,
                                                       height: 6,
                                                       width:
                                                           MediaQuery.of(context)
@@ -4859,8 +4857,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(10),
-                                                          color:
-                                                              Color(0xff161616),
+                                                          color: Colors.black,
                                                         ),
                                                         height: 25,
                                                         width: MediaQuery.of(

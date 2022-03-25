@@ -5,6 +5,22 @@ import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+MaterialColor primaryBlack = MaterialColor(
+  0XFF000000,
+  <int, Color>{
+    50: Color(0xFF000000),
+    100: Color(0xFF000000),
+    200: Color(0xFF000000),
+    300: Color(0xFF000000),
+    400: Color(0xFF000000),
+    500: Color(0XFF000000),
+    600: Color(0xFF000000),
+    700: Color(0xFF000000),
+    800: Color(0xFF000000),
+    900: Color(0xFF000000),
+  },
+);
+
 class ThemeProvider with ChangeNotifier {
   bool isLightTheme;
 
@@ -44,18 +60,19 @@ class ThemeProvider with ChangeNotifier {
   // Global theme data we are always check if the light theme is enabled #isLightTheme
   ThemeData themeData() {
     return ThemeData(
-      fontFamily: "Metropolis",
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      accentColor: Colors.blue,
-      primarySwatch: isLightTheme ? Colors.grey : Colors.grey,
-      primaryColor: isLightTheme ? Colors.white : kPrimaryColor,
-      //  primaryColor: isLightTheme ? Colors.white : kPrimaryColor,
-      brightness: isLightTheme ? Brightness.light : Brightness.dark,
-      backgroundColor: isLightTheme ? Color(0xFFFFFFFF) : kPrimaryColor,
-
-      scaffoldBackgroundColor: isLightTheme ? Color(0xFFFFFFFF) : kPrimaryColor,
-      canvasColor: isLightTheme ? Color(0xffffffff) : kPrimaryColor,
-    );
+        fontFamily: "Metropolis",
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        accentColor: Colors.blue,
+        primarySwatch: primaryBlack,
+        primaryColor: primaryBlack,
+        //  primaryColor: isLightTheme ? Colors.white : kPrimaryColor,
+        brightness: Brightness.dark,
+        backgroundColor: primaryBlack,
+        scaffoldBackgroundColor: primaryBlack,
+        canvasColor: primaryBlack,
+        appBarTheme: ThemeData.dark()
+            .appBarTheme
+            .copyWith(backgroundColor: Colors.black));
   }
 
   // Theme mode to display unique properties not cover in theme data

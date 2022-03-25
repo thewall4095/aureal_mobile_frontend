@@ -107,7 +107,6 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
   }
 
   @override
-
   Widget build(BuildContext context) {
     ThemeProvider themeProvider = Provider.of<ThemeProvider>(context);
     setState(() {});
@@ -124,9 +123,8 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
             ],
             color: themeProvider.isLightTheme == true
                 ? Colors.white
-                : Color(0xff222222),
-            borderRadius:
-            BorderRadius.circular(15),
+                : Color(0xff1a1a1a),
+            borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
             padding: const EdgeInsets.all(15),
@@ -142,13 +140,11 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color: themeProvider
-                              .isLightTheme ==
-                              true
+                          color: themeProvider.isLightTheme == true
                               ? Color(0xffE8E8E8)
-                              : Color(0xff222222),
+                              : Color(0xff1a1a1a),
                           borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color:Color(0xff222222))),
+                          border: Border.all(color: Color(0xff1a1a1a))),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 10),
@@ -276,11 +272,10 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: themeProvider
-                                            .isLightTheme ==
-                                            true
-                                            ? Color(0xffE8E8E8)
-                                            : Color(0xff222222),
+                                        color:
+                                            themeProvider.isLightTheme == true
+                                                ? Color(0xffE8E8E8)
+                                                : Color(0xff1a1a1a),
                                         shape: BoxShape.circle),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -309,11 +304,10 @@ class _ReferralDashboardState extends State<ReferralDashboard> {
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: themeProvider
-                                            .isLightTheme ==
-                                            true
-                                            ? Color(0xffE8E8E8)
-                                            : Color(0xff222222),
+                                        color:
+                                            themeProvider.isLightTheme == true
+                                                ? Color(0xffE8E8E8)
+                                                : Color(0xff1a1a1a),
                                         shape: BoxShape.circle),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
@@ -375,17 +369,17 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(       boxShadow: [
-              new BoxShadow(
-                color: Colors.black54.withOpacity(0.2),
-                blurRadius: 10.0,
-              ),
-            ],
+            decoration: BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black54.withOpacity(0.2),
+                  blurRadius: 10.0,
+                ),
+              ],
               color: themeProvider.isLightTheme == true
                   ? Colors.white
-                  : Color(0xff222222),
-              borderRadius:
-              BorderRadius.circular(15),
+                  : Color(0xff1a1a1a),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -404,17 +398,17 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(      boxShadow: [
-              new BoxShadow(
-                color: Colors.black54.withOpacity(0.2),
-                blurRadius: 10.0,
-              ),
-            ],
+            decoration: BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black54.withOpacity(0.2),
+                  blurRadius: 10.0,
+                ),
+              ],
               color: themeProvider.isLightTheme == true
                   ? Colors.white
-                  : Color(0xff222222),
-              borderRadius:
-              BorderRadius.circular(15),
+                  : Color(0xff1a1a1a),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -433,17 +427,17 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(      boxShadow: [
-              new BoxShadow(
-                color: Colors.black54.withOpacity(0.2),
-                blurRadius: 10.0,
-              ),
-            ],
+            decoration: BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black54.withOpacity(0.2),
+                  blurRadius: 10.0,
+                ),
+              ],
               color: themeProvider.isLightTheme == true
                   ? Colors.white
-                  : Color(0xff222222),
-              borderRadius:
-              BorderRadius.circular(15),
+                  : Color(0xff1a1a1a),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -462,17 +456,17 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(     boxShadow: [
-              new BoxShadow(
-                color: Colors.black54.withOpacity(0.2),
-                blurRadius: 10.0,
-              ),
-            ],
+            decoration: BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black54.withOpacity(0.2),
+                  blurRadius: 10.0,
+                ),
+              ],
               color: themeProvider.isLightTheme == true
                   ? Colors.white
-                  : Color(0xff222222),
-              borderRadius:
-              BorderRadius.circular(15),
+                  : Color(0xff1a1a1a),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),
@@ -491,17 +485,17 @@ class FAQ extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: Container(
-            decoration: BoxDecoration(      boxShadow: [
-              new BoxShadow(
-                color: Colors.black54.withOpacity(0.2),
-                blurRadius: 10.0,
-              ),
-            ],
+            decoration: BoxDecoration(
+              boxShadow: [
+                new BoxShadow(
+                  color: Colors.black54.withOpacity(0.2),
+                  blurRadius: 10.0,
+                ),
+              ],
               color: themeProvider.isLightTheme == true
                   ? Colors.white
-                  : Color(0xff222222),
-              borderRadius:
-              BorderRadius.circular(15),
+                  : Color(0xff1a1a1a),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10),

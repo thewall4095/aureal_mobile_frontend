@@ -271,7 +271,8 @@ class _MyAppState extends State<MyApp> {
                                   child: MaterialApp(
                                     debugShowCheckedModeBanner: false,
                                     navigatorKey: navigatorKey,
-
+                                    darkTheme: ThemeData.dark(),
+                                    themeMode: ThemeMode.light,
                                     title: 'Aureal',
                                     theme: widget.themeProvider.themeData(),
                                     home: SplashScreenPage(),

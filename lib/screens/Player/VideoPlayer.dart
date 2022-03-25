@@ -250,9 +250,15 @@ class VideoPlayer extends StatelessWidget {
                           icon: Icon(Icons.keyboard_arrow_down)),
                     ],
                   ),
-                  ListTile(
-                    title: Text("${watch.videoSource.title}"),
-                    subtitle: Text("${watch.videoSource.album}"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: ListTile(
+                      title: Text("${watch.videoSource.title}"),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text("${watch.videoSource.album}"),
+                      ),
+                    ),
                   ),
                   watch.permlink != null
                       ? ListTile(title: Container())
@@ -261,8 +267,64 @@ class VideoPlayer extends StatelessWidget {
               );
             }),
           ),
+          VideoRecommendations()
         ],
       ),
+    );
+  }
+}
+
+class VideoRecommendations extends StatefulWidget {
+  VideoRecommendations();
+
+  @override
+  State<VideoRecommendations> createState() => _VideoRecommendationsState();
+}
+
+class _VideoRecommendationsState extends State<VideoRecommendations> {
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+
+  CancelToken _cancel = CancelToken();
+
+  Future getVideoRecommendations(episodeId) async {
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/recommendedEpisodes?user_id=${prefs.getString('userId')}&size=20&page=0&episode_id=$episodeId";
+
+    try {
+      final response = await dio.get(url, cancelToken: _cancel);
+      if (response.statusCode == 200) {
+        return response.data['episodes'];
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final episodeobject = Provider.of<PlayerChange>(context);
+    return FutureBuilder(
+      future: getVideoRecommendations(episodeobject.episodeObject['id']),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return SliverList(
+            delegate: SliverChildBuilderDelegate((context, int index) {
+              return Container();
+            }),
+          );
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }
@@ -396,7 +458,7 @@ class _PlaybackVideoButtonsState extends State<PlaybackVideoButtons> {
                           border: Border.all(
                               color: Color(0xffe8e8e8).withOpacity(0.5),
                               width: 0.5),
-                          color: Color(0xff161616),
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(30)),
                     ),
                   )

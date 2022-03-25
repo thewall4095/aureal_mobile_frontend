@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:fluttertoast/fluttertoast.dart' as toast;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Createplaylist extends StatefulWidget {
   int episodeId;
@@ -170,7 +170,7 @@ class _CreateplaylistState extends State<Createplaylist> {
                 });
               },
               selected: true,
-              selectedTileColor: Color(0xff222222),
+              selectedTileColor: Color(0xff1a1a1a),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -231,7 +231,7 @@ class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: EdgeInsets.all(20),
-      backgroundColor: Color(0xff161616),
+      backgroundColor: Colors.black,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
