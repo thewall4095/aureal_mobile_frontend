@@ -267,7 +267,7 @@ class VideoPlayer extends StatelessWidget {
               );
             }),
           ),
-          VideoRecommendations()
+          // VideoRecommendations()
         ],
       ),
     );

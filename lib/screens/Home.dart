@@ -968,7 +968,7 @@ class BottomPlayer extends StatelessWidget {
             key: UniqueKey(),
             onDismissed: (direction) {
               // episodeObject.episodeName = null;
-              episodeObject.audioPlayer.pause();
+              episodeObject.audioPlayer.stop();
             },
             child: ClipRect(
               child: BackdropFilter(
