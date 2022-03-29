@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.android.exoplayer:exoplayer-transformer:2.14.1@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c4c062e383c3d3e98c13a9d69e99a65/jetified-exoplayer-transformer-2.14.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a10e4895cef2e2920acb2f479be83b97/transformed/jetified-exoplayer-transformer-2.14.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c4c062e383c3d3e98c13a9d69e99a65/jetified-exoplayer-transformer-2.14.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c4c062e383c3d3e98c13a9d69e99a65/jetified-exoplayer-transformer-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c4c062e383c3d3e98c13a9d69e99a65/jetified-exoplayer-transformer-2.14.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/21209f6cf77626c214566206763aa7c0/jetified-exoplayer-transformer-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b08bb85f3a476baa927491d66a8b7866/jetified-exoplayer-transformer-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a10e4895cef2e2920acb2f479be83b97/transformed/jetified-exoplayer-transformer-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a10e4895cef2e2920acb2f479be83b97/transformed/jetified-exoplayer-transformer-2.14.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a10e4895cef2e2920acb2f479be83b97/transformed/jetified-exoplayer-transformer-2.14.1/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.exoplayer/exoplayer-transformer/2.14.1/8a736e403346dd1575abc0f41a9feb32d99c1023/exoplayer-transformer-2.14.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

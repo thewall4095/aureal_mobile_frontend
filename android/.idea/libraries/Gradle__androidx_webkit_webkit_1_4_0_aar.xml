@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.webkit:webkit:1.4.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cd53649856e0d7d5b6cc9c055b07f74/webkit-1.4.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/ce99d579fb7d7bfd8b1b40b6d55a3bc3/transformed/webkit-1.4.0/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cd53649856e0d7d5b6cc9c055b07f74/webkit-1.4.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cd53649856e0d7d5b6cc9c055b07f74/webkit-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4cd53649856e0d7d5b6cc9c055b07f74/webkit-1.4.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8075ab64f06544555639e311e0fe7646/webkit-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd094abc448d11925b258253d631f2f3/webkit-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ce99d579fb7d7bfd8b1b40b6d55a3bc3/transformed/webkit-1.4.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/ce99d579fb7d7bfd8b1b40b6d55a3bc3/transformed/webkit-1.4.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/ce99d579fb7d7bfd8b1b40b6d55a3bc3/transformed/webkit-1.4.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.webkit/webkit/1.4.0/a73605771c2a3ea2e168fa93ece88975d67587a9/webkit-1.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

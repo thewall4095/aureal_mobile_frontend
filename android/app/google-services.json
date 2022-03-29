@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "206317282199",
+    "firebase_url": "https://aureal-3a2b1.firebaseio.com",
+    "project_id": "aureal-3a2b1",
+    "storage_bucket": "aureal-3a2b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206317282199:android:1904f70449ed612703dad2",
+        "android_client_info": {
+          "package_name": "co.titandlt.auditory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206317282199-ofec19h5qhl23b8h6n65rffin9t6a6r9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.titandlt.auditory",
+            "certificate_hash": "627f19381f2cb3b679b2b13510be2ceb1d4de3a6"
+          }
+        },
+        {
+          "client_id": "206317282199-s7jlkicorlusser9n9hu53mh3o6g148s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBShd53fTOHghlnc-8W5mFHgDvgT9y_LtY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206317282199-s7jlkicorlusser9n9hu53mh3o6g148s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "206317282199-usl7l3csgnke0qqsjp82tqevtt5hnqvs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.titandlt.auditory"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

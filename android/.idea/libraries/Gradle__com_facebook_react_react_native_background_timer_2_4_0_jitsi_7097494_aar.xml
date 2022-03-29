@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.react:react-native-background-timer:2.4.0-jitsi-7097494@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9cadfbcf10435000f554a2ce693c962c/jetified-react-native-background-timer-2.4.0-jitsi-7097494/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9cadfbcf10435000f554a2ce693c962c/jetified-react-native-background-timer-2.4.0-jitsi-7097494/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9cadfbcf10435000f554a2ce693c962c/jetified-react-native-background-timer-2.4.0-jitsi-7097494/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd2c67a684bf2ebe7ecc183b0fb1da1a/jetified-react-native-background-timer-2.4.0-jitsi-7097494/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c37d0731b9a2371aff4c12043f8b2e99/jetified-react-native-background-timer-2.4.0-jitsi-7097494/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3e6e7d3d8c416a30676bb20a7d52f03d/transformed/jetified-react-native-background-timer-2.4.0-jitsi-7097494/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/3e6e7d3d8c416a30676bb20a7d52f03d/transformed/jetified-react-native-background-timer-2.4.0-jitsi-7097494/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3e6e7d3d8c416a30676bb20a7d52f03d/transformed/jetified-react-native-background-timer-2.4.0-jitsi-7097494/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.react/react-native-background-timer/2.4.0-jitsi-7097494/7670eba3b1ce0130f1afdacd994642c9cb813838/react-native-background-timer-2.4.0-jitsi-7097494-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,24 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.fresco:imagepipeline:2.0.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bdb65750aa6ca03e88946c026985e74/jetified-imagepipeline-2.0.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a225956b82acef6a4f2a888f92f33d69/transformed/jetified-imagepipeline-2.0.0/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bdb65750aa6ca03e88946c026985e74/jetified-imagepipeline-2.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bdb65750aa6ca03e88946c026985e74/jetified-imagepipeline-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bdb65750aa6ca03e88946c026985e74/jetified-imagepipeline-2.0.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fb522be7bcc219768c008f17136f99b2/jetified-imagepipeline-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/86952c0c96fde813eddc5338267b7417/jetified-imagepipeline-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a225956b82acef6a4f2a888f92f33d69/transformed/jetified-imagepipeline-2.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/a225956b82acef6a4f2a888f92f33d69/transformed/jetified-imagepipeline-2.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/a225956b82acef6a4f2a888f92f33d69/transformed/jetified-imagepipeline-2.0.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/imagepipeline/2.0.0/442f3f8cfb3cf25b9d732bdc9909438d331e42ee/imagepipeline-2.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/imagepipeline/2.0.0/a6644f5398d7222310d3dfca7e9763b834249158/imagepipeline-2.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

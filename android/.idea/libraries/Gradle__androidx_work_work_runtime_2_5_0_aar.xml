@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.work:work-runtime:2.5.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a0a28c4f6f2b7a6eb2d9ce7775e61d5/work-runtime-2.5.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a0a28c4f6f2b7a6eb2d9ce7775e61d5/work-runtime-2.5.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4a0a28c4f6f2b7a6eb2d9ce7775e61d5/work-runtime-2.5.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/534e18b130fd6d25dba6ae082e089529/transformed/work-runtime-2.5.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/534e18b130fd6d25dba6ae082e089529/transformed/work-runtime-2.5.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/534e18b130fd6d25dba6ae082e089529/transformed/work-runtime-2.5.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.work/work-runtime/2.5.0/f0a35272321dcf8f72108a971adcf3891e90b75f/work-runtime-2.5.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

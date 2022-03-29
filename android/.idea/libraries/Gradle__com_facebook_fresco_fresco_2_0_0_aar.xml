@@ -1,0 +1,24 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.fresco:fresco:2.0.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317449633e50f0a5b1170cd90d75bfcb/jetified-fresco-2.0.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/81e207428145b2682ae9ab7e4b678ce6/transformed/jetified-fresco-2.0.0/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317449633e50f0a5b1170cd90d75bfcb/jetified-fresco-2.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317449633e50f0a5b1170cd90d75bfcb/jetified-fresco-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/317449633e50f0a5b1170cd90d75bfcb/jetified-fresco-2.0.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98d6025ffe58bf836442e408e14b1531/jetified-fresco-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5c885848b9b6281d2abbf6feb5dd4358/jetified-fresco-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/81e207428145b2682ae9ab7e4b678ce6/transformed/jetified-fresco-2.0.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/81e207428145b2682ae9ab7e4b678ce6/transformed/jetified-fresco-2.0.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/81e207428145b2682ae9ab7e4b678ce6/transformed/jetified-fresco-2.0.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/fresco/2.0.0/e1bdf0d1daeed7b2af4d334ee012b81a2496ec93/fresco-2.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.fresco/fresco/2.0.0/4fd7cb7438109299dd0175f2cbaa8d205d7ee78f/fresco-2.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

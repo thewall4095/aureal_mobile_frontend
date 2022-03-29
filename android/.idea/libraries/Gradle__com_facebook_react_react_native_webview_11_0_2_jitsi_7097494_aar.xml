@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.facebook.react:react-native-webview:11.0.2-jitsi-7097494@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0182494d0f2548a6e2170b3e1278e89b/jetified-react-native-webview-11.0.2-jitsi-7097494/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0182494d0f2548a6e2170b3e1278e89b/jetified-react-native-webview-11.0.2-jitsi-7097494/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0182494d0f2548a6e2170b3e1278e89b/jetified-react-native-webview-11.0.2-jitsi-7097494/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/352cc880f743a702511a6cdb6d50048e/transformed/jetified-react-native-webview-11.0.2-jitsi-7097494/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/352cc880f743a702511a6cdb6d50048e/transformed/jetified-react-native-webview-11.0.2-jitsi-7097494/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/352cc880f743a702511a6cdb6d50048e/transformed/jetified-react-native-webview-11.0.2-jitsi-7097494/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.react/react-native-webview/11.0.2-jitsi-7097494/4be8cfb7cbb0b7d08751594baa47b74209b5c01/react-native-webview-11.0.2-jitsi-7097494-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

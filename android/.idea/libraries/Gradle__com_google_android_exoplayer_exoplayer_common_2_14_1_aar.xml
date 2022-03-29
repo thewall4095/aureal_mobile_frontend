@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.android.exoplayer:exoplayer-common:2.14.1@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aeb9d4c493d12e665cf4b2d9edda0a32/jetified-exoplayer-common-2.14.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/55ec3c7921b92196212190652fabed1c/transformed/jetified-exoplayer-common-2.14.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aeb9d4c493d12e665cf4b2d9edda0a32/jetified-exoplayer-common-2.14.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aeb9d4c493d12e665cf4b2d9edda0a32/jetified-exoplayer-common-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aeb9d4c493d12e665cf4b2d9edda0a32/jetified-exoplayer-common-2.14.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c53bc79b0bfabd99e339a3554a3f0f0/jetified-exoplayer-common-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a468eedd2d29578bf47aa498e4854479/jetified-exoplayer-common-2.14.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/55ec3c7921b92196212190652fabed1c/transformed/jetified-exoplayer-common-2.14.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/55ec3c7921b92196212190652fabed1c/transformed/jetified-exoplayer-common-2.14.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/55ec3c7921b92196212190652fabed1c/transformed/jetified-exoplayer-common-2.14.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.exoplayer/exoplayer-common/2.14.1/cb848685cec5aaa8454c35d962d06cf3d97f27fe/exoplayer-common-2.14.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
