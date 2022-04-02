@@ -17,7 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+// import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
@@ -1336,7 +1336,7 @@ class _SnippetEditorState extends State<SnippetEditor> {
 
   String imagePath;
 
-  final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
+  // final FlutterFFmpeg _fFmpeg = FlutterFFmpeg();
 
   void createSnippet() async {
     String url = 'https://api.aureal.one/private/createSnippet';
@@ -1384,14 +1384,14 @@ class _SnippetEditorState extends State<SnippetEditor> {
         customPath +
         DateTime.now().millisecondsSinceEpoch.toString();
 
-    _fFmpeg
-        .execute(
-            '-i ${audioUrl} -filter_complex showwavespic=s=1280x720:colors=ffffff -frames:v 1 ${customPath}.png')
-        .then((value) {
-      setState(() {
-        imagePath = '${customPath}.png';
-      });
-    });
+    // _fFmpeg
+    //     .execute(
+    //         '-i ${audioUrl} -filter_complex showwavespic=s=1280x720:colors=ffffff -frames:v 1 ${customPath}.png')
+    //     .then((value) {
+    //   setState(() {
+    //     imagePath = '${customPath}.png';
+    //   });
+    // });
 
     setState(() {
       loading = false;

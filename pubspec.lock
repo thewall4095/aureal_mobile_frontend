@@ -84,7 +84,7 @@ packages:
       name: better_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.81"
+    version: "0.0.73"
   boolean_selector:
     dependency: transitive
     description:
@@ -384,13 +384,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.1"
-  flutter_ffmpeg:
-    dependency: "direct main"
-    description:
-      name: flutter_ffmpeg
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.10"
   flutter_html:
     dependency: "direct main"
     description:
@@ -512,7 +505,7 @@ packages:
       name: flutter_widget_from_html_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.5+1"
+    version: "0.6.2"
   fluttertoast:
     dependency: "direct main"
     description:
@@ -534,13 +527,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  fwfh_text_style:
-    dependency: transitive
-    description:
-      name: fwfh_text_style
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.7.3+1"
   google_fonts:
     dependency: "direct main"
     description:
@@ -664,27 +650,6 @@ packages:
     dependency: "direct main"
     description:
       name: intl_phone_field
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
-  jitsi_meet:
-    dependency: "direct main"
-    description:
-      name: jitsi_meet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
-  jitsi_meet_platform_interface:
-    dependency: transitive
-    description:
-      name: jitsi_meet_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
-  jitsi_meet_web_plugin:
-    dependency: transitive
-    description:
-      name: jitsi_meet_web_plugin
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"

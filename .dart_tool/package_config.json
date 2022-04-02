@@ -69,7 +69,7 @@
     },
     {
       "name": "better_player",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/better_player-0.0.81",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/better_player-0.0.73",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -332,12 +332,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "flutter_ffmpeg",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_ffmpeg-0.2.10",
-      "packageUri": "lib/",
-      "languageVersion": "2.1"
-    },
-    {
       "name": "flutter_html",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_html-2.1.2",
       "packageUri": "lib/",
@@ -441,7 +435,7 @@
     },
     {
       "name": "flutter_widget_from_html_core",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_widget_from_html_core-0.8.5+1",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_widget_from_html_core-0.6.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -460,12 +454,6 @@
     {
       "name": "form_field_validator",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/form_field_validator-1.1.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "fwfh_text_style",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/fwfh_text_style-2.7.3+1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -574,24 +562,6 @@
     {
       "name": "intl_phone_field",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/intl_phone_field-2.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet-4.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet_platform_interface",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_platform_interface-2.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
-      "name": "jitsi_meet_web_plugin",
-      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_web_plugin-2.0.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -1226,7 +1196,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2022-03-29T10:54:26.544899Z",
+  "generated": "2022-04-01T10:03:55.711549Z",
   "generator": "pub",
   "generatorVersion": "2.15.1"
 }

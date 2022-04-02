@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
@@ -25,7 +24,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:jitsi_meet/jitsi_meet.dart';
+// import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -5435,11 +5434,11 @@ class _ResultsSectionState extends State<ResultsSection>
                                                 }
                                                 getRoomDetails(v['roomid'])
                                                     .then((value) {
-                                                  _joinMeeting(
-                                                      roomId: value['roomid'],
-                                                      roomName: value['title'],
-                                                      hostUserId:
-                                                          value['hostuserid']);
+                                                  // _joinMeeting(
+                                                  //     roomId: value['roomid'],
+                                                  //     roomName: value['title'],
+                                                  //     hostUserId:
+                                                  //         value['hostuserid']);
                                                 });
                                                 // await _joinMeeting(
                                                 //     roomId: v['roomid'],
@@ -5758,75 +5757,75 @@ class SearchResultProvider extends ChangeNotifier {
   }
 }
 
-_joinMeeting({String roomId, String roomName, String hostUserId}) async {
-  // Enable or disable any feature flag here
-  // If feature flag are not provided, default values will be used
-  // Full list of feature flags (and defaults) available in the README
-  Map<FeatureFlagEnum, bool> featureFlags = {
-    FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
-    FeatureFlagEnum.CHAT_ENABLED: false,
-  };
-  if (!kIsWeb) {
-    // Here is an example, disabling features for each platform
-    if (Platform.isAndroid) {
-      // Disable ConnectionService usage on Android to avoid issues (see README)
-      featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
-    } else if (Platform.isIOS) {
-      // Disable PIP on iOS as it looks weird
-      featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
-    }
-  }
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  var options = JitsiMeetingOptions(room: roomId)
-    ..serverURL = 'https://sessions.aureal.one'
-    ..subject = roomName
-    ..userDisplayName = prefs.getString("HiveUserName")
-    ..userEmail = 'emailText.text'
-    // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
-    ..audioOnly = true
-    ..audioMuted = isAudioMuted
-    ..videoMuted = isVideoMuted
-    ..featureFlags.addAll(featureFlags)
-    ..webOptions = {
-      "roomName": roomName,
-      "width": "100%",
-      "height": "100%",
-      "enableWelcomePage": false,
-      "chromeExtensionBanner": null,
-      "userInfo": {
-        "displayName": prefs.getString('userName'),
-        'avatarUrl': prefs.getString('displayPicture')
-      }
-    };
-
-  debugPrint("JitsiMeetingOptions: $options");
-
-  await JitsiMeet.joinMeeting(
-    options,
-    listener: JitsiMeetingListener(
-        onConferenceWillJoin: (message) {
-          debugPrint("${options.room} will join with message: $message");
-        },
-        onConferenceJoined: (message) {
-          debugPrint("${options.room} joined with message: $message");
-        },
-        onConferenceTerminated: (message) {
-          debugPrint("${options.room} terminated with message: $message");
-        },
-        genericListeners: [
-          JitsiGenericListener(
-              eventName: 'onConferenceTerminated',
-              callback: (dynamic message) {
-                if (hostUserId == prefs.getString("userId")) {
-                  hostLeft(roomId);
-                }
-                debugPrint("readyToClose callback");
-              }),
-        ]),
-  );
-}
+// _joinMeeting({String roomId, String roomName, String hostUserId}) async {
+//   // Enable or disable any feature flag here
+//   // If feature flag are not provided, default values will be used
+//   // Full list of feature flags (and defaults) available in the README
+//   Map<FeatureFlagEnum, bool> featureFlags = {
+//     FeatureFlagEnum.WELCOME_PAGE_ENABLED: false,
+//     FeatureFlagEnum.CHAT_ENABLED: false,
+//   };
+//   if (!kIsWeb) {
+//     // Here is an example, disabling features for each platform
+//     if (Platform.isAndroid) {
+//       // Disable ConnectionService usage on Android to avoid issues (see README)
+//       featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
+//     } else if (Platform.isIOS) {
+//       // Disable PIP on iOS as it looks weird
+//       featureFlags[FeatureFlagEnum.PIP_ENABLED] = false;
+//     }
+//   }
+//
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//
+//   var options = JitsiMeetingOptions(room: roomId)
+//     ..serverURL = 'https://sessions.aureal.one'
+//     ..subject = roomName
+//     ..userDisplayName = prefs.getString("HiveUserName")
+//     ..userEmail = 'emailText.text'
+//     // ..iosAppBarRGBAColor = iosAppBarRGBAColor.text
+//     ..audioOnly = true
+//     ..audioMuted = isAudioMuted
+//     ..videoMuted = isVideoMuted
+//     ..featureFlags.addAll(featureFlags)
+//     ..webOptions = {
+//       "roomName": roomName,
+//       "width": "100%",
+//       "height": "100%",
+//       "enableWelcomePage": false,
+//       "chromeExtensionBanner": null,
+//       "userInfo": {
+//         "displayName": prefs.getString('userName'),
+//         'avatarUrl': prefs.getString('displayPicture')
+//       }
+//     };
+//
+//   debugPrint("JitsiMeetingOptions: $options");
+//
+//   await JitsiMeet.joinMeeting(
+//     options,
+//     listener: JitsiMeetingListener(
+//         onConferenceWillJoin: (message) {
+//           debugPrint("${options.room} will join with message: $message");
+//         },
+//         onConferenceJoined: (message) {
+//           debugPrint("${options.room} joined with message: $message");
+//         },
+//         onConferenceTerminated: (message) {
+//           debugPrint("${options.room} terminated with message: $message");
+//         },
+//         genericListeners: [
+//           JitsiGenericListener(
+//               eventName: 'onConferenceTerminated',
+//               callback: (dynamic message) {
+//                 if (hostUserId == prefs.getString("userId")) {
+//                   hostLeft(roomId);
+//                 }
+//                 debugPrint("readyToClose callback");
+//               }),
+//         ]),
+//   );
+// }
 
 void subscribe(int podcastId) async {
   Dio dio = Dio();
