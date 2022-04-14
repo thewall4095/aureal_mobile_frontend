@@ -369,7 +369,7 @@ class VideoListWidget extends StatelessWidget {
                                       ['author_user_id'],
                                   podcastid: snapshot.data[index]['podcast_id'],
                                   album: snapshot.data[index]['podcast_name'],
-                                  url: snapshot.data[index]['url'])),
+                                  url: snapshot.data[index]['url'], createdAt: snapshot.data[index]['published_at'])),
                         ),
                       );
                     },

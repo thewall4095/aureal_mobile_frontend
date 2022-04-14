@@ -11,6 +11,7 @@ class Video {
   final int podcastid;
   final String author_id;
   final String permlink;
+  final String createdAt;
 
   const Video(
       {@required this.id,
@@ -21,5 +22,6 @@ class Video {
       @required this.album,
       @required this.podcastid,
       @required this.author_id,
-      @required this.permlink});
+      @required this.permlink,
+      @required this.createdAt});
 }

@@ -3,10 +3,11 @@ import 'dart:ui';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/data/Datasource.dart';
-import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:better_player/better_player.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,6 +17,7 @@ import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class VideoPlayer extends StatefulWidget {
   const VideoPlayer();
@@ -69,79 +71,386 @@ class _VideoPlayerState extends State<VideoPlayer> {
       body: CustomScrollView(
         shrinkWrap: true,
         slivers: [
+          SliverAppBar(
+            pinned: true,
+            automaticallyImplyLeading: false,
+            expandedHeight: MediaQuery.of(context).size.height / 3.6,
+            collapsedHeight: MediaQuery.of(context).size.height / 3.6,
+            primary: true,
+            forceElevated: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Consumer<PlayerChange>(builder: (context, watch, _) {
+                // final videoObject = watch.videoSource;
+                // final miniPlayerController = watch.miniplayerController;
+                return Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          child: BetterPlayer(
+                            controller: watch.betterPlayerController,
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              watch.miniplayerController
+                                  .animateToHeight(state: PanelState.MIN);
+                            },
+                            icon: Icon(Icons.keyboard_arrow_down)),
+                      ],
+                    ),
+                    // watch.permlink != null
+                    //     ? ListTile(title: Container())
+                    //     : SizedBox(),
+                  ],
+                );
+              }),
+            ),
+          ),
           SliverToBoxAdapter(
-            child: Consumer<PlayerChange>(builder: (context, watch, _) {
-              // final videoObject = watch.videoSource;
-              // final miniPlayerController = watch.miniplayerController;
-              return Column(
-                children: [
-                  Stack(
-                    children: [
-                      Container(
-                        child: BetterPlayer(
-                          controller: watch.betterPlayerController,
+            child: Consumer<PlayerChange>(
+              builder: (context, watch, _) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        '${watch.videoSource.title}',
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+                      ),
+                      trailing: InkWell(
+                          onTap: () {
+                            print("Asked for description");
+                          },
+                          child: Icon(Icons.keyboard_arrow_down)),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 3),
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            watch.miniplayerController
-                                .animateToHeight(state: PanelState.MIN);
-                          },
-                          icon: Icon(Icons.keyboard_arrow_down)),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: ListTile(
-                      title: Text("${watch.videoSource.title}"),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text("${watch.videoSource.album}"),
+                    ),
+                    UpvoteAndComment(videoObject: watch.videoSource),
+                    Container(
+                      decoration: BoxDecoration(
+                          border: Border.symmetric(
+                              horizontal: BorderSide(
+                                  color: kSecondaryColor.withOpacity(0.5)))),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 20,
+                          child: CachedNetworkImage(
+                            imageUrl: watch.videoSource.thumbnailUrl,
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.contain)),
+                              );
+                            },
+                          ),
+                        ),
+                        title: Text(
+                          "${watch.videoSource.album}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text("${watch.videoSource.author}"),
+                        ),
                       ),
                     ),
-                  ),
-                  watch.permlink != null
-                      ? ListTile(title: Container())
-                      : SizedBox(),
-                ],
-              );
-            }),
+                    SizedBox(
+                      height: 50,
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-          recommendations.length == 0
-              ? SliverList(
-                  delegate: SliverChildBuilderDelegate((context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            color: Color(0xff181818),
-                          )),
-                    );
-                  }, childCount: 10),
-                )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate((context, int index) {
-                    return VideoCard(
-                      video: Video(
-                          id: recommendations[index]['id'],
-                          title: recommendations[index]['name'],
-                          author: recommendations[index]['author'],
-                          permlink: recommendations[index]['permlink'],
-                          thumbnailUrl: recommendations[index]['podcast_image'],
-                          author_id: recommendations[index]['author_user_id'],
-                          podcastid: recommendations[index]['podcast_id'],
-                          album: recommendations[index]['podcast_name'],
-                          url: recommendations[index]['url']),
-                      episodeObject: recommendations[index],
-                    );
-                  }, childCount: recommendations.length),
-                )
+          // recommendations.length == 0
+          //     ? SliverList(
+          //         delegate: SliverChildBuilderDelegate((context, int index) {
+          //           return Padding(
+          //             padding: const EdgeInsets.all(8.0),
+          //             child: AspectRatio(
+          //                 aspectRatio: 16 / 9,
+          //                 child: Container(
+          //                   width: MediaQuery.of(context).size.width,
+          //                   color: kSecondaryColor,
+          //                 )),
+          //           );
+          //         }, childCount: 10),
+          //       )
+          //     : SliverList(
+          //         delegate: SliverChildBuilderDelegate((context, int index) {
+          //           return VideoCard(
+          //             video: Video(
+          //                 id: recommendations[index]['id'],
+          //                 title: recommendations[index]['name'],
+          //                 author: recommendations[index]['author'],
+          //                 permlink: recommendations[index]['permlink'],
+          //                 thumbnailUrl: recommendations[index]['podcast_image'],
+          //                 author_id: recommendations[index]['author_user_id'],
+          //                 podcastid: recommendations[index]['podcast_id'],
+          //                 album: recommendations[index]['podcast_name'],
+          //                 url: recommendations[index]['url'],
+          //                 createdAt: recommendations[index]['published_at']),
+          //             episodeObject: recommendations[index],
+          //           );
+          //         }, childCount: recommendations.length),
+          //       )
           // VideoRecommendations()
         ],
       ),
     );
+  }
+}
+
+class UpvoteAndComment extends StatefulWidget {
+  final Video videoObject;
+
+  UpvoteAndComment({@required this.videoObject});
+
+  @override
+  State<UpvoteAndComment> createState() => _UpvoteAndCommentState();
+}
+
+class _UpvoteAndCommentState extends State<UpvoteAndComment> {
+  Future myFuture;
+  SharedPreferences prefs;
+
+  var data = Map<String, dynamic>();
+
+  Future getVotingValue(var episodeContent) async {
+    // setState(() {
+    //   isLoading = true;
+    // });
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://rpc.ecency.com";
+    print(url);
+    var map = Map<String, dynamic>();
+    map = {
+      "jsonrpc": "2.0",
+      "method": "bridge.get_post",
+      "params": {
+        'author': episodeContent['author_hiveusername'],
+        'permlink': episodeContent['permlink'],
+        'observer': ""
+      },
+      "id": 0
+    };
+    print(map);
+
+    try {
+      await dio.post(url, data: map).then((value) async {
+        // print(value.data);
+        if (value.data['result'] != null) {
+          var responsedata = {
+            'hive_earnings': value.data['result']['payout'],
+            'net_votes': value.data['result']['active_votes'].length,
+            'ifVoted': await getIfVoted(value.data['result']['active_votes']),
+            'isLoading': false,
+          };
+          setState(() {
+            data = responsedata;
+          });
+          print(data);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+    // setState(() {
+    //   isLoading = false;
+    // });
+  }
+
+  Future getIfVoted(List activeVotes) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('HiveUserName') != null) {
+      if (activeVotes
+          .toString()
+          .contains("${prefs.getString("HiveUserName")}")) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  Dio dio = Dio();
+
+  CancelToken cancel = CancelToken();
+
+  Future getEpisode() async {
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        'https://api.aureal.one/public/episode?episode_id=${widget.videoObject.id}&user_id=${prefs.getString('userId')}';
+
+    try {
+      var response = await dio.get(url, cancelToken: cancel);
+      if (response.statusCode == 200) {
+        getVotingValue(response.data['episode']);
+        return response.data['episode'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void init() async {
+    myFuture = getEpisode();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+  }
+
+  bool isUpvoteButtonLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: myFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                snapshot.data['permlink'] != null
+                    ? SizedBox()
+                    : Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: InkWell(
+                          onTap: () async {
+                            if (prefs.getString('HiveUserName') != null) {
+                              setState(() {
+                                isUpvoteButtonLoading = true;
+                              });
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                        backgroundColor: Colors.transparent,
+                                        child: UpvoteEpisode(
+                                            permlink: snapshot.data['permlink'],
+                                            episode_id: snapshot.data['id']));
+                                  }).then((value) async {
+                                print(value);
+                              });
+                              await upvoteEpisode(
+                                  permlink: snapshot.data['permlink'],
+                                  episode_id: snapshot.data['id']);
+                              setState(() {
+                                snapshot.data['ifVoted'] =
+                                    !snapshot.data['ifVoted'];
+                                isUpvoteButtonLoading = false;
+                              });
+                            } else {
+                              showBarModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return HiveDetails();
+                                  });
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: snapshot.data['ifVoted'] == true
+                                  ? BoxDecoration(
+                                      gradient: kGradient,
+                                    )
+                                  : BoxDecoration(
+                                      border:
+                                          Border.all(color: kSecondaryColor),
+                                    ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    isUpvoteButtonLoading == true
+                                        ? Container(
+                                            height: 18,
+                                            width: 18,
+                                            child: SpinKitPulse(
+                                              color: Colors.blue,
+                                            ),
+                                          )
+                                        : Icon(
+                                            FontAwesomeIcons.chevronCircleUp,
+                                            size: 15,
+                                          ),
+                                    data['ifVoted'] == false
+                                        ? Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10),
+                                            child: Text("UPVOTE"),
+                                          )
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                child: Text(
+                                                  '${data['net_votes'] == null ? " " : data['net_votes']}',
+                                                  textScaleFactor: 1.0,
+                                                  style: TextStyle(
+                                                      //        color: Color(
+                                                      // 0xffe8e8e8)
+                                                      ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 4),
+                                                child: Text(
+                                                  '\$${data['hive_earnings'] == null ? "" : data['hive_earnings']}',
+                                                  textScaleFactor: 1.0,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+              ],
+            );
+          } else {
+            return Container();
+          }
+        });
+  }
+
+  @override
+  void didUpdateWidget(covariant UpvoteAndComment oldWidget) {
+    // TODO: implement didUpdateWidget
+    if (oldWidget.videoObject != widget.videoObject) {
+      init();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 }
 
