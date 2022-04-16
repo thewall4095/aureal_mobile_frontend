@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:html/parser.dart';
+import 'package:linkable/linkable.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +28,8 @@ class VideoPlayer extends StatefulWidget {
   State<VideoPlayer> createState() => _VideoPlayerState();
 }
 
-class _VideoPlayerState extends State<VideoPlayer> {
+class _VideoPlayerState extends State<VideoPlayer>
+    with TickerProviderStateMixin {
   SharedPreferences prefs;
 
   Dio dio = Dio();
@@ -55,10 +58,13 @@ class _VideoPlayerState extends State<VideoPlayer> {
     }
   }
 
+  TabController _tabController;
+
   @override
   void initState() {
     // TODO: implement initState
     print("///////////////////////////////////////////////////////////////");
+    _tabController = TabController(vsync: this, length: 3);
 
     getRecommendations(context);
     super.initState();
@@ -67,147 +73,133 @@ class _VideoPlayerState extends State<VideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: CustomScrollView(
-        shrinkWrap: true,
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            automaticallyImplyLeading: false,
-            expandedHeight: MediaQuery.of(context).size.height / 3.6,
-            collapsedHeight: MediaQuery.of(context).size.height / 3.6,
-            primary: true,
-            forceElevated: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Consumer<PlayerChange>(builder: (context, watch, _) {
-                // final videoObject = watch.videoSource;
-                // final miniPlayerController = watch.miniplayerController;
-                return Column(
+      body: Column(
+        children: [
+          Consumer<PlayerChange>(builder: (context, watch, _) {
+            // final videoObject = watch.videoSource;
+            // final miniPlayerController = watch.miniplayerController;
+            return Column(
+              children: [
+                Stack(
                   children: [
-                    Stack(
-                      children: [
-                        Container(
-                          child: BetterPlayer(
-                            controller: watch.betterPlayerController,
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              watch.miniplayerController
-                                  .animateToHeight(state: PanelState.MIN);
-                            },
-                            icon: Icon(Icons.keyboard_arrow_down)),
-                      ],
-                    ),
-                    // watch.permlink != null
-                    //     ? ListTile(title: Container())
-                    //     : SizedBox(),
-                  ],
-                );
-              }),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Consumer<PlayerChange>(
-              builder: (context, watch, _) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: Text(
-                        '${watch.videoSource.title}',
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 3.6),
-                      ),
-                      trailing: InkWell(
-                          onTap: () {
-                            print("Asked for description");
-                          },
-                          child: Icon(Icons.keyboard_arrow_down)),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                        ),
-                      ),
-                    ),
-                    UpvoteAndComment(videoObject: watch.videoSource),
                     Container(
-                      decoration: BoxDecoration(
-                          border: Border.symmetric(
-                              horizontal: BorderSide(
-                                  color: kSecondaryColor.withOpacity(0.5)))),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          child: CachedNetworkImage(
-                            imageUrl: watch.videoSource.thumbnailUrl,
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.contain)),
-                              );
-                            },
-                          ),
-                        ),
-                        title: Text(
-                          "${watch.videoSource.album}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text("${watch.videoSource.author}"),
-                        ),
+                      child: BetterPlayer(
+                        controller: watch.betterPlayerController,
                       ),
                     ),
-                    SizedBox(
-                      height: 50,
-                    ),
+                    IconButton(
+                        onPressed: () {
+                          watch.miniplayerController
+                              .animateToHeight(state: PanelState.MIN);
+                        },
+                        icon: Icon(Icons.keyboard_arrow_down)),
                   ],
-                );
-              },
-            ),
-          ),
-          // recommendations.length == 0
-          //     ? SliverList(
-          //         delegate: SliverChildBuilderDelegate((context, int index) {
-          //           return Padding(
-          //             padding: const EdgeInsets.all(8.0),
-          //             child: AspectRatio(
-          //                 aspectRatio: 16 / 9,
-          //                 child: Container(
-          //                   width: MediaQuery.of(context).size.width,
-          //                   color: kSecondaryColor,
-          //                 )),
-          //           );
-          //         }, childCount: 10),
-          //       )
-          //     : SliverList(
-          //         delegate: SliverChildBuilderDelegate((context, int index) {
-          //           return VideoCard(
-          //             video: Video(
-          //                 id: recommendations[index]['id'],
-          //                 title: recommendations[index]['name'],
-          //                 author: recommendations[index]['author'],
-          //                 permlink: recommendations[index]['permlink'],
-          //                 thumbnailUrl: recommendations[index]['podcast_image'],
-          //                 author_id: recommendations[index]['author_user_id'],
-          //                 podcastid: recommendations[index]['podcast_id'],
-          //                 album: recommendations[index]['podcast_name'],
-          //                 url: recommendations[index]['url'],
-          //                 createdAt: recommendations[index]['published_at']),
-          //             episodeObject: recommendations[index],
-          //           );
-          //         }, childCount: recommendations.length),
-          //       )
-          // VideoRecommendations()
+                ),
+                // watch.permlink != null
+                //     ? ListTile(title: Container())
+                //     : SizedBox(),
+              ],
+            );
+          }),
+          // Expanded(
+          //   child: Container(
+          //     child: ListView(
+          //       children: [
+          //
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          CustomScrollView(
+            shrinkWrap: true,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Consumer<PlayerChange>(
+                  builder: (context, watch, _) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text(
+                            '${watch.videoSource.title}',
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+                          ),
+                          trailing: InkWell(
+                              onTap: () {
+                                print("Asked for description");
+                              },
+                              child: Icon(Icons.keyboard_arrow_down)),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(
+                              "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                              style: TextStyle(
+                                  fontSize: SizeConfig.safeBlockHorizontal * 3),
+                            ),
+                          ),
+                        ),
+                        UpvoteAndComment(videoObject: watch.videoSource),
+                        Container(
+                          decoration: BoxDecoration(),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              radius: 20,
+                              child: CachedNetworkImage(
+                                imageUrl: watch.videoSource.thumbnailUrl,
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.contain)),
+                                  );
+                                },
+                              ),
+                            ),
+                            title: Text(
+                              "${watch.videoSource.album}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.5),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 3),
+                              child: Text("${watch.videoSource.author}"),
+                            ),
+                          ),
+                        ),
+                        Divider(),
+                        Container(
+                          child: DefaultTabController(
+                            length: 3,
+                            child: TabBar(
+                                // indicatorSize: TabBarIndicatorSize.label,
+                                automaticIndicatorColorAdjustment: true,
+                                isScrollable: true,
+                                // controller: _tabController,
+                                tabs: [
+                                  Tab(
+                                    text: "EPISODES",
+                                  ),
+                                  Tab(
+                                    text: "SNIPPETS & MORE",
+                                  ),
+                                  Tab(
+                                    text: "MORE LIKE THESE",
+                                  )
+                                ]),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -309,6 +301,8 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
     }
   }
 
+  RegExp htmlMatch = RegExp(r'(\w+)');
+
   void init() async {
     myFuture = getEpisode();
   }
@@ -331,7 +325,7 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                snapshot.data['permlink'] != null
+                snapshot.data['permlink'] == null
                     ? SizedBox()
                     : Padding(
                         padding: const EdgeInsets.all(15),
@@ -435,7 +429,47 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
                             ),
                           ),
                         ),
-                      )
+                      ),
+                ListTile(
+                  // title: Text(
+                  //   "About",
+                  //   style: TextStyle(
+                  //       fontSize: SizeConfig.safeBlockHorizontal * 4,
+                  //       fontWeight: FontWeight.w600),
+                  // ),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    // child: htmlMatch.hasMatch(
+                    //             episodeContent['summary']) ==
+                    //         true
+                    //     ? Text(
+                    //         (parse(episodeContent['summary'])
+                    //             .body
+                    //             .text))
+                    //     : Text(
+                    //         '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
+                    child: htmlMatch.hasMatch(snapshot.data['summary']) == true
+                        ? Linkable(
+                            text:
+                                '${(parse(snapshot.data['summary']).body.text)}',
+                            maxLines: 3,
+                            textScaleFactor: 1.0,
+                            textColor: Color(0xffe8e8e8),
+                            style: TextStyle(
+                              fontSize: SizeConfig.blockSizeHorizontal * 3,
+                            ),
+                          )
+                        : Linkable(
+                            text: "${snapshot.data['summary']}",
+                            maxLines: 3,
+                            textScaleFactor: 1.0,
+                            textColor: Color(0xffe8e8e8),
+                            style: TextStyle(
+                              fontSize: SizeConfig.blockSizeHorizontal * 3,
+                            ),
+                          ),
+                  ),
+                ),
               ],
             );
           } else {
@@ -622,132 +656,271 @@ class _PlaybackVideoButtonsState extends State<PlaybackVideoButtons> {
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        (episodeObject.episodeObject['permlink'] == null
-            ? SizedBox(
-                height: 0,
-              )
-            : (isLoading == true
-                ? Padding(
-                    padding: const EdgeInsets.only(right: 5),
-                    child: Container(
-                      height: 25,
-                      width: MediaQuery.of(context).size.width / 6,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Color(0xffe8e8e8).withOpacity(0.5),
-                              width: 0.5),
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(30)),
-                    ),
+        Row(
+          children: [
+            (episodeObject.episodeObject['permlink'] == null
+                ? SizedBox(
+                    height: 0,
                   )
-                : GestureDetector(
-                    onTap: () async {
-                      Vibrate.feedback(FeedbackType.impact);
-                      if (prefs.getString('HiveUserName') != null) {
-                        setState(() {
-                          data['isLoading'] = true;
-                        });
-                        double _value = 50.0;
-
-                        showModalBottomSheet(
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            builder: (context) {
-                              return ClipRect(
-                                child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaY: 15.0,
-                                      sigmaX: 15.0,
-                                    ),
-                                    child: Container(
-                                      child: UpvoteEpisode(
-                                          permlink: episodeObject
-                                              .episodeObject['permlink'],
-                                          episode_id: episodeObject
-                                              .episodeObject['id']),
-                                    )),
-                              );
-                            }).then((value) {
-                          setState(() {
-                            data['net_votes'] = data['net_votes'] + 1;
-                            data['ifVoted'] = !data['ifVoted'];
-                          });
-                        });
-
-                        setState(() {
-                          data['isLoading'] = false;
-                        });
-                      } else {
-                        showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return HiveDetails();
-                            });
-                      }
-                    },
-                    child: Container(
-                      decoration: data['ifVoted'] == true
-                          ? BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                Color(0xff5bc3ef),
-                                Color(0xff5d5da8)
-                              ]),
-                              borderRadius: BorderRadius.circular(30))
-                          : BoxDecoration(
-                              border: Border.all(color: kSecondaryColor),
+                : (isLoading == true
+                    ? Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Container(
+                          height: 25,
+                          width: MediaQuery.of(context).size.width / 6,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Color(0xffe8e8e8).withOpacity(0.5),
+                                  width: 0.5),
+                              color: Colors.black,
                               borderRadius: BorderRadius.circular(30)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
-                        child: Row(
-                          children: [
-                            data['isLoading'] == true
-                                ? Container(
-                                    height: 17,
-                                    width: 18,
-                                    child: SpinKitPulse(
-                                      color: Colors.blue,
-                                    ),
-                                  )
-                                : Icon(
-                                    FontAwesomeIcons.chevronCircleUp,
-                                    size: 15,
-                                    // color:
-                                    //     Color(0xffe8e8e8),
-                                  ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                "${data['net_votes'] != null ? data['net_votes'] : ""}",
-                                textScaleFactor: 1.0,
-                                style: TextStyle(fontSize: 12
-                                    // color:
-                                    //     Color(0xffe8e8e8)
-                                    ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4),
-                              child: Text(
-                                '\$${data['hive_earnings'] != null ? data['hive_earnings'] : ""}',
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontSize: 12,
-
-                                  // color:
-                                  //     Color(0xffe8e8e8)
-                                ),
-                              ),
-                            )
-                          ],
                         ),
-                      ),
-                    ),
-                  ))),
+                      )
+                    : GestureDetector(
+                        onTap: () async {
+                          Vibrate.feedback(FeedbackType.impact);
+                          if (prefs.getString('HiveUserName') != null) {
+                            setState(() {
+                              data['isLoading'] = true;
+                            });
+                            double _value = 50.0;
+
+                            showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) {
+                                  return ClipRect(
+                                    child: BackdropFilter(
+                                        filter: ImageFilter.blur(
+                                          sigmaY: 15.0,
+                                          sigmaX: 15.0,
+                                        ),
+                                        child: Container(
+                                          child: UpvoteEpisode(
+                                              permlink: episodeObject
+                                                  .episodeObject['permlink'],
+                                              episode_id: episodeObject
+                                                  .episodeObject['id']),
+                                        )),
+                                  );
+                                }).then((value) {
+                              setState(() {
+                                data['net_votes'] = data['net_votes'] + 1;
+                                data['ifVoted'] = !data['ifVoted'];
+                              });
+                            });
+
+                            setState(() {
+                              data['isLoading'] = false;
+                            });
+                          } else {
+                            showBarModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return HiveDetails();
+                                });
+                          }
+                        },
+                        child: Container(
+                          decoration: data['ifVoted'] == true
+                              ? BoxDecoration(
+                                  gradient: LinearGradient(colors: [
+                                    Color(0xff5bc3ef),
+                                    Color(0xff5d5da8)
+                                  ]),
+                                  borderRadius: BorderRadius.circular(30))
+                              : BoxDecoration(
+                                  border: Border.all(color: kSecondaryColor),
+                                  borderRadius: BorderRadius.circular(30)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 5),
+                            child: Row(
+                              children: [
+                                data['isLoading'] == true
+                                    ? Container(
+                                        height: 17,
+                                        width: 18,
+                                        child: SpinKitPulse(
+                                          color: Colors.blue,
+                                        ),
+                                      )
+                                    : Icon(
+                                        FontAwesomeIcons.chevronCircleUp,
+                                        size: 15,
+                                        // color:
+                                        //     Color(0xffe8e8e8),
+                                      ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text(
+                                    "${data['net_votes'] != null ? data['net_votes'] : ""}",
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(fontSize: 12
+                                        // color:
+                                        //     Color(0xffe8e8e8)
+                                        ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 4),
+                                  child: Text(
+                                    '\$${data['hive_earnings'] != null ? data['hive_earnings'] : ""}',
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                      fontSize: 12,
+
+                                      // color:
+                                      //     Color(0xffe8e8e8)
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ))),
+          ],
+        ),
       ],
     );
   }
+}
+
+Widget videoScaffold() {
+  return Scaffold(
+    backgroundColor: Colors.transparent,
+    body: NestedScrollView(
+      headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
+        return <Widget>[
+          SliverAppBar(
+            snap: true,
+            pinned: true,
+            floating: true,
+            automaticallyImplyLeading: false,
+            expandedHeight: MediaQuery.of(context).size.height / 3.6,
+            collapsedHeight: MediaQuery.of(context).size.height / 3.6,
+            primary: true,
+            forceElevated: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Consumer<PlayerChange>(builder: (context, watch, _) {
+                // final videoObject = watch.videoSource;
+                // final miniPlayerController = watch.miniplayerController;
+                return Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          child: BetterPlayer(
+                            controller: watch.betterPlayerController,
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              watch.miniplayerController
+                                  .animateToHeight(state: PanelState.MIN);
+                            },
+                            icon: Icon(Icons.keyboard_arrow_down)),
+                      ],
+                    ),
+                    // watch.permlink != null
+                    //     ? ListTile(title: Container())
+                    //     : SizedBox(),
+                  ],
+                );
+              }),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Consumer<PlayerChange>(
+              builder: (context, watch, _) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text(
+                        '${watch.videoSource.title}',
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+                      ),
+                      trailing: InkWell(
+                          onTap: () {
+                            print("Asked for description");
+                          },
+                          child: Icon(Icons.keyboard_arrow_down)),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 3),
+                        ),
+                      ),
+                    ),
+                    UpvoteAndComment(videoObject: watch.videoSource),
+                    Container(
+                      decoration: BoxDecoration(),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 20,
+                          child: CachedNetworkImage(
+                            imageUrl: watch.videoSource.thumbnailUrl,
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.contain)),
+                              );
+                            },
+                          ),
+                        ),
+                        title: Text(
+                          "${watch.videoSource.album}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 3),
+                          child: Text("${watch.videoSource.author}"),
+                        ),
+                      ),
+                    ),
+                    Divider(),
+                    DefaultTabController(
+                      child: Container(
+                        child: TabBar(
+                            // indicatorSize: TabBarIndicatorSize.label,
+                            automaticIndicatorColorAdjustment: true,
+                            isScrollable: true,
+                            // controller: _tabController,
+                            tabs: [
+                              Tab(
+                                text: "EPISODES",
+                              ),
+                              Tab(
+                                text: "SNIPPETS & MORE",
+                              ),
+                              Tab(
+                                text: "MORE LIKE THESE",
+                              )
+                            ]),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ];
+      },
+      body: Container(),
+    ),
+  );
 }
