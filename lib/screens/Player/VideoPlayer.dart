@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:auditory/PlayerState.dart';
@@ -10,6 +11,7 @@ import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,190 +23,369 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class VideoPlayer extends StatefulWidget {
-  const VideoPlayer();
+class VideoPlayer extends StatelessWidget {
+  VideoPlayer();
+
+  int selectedIndex = 0;
 
   @override
-  State<VideoPlayer> createState() => _VideoPlayerState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // body: Column(
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     Consumer<PlayerChange>(builder: (context, watch, _) {
+      //       // final videoObject = watch.videoSource;
+      //       // final miniPlayerController = watch.miniplayerController;
+      //       return Column(
+      //         children: [
+      //           Stack(
+      //             children: [
+      //               Container(
+      //                 child: BetterPlayer(
+      //                   controller: watch.betterPlayerController,
+      //                 ),
+      //               ),
+      //               IconButton(
+      //                   onPressed: () {
+      //                     watch.miniplayerController
+      //                         .animateToHeight(state: PanelState.MIN);
+      //                   },
+      //                   icon: Icon(Icons.keyboard_arrow_down)),
+      //             ],
+      //           ),
+      //           // watch.permlink != null
+      //           //     ? ListTile(title: Container())
+      //           //     : SizedBox(),
+      //         ],
+      //       );
+      //     }),
+      //     Expanded(
+      //       child: ListView(
+      //         shrinkWrap: true,
+      //         children: [
+      //           Consumer<PlayerChange>(
+      //             builder: (context, watch, _) {
+      //               return Column(
+      //                 mainAxisSize: MainAxisSize.min,
+      //                 children: [
+      //                   ListTile(
+      //                     title: Text(
+      //                       '${watch.videoSource.title}',
+      //                       style: TextStyle(
+      //                           fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+      //                     ),
+      //                     trailing: InkWell(
+      //                         onTap: () {
+      //                           print("Asked for description");
+      //                         },
+      //                         child: Icon(Icons.keyboard_arrow_down)),
+      //                     subtitle: Padding(
+      //                       padding: const EdgeInsets.symmetric(vertical: 10),
+      //                       child: Text(
+      //                         "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+      //                         style: TextStyle(
+      //                             fontSize: SizeConfig.safeBlockHorizontal * 3),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                   UpvoteAndComment(videoObject: watch.videoSource),
+      //                   Container(
+      //                     decoration: BoxDecoration(),
+      //                     child: ListTile(
+      //                       leading: CircleAvatar(
+      //                         radius: 20,
+      //                         child: CachedNetworkImage(
+      //                           imageUrl: watch.videoSource.thumbnailUrl,
+      //                           imageBuilder: (context, imageProvider) {
+      //                             return Container(
+      //                               decoration: BoxDecoration(
+      //                                   shape: BoxShape.circle,
+      //                                   image: DecorationImage(
+      //                                       image: imageProvider,
+      //                                       fit: BoxFit.contain)),
+      //                             );
+      //                           },
+      //                         ),
+      //                       ),
+      //                       title: Text(
+      //                         "${watch.videoSource.album}",
+      //                         style: TextStyle(
+      //                             fontWeight: FontWeight.w600,
+      //                             fontSize:
+      //                                 SizeConfig.safeBlockHorizontal * 3.5),
+      //                       ),
+      //                       subtitle: Padding(
+      //                         padding: const EdgeInsets.only(top: 3),
+      //                         child: Text("${watch.videoSource.author}"),
+      //                       ),
+      //                     ),
+      //                   ),
+      //                   Divider(),
+      //                 ],
+      //               );
+      //             },
+      //           ),
+      //           // Container(
+      //           //   child: DefaultTabController(
+      //           //     length: 3,
+      //           //     child: TabBar(
+      //           //         // indicatorSize: TabBarIndicatorSize.label,
+      //           //         automaticIndicatorColorAdjustment: true,
+      //           //         isScrollable: true,
+      //           //         onTap: (int index) {
+      //           //           selectedIndex =
+      //           //               DefaultTabController.of(context).index;
+      //           //           DefaultTabController.of(context).animateTo(index);
+      //           //         },
+      //           //         // controller: _tabController,
+      //           //         tabs: [
+      //           //           Tab(
+      //           //             text: "EPISODES",
+      //           //           ),
+      //           //           Tab(
+      //           //             text: "SNIPPETS & MORE",
+      //           //           ),
+      //           //           Tab(
+      //           //             text: "MORE LIKE THESE",
+      //           //           )
+      //           //         ]),
+      //           //   ),
+      //           // ),
+      //           // IndexedStack(
+      //           //   children: [
+      //           //     Visibility(
+      //           //       child: Container(
+      //           //         color: Colors.white,
+      //           //       ),
+      //           //       maintainState: true,
+      //           //       visible: selectedIndex == 0,
+      //           //     ),
+      //           //     Container(
+      //           //       color: Colors.blue,
+      //           //     ),
+      //           //     Container(
+      //           //       color: Colors.black,
+      //           //     )
+      //           //   ],
+      //           // ),
+      //           // VideoPlayerBottom()
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
+          return <Widget>[
+            _SliverPinnedBoxAdapter(
+              child: Consumer<PlayerChange>(builder: (context, watch, _) {
+                // final videoObject = watch.videoSource;
+                // final miniPlayerController = watch.miniplayerController;
+                return Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          child: BetterPlayer(
+                            controller: watch.betterPlayerController,
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              watch.miniplayerController
+                                  .animateToHeight(state: PanelState.MIN);
+                            },
+                            icon: Icon(Icons.keyboard_arrow_down)),
+                      ],
+                    ),
+                    // watch.permlink != null
+                    //     ? ListTile(title: Container())
+                    //     : SizedBox(),
+                  ],
+                );
+              }),
+            ),
+            SliverToBoxAdapter(
+              child: Consumer<PlayerChange>(
+                builder: (context, watch, _) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text(
+                          '${watch.videoSource.title}',
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 3.6),
+                        ),
+                        trailing: InkWell(
+                            onTap: () {
+                              print("Asked for description");
+                            },
+                            child: Icon(Icons.keyboard_arrow_down)),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                            style: TextStyle(
+                                fontSize: SizeConfig.safeBlockHorizontal * 3),
+                          ),
+                        ),
+                      ),
+                      UpvoteAndComment(videoObject: watch.videoSource),
+                      Container(
+                        decoration: BoxDecoration(),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            radius: 20,
+                            child: CachedNetworkImage(
+                              imageUrl: watch.videoSource.thumbnailUrl,
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: imageProvider,
+                                          fit: BoxFit.contain)),
+                                );
+                              },
+                            ),
+                          ),
+                          title: Text(
+                            "${watch.videoSource.album}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 3),
+                            child: Text("${watch.videoSource.author}"),
+                          ),
+                        ),
+                      ),
+                      Divider(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ];
+        },
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: VideoPlayerBottom(),
+        ),
+      ),
+    );
+  }
 }
 
-class _VideoPlayerState extends State<VideoPlayer>
-    with TickerProviderStateMixin {
-  SharedPreferences prefs;
+class VideoPlayerBottom extends StatefulWidget {
+  VideoPlayerBottom();
 
-  Dio dio = Dio();
+  @override
+  State<VideoPlayerBottom> createState() => _VideoPlayerBottomState();
+}
 
-  List recommendations = [];
-
-  CancelToken _cancel = CancelToken();
-
-  Future getRecommendations(BuildContext context) async {
-    var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-    prefs = await SharedPreferences.getInstance();
-    String url =
-        "https://api.aureal.one/public/recommendedEpisodes?episode_id=${episodeObject.videoSource.id}&page=0&pageSize=14&user_id=${prefs.getString('userId')}&type=episode_based";
-    print(url);
-
-    try {
-      var response = await dio.get(url, cancelToken: _cancel);
-      if (response.statusCode == 200) {
-        setState(() {
-          recommendations = response.data['episodes'];
-        });
-        return response.data['episodes'];
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
+class _VideoPlayerBottomState extends State<VideoPlayerBottom>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
+
+  void init() {
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   void initState() {
+    init();
     // TODO: implement initState
-    print("///////////////////////////////////////////////////////////////");
-    _tabController = TabController(vsync: this, length: 3);
-
-    getRecommendations(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Consumer<PlayerChange>(builder: (context, watch, _) {
-            // final videoObject = watch.videoSource;
-            // final miniPlayerController = watch.miniplayerController;
-            return Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      child: BetterPlayer(
-                        controller: watch.betterPlayerController,
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          watch.miniplayerController
-                              .animateToHeight(state: PanelState.MIN);
-                        },
-                        icon: Icon(Icons.keyboard_arrow_down)),
-                  ],
-                ),
-                // watch.permlink != null
-                //     ? ListTile(title: Container())
-                //     : SizedBox(),
-              ],
-            );
-          }),
-          // Expanded(
-          //   child: Container(
-          //     child: ListView(
-          //       children: [
-          //
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          CustomScrollView(
-            shrinkWrap: true,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Consumer<PlayerChange>(
-                  builder: (context, watch, _) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          title: Text(
-                            '${watch.videoSource.title}',
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 3.6),
-                          ),
-                          trailing: InkWell(
-                              onTap: () {
-                                print("Asked for description");
-                              },
-                              child: Icon(Icons.keyboard_arrow_down)),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(
-                              "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-                              style: TextStyle(
-                                  fontSize: SizeConfig.safeBlockHorizontal * 3),
-                            ),
-                          ),
-                        ),
-                        UpvoteAndComment(videoObject: watch.videoSource),
-                        Container(
-                          decoration: BoxDecoration(),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 20,
-                              child: CachedNetworkImage(
-                                imageUrl: watch.videoSource.thumbnailUrl,
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.contain)),
-                                  );
-                                },
-                              ),
-                            ),
-                            title: Text(
-                              "${watch.videoSource.album}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize:
-                                      SizeConfig.safeBlockHorizontal * 3.5),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Text("${watch.videoSource.author}"),
-                            ),
-                          ),
-                        ),
-                        Divider(),
-                        Container(
-                          child: DefaultTabController(
-                            length: 3,
-                            child: TabBar(
-                                // indicatorSize: TabBarIndicatorSize.label,
-                                automaticIndicatorColorAdjustment: true,
-                                isScrollable: true,
-                                // controller: _tabController,
-                                tabs: [
-                                  Tab(
-                                    text: "EPISODES",
-                                  ),
-                                  Tab(
-                                    text: "SNIPPETS & MORE",
-                                  ),
-                                  Tab(
-                                    text: "MORE LIKE THESE",
-                                  )
-                                ]),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(
+                text: "EPISODES",
               ),
+              Tab(
+                text: "SNIPPETS & MORE",
+              ),
+              Tab(
+                text: "MORE LIKE THESE",
+              )
             ],
-          )
+          ),
+          Expanded(
+            child: TabBarView(children: [
+              Container(
+                color: Colors.blue,
+              ),
+              Container(
+                color: Colors.green,
+              ),
+              Container(
+                color: Colors.white,
+              ),
+            ], controller: _tabController),
+          ),
         ],
       ),
     );
   }
 }
+
+// class _VideoPlayerState extends State<VideoPlayer>
+//      {
+//   // SharedPreferences prefs;
+//
+//   // Dio dio = Dio();
+//   //
+//   // List recommendations = [];
+//   //
+//   // CancelToken _cancel = CancelToken();
+//   //
+//   // Future getRecommendations(BuildContext context) async {
+//   //   var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+//   //   prefs = await SharedPreferences.getInstance();
+//   //   String url =
+//   //       "https://api.aureal.one/public/recommendedEpisodes?episode_id=${episodeObject.videoSource.id}&page=0&pageSize=14&user_id=${prefs.getString('userId')}&type=episode_based";
+//   //   print(url);
+//   //
+//   //   try {
+//   //     var response = await dio.get(url, cancelToken: _cancel);
+//   //     if (response.statusCode == 200) {
+//   //       setState(() {
+//   //         recommendations = response.data['episodes'];
+//   //       });
+//   //       return response.data['episodes'];
+//   //     }
+//   //   } catch (e) {
+//   //     print(e);
+//   //   }
+//   // }
+//
+//   // TabController _tabController;
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     // print("///////////////////////////////////////////////////////////////");
+//     // _tabController = TabController(vsync: this, length: 3);
+//     //
+//     // getRecommendations(context);
+//     // super.initState();
+//   }
+//
+//
+// }
 
 class UpvoteAndComment extends StatefulWidget {
   final Video videoObject;
@@ -923,4 +1104,81 @@ Widget videoScaffold() {
       body: Container(),
     ),
   );
+}
+
+class _SliverPinnedBoxAdapter extends SingleChildRenderObjectWidget {
+  const _SliverPinnedBoxAdapter({
+    Key key,
+    Widget child,
+    this.pinned = true,
+  }) : super(key: key, child: child);
+
+  final bool pinned;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderSliverPinnedBoxAdapter(pinned: pinned);
+}
+
+class _RenderSliverPinnedBoxAdapter extends RenderSliverSingleBoxAdapter {
+  _RenderSliverPinnedBoxAdapter({RenderBox child, @required this.pinned})
+      : super(child: child);
+
+  /// If true, ✅ should stay pinned at the top of the list,
+  /// ✅ but move back into it's original position when scrolling down
+  ///
+  /// If false, ✅ should move out of the list, ❌ but move back into it's original position
+  /// when scrolling down
+  ///
+  /// ❌ You should be able to place a `pinned = false` sliver above a `pinned = true` sliver
+  /// and have them never overlap
+  ///
+  /// ❌ Should not react to overscrolling on iOS
+  final bool pinned;
+  // double lastUpwardScrollOffset = 0;
+
+  double previousScrollOffset = 0;
+  double ratchetingScrollDistance = 0;
+
+  @override
+  void performLayout() {
+    child.layout(constraints.asBoxConstraints(), parentUsesSize: true);
+    double childExtent = child.size.height;
+    final double paintedChildSize =
+        calculatePaintOffset(constraints, from: 0.0, to: childExtent);
+    final double cacheExtent =
+        calculateCacheOffset(constraints, from: 0.0, to: childExtent);
+
+    assert(paintedChildSize.isFinite);
+    assert(paintedChildSize >= 0.0);
+
+    final dy = previousScrollOffset - constraints.scrollOffset;
+    previousScrollOffset = constraints.scrollOffset;
+
+    ratchetingScrollDistance =
+        (ratchetingScrollDistance + dy).clamp(0.0, childExtent);
+
+    if (pinned) {
+      print(ratchetingScrollDistance);
+    }
+
+    geometry = SliverGeometry(
+      scrollExtent: childExtent,
+      paintExtent: paintedChildSize,
+      cacheExtent: cacheExtent,
+      maxPaintExtent: childExtent,
+      hitTestExtent: paintedChildSize,
+      hasVisualOverflow: childExtent > constraints.remainingPaintExtent ||
+          constraints.scrollOffset > 0.0,
+      paintOrigin: pinned
+          ? constraints.scrollOffset
+          : max(
+              0,
+              constraints.scrollOffset - childExtent + ratchetingScrollDistance,
+            ),
+      visible: true,
+    );
+
+    setChildParentData(child, constraints, geometry);
+  }
 }

@@ -369,7 +369,9 @@ class VideoListWidget extends StatelessWidget {
                                       ['author_user_id'],
                                   podcastid: snapshot.data[index]['podcast_id'],
                                   album: snapshot.data[index]['podcast_name'],
-                                  url: snapshot.data[index]['url'], createdAt: snapshot.data[index]['published_at'])),
+                                  url: snapshot.data[index]['url'],
+                                  createdAt: snapshot.data[index]
+                                      ['published_at'])),
                         ),
                       );
                     },
@@ -927,6 +929,8 @@ class EpisodeCard extends StatelessWidget {
                           //             ));
                           //       });
                           // });
+
+                          // context.read(selectedVideoProvider).state = data;
                           episodeObject.audioPlayer.stop();
                           episodeObject.isVideo = true;
                           episodeObject.episodeObject = data;
@@ -938,7 +942,8 @@ class EpisodeCard extends StatelessWidget {
                               url: data['url'],
                               album: data['podcast_name'],
                               podcastid: data['podcast_id'],
-                              author_id: data['author_user_id']);
+                              author_id: data['author_user_id'],
+                              createdAt: data['published_at']);
                           episodeObject.miniplayerController
                               .animateToHeight(state: PanelState.MAX);
                           episodeObject.betterPlayerController
@@ -954,7 +959,6 @@ class EpisodeCard extends StatelessWidget {
                                   "${episodeObject.videoSource.thumbnailUrl}",
                             ),
                           ));
-                          // context.read(selectedVideoProvider).state = data;
                         },
                         child: CachedNetworkImage(
                           imageBuilder: (context, imageProvider) {
@@ -1489,54 +1493,28 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                           ),
                         ),
                       ),
-                Container(
-                  child: episodeObject.audioPlayer.isPlaying.value == true
-                      ? GestureDetector(
+                widget.data['isvideo'] == true
+                    ? SizedBox()
+                    : Container(
+                        child: GestureDetector(
                           // splashColor: Colors.blue,
                           // splashFactory: InkRipple.splashFactory,
+
                           onTap: () {
                             setState(() {
                               isPlaying = true;
                             });
                             FeedbackType _vibtype = FeedbackType.impact;
                             Vibrate.feedback(FeedbackType.impact);
-                            if (episodeData['isvideo'] == true) {
-                              // episodeObject.audioPlayer.stop().then((value) {
-                              //   episodeObject.episodeObject = widget.data;
-                              //   showModalBottomSheet(
-                              //       backgroundColor: Colors.transparent,
-                              //       isScrollControlled: true,
-                              //       isDismissible: true,
-                              //       context: context,
-                              //       builder: (context) {
-                              //         return FractionallySizedBox(
-                              //             heightFactor: 0.95,
-                              //             child: VideoPlayer(
-                              //               episodeObject: widget.data,
-                              //             ));
-                              //       });
-                              // });
-                              episodeObject.isVideo = true;
-                              episodeObject.episodeObject = widget.data;
-                              episodeObject.videoSource = Video(
-                                  id: widget.data['id'],
-                                  title: widget.data['name'],
-                                  thumbnailUrl: widget.data['podcast_image'],
-                                  author: widget.data['author'],
-                                  url: widget.data['url'],
-                                  album: widget.data['podcast_name'],
-                                  podcastid: widget.data['podcast_id'],
-                                  author_id: widget.data['author_user_id'],
-                                  permlink: widget.data['permlink']);
-                              episodeObject.miniplayerController
-                                  .animateToHeight(state: PanelState.MAX);
 
-                              // Navigator.push(context, CupertinoPageRoute(builder: (context){
-                              //   return VideoPlauer
-                              // }))
+                            episodeObject.isVideo = false;
+                            episodeObject.betterPlayerController.pause();
+                            if (widget.playlist == null) {
+                              episodeObject.stop();
+                              episodeObject.episodeObject = episodeData;
+                              print(episodeObject.episodeObject.toString());
+                              episodeObject.play();
                             } else {
-                              episodeObject.isVideo = false;
-                              episodeObject.betterPlayerController.pause();
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
@@ -1547,6 +1525,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   builder: (context) {
                                     return Player2();
                                   });
+
                               episodeObject.audioPlayer
                                   .open(
                                       Playlist(
@@ -1587,96 +1566,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   )),
                             ),
                           ),
-                        )
-                      : GestureDetector(
-                          // splashColor: Colors.blue,
-                          // splashFactory: InkRipple.splashFactory,
-
-                          onTap: () {
-                            setState(() {
-                              isPlaying = true;
-                            });
-                            FeedbackType _vibtype = FeedbackType.impact;
-                            Vibrate.feedback(FeedbackType.impact);
-                            if (widget.data['isvideo'] == true) {
-                              episodeObject.audioPlayer.stop();
-                              episodeObject.isVideo = true;
-                              // episodeObject.episodeObject = widget.data;
-                              episodeObject.videoSource = Video(
-                                  id: widget.data['id'],
-                                  title: widget.data['name'],
-                                  thumbnailUrl: widget.data['podcast_image'],
-                                  author: widget.data['author'],
-                                  url: widget.data['url'],
-                                  album: widget.data['podcast_name'],
-                                  podcastid: widget.data['podcast_id'],
-                                  author_id: widget.data['author_user_id'],
-                                  permlink: widget.data['permlink']);
-                              episodeObject.miniplayerController
-                                  .animateToHeight(state: PanelState.MAX);
-                            } else {
-                              episodeObject.isVideo = false;
-                              episodeObject.betterPlayerController.pause();
-                              if (widget.playlist == null) {
-                                episodeObject.stop();
-                                episodeObject.episodeObject = episodeData;
-                                print(episodeObject.episodeObject.toString());
-                                episodeObject.play();
-                              } else {
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    barrierColor: Colors.transparent,
-                                    isDismissible: true,
-                                    // bounce: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return Player2();
-                                    });
-
-                                episodeObject.audioPlayer
-                                    .open(
-                                        Playlist(
-                                            audios: widget.playlist,
-                                            startIndex: widget.index),
-                                        showNotification: true)
-                                    .then((value) {});
-                              }
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 60),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  border: Border.all(color: kSecondaryColor),
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.play_circle_outline,
-                                        size: 15,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Text(
-                                          DurationCalculator(
-                                              widget.data['duration']),
-                                          textScaleFactor: 0.75,
-                                          // style: TextStyle(
-                                          //      color: Color(0xffe8e8e8)
-                                          //     ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
                         ),
-                ),
+                      ),
               ],
             ),
             GestureDetector(
