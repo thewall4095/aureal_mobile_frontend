@@ -12,12 +12,14 @@ class Video {
   final String author_id;
   final String permlink;
   final String createdAt;
+  final String episodeImage;
 
   const Video(
       {@required this.id,
       @required this.author,
       @required this.title,
       @required this.thumbnailUrl,
+      @required this.episodeImage,
       @required this.url,
       @required this.album,
       @required this.podcastid,

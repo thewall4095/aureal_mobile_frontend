@@ -222,7 +222,7 @@ class VideoCard extends StatelessWidget {
           children: [
             Expanded(
               child: CachedNetworkImage(
-                imageUrl: video.thumbnailUrl,
+                imageUrl: video.episodeImage,
                 errorWidget: (context, url, e) {
                   return Container(
                     width: double.infinity,
@@ -261,7 +261,33 @@ class VideoCard extends StatelessWidget {
               ),
             ),
             ListTile(
-              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                radius: 20,
+                child: CachedNetworkImage(
+                  imageUrl: video.thumbnailUrl,
+                  errorWidget: (context, url, e) {
+                    return Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(placeholderUrl),
+                              fit: BoxFit.cover)),
+                    );
+                  },
+                  imageBuilder: (context, imageProvider) {
+                    return Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover)),
+                    );
+                  },
+                ),
+              ),
               title: Text(
                 "${video.title}",
                 maxLines: 1,
@@ -365,6 +391,7 @@ class VideoListWidget extends StatelessWidget {
                                   permlink: snapshot.data[index]['permlink'],
                                   thumbnailUrl: snapshot.data[index]
                                       ['podcast_image'],
+                                  episodeImage: snapshot.data[index]['image'],
                                   author_id: snapshot.data[index]
                                       ['author_user_id'],
                                   podcastid: snapshot.data[index]['podcast_id'],
@@ -893,14 +920,6 @@ class EpisodeCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            // boxShadow: [
-            //   new BoxShadow(
-            //     color: Colors.black54
-            //         .withOpacity(0.2),
-            //     blurRadius: 10.0,
-            //   ),
-            // ],
-            // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
             color: Color(0xff080808),
             borderRadius: BorderRadius.circular(5),
           ),
@@ -914,23 +933,6 @@ class EpisodeCard extends StatelessWidget {
                 data['isvideo'] == true
                     ? InkWell(
                         onTap: () {
-                          // episodeObject.audioPlayer.stop().then((value) {
-                          //   episodeObject.episodeObject = data;
-                          //   showModalBottomSheet(
-                          //       backgroundColor: Colors.transparent,
-                          //       isScrollControlled: true,
-                          //       isDismissible: true,
-                          //       context: context,
-                          //       builder: (context) {
-                          //         return FractionallySizedBox(
-                          //             heightFactor: 0.95,
-                          //             child: VideoPlayer(
-                          //               episodeObject: data,
-                          //             ));
-                          //       });
-                          // });
-
-                          // context.read(selectedVideoProvider).state = data;
                           episodeObject.audioPlayer.stop();
                           episodeObject.isVideo = true;
                           episodeObject.episodeObject = data;
@@ -938,6 +940,7 @@ class EpisodeCard extends StatelessWidget {
                               id: data['id'],
                               title: data['name'],
                               thumbnailUrl: data['podcast_image'],
+                              episodeImage: data['image'],
                               author: data['author'],
                               url: data['url'],
                               album: data['podcast_name'],

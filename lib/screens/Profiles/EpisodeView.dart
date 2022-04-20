@@ -21,6 +21,7 @@ import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -814,20 +815,45 @@ class _EpisodeViewState extends State<EpisodeView>
                                         // showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
                                         //   return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
                                         // });
+                                        episodeObject.audioPlayer.stop();
                                         episodeObject.isVideo = true;
-                                        // episodeObject.episodeObject = widget.data;
+                                        episodeObject.episodeObject = data;
                                         episodeObject.videoSource = Video(
                                             id: episodeContent['id'],
                                             title: episodeContent['name'],
                                             thumbnailUrl:
                                                 episodeContent['podcast_image'],
+                                            episodeImage:
+                                                episodeContent['image'],
                                             author: episodeContent['author'],
                                             url: episodeContent['url'],
                                             album:
-                                                episodeContent['podcast_name']);
+                                                episodeContent['podcast_name'],
+                                            podcastid:
+                                                episodeContent['podcast_id'],
+                                            author_id: episodeContent[
+                                                'author_user_id'],
+                                            createdAt:
+                                                episodeContent['published_at']);
                                         episodeObject.miniplayerController
                                             .animateToHeight(
                                                 state: PanelState.MAX);
+                                        episodeObject.betterPlayerController
+                                            .setupDataSource(
+                                                BetterPlayerDataSource(
+                                          BetterPlayerDataSourceType.network,
+                                          episodeObject.videoSource.url,
+                                          notificationConfiguration:
+                                              BetterPlayerNotificationConfiguration(
+                                            showNotification: true,
+                                            title:
+                                                "${episodeObject.videoSource.title}",
+                                            author:
+                                                "${episodeObject.videoSource.author}",
+                                            imageUrl:
+                                                "${episodeObject.videoSource.thumbnailUrl}",
+                                          ),
+                                        ));
                                         // showModalBottomSheet(
                                         //     isScrollControlled: true,
                                         //     backgroundColor: Colors.transparent,

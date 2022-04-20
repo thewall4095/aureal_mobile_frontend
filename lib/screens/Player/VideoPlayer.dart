@@ -4,12 +4,15 @@ import 'dart:ui';
 import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/data/Datasource.dart';
+import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,6 +22,7 @@ import 'package:html/parser.dart';
 import 'package:linkable/linkable.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -31,250 +35,164 @@ class VideoPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: Column(
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     Consumer<PlayerChange>(builder: (context, watch, _) {
-      //       // final videoObject = watch.videoSource;
-      //       // final miniPlayerController = watch.miniplayerController;
-      //       return Column(
-      //         children: [
-      //           Stack(
-      //             children: [
-      //               Container(
-      //                 child: BetterPlayer(
-      //                   controller: watch.betterPlayerController,
-      //                 ),
-      //               ),
-      //               IconButton(
-      //                   onPressed: () {
-      //                     watch.miniplayerController
-      //                         .animateToHeight(state: PanelState.MIN);
-      //                   },
-      //                   icon: Icon(Icons.keyboard_arrow_down)),
-      //             ],
-      //           ),
-      //           // watch.permlink != null
-      //           //     ? ListTile(title: Container())
-      //           //     : SizedBox(),
-      //         ],
-      //       );
-      //     }),
-      //     Expanded(
-      //       child: ListView(
-      //         shrinkWrap: true,
-      //         children: [
-      //           Consumer<PlayerChange>(
-      //             builder: (context, watch, _) {
-      //               return Column(
-      //                 mainAxisSize: MainAxisSize.min,
-      //                 children: [
-      //                   ListTile(
-      //                     title: Text(
-      //                       '${watch.videoSource.title}',
-      //                       style: TextStyle(
-      //                           fontSize: SizeConfig.safeBlockHorizontal * 3.6),
-      //                     ),
-      //                     trailing: InkWell(
-      //                         onTap: () {
-      //                           print("Asked for description");
-      //                         },
-      //                         child: Icon(Icons.keyboard_arrow_down)),
-      //                     subtitle: Padding(
-      //                       padding: const EdgeInsets.symmetric(vertical: 10),
-      //                       child: Text(
-      //                         "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-      //                         style: TextStyle(
-      //                             fontSize: SizeConfig.safeBlockHorizontal * 3),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   UpvoteAndComment(videoObject: watch.videoSource),
-      //                   Container(
-      //                     decoration: BoxDecoration(),
-      //                     child: ListTile(
-      //                       leading: CircleAvatar(
-      //                         radius: 20,
-      //                         child: CachedNetworkImage(
-      //                           imageUrl: watch.videoSource.thumbnailUrl,
-      //                           imageBuilder: (context, imageProvider) {
-      //                             return Container(
-      //                               decoration: BoxDecoration(
-      //                                   shape: BoxShape.circle,
-      //                                   image: DecorationImage(
-      //                                       image: imageProvider,
-      //                                       fit: BoxFit.contain)),
-      //                             );
-      //                           },
-      //                         ),
-      //                       ),
-      //                       title: Text(
-      //                         "${watch.videoSource.album}",
-      //                         style: TextStyle(
-      //                             fontWeight: FontWeight.w600,
-      //                             fontSize:
-      //                                 SizeConfig.safeBlockHorizontal * 3.5),
-      //                       ),
-      //                       subtitle: Padding(
-      //                         padding: const EdgeInsets.only(top: 3),
-      //                         child: Text("${watch.videoSource.author}"),
-      //                       ),
-      //                     ),
-      //                   ),
-      //                   Divider(),
-      //                 ],
-      //               );
-      //             },
-      //           ),
-      //           // Container(
-      //           //   child: DefaultTabController(
-      //           //     length: 3,
-      //           //     child: TabBar(
-      //           //         // indicatorSize: TabBarIndicatorSize.label,
-      //           //         automaticIndicatorColorAdjustment: true,
-      //           //         isScrollable: true,
-      //           //         onTap: (int index) {
-      //           //           selectedIndex =
-      //           //               DefaultTabController.of(context).index;
-      //           //           DefaultTabController.of(context).animateTo(index);
-      //           //         },
-      //           //         // controller: _tabController,
-      //           //         tabs: [
-      //           //           Tab(
-      //           //             text: "EPISODES",
-      //           //           ),
-      //           //           Tab(
-      //           //             text: "SNIPPETS & MORE",
-      //           //           ),
-      //           //           Tab(
-      //           //             text: "MORE LIKE THESE",
-      //           //           )
-      //           //         ]),
-      //           //   ),
-      //           // ),
-      //           // IndexedStack(
-      //           //   children: [
-      //           //     Visibility(
-      //           //       child: Container(
-      //           //         color: Colors.white,
-      //           //       ),
-      //           //       maintainState: true,
-      //           //       visible: selectedIndex == 0,
-      //           //     ),
-      //           //     Container(
-      //           //       color: Colors.blue,
-      //           //     ),
-      //           //     Container(
-      //           //       color: Colors.black,
-      //           //     )
-      //           //   ],
-      //           // ),
-      //           // VideoPlayerBottom()
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-          return <Widget>[
-            _SliverPinnedBoxAdapter(
-              child: Consumer<PlayerChange>(builder: (context, watch, _) {
-                // final videoObject = watch.videoSource;
-                // final miniPlayerController = watch.miniplayerController;
-                return Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          child: BetterPlayer(
-                            controller: watch.betterPlayerController,
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              watch.miniplayerController
-                                  .animateToHeight(state: PanelState.MIN);
-                            },
-                            icon: Icon(Icons.keyboard_arrow_down)),
-                      ],
-                    ),
-                    // watch.permlink != null
-                    //     ? ListTile(title: Container())
-                    //     : SizedBox(),
-                  ],
-                );
-              }),
-            ),
-            SliverToBoxAdapter(
-              child: Consumer<PlayerChange>(
-                builder: (context, watch, _) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text(
-                          '${watch.videoSource.title}',
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockHorizontal * 3.6),
-                        ),
-                        trailing: InkWell(
-                            onTap: () {
-                              print("Asked for description");
-                            },
-                            child: Icon(Icons.keyboard_arrow_down)),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Text(
-                            "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-                            style: TextStyle(
-                                fontSize: SizeConfig.safeBlockHorizontal * 3),
-                          ),
-                        ),
-                      ),
-                      UpvoteAndComment(videoObject: watch.videoSource),
-                      Container(
-                        decoration: BoxDecoration(),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            radius: 20,
-                            child: CachedNetworkImage(
-                              imageUrl: watch.videoSource.thumbnailUrl,
-                              imageBuilder: (context, imageProvider) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.contain)),
-                                );
-                              },
+      body: Stack(
+        children: [
+          NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool isInnerBoxScrolled) {
+              return <Widget>[
+                // _SliverPinnedBoxAdapter(
+                //   child: Consumer<PlayerChange>(builder: (context, watch, _) {
+                //     // final videoObject = watch.videoSource;
+                //     // final miniPlayerController = watch.miniplayerController;
+                //     return Column(
+                //       children: [
+                //         Stack(
+                //           children: [
+                //             Container(
+                //               child: BetterPlayer(
+                //                 controller: watch.betterPlayerController,
+                //               ),
+                //             ),
+                //             IconButton(
+                //                 onPressed: () {
+                //                   watch.miniplayerController
+                //                       .animateToHeight(state: PanelState.MIN);
+                //                 },
+                //                 icon: Icon(Icons.keyboard_arrow_down)),
+                //           ],
+                //         ),
+                //         // watch.permlink != null
+                //         //     ? ListTile(title: Container())
+                //         //     : SizedBox(),
+                //       ],
+                //     );
+                //   }),
+                // ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Consumer<PlayerChange>(
+                    builder: (context, watch, _) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              '${watch.videoSource.title}',
+                              style: TextStyle(
+                                  fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.6),
+                            ),
+                            trailing: InkWell(
+                                onTap: () {
+                                  print("Asked for description");
+                                },
+                                child: Icon(Icons.keyboard_arrow_down)),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3),
+                              ),
                             ),
                           ),
-                          title: Text(
-                            "${watch.videoSource.album}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+                          UpvoteAndComment(videoObject: watch.videoSource),
+                          Container(
+                            decoration: BoxDecoration(),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                radius: 20,
+                                child: CachedNetworkImage(
+                                  imageUrl: watch.videoSource.thumbnailUrl,
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.contain)),
+                                    );
+                                  },
+                                ),
+                              ),
+                              title: Text(
+                                "${watch.videoSource.album}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.5),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Text("${watch.videoSource.author}"),
+                              ),
+                            ),
                           ),
-                          subtitle: Padding(
-                            padding: const EdgeInsets.only(top: 3),
-                            child: Text("${watch.videoSource.author}"),
-                          ),
-                        ),
-                      ),
-                      Divider(),
-                    ],
-                  );
-                },
-              ),
+                          Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.add)),
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.playlist_add)),
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.ios_share)),
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ];
+            },
+            body: Container(
+              child: VideoPlayerBottom(),
             ),
-          ];
-        },
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: VideoPlayerBottom(),
-        ),
+          ),
+          Consumer<PlayerChange>(builder: (context, watch, _) {
+            // final videoObject = watch.videoSource;
+            // final miniPlayerController = watch.miniplayerController;
+            return Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      child: BetterPlayer(
+                        controller: watch.betterPlayerController,
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          watch.miniplayerController
+                              .animateToHeight(state: PanelState.MIN);
+                        },
+                        icon: Icon(Icons.keyboard_arrow_down)),
+                  ],
+                ),
+                // watch.permlink != null
+                //     ? ListTile(title: Container())
+                //     : SizedBox(),
+              ],
+            );
+          }),
+        ],
       ),
     );
   }
@@ -292,7 +210,7 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
   TabController _tabController;
 
   void init() {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -305,7 +223,6 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -315,9 +232,9 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
               Tab(
                 text: "EPISODES",
               ),
-              Tab(
-                text: "SNIPPETS & MORE",
-              ),
+              // Tab(
+              //   text: "SNIPPETS & MORE",
+              // ),
               Tab(
                 text: "MORE LIKE THESE",
               )
@@ -325,15 +242,18 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
           ),
           Expanded(
             child: TabBarView(children: [
-              Container(
-                color: Colors.blue,
+              Consumer<PlayerChange>(
+                builder: (context, watch, _) {
+                  return MoreEpisodes(episodeObject: watch.episodeObject);
+                },
               ),
-              Container(
-                color: Colors.green,
-              ),
-              Container(
-                color: Colors.white,
-              ),
+              // Container(
+              //   color: Colors.green,
+              // ),
+              Consumer<PlayerChange>(builder: (context, watch, _) {
+                print(watch.id);
+                return VideoRecommendation(episodeObject: watch.episodeObject);
+              })
             ], controller: _tabController),
           ),
         ],
@@ -341,51 +261,6 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
     );
   }
 }
-
-// class _VideoPlayerState extends State<VideoPlayer>
-//      {
-//   // SharedPreferences prefs;
-//
-//   // Dio dio = Dio();
-//   //
-//   // List recommendations = [];
-//   //
-//   // CancelToken _cancel = CancelToken();
-//   //
-//   // Future getRecommendations(BuildContext context) async {
-//   //   var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-//   //   prefs = await SharedPreferences.getInstance();
-//   //   String url =
-//   //       "https://api.aureal.one/public/recommendedEpisodes?episode_id=${episodeObject.videoSource.id}&page=0&pageSize=14&user_id=${prefs.getString('userId')}&type=episode_based";
-//   //   print(url);
-//   //
-//   //   try {
-//   //     var response = await dio.get(url, cancelToken: _cancel);
-//   //     if (response.statusCode == 200) {
-//   //       setState(() {
-//   //         recommendations = response.data['episodes'];
-//   //       });
-//   //       return response.data['episodes'];
-//   //     }
-//   //   } catch (e) {
-//   //     print(e);
-//   //   }
-//   // }
-//
-//   // TabController _tabController;
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     // print("///////////////////////////////////////////////////////////////");
-//     // _tabController = TabController(vsync: this, length: 3);
-//     //
-//     // getRecommendations(context);
-//     // super.initState();
-//   }
-//
-//
-// }
 
 class UpvoteAndComment extends StatefulWidget {
   final Video videoObject;
@@ -409,7 +284,7 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = "https://rpc.ecency.com";
-    print(url);
+
     var map = Map<String, dynamic>();
     map = {
       "jsonrpc": "2.0",
@@ -421,11 +296,9 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
       },
       "id": 0
     };
-    print(map);
 
     try {
       await dio.post(url, data: map).then((value) async {
-        // print(value.data);
         if (value.data['result'] != null) {
           var responsedata = {
             'hive_earnings': value.data['result']['payout'],
@@ -436,7 +309,6 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
           setState(() {
             data = responsedata;
           });
-          print(data);
         }
       });
     } catch (e) {
@@ -612,23 +484,8 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
                         ),
                       ),
                 ListTile(
-                  // title: Text(
-                  //   "About",
-                  //   style: TextStyle(
-                  //       fontSize: SizeConfig.safeBlockHorizontal * 4,
-                  //       fontWeight: FontWeight.w600),
-                  // ),
                   subtitle: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 15),
-                    // child: htmlMatch.hasMatch(
-                    //             episodeContent['summary']) ==
-                    //         true
-                    //     ? Text(
-                    //         (parse(episodeContent['summary'])
-                    //             .body
-                    //             .text))
-                    //     : Text(
-                    //         '${episodeContent['summary'] == null ? '' : episodeContent['summary']}'),
                     child: htmlMatch.hasMatch(snapshot.data['summary']) == true
                         ? Linkable(
                             text:
@@ -667,71 +524,6 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
     }
     super.didUpdateWidget(oldWidget);
   }
-}
-
-class VideoRecommendations extends StatefulWidget {
-  VideoRecommendations();
-
-  @override
-  State<VideoRecommendations> createState() => _VideoRecommendationsState();
-}
-
-class _VideoRecommendationsState extends State<VideoRecommendations> {
-  SharedPreferences prefs;
-
-  Dio dio = Dio();
-
-  CancelToken _cancel = CancelToken();
-
-  Future getVideoRecommendations(episodeId) async {
-    prefs = await SharedPreferences.getInstance();
-    String url =
-        "https://api.aureal.one/public/recommendedEpisodes?user_id=${prefs.getString('userId')}&size=20&page=0&episode_id=$episodeId";
-
-    try {
-      final response = await dio.get(url, cancelToken: _cancel);
-      if (response.statusCode == 200) {
-        return response.data['episodes'];
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final episodeobject = Provider.of<PlayerChange>(context);
-    return FutureBuilder(
-      future: getVideoRecommendations(episodeobject.episodeObject['id']),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate((context, int index) {
-              return Container();
-            }),
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
-  }
-}
-
-Widget player() {
-  return Consumer<PlayerChange>(builder: (context, watch, _) {
-    return Container(
-      child: BetterPlayer(
-        controller: watch.betterPlayerController,
-      ),
-    );
-  });
 }
 
 class PlaybackVideoButtons extends StatefulWidget {
@@ -972,140 +764,6 @@ class _PlaybackVideoButtonsState extends State<PlaybackVideoButtons> {
   }
 }
 
-Widget videoScaffold() {
-  return Scaffold(
-    backgroundColor: Colors.transparent,
-    body: NestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-        return <Widget>[
-          SliverAppBar(
-            snap: true,
-            pinned: true,
-            floating: true,
-            automaticallyImplyLeading: false,
-            expandedHeight: MediaQuery.of(context).size.height / 3.6,
-            collapsedHeight: MediaQuery.of(context).size.height / 3.6,
-            primary: true,
-            forceElevated: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Consumer<PlayerChange>(builder: (context, watch, _) {
-                // final videoObject = watch.videoSource;
-                // final miniPlayerController = watch.miniplayerController;
-                return Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          child: BetterPlayer(
-                            controller: watch.betterPlayerController,
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              watch.miniplayerController
-                                  .animateToHeight(state: PanelState.MIN);
-                            },
-                            icon: Icon(Icons.keyboard_arrow_down)),
-                      ],
-                    ),
-                    // watch.permlink != null
-                    //     ? ListTile(title: Container())
-                    //     : SizedBox(),
-                  ],
-                );
-              }),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Consumer<PlayerChange>(
-              builder: (context, watch, _) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: Text(
-                        '${watch.videoSource.title}',
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 3.6),
-                      ),
-                      trailing: InkWell(
-                          onTap: () {
-                            print("Asked for description");
-                          },
-                          child: Icon(Icons.keyboard_arrow_down)),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-                          style: TextStyle(
-                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                        ),
-                      ),
-                    ),
-                    UpvoteAndComment(videoObject: watch.videoSource),
-                    Container(
-                      decoration: BoxDecoration(),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          child: CachedNetworkImage(
-                            imageUrl: watch.videoSource.thumbnailUrl,
-                            imageBuilder: (context, imageProvider) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.contain)),
-                              );
-                            },
-                          ),
-                        ),
-                        title: Text(
-                          "${watch.videoSource.album}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(top: 3),
-                          child: Text("${watch.videoSource.author}"),
-                        ),
-                      ),
-                    ),
-                    Divider(),
-                    DefaultTabController(
-                      child: Container(
-                        child: TabBar(
-                            // indicatorSize: TabBarIndicatorSize.label,
-                            automaticIndicatorColorAdjustment: true,
-                            isScrollable: true,
-                            // controller: _tabController,
-                            tabs: [
-                              Tab(
-                                text: "EPISODES",
-                              ),
-                              Tab(
-                                text: "SNIPPETS & MORE",
-                              ),
-                              Tab(
-                                text: "MORE LIKE THESE",
-                              )
-                            ]),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ];
-      },
-      body: Container(),
-    ),
-  );
-}
-
 class _SliverPinnedBoxAdapter extends SingleChildRenderObjectWidget {
   const _SliverPinnedBoxAdapter({
     Key key,
@@ -1181,4 +839,185 @@ class _RenderSliverPinnedBoxAdapter extends RenderSliverSingleBoxAdapter {
 
     setChildParentData(child, constraints, geometry);
   }
+}
+
+class VideoRecommendation extends StatefulWidget {
+  final episodeObject;
+  VideoRecommendation({@required this.episodeObject});
+
+  @override
+  State<VideoRecommendation> createState() => _VideoRecommendationState();
+}
+
+class _VideoRecommendationState extends State<VideoRecommendation>
+    with AutomaticKeepAliveClientMixin {
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+
+  CancelToken cancel = CancelToken();
+
+  Future getVideoRecommendations() async {
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/recommendedEpisodes?user_id=${prefs.getString('userId')}&size=20&page=0&episode_id=${widget.episodeObject['id']}";
+    print(url);
+
+    try {
+      var response = await dio.get(url, cancelToken: cancel);
+      if (response.statusCode == 200) {
+        return response.data['episodes'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future myFuture;
+
+  void init() async {
+    myFuture = getVideoRecommendations();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: myFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, int index) {
+                  return VideoCard(
+                      video: Video(
+                          id: snapshot.data[index]['id'],
+                          title: snapshot.data[index]['name'],
+                          thumbnailUrl: snapshot.data[index]['podcast_image'],
+                          episodeImage: snapshot.data[index]['image'],
+                          author: snapshot.data[index]['author'],
+                          url: snapshot.data[index]['url'],
+                          album: snapshot.data[index]['podcast_name'],
+                          podcastid: snapshot.data[index]['podcast_id'],
+                          author_id: snapshot.data[index]['author_user_id'],
+                          createdAt: snapshot.data[index]['published_at']));
+                },
+                itemCount: snapshot.data.length);
+          } else {
+            return ModalProgressHUD(
+              inAsyncCall: true,
+              color: Colors.black,
+              progressIndicator: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+              child: Container(),
+            );
+          }
+        });
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+}
+
+class MoreEpisodes extends StatefulWidget {
+  final episodeObject;
+  MoreEpisodes({@required this.episodeObject});
+
+  @override
+  State<MoreEpisodes> createState() => _MoreEpisodesState();
+}
+
+class _MoreEpisodesState extends State<MoreEpisodes>
+    with AutomaticKeepAliveClientMixin {
+  SharedPreferences prefs;
+
+  Dio dio = Dio();
+  CancelToken cancel = CancelToken();
+
+  Future getEpisodes() async {
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/episode?podcast_id=${widget.episodeObject['podcast_id']}&user_id=${prefs.getString('userId')}";
+
+    try {
+      var response = await dio.get(url, cancelToken: cancel);
+      if (response.statusCode == 200) {
+        return response.data['episodes'];
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future myFuture;
+
+  void init() async {
+    myFuture = getEpisodes();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: getEpisodes(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemBuilder: (context, int index) {
+                if (index == snapshot.data.length) {
+                  return ListTile(
+                    onTap: () {
+                      Navigator.push(context,
+                          CupertinoPageRoute(builder: (context) {
+                        return PodcastView(
+                            snapshot.data[index - 1]['podcast_id']);
+                      }));
+                    },
+                    title: Container(
+                      decoration: BoxDecoration(
+                          border:
+                              Border.all(color: Colors.white.withOpacity(0.5))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Center(child: Text("More")),
+                      ),
+                    ),
+                  );
+                } else {
+                  return EpisodeCard(data: snapshot.data[index]);
+                }
+              },
+              itemCount: snapshot.data.length + 1,
+            );
+          } else {
+            return Container(
+              height: 100,
+              width: 100,
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
+  }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
