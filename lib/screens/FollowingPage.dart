@@ -210,7 +210,7 @@ class VideoCard extends StatelessWidget {
             showNotification: true,
             title: "${episodeObject.videoSource.title}",
             author: "${episodeObject.videoSource.author}",
-            imageUrl: "${episodeObject.videoSource.thumbnailUrl}",
+            imageUrl: "${episodeObject.videoSource.episodeImage}",
           ),
         ));
       },
@@ -444,6 +444,8 @@ class EpisodeWidget extends StatefulWidget {
 
 class _EpisodeWidgetState extends State<EpisodeWidget>
     with AutomaticKeepAliveClientMixin {
+  Future myFuture;
+
   SharedPreferences prefs;
 
   RegExp htmlMatch = RegExp(r'(\w+)');
@@ -501,7 +503,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
   @override
   void initState() {
     // TODO: implement initState
-
+    myFuture = generalisedApiCall(widget.data['api']);
     super.initState();
   }
 
@@ -516,7 +518,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
     // var currentlyPlaying = Provider.of<PlayerChange>(context);
     // var episodeObject = Provider.of<PlayerChange>(context);
     return FutureBuilder(
-      future: generalisedApiCall(widget.data['api']),
+      future: myFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           try {
@@ -1632,10 +1634,19 @@ class _PodcastWidgetState extends State<PodcastWidget>
     });
   }
 
+  Future myFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    myFuture = generalisedApiCall(widget.data['api']);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generalisedApiCall(widget.data['api']),
+      future: myFuture,
       builder: (context, snapshot) {
         // try{
         //   if(snapshot.hasData){
@@ -2494,16 +2505,6 @@ class SnippetWidget extends StatelessWidget {
                                     ),
                                   ),
                                 )
-                                // ClipRect(
-                                //   child: BackdropFilter(
-                                //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                                //     child: Container(
-                                //       decoration: BoxDecoration(
-                                //         borderRadius: BorderRadius.circular(10),
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),

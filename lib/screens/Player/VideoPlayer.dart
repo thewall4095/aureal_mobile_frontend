@@ -41,34 +41,6 @@ class VideoPlayer extends StatelessWidget {
             headerSliverBuilder:
                 (BuildContext context, bool isInnerBoxScrolled) {
               return <Widget>[
-                // _SliverPinnedBoxAdapter(
-                //   child: Consumer<PlayerChange>(builder: (context, watch, _) {
-                //     // final videoObject = watch.videoSource;
-                //     // final miniPlayerController = watch.miniplayerController;
-                //     return Column(
-                //       children: [
-                //         Stack(
-                //           children: [
-                //             Container(
-                //               child: BetterPlayer(
-                //                 controller: watch.betterPlayerController,
-                //               ),
-                //             ),
-                //             IconButton(
-                //                 onPressed: () {
-                //                   watch.miniplayerController
-                //                       .animateToHeight(state: PanelState.MIN);
-                //                 },
-                //                 icon: Icon(Icons.keyboard_arrow_down)),
-                //           ],
-                //         ),
-                //         // watch.permlink != null
-                //         //     ? ListTile(title: Container())
-                //         //     : SizedBox(),
-                //       ],
-                //     );
-                //   }),
-                // ),
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height / 3.5,
@@ -116,6 +88,16 @@ class VideoPlayer extends StatelessWidget {
                                           shape: BoxShape.circle,
                                           image: DecorationImage(
                                               image: imageProvider,
+                                              fit: BoxFit.contain)),
+                                    );
+                                  },
+                                  errorWidget: (context, url, e) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  placeholderUrl),
                                               fit: BoxFit.contain)),
                                     );
                                   },
@@ -247,9 +229,6 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
                   return MoreEpisodes(episodeObject: watch.episodeObject);
                 },
               ),
-              // Container(
-              //   color: Colors.green,
-              // ),
               Consumer<PlayerChange>(builder: (context, watch, _) {
                 print(watch.id);
                 return VideoRecommendation(episodeObject: watch.episodeObject);
@@ -860,7 +839,7 @@ class _VideoRecommendationState extends State<VideoRecommendation>
   Future getVideoRecommendations() async {
     prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/recommendedEpisodes?user_id=${prefs.getString('userId')}&size=20&page=0&episode_id=${widget.episodeObject['id']}";
+        "https://api.aureal.one/public/recommendedEpisodes?user_id=${prefs.getString('userId')}&size=20&page=0&episode_id=${widget.episodeObject['id']}&type=episode_based";
     print(url);
 
     try {
