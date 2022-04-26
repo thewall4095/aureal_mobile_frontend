@@ -41,6 +41,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
 import 'Clips.dart';
+import 'Onboarding/GetSubscriptions.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Profiles/CategoryView.dart';
 import 'Profiles/Comments.dart';
@@ -63,6 +64,23 @@ import 'buttonPages/settings/Theme-.dart';
 class Feed extends StatelessWidget {
   Feed();
 
+  Future checkforSubscriptions() async {
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/yourSubscriptions?page=0&pageSize=14&user_id=${prefs.getString("userId")}";
+
+    try {
+      var response = await dio.get(url, cancelToken: _cancel);
+      if (response.statusCode == 200) {
+        return response.data['data'].length;
+      } else {
+        print(response.statusCode);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   CancelToken _cancel = CancelToken();
 
   final String baseUrl = "https://api.aureal.one/public";
@@ -71,7 +89,7 @@ class Feed extends StatelessWidget {
 
   RegExp htmlMatch = RegExp(r'(\w+)');
 
-  Future<List> getFeedStructure() async {
+  Future getFeed() async {
     Dio dio = Dio();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -85,6 +103,21 @@ class Feed extends StatelessWidget {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future getFeedStructure(BuildContext context) async {
+    checkforSubscriptions().then((value) {
+      if (value == 0 || null) {
+        showBarModalBottomSheet(
+            isDismissible: false,
+            context: context,
+            builder: (context) {
+              return Subscriptiongetter();
+            });
+      } else {
+        getFeed();
+      }
+    });
   }
 
   SharedPreferences prefs;
@@ -159,7 +192,7 @@ class Feed extends StatelessWidget {
             return <Widget>[];
           },
           body: FutureBuilder(
-            future: getFeedStructure(),
+            future: getFeedStructure(context),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
