@@ -223,6 +223,8 @@ class _SelectPodcastsState extends State<SelectPodcasts> {
     }
   }
 
+  List podcasts = [];
+
   Future getPodcasts(categoryObject) async {
     String url =
         "https://api.aureal.one/public/explore?category_id=${categoryObject['id']}&user_id=${prefs.getString('userId')}";
@@ -231,6 +233,10 @@ class _SelectPodcastsState extends State<SelectPodcasts> {
       var response = await dio.get(url, cancelToken: _cancel);
 
       if (response.statusCode == 200) {
+        print(response.data);
+        // setState(() {
+        //   // podcasts.add(value);
+        // });
       } else {
         print(response.statusCode);
       }
@@ -240,7 +246,11 @@ class _SelectPodcastsState extends State<SelectPodcasts> {
   @override
   void initState() {
     // TODO: implement initState
-    getCategories().then((value) {});
+    getCategories().then((value) {
+      for (var v in value) {
+        getPodcasts(v);
+      }
+    });
     super.initState();
   }
 

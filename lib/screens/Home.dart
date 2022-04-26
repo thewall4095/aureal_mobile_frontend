@@ -507,9 +507,7 @@ class _HomeState extends State<Home> {
   void initState() {
     setLocalData();
     // TODO: implement initState
-
     getUserDetails();
-
     getLocalData();
     _handleIncomingLinks();
     _handleInitialUri();
@@ -695,14 +693,6 @@ class _HomeState extends State<Home> {
                               //Color(0xff5bc3ef),
                               // backgroundColor: Colors.transparent,
                               items: <BottomNavigationBarItem>[
-                                // BottomNavigationBarItem(
-                                //   icon: Icon(
-                                //     Icons.stream,
-                                //   ),
-                                //   activeIcon: Icon(Icons.stream),
-                                //   label: '',
-                                // ),
-
                                 BottomNavigationBarItem(
                                   label: "",
                                   icon: Icon(

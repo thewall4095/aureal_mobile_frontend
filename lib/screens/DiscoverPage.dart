@@ -346,36 +346,28 @@ class DiscoverScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-          return <Widget>[];
+      body: FutureBuilder(
+        future: getDiscoverStructure(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              shrinkWrap: true,
+              addAutomaticKeepAlives: true,
+              itemBuilder: (context, int index) {
+                if (index == snapshot.data.length) {
+                  return SizedBox(
+                    height: 150,
+                  );
+                } else {
+                  return _feedBuilder(context, snapshot.data[index]);
+                }
+              },
+              itemCount: snapshot.data.length + 1,
+            );
+          } else {
+            return SizedBox();
+          }
         },
-        body: Container(
-          // height: MediaQuery.of(context).size.height,
-          child: FutureBuilder(
-            future: getDiscoverStructure(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  addAutomaticKeepAlives: true,
-                  itemBuilder: (context, int index) {
-                    if (index == snapshot.data.length) {
-                      return SizedBox(
-                        height: 150,
-                      );
-                    } else {
-                      return _feedBuilder(context, snapshot.data[index]);
-                    }
-                  },
-                  itemCount: snapshot.data.length + 1,
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          ),
-        ),
       ),
     );
   }
