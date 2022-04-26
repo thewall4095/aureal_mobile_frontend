@@ -10,7 +10,6 @@ import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:auditory/Services/audioEditor.dart';
 import 'package:auditory/data/Datasource.dart';
 import 'package:auditory/models/Episode.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
@@ -44,6 +43,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Clips.dart';
 import '../Home.dart';
 import 'PodcastView.dart';
 
@@ -663,7 +663,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 Navigator.push(context,
                                                     CupertinoPageRoute(
                                                         builder: (context) {
-                                                  return AudioEditor(
+                                                  return SnippetEditor(
                                                     episodeObject:
                                                         episodeContent,
                                                   );
@@ -735,7 +735,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 Navigator.push(context,
                                                     CupertinoPageRoute(
                                                         builder: (context) {
-                                                  return AudioEditor(
+                                                  return SnippetEditor(
                                                     episodeObject:
                                                         episodeContent,
                                                   );
