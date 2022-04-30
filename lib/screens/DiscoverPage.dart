@@ -217,7 +217,8 @@ class DiscoverScreen extends StatelessWidget {
         return PodcastWidget(data: data);
         break;
       case 'episode':
-        return EpisodeWidget(data: data);
+        // return EpisodeWidget(data: data);
+        return Container();
         break;
       case "playlist":
         return PlaylistWidget(data: data);
@@ -345,7 +346,6 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: FutureBuilder(
         future: getDiscoverStructure(),
         builder: (context, snapshot) {

@@ -142,7 +142,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   var currentlyPlaying;
 
@@ -316,6 +316,40 @@ class _HomeState extends State<Home> {
                 }),
           ]),
     );
+  }
+
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  Widget buildPageView() {
+    return PageView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: [
+        Feed(),
+        DiscoverScreen(),
+        LibraryPage(),
+      ],
+    );
+  }
+
+  void pageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void bottomTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
   }
 
   void addRoomParticipant({String roomid}) async {
@@ -660,7 +694,8 @@ class _HomeState extends State<Home> {
             content: Text('Tap back again to leave'),
           ),
           child: Stack(children: [
-            _createPage(context, _selectedIndex),
+            // _createPage(context, _selectedIndex),
+            buildPageView(),
             Align(
               alignment: Alignment.bottomCenter,
               child: ClipRect(
@@ -728,7 +763,9 @@ class _HomeState extends State<Home> {
                                 ),
                               ],
                               currentIndex: _selectedIndex,
-                              onTap: _onItemTapped,
+                              onTap: (index) {
+                                bottomTapped(index);
+                              },
                             ),
                           ),
                         )
