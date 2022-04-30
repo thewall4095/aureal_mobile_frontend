@@ -60,26 +60,15 @@ import 'buttonPages/settings/Theme-.dart';
 //   light
 // }
 
-class Feed extends StatelessWidget {
+class Feed extends StatefulWidget {
   Feed();
 
-  // Future checkforSubscriptions() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   String url =
-  //       "https://api.aureal.one/public/yourSubscriptions?page=0&pageSize=14&user_id=${prefs.getString("userId")}";
-  //
-  //   try {
-  //     var response = await dio.get(url, cancelToken: _cancel);
-  //     if (response.statusCode == 200) {
-  //       return response.data['data'].length;
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  @override
+  State<Feed> createState() => _FeedState();
+}
 
+class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
+  // Future checkforSubscriptions() async {
   CancelToken _cancel = CancelToken();
 
   final String baseUrl = "https://api.aureal.one/public";
@@ -105,20 +94,6 @@ class Feed extends StatelessWidget {
   }
 
   // Future getFeedStructure(BuildContext context) async {
-  //   checkforSubscriptions().then((value) {
-  //     if (value == 0 || null) {
-  //       showBarModalBottomSheet(
-  //           isDismissible: false,
-  //           context: context,
-  //           builder: (context) {
-  //             return Subscriptiongetter();
-  //           });
-  //     } else {
-  //       getFeed();
-  //     }
-  //   });
-  // }
-
   SharedPreferences prefs;
 
   Future generalisedApiCall(String apicall) async {
@@ -184,10 +159,19 @@ class Feed extends StatelessWidget {
     }
   }
 
+  Future feed;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    feed = getFeed();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Material(
         child: FutureBuilder(
-          future: getFeed(),
+          future: feed,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
@@ -211,6 +195,10 @@ class Feed extends StatelessWidget {
           },
         ),
       );
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class VideoCard extends StatelessWidget {
@@ -3090,7 +3078,11 @@ class PodcastCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FadeInImage(placeholder: CachedNetworkImageProvider(placeholderUrl), image: CachedNetworkImageProvider(data['image'],)),
+              FadeInImage(
+                  placeholder: CachedNetworkImageProvider(placeholderUrl),
+                  image: CachedNetworkImageProvider(
+                    data['image'],
+                  )),
               // CachedNetworkImage(
               //   errorWidget: (context, url, error) {
               //     return Container(
