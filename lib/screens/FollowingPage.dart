@@ -1681,196 +1681,6 @@ class _PodcastWidgetState extends State<PodcastWidget>
     return FutureBuilder(
       future: myFuture,
       builder: (context, snapshot) {
-        // try{
-        //   if(snapshot.hasData){
-        //     return Container(
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         mainAxisSize: MainAxisSize.min,
-        //         children: [
-        //           ListTile(title: Text("${widget.data['name']}", style: TextStyle(
-        //               fontSize: SizeConfig.safeBlockHorizontal * 5,
-        //               fontWeight: FontWeight.bold
-        //           )),trailing: ShaderMask(shaderCallback: (Rect bounds){
-        //             return LinearGradient(colors: [Color(
-        //                 0xff5bc3ef),
-        //               Color(
-        //                   0xff5d5da8)]).createShader(bounds);
-        //           },child: GestureDetector(onTap: (){
-        //             Navigator.push(context, CupertinoPageRoute(builder: (context){
-        //               return SeeMore(data: widget.data);
-        //             },),);
-        //           },child: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),))),),
-        //           SizedBox(height: 10,),
-        //           Container(
-        //             width: double.infinity,
-        //             height: SizeConfig.blockSizeVertical * 25,
-        //             constraints: BoxConstraints(
-        //                 minHeight:
-        //                 MediaQuery.of(context).size.height *
-        //                     0.17),
-        //             child: ListView.builder(
-        //               shrinkWrap: true,
-        //               addAutomaticKeepAlives: true,
-        //               itemCount: snapshot.data.length,
-        //               itemBuilder: (context, int index){
-        //                 return PodcastCard(data: snapshot.data[index]);
-        //               },
-        //               scrollDirection: Axis.horizontal,
-        //
-        //             ),
-        //           ),
-        //           // Text("${snapshot.data}"),
-        //         ],
-        //       ),
-        //     );
-        //   }else{
-        //     return Column(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: [
-        //         ListTile(title: Text("${widget.data['name']}", style: TextStyle(
-        //             fontSize: SizeConfig.safeBlockHorizontal * 5,
-        //             fontWeight: FontWeight.bold
-        //         )),trailing: Text("See more", style: TextStyle(fontWeight: FontWeight.bold),),),
-        //         SizedBox(height: 10,),
-        //         Container(
-        //           width: double.infinity,
-        //           height: SizeConfig.blockSizeVertical * 25,
-        //           constraints: BoxConstraints(
-        //               minHeight:
-        //               MediaQuery.of(context).size.height *
-        //                   0.17),
-        //           child: ListView.builder(
-        //             shrinkWrap: true,
-        //             addAutomaticKeepAlives: true,
-        //
-        //             itemCount: 10,
-        //             itemBuilder: (context, int index){
-        //               return Padding(
-        //                 padding:
-        //                 const EdgeInsets.fromLTRB(
-        //                     15, 0, 0, 8),
-        //                 child: Container(
-        //                   decoration: BoxDecoration(
-        //                     // x
-        //                     borderRadius:
-        //                     BorderRadius.circular(
-        //                         15),
-        //                   ),
-        //                   width: MediaQuery.of(context)
-        //                       .size
-        //                       .width *
-        //                       0.38,
-        //                   child: Column(
-        //                     crossAxisAlignment:
-        //                     CrossAxisAlignment
-        //                         .start,
-        //                     mainAxisSize:
-        //                     MainAxisSize.min,
-        //                     children: [
-        //                       CachedNetworkImage(
-        //                         errorWidget: (context,
-        //                             url, error) {
-        //                           return Container(
-        //                             decoration: BoxDecoration(
-        //                                 color: Color(0xff080808),
-        //                                 // image: DecorationImage(
-        //                                 //     image: NetworkImage(
-        //                                 //         placeholderUrl),
-        //                                 //     fit: BoxFit
-        //                                 //         .cover),
-        //                                 borderRadius:
-        //                                 BorderRadius
-        //                                     .circular(
-        //                                     3)),
-        //                             width: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                             height: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                           );
-        //                         },
-        //                         imageBuilder: (context,
-        //                             imageProvider) {
-        //                           return Container(
-        //                             decoration: BoxDecoration(
-        //                                 image: DecorationImage(
-        //                                     image:
-        //                                     imageProvider,
-        //                                     fit: BoxFit
-        //                                         .cover),
-        //                                 borderRadius:
-        //                                 BorderRadius
-        //                                     .circular(
-        //                                     3)),
-        //                             width: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                             height: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                           );
-        //                         },
-        //                         memCacheHeight:
-        //                         (MediaQuery.of(
-        //                             context)
-        //                             .size
-        //                             .height)
-        //                             .floor(),
-        //                         imageUrl: placeholderUrl,
-        //                         placeholder: (context,
-        //                             imageProvider) {
-        //                           return Container(
-        //                             decoration: BoxDecoration(
-        //                               // image: DecorationImage(
-        //                               //     image: AssetImage(
-        //                               //         'assets/images/Thumbnail.png'),
-        //                               //     fit: BoxFit
-        //                               //         .cover),
-        //                                 color: Color(0xff080808)
-        //                             ),
-        //                             height: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                             width: MediaQuery.of(
-        //                                 context)
-        //                                 .size
-        //                                 .width *
-        //                                 0.38,
-        //                           );
-        //                         },
-        //                       ),
-        //                       SizedBox(
-        //                         height: 5,
-        //                       ),
-        //
-        //                     ],
-        //                   ),
-        //                 ),
-        //               );
-        //             },
-        //             scrollDirection: Axis.horizontal,
-        //
-        //           ),
-        //         ),
-        //       ],
-        //     );
-        //   }
-        //
-        // }catch(e){
-        //
-        // }
         if (snapshot.hasData) {
           if (snapshot.data.length == 0) {
             return SizedBox();
@@ -3280,41 +3090,42 @@ class PodcastCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              CachedNetworkImage(
-                errorWidget: (context, url, error) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(placeholderUrl),
-                            fit: BoxFit.cover),
-                        borderRadius: BorderRadius.circular(3)),
-                    width: MediaQuery.of(context).size.width * 0.38,
-                    height: MediaQuery.of(context).size.width * 0.38,
-                  );
-                },
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover),
-                        borderRadius: BorderRadius.circular(3)),
-                    width: MediaQuery.of(context).size.width * 0.38,
-                    height: MediaQuery.of(context).size.width * 0.38,
-                  );
-                },
-                memCacheHeight: (MediaQuery.of(context).size.height).floor(),
-                imageUrl: data['image'],
-                placeholder: (context, imageProvider) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(placeholderUrl),
-                            fit: BoxFit.cover)),
-                    height: MediaQuery.of(context).size.width * 0.38,
-                    width: MediaQuery.of(context).size.width * 0.38,
-                  );
-                },
-              ),
+              FadeInImage(placeholder: CachedNetworkImageProvider(placeholderUrl), image: CachedNetworkImageProvider(data['image'],)),
+              // CachedNetworkImage(
+              //   errorWidget: (context, url, error) {
+              //     return Container(
+              //       decoration: BoxDecoration(
+              //           image: DecorationImage(
+              //               image: NetworkImage(placeholderUrl),
+              //               fit: BoxFit.cover),
+              //           borderRadius: BorderRadius.circular(3)),
+              //       width: MediaQuery.of(context).size.width * 0.38,
+              //       height: MediaQuery.of(context).size.width * 0.38,
+              //     );
+              //   },
+              //   imageBuilder: (context, imageProvider) {
+              //     return Container(
+              //       decoration: BoxDecoration(
+              //           image: DecorationImage(
+              //               image: imageProvider, fit: BoxFit.cover),
+              //           borderRadius: BorderRadius.circular(3)),
+              //       width: MediaQuery.of(context).size.width * 0.38,
+              //       height: MediaQuery.of(context).size.width * 0.38,
+              //     );
+              //   },
+              //   memCacheHeight: (MediaQuery.of(context).size.height).floor(),
+              //   imageUrl: data['image'],
+              //   placeholder: (context, imageProvider) {
+              //     return Container(
+              //       decoration: BoxDecoration(
+              //           image: DecorationImage(
+              //               image: CachedNetworkImageProvider(placeholderUrl),
+              //               fit: BoxFit.cover)),
+              //       height: MediaQuery.of(context).size.width * 0.38,
+              //       width: MediaQuery.of(context).size.width * 0.38,
+              //     );
+              //   },
+              // ),
               SizedBox(
                 height: 5,
               ),
