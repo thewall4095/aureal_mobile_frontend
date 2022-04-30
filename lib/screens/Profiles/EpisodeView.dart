@@ -10,7 +10,6 @@ import 'package:auditory/PlayerState.dart';
 import 'package:auditory/Services/DurationCalculator.dart';
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:auditory/Services/audioEditor.dart';
 import 'package:auditory/data/Datasource.dart';
 import 'package:auditory/models/Episode.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
@@ -21,6 +20,7 @@ import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,6 +43,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Clips.dart';
 import '../Home.dart';
 import 'PodcastView.dart';
 
@@ -662,7 +663,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 Navigator.push(context,
                                                     CupertinoPageRoute(
                                                         builder: (context) {
-                                                  return AudioEditor(
+                                                  return SnippetEditor(
                                                     episodeObject:
                                                         episodeContent,
                                                   );
@@ -734,7 +735,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 Navigator.push(context,
                                                     CupertinoPageRoute(
                                                         builder: (context) {
-                                                  return AudioEditor(
+                                                  return SnippetEditor(
                                                     episodeObject:
                                                         episodeContent,
                                                   );
@@ -814,20 +815,45 @@ class _EpisodeViewState extends State<EpisodeView>
                                         // showModalBottomSheet(backgroundColor: Colors.transparent,isScrollControlled: true,isDismissible: true,context: context, builder: (context){
                                         //   return FractionallySizedBox(heightFactor: 0.95,child: VideoPlayer(episodeObject: episodeContent,));
                                         // });
+                                        episodeObject.audioPlayer.stop();
                                         episodeObject.isVideo = true;
-                                        // episodeObject.episodeObject = widget.data;
+                                        episodeObject.episodeObject = data;
                                         episodeObject.videoSource = Video(
                                             id: episodeContent['id'],
                                             title: episodeContent['name'],
                                             thumbnailUrl:
                                                 episodeContent['podcast_image'],
+                                            episodeImage:
+                                                episodeContent['image'],
                                             author: episodeContent['author'],
                                             url: episodeContent['url'],
                                             album:
-                                                episodeContent['podcast_name']);
+                                                episodeContent['podcast_name'],
+                                            podcastid:
+                                                episodeContent['podcast_id'],
+                                            author_id: episodeContent[
+                                                'author_user_id'],
+                                            createdAt:
+                                                episodeContent['published_at']);
                                         episodeObject.miniplayerController
                                             .animateToHeight(
                                                 state: PanelState.MAX);
+                                        episodeObject.betterPlayerController
+                                            .setupDataSource(
+                                                BetterPlayerDataSource(
+                                          BetterPlayerDataSourceType.network,
+                                          episodeObject.videoSource.url,
+                                          notificationConfiguration:
+                                              BetterPlayerNotificationConfiguration(
+                                            showNotification: true,
+                                            title:
+                                                "${episodeObject.videoSource.title}",
+                                            author:
+                                                "${episodeObject.videoSource.author}",
+                                            imageUrl:
+                                                "${episodeObject.videoSource.thumbnailUrl}",
+                                          ),
+                                        ));
                                         // showModalBottomSheet(
                                         //     isScrollControlled: true,
                                         //     backgroundColor: Colors.transparent,
@@ -880,348 +906,6 @@ class _EpisodeViewState extends State<EpisodeView>
                                       ),
                                     ),
                                   ),
-                                  // widget.episodeId == episodeObject.audioPlayer.realtimePlayingInfos.value.current.audio.audio.metas.id ? (episodeObject.audioPlayer.isPlaying.value == true ? GestureDetector(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       episodeObject.pause();
-                                  //     });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding:
-                                  //       const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Text("PAUSE"),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // ): GestureDetector(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       episodeObject.resume();
-                                  //     });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding:
-                                  //       const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Row(
-                                  //               mainAxisSize:
-                                  //               MainAxisSize.min,
-                                  //               children: [
-                                  //                 // Padding(
-                                  //                 //   padding: const EdgeInsets
-                                  //                 //           .symmetric(
-                                  //                 //       horizontal:
-                                  //                 //           5),
-                                  //                 //   child: Icon(Icons
-                                  //                 //       .play_arrow_rounded),
-                                  //                 // ),
-                                  //                 Text("RESUME"),
-                                  //               ],
-                                  //             ),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // )) : GestureDetector(
-                                  //   onTap: () {
-                                  //     episodeObject.stop();
-                                  //     episodeObject.episodeObject =
-                                  //         episodeContent;
-                                  //     print(episodeObject.episodeObject
-                                  //         .toString());
-                                  //     episodeObject.play();
-                                  //     showBarModalBottomSheet(
-                                  //         context: context,
-                                  //         builder: (context) {
-                                  //           return Player();
-                                  //         });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Text("GET STARTED"),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  // episodeObject.episodeObject == null
-                                  //     ? GestureDetector(
-                                  //   onTap: () {
-                                  //     print(episodeContent['url']
-                                  //         .toString()
-                                  //         .contains('.mp4'));
-                                  //     if (episodeContent['url']
-                                  //         .toString()
-                                  //         .contains('.mp4') ==
-                                  //         true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.m4v') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.flv') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.f4v') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.ogv') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.ogx') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.wmv') ==
-                                  //             true ||
-                                  //         episodeContent['url']
-                                  //             .toString()
-                                  //             .contains('.webm') ==
-                                  //             true) {
-                                  //       episodeObject.stop();
-                                  //       Navigator.push(context,
-                                  //           CupertinoPageRoute(
-                                  //               builder: (context) {
-                                  //                 return PodcastVideoPlayer(
-                                  //                   episodeObject: episodeContent,
-                                  //                 );
-                                  //               }));
-                                  //     } else {
-                                  //       if (episodeContent['url']
-                                  //           .toString()
-                                  //           .contains('.pdf') ==
-                                  //           true) {
-                                  //         // Navigator.push(context,
-                                  //         //     CupertinoPageRoute(
-                                  //         //         builder: (context) {
-                                  //         //   return PDFviewer(
-                                  //         //     episodeObject:
-                                  //         //         widget.episodeObject,
-                                  //         //   );
-                                  //         // }));
-                                  //       } else {
-                                  //         List<Audio> playable = [];
-                                  //         playable.add(Audio.network(
-                                  //             episodeContent['url'],
-                                  //             metas: Metas(
-                                  //               id: '${episodeContent['id']}',
-                                  //               title:
-                                  //               '${episodeContent['name']}',
-                                  //               artist:
-                                  //               '${episodeContent['author']}',
-                                  //               album:
-                                  //               '${episodeContent['podcast_name']}',
-                                  //               // image: MetasImage.network('https://www.google.com')
-                                  //               image: MetasImage.network(
-                                  //                   '${episodeContent['image'] == null ? episodeContent['podcast_image'] : episodeContent['image']}'),
-                                  //             )));
-                                  //         for (var v in playlist) {
-                                  //           playable.add(Audio.network(
-                                  //             v['url'],
-                                  //             metas: Metas(
-                                  //               id: '${v['id']}',
-                                  //               title: '${v['name']}',
-                                  //               artist: '${v['author']}',
-                                  //               album: '${v['podcast_name']}',
-                                  //               // image: MetasImage.network('https://www.google.com')
-                                  //               image: MetasImage.network(
-                                  //                   '${v['image'] == null ? v['podcast_image'] : v['image']}'),
-                                  //             ),
-                                  //           ));
-                                  //         }
-                                  //         episodeObject.audioPlayer.open(
-                                  //             Playlist(
-                                  //                 audios:
-                                  //                 playable,
-                                  //                 startIndex: 0),
-                                  //             showNotification: true);
-                                  //       }
-                                  //     }
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding: const EdgeInsets.all(7.0),
-                                  //             child: Text("GET STARTED"),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // )
-                                  //     : (episodeObject.episodeObject['id'] == null ||
-                                  //     episodeObject.episodeObject['id'] ==
-                                  //         episodeContent['id']
-                                  //     ? (episodeObject
-                                  //     .audioPlayer
-                                  //     .realtimePlayingInfos
-                                  //     .value
-                                  //     .isPlaying ==
-                                  //     true
-                                  //     ? GestureDetector(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       episodeObject.pause();
-                                  //     });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding:
-                                  //       const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Text("PAUSE"),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // )
-                                  //     : GestureDetector(
-                                  //   onTap: () {
-                                  //     setState(() {
-                                  //       episodeObject.resume();
-                                  //     });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding:
-                                  //       const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Row(
-                                  //               mainAxisSize:
-                                  //               MainAxisSize.min,
-                                  //               children: [
-                                  //                 // Padding(
-                                  //                 //   padding: const EdgeInsets
-                                  //                 //           .symmetric(
-                                  //                 //       horizontal:
-                                  //                 //           5),
-                                  //                 //   child: Icon(Icons
-                                  //                 //       .play_arrow_rounded),
-                                  //                 // ),
-                                  //                 Text("RESUME"),
-                                  //               ],
-                                  //             ),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // ))
-                                  //     : GestureDetector(
-                                  //   onTap: () {
-                                  //     episodeObject.stop();
-                                  //     episodeObject.episodeObject =
-                                  //         episodeContent;
-                                  //     print(episodeObject.episodeObject
-                                  //         .toString());
-                                  //     episodeObject.play();
-                                  //     showBarModalBottomSheet(
-                                  //         context: context,
-                                  //         builder: (context) {
-                                  //           return Player();
-                                  //         });
-                                  //   },
-                                  //   child: Container(
-                                  //     decoration: BoxDecoration(
-                                  //         borderRadius:
-                                  //         BorderRadius.circular(5),
-                                  //         gradient: LinearGradient(
-                                  //           colors: [
-                                  //             Color(0xff5d5da8),
-                                  //             Color(0xff5bc3ef)
-                                  //           ],
-                                  //         )),
-                                  //     width: double.infinity,
-                                  //     child: Padding(
-                                  //       padding: const EdgeInsets.all(8.0),
-                                  //       child: Center(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //             const EdgeInsets.all(7.0),
-                                  //             child: Text("GET STARTED"),
-                                  //           )),
-                                  //     ),
-                                  //   ),
-                                  // )),
                                   SizedBox(
                                     height:
                                         MediaQuery.of(context).size.height / 30,

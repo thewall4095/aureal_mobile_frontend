@@ -579,30 +579,81 @@ class _SwipeCardState extends State<SwipeCard> with WidgetsBindingObserver {
               padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 30),
-                    child: CachedNetworkImage(
-                      placeholder: (context, url) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          height: MediaQuery.of(context).size.width * 0.6,
-                        );
-                      },
-                      memCacheHeight:
-                          (MediaQuery.of(context).size.hashCode / 2).floor(),
-                      imageUrl: widget.clipObject['podcast_image'],
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          height: MediaQuery.of(context).size.width * 0.6,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.cover)),
-                        );
-                      },
+                    child: Stack(
+                      children: [
+                        CachedNetworkImage(
+                          placeholder: (context, url) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: MediaQuery.of(context).size.width * 0.6,
+                            );
+                          },
+                          memCacheHeight:
+                              (MediaQuery.of(context).size.hashCode / 2)
+                                  .floor(),
+                          imageUrl: widget.clipObject['podcast_image'],
+                          imageBuilder: (context, imageProvider) {
+                            return Container(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: MediaQuery.of(context).size.width * 0.6,
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    height:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover)),
+                                  ),
+                                  Center(
+                                    child: snippetPlayer.snippetPlayer
+                                        .builderRealtimePlayingInfos(
+                                            builder: (context, infos) {
+                                      if (infos.isPlaying == true) {
+                                        return InkWell(
+                                            onTap: () {
+                                              snippetPlayer.snippetPlayer
+                                                  .pause();
+                                            },
+                                            child: Icon(
+                                                Icons.pause_circle_filled,
+                                                size: 80,
+                                                color: Color(0xffe8e8e8)));
+                                      }
+                                      if (infos.isBuffering == true) {
+                                        return SizedBox(
+                                            width: 15,
+                                            height: 15,
+                                            child: CircularProgressIndicator(
+                                              color: Color(0xffe8e8e8),
+                                              strokeWidth: 1,
+                                            ));
+                                      } else {
+                                        return InkWell(
+                                            onTap: () {
+                                              snippetPlayer.snippetPlayer
+                                                  .play();
+                                            },
+                                            child: Icon(Icons.play_circle_fill,
+                                                size: 80,
+                                                color: Color(0xffe8e8e8)));
+                                      }
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   snippetPlayer.snippetPlayer.builderRealtimePlayingInfos(
@@ -752,10 +803,6 @@ class _SwipeCardState extends State<SwipeCard> with WidgetsBindingObserver {
             ),
           ),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [],
-        )
       ],
     );
   }

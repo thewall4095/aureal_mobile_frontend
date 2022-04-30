@@ -63,6 +63,23 @@ import 'buttonPages/settings/Theme-.dart';
 class Feed extends StatelessWidget {
   Feed();
 
+  // Future checkforSubscriptions() async {
+  //   prefs = await SharedPreferences.getInstance();
+  //   String url =
+  //       "https://api.aureal.one/public/yourSubscriptions?page=0&pageSize=14&user_id=${prefs.getString("userId")}";
+  //
+  //   try {
+  //     var response = await dio.get(url, cancelToken: _cancel);
+  //     if (response.statusCode == 200) {
+  //       return response.data['data'].length;
+  //     } else {
+  //       print(response.statusCode);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
   CancelToken _cancel = CancelToken();
 
   final String baseUrl = "https://api.aureal.one/public";
@@ -71,7 +88,7 @@ class Feed extends StatelessWidget {
 
   RegExp htmlMatch = RegExp(r'(\w+)');
 
-  Future<List> getFeedStructure() async {
+  Future getFeed() async {
     Dio dio = Dio();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
@@ -86,6 +103,21 @@ class Feed extends StatelessWidget {
       print(e);
     }
   }
+
+  // Future getFeedStructure(BuildContext context) async {
+  //   checkforSubscriptions().then((value) {
+  //     if (value == 0 || null) {
+  //       showBarModalBottomSheet(
+  //           isDismissible: false,
+  //           context: context,
+  //           builder: (context) {
+  //             return Subscriptiongetter();
+  //           });
+  //     } else {
+  //       getFeed();
+  //     }
+  //   });
+  // }
 
   SharedPreferences prefs;
 
@@ -154,34 +186,29 @@ class Feed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        child: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-            return <Widget>[];
+        child: FutureBuilder(
+          future: getFeed(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                  shrinkWrap: true,
+                  addAutomaticKeepAlives: true,
+                  itemCount: snapshot.data.length + 1,
+                  itemBuilder: (context, int index) {
+                    if (index == snapshot.data.length) {
+                      return SizedBox(
+                        height: 50,
+                      );
+                    } else {
+                      return _feedBuilder(context, snapshot.data[index]);
+                    }
+                  });
+            } else {
+              return SizedBox(
+                  // height: MediaQuery.of(context).size.height / 25,
+                  );
+            }
           },
-          body: FutureBuilder(
-            future: getFeedStructure(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                    shrinkWrap: true,
-                    addAutomaticKeepAlives: true,
-                    itemCount: snapshot.data.length + 1,
-                    itemBuilder: (context, int index) {
-                      if (index == snapshot.data.length) {
-                        return SizedBox(
-                          height: 50,
-                        );
-                      } else {
-                        return _feedBuilder(context, snapshot.data[index]);
-                      }
-                    });
-              } else {
-                return SizedBox(
-                    // height: MediaQuery.of(context).size.height / 25,
-                    );
-              }
-            },
-          ),
         ),
       );
 }
@@ -210,7 +237,7 @@ class VideoCard extends StatelessWidget {
             showNotification: true,
             title: "${episodeObject.videoSource.title}",
             author: "${episodeObject.videoSource.author}",
-            imageUrl: "${episodeObject.videoSource.thumbnailUrl}",
+            imageUrl: "${episodeObject.videoSource.episodeImage}",
           ),
         ));
       },
@@ -222,7 +249,7 @@ class VideoCard extends StatelessWidget {
           children: [
             Expanded(
               child: CachedNetworkImage(
-                imageUrl: video.thumbnailUrl,
+                imageUrl: video.episodeImage,
                 errorWidget: (context, url, e) {
                   return Container(
                     width: double.infinity,
@@ -261,7 +288,33 @@ class VideoCard extends StatelessWidget {
               ),
             ),
             ListTile(
-              contentPadding: EdgeInsets.zero,
+              leading: CircleAvatar(
+                radius: 20,
+                child: CachedNetworkImage(
+                  imageUrl: video.thumbnailUrl,
+                  errorWidget: (context, url, e) {
+                    return Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(placeholderUrl),
+                              fit: BoxFit.cover)),
+                    );
+                  },
+                  imageBuilder: (context, imageProvider) {
+                    return Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.cover)),
+                    );
+                  },
+                ),
+              ),
               title: Text(
                 "${video.title}",
                 maxLines: 1,
@@ -365,11 +418,14 @@ class VideoListWidget extends StatelessWidget {
                                   permlink: snapshot.data[index]['permlink'],
                                   thumbnailUrl: snapshot.data[index]
                                       ['podcast_image'],
+                                  episodeImage: snapshot.data[index]['image'],
                                   author_id: snapshot.data[index]
                                       ['author_user_id'],
                                   podcastid: snapshot.data[index]['podcast_id'],
                                   album: snapshot.data[index]['podcast_name'],
-                                  url: snapshot.data[index]['url'])),
+                                  url: snapshot.data[index]['url'],
+                                  createdAt: snapshot.data[index]
+                                      ['published_at'])),
                         ),
                       );
                     },
@@ -415,6 +471,8 @@ class EpisodeWidget extends StatefulWidget {
 
 class _EpisodeWidgetState extends State<EpisodeWidget>
     with AutomaticKeepAliveClientMixin {
+  Future myFuture;
+
   SharedPreferences prefs;
 
   RegExp htmlMatch = RegExp(r'(\w+)');
@@ -472,7 +530,7 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
   @override
   void initState() {
     // TODO: implement initState
-
+    myFuture = generalisedApiCall(widget.data['api']);
     super.initState();
   }
 
@@ -487,13 +545,60 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
     // var currentlyPlaying = Provider.of<PlayerChange>(context);
     // var episodeObject = Provider.of<PlayerChange>(context);
     return FutureBuilder(
-      future: generalisedApiCall(widget.data['api']),
+      future: myFuture,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          try {
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          if (snapshot.data.length == 0) {
+            return SizedBox();
+          } else {
+            try {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text("${widget.data['name']}",
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold)),
+                      trailing: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(colors: [
+                              Color(0xff5bc3ef),
+                              Color(0xff5d5da8)
+                            ]).createShader(bounds);
+                          },
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) {
+                                      return SeeMore(data: widget.data);
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "See more",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ))),
+                    ),
+                    ColumnBuilder(
+                        itemBuilder: (context, int index) {
+                          return EpisodeCard(
+                            data: snapshot.data[index],
+                            index: index,
+                            playlist: playlist,
+                          );
+                        },
+                        itemCount: snapshot.data.length)
+                  ],
+                ),
+              );
+            } catch (e) {
+              return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
@@ -501,151 +606,103 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                         style: TextStyle(
                             fontSize: SizeConfig.safeBlockHorizontal * 5,
                             fontWeight: FontWeight.bold)),
-                    trailing: ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return LinearGradient(colors: [
-                            Color(0xff5bc3ef),
-                            Color(0xff5d5da8)
-                          ]).createShader(bounds);
-                        },
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) {
-                                    return SeeMore(data: widget.data);
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "See more",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ))),
                   ),
-                  ColumnBuilder(
-                      itemBuilder: (context, int index) {
-                        return EpisodeCard(
-                          data: snapshot.data[index],
-                          index: index,
-                          playlist: playlist,
-                        );
-                      },
-                      itemCount: snapshot.data.length)
-                ],
-              ),
-            );
-          } catch (e) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text("${widget.data['name']}",
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 5,
-                          fontWeight: FontWeight.bold)),
-                ),
-                for (int i = 0; i < 6; i++)
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color(0xff080808)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 7,
-                                  height: MediaQuery.of(context).size.width / 7,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(10)),
-                                ),
-                                SizedBox(width: 10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      decoration:
-                                          BoxDecoration(color: Colors.black),
-                                      height: 16,
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Container(
-                                      decoration:
-                                          BoxDecoration(color: Colors.black),
-                                      height: 8,
-                                      width:
-                                          MediaQuery.of(context).size.width / 4,
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Container(
-                                  color: Colors.black,
-                                  height: 10,
-                                  width: MediaQuery.of(context).size.width),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Container(
-                                  color: Colors.black,
-                                  height: 10,
-                                  width: MediaQuery.of(context).size.width / 2),
-                            ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Container(
-                                  color: Colors.black,
-                                  height: 6,
-                                  width: MediaQuery.of(context).size.width),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 3),
-                              child: Container(
-                                  color: Colors.black,
-                                  height: 6,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.75),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: Row(
+                  for (int i = 0; i < 6; i++)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xff080808)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black,
-                                    ),
-                                    height: 25,
                                     width:
-                                        MediaQuery.of(context).size.width / 8,
-                                    //    color: kSecondaryColor,
+                                        MediaQuery.of(context).size.width / 7,
+                                    height:
+                                        MediaQuery.of(context).size.width / 7,
+                                    decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Container(
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        decoration:
+                                            BoxDecoration(color: Colors.black),
+                                        height: 16,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Container(
+                                        decoration:
+                                            BoxDecoration(color: Colors.black),
+                                        height: 8,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                4,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Colors.black,
+                                    height: 10,
+                                    width: MediaQuery.of(context).size.width),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Colors.black,
+                                    height: 10,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2),
+                              ),
+                              SizedBox(
+                                height: 6,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Colors.black,
+                                    height: 6,
+                                    width: MediaQuery.of(context).size.width),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Container(
+                                    color: Colors.black,
+                                    height: 6,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.75),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.black,
@@ -655,30 +712,47 @@ class _EpisodeWidgetState extends State<EpisodeWidget>
                                           MediaQuery.of(context).size.width / 8,
                                       //    color: kSecondaryColor,
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: Colors.black,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Colors.black,
+                                        ),
+                                        height: 25,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                8,
+                                        //    color: kSecondaryColor,
                                       ),
-                                      height: 20,
-                                      width:
-                                          MediaQuery.of(context).size.width / 8,
-                                      //    color: kSecondaryColor,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors.black,
+                                        ),
+                                        height: 20,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                8,
+                                        //    color: kSecondaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
-            );
+                ],
+              );
+            }
           }
         } else {
           return Column(
@@ -891,14 +965,6 @@ class EpisodeCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            // boxShadow: [
-            //   new BoxShadow(
-            //     color: Colors.black54
-            //         .withOpacity(0.2),
-            //     blurRadius: 10.0,
-            //   ),
-            // ],
-            // border: Border(bottom: BorderSide(width: 0.5,color: Color(0xffe8e8e8).withOpacity(0.5))),
             color: Color(0xff080808),
             borderRadius: BorderRadius.circular(5),
           ),
@@ -912,21 +978,6 @@ class EpisodeCard extends StatelessWidget {
                 data['isvideo'] == true
                     ? InkWell(
                         onTap: () {
-                          // episodeObject.audioPlayer.stop().then((value) {
-                          //   episodeObject.episodeObject = data;
-                          //   showModalBottomSheet(
-                          //       backgroundColor: Colors.transparent,
-                          //       isScrollControlled: true,
-                          //       isDismissible: true,
-                          //       context: context,
-                          //       builder: (context) {
-                          //         return FractionallySizedBox(
-                          //             heightFactor: 0.95,
-                          //             child: VideoPlayer(
-                          //               episodeObject: data,
-                          //             ));
-                          //       });
-                          // });
                           episodeObject.audioPlayer.stop();
                           episodeObject.isVideo = true;
                           episodeObject.episodeObject = data;
@@ -934,11 +985,13 @@ class EpisodeCard extends StatelessWidget {
                               id: data['id'],
                               title: data['name'],
                               thumbnailUrl: data['podcast_image'],
+                              episodeImage: data['image'],
                               author: data['author'],
                               url: data['url'],
                               album: data['podcast_name'],
                               podcastid: data['podcast_id'],
-                              author_id: data['author_user_id']);
+                              author_id: data['author_user_id'],
+                              createdAt: data['published_at']);
                           episodeObject.miniplayerController
                               .animateToHeight(state: PanelState.MAX);
                           episodeObject.betterPlayerController
@@ -954,7 +1007,6 @@ class EpisodeCard extends StatelessWidget {
                                   "${episodeObject.videoSource.thumbnailUrl}",
                             ),
                           ));
-                          // context.read(selectedVideoProvider).state = data;
                         },
                         child: CachedNetworkImage(
                           imageBuilder: (context, imageProvider) {
@@ -1008,11 +1060,6 @@ class EpisodeCard extends StatelessWidget {
                                 aspectRatio: 1.0,
                                 child: Container(
                                   width: double.infinity,
-                                  // height: MediaQuery.of(
-                                  //     context)
-                                  //     .size
-                                  //     .width /
-                                  //     8,
                                   decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: CachedNetworkImageProvider(
@@ -1039,11 +1086,6 @@ class EpisodeCard extends StatelessWidget {
                                   aspectRatio: 1.0,
                                   child: Container(
                                       width: double.infinity,
-                                      // height: MediaQuery.of(
-                                      //     context)
-                                      //     .size
-                                      //     .width /
-                                      //     8,
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image: CachedNetworkImageProvider(
@@ -1489,54 +1531,28 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                           ),
                         ),
                       ),
-                Container(
-                  child: episodeObject.audioPlayer.isPlaying.value == true
-                      ? GestureDetector(
+                widget.data['isvideo'] == true
+                    ? SizedBox()
+                    : Container(
+                        child: GestureDetector(
                           // splashColor: Colors.blue,
                           // splashFactory: InkRipple.splashFactory,
+
                           onTap: () {
                             setState(() {
                               isPlaying = true;
                             });
                             FeedbackType _vibtype = FeedbackType.impact;
                             Vibrate.feedback(FeedbackType.impact);
-                            if (episodeData['isvideo'] == true) {
-                              // episodeObject.audioPlayer.stop().then((value) {
-                              //   episodeObject.episodeObject = widget.data;
-                              //   showModalBottomSheet(
-                              //       backgroundColor: Colors.transparent,
-                              //       isScrollControlled: true,
-                              //       isDismissible: true,
-                              //       context: context,
-                              //       builder: (context) {
-                              //         return FractionallySizedBox(
-                              //             heightFactor: 0.95,
-                              //             child: VideoPlayer(
-                              //               episodeObject: widget.data,
-                              //             ));
-                              //       });
-                              // });
-                              episodeObject.isVideo = true;
-                              episodeObject.episodeObject = widget.data;
-                              episodeObject.videoSource = Video(
-                                  id: widget.data['id'],
-                                  title: widget.data['name'],
-                                  thumbnailUrl: widget.data['podcast_image'],
-                                  author: widget.data['author'],
-                                  url: widget.data['url'],
-                                  album: widget.data['podcast_name'],
-                                  podcastid: widget.data['podcast_id'],
-                                  author_id: widget.data['author_user_id'],
-                                  permlink: widget.data['permlink']);
-                              episodeObject.miniplayerController
-                                  .animateToHeight(state: PanelState.MAX);
 
-                              // Navigator.push(context, CupertinoPageRoute(builder: (context){
-                              //   return VideoPlauer
-                              // }))
+                            episodeObject.isVideo = false;
+                            episodeObject.betterPlayerController.pause();
+                            if (widget.playlist == null) {
+                              episodeObject.stop();
+                              episodeObject.episodeObject = episodeData;
+                              print(episodeObject.episodeObject.toString());
+                              episodeObject.play();
                             } else {
-                              episodeObject.isVideo = false;
-                              episodeObject.betterPlayerController.pause();
                               showModalBottomSheet(
                                   isScrollControlled: true,
                                   backgroundColor: Colors.transparent,
@@ -1547,6 +1563,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   builder: (context) {
                                     return Player2();
                                   });
+
                               episodeObject.audioPlayer
                                   .open(
                                       Playlist(
@@ -1587,96 +1604,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   )),
                             ),
                           ),
-                        )
-                      : GestureDetector(
-                          // splashColor: Colors.blue,
-                          // splashFactory: InkRipple.splashFactory,
-
-                          onTap: () {
-                            setState(() {
-                              isPlaying = true;
-                            });
-                            FeedbackType _vibtype = FeedbackType.impact;
-                            Vibrate.feedback(FeedbackType.impact);
-                            if (widget.data['isvideo'] == true) {
-                              episodeObject.audioPlayer.stop();
-                              episodeObject.isVideo = true;
-                              // episodeObject.episodeObject = widget.data;
-                              episodeObject.videoSource = Video(
-                                  id: widget.data['id'],
-                                  title: widget.data['name'],
-                                  thumbnailUrl: widget.data['podcast_image'],
-                                  author: widget.data['author'],
-                                  url: widget.data['url'],
-                                  album: widget.data['podcast_name'],
-                                  podcastid: widget.data['podcast_id'],
-                                  author_id: widget.data['author_user_id'],
-                                  permlink: widget.data['permlink']);
-                              episodeObject.miniplayerController
-                                  .animateToHeight(state: PanelState.MAX);
-                            } else {
-                              episodeObject.isVideo = false;
-                              episodeObject.betterPlayerController.pause();
-                              if (widget.playlist == null) {
-                                episodeObject.stop();
-                                episodeObject.episodeObject = episodeData;
-                                print(episodeObject.episodeObject.toString());
-                                episodeObject.play();
-                              } else {
-                                showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    backgroundColor: Colors.transparent,
-                                    barrierColor: Colors.transparent,
-                                    isDismissible: true,
-                                    // bounce: true,
-                                    context: context,
-                                    builder: (context) {
-                                      return Player2();
-                                    });
-
-                                episodeObject.audioPlayer
-                                    .open(
-                                        Playlist(
-                                            audios: widget.playlist,
-                                            startIndex: widget.index),
-                                        showNotification: true)
-                                    .then((value) {});
-                              }
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 60),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  border: Border.all(color: kSecondaryColor),
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.play_circle_outline,
-                                        size: 15,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Text(
-                                          DurationCalculator(
-                                              widget.data['duration']),
-                                          textScaleFactor: 0.75,
-                                          // style: TextStyle(
-                                          //      color: Color(0xffe8e8e8)
-                                          //     ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          ),
                         ),
-                ),
+                      ),
               ],
             ),
             GestureDetector(
@@ -1738,10 +1667,19 @@ class _PodcastWidgetState extends State<PodcastWidget>
     });
   }
 
+  Future myFuture;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    myFuture = generalisedApiCall(widget.data['api']);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: generalisedApiCall(widget.data['api']),
+      future: myFuture,
       builder: (context, snapshot) {
         // try{
         //   if(snapshot.hasData){
@@ -1934,60 +1872,65 @@ class _PodcastWidgetState extends State<PodcastWidget>
         //
         // }
         if (snapshot.hasData) {
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text("${widget.data['name']}",
-                      style: TextStyle(
-                          fontSize: SizeConfig.safeBlockHorizontal * 5,
-                          fontWeight: FontWeight.bold)),
-                  trailing: ShaderMask(
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                                colors: [Color(0xff5bc3ef), Color(0xff5d5da8)])
-                            .createShader(bounds);
-                      },
-                      child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) {
-                                  return SeeMore(data: widget.data);
-                                },
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "See more",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ))),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  width: double.infinity,
-                  height: SizeConfig.blockSizeVertical * 25,
-                  constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height * 0.17),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    addAutomaticKeepAlives: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, int index) {
-                      return PodcastCard(data: snapshot.data[index]);
-                    },
-                    scrollDirection: Axis.horizontal,
+          if (snapshot.data.length == 0) {
+            return SizedBox();
+          } else {
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text("${widget.data['name']}",
+                        style: TextStyle(
+                            fontSize: SizeConfig.safeBlockHorizontal * 5,
+                            fontWeight: FontWeight.bold)),
+                    trailing: ShaderMask(
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(colors: [
+                            Color(0xff5bc3ef),
+                            Color(0xff5d5da8)
+                          ]).createShader(bounds);
+                        },
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) {
+                                    return SeeMore(data: widget.data);
+                                  },
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "See more",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ))),
                   ),
-                ),
-                // Text("${snapshot.data}"),
-              ],
-            ),
-          );
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: SizeConfig.blockSizeVertical * 25,
+                    constraints: BoxConstraints(
+                        minHeight: MediaQuery.of(context).size.height * 0.17),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      addAutomaticKeepAlives: true,
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, int index) {
+                        return PodcastCard(data: snapshot.data[index]);
+                      },
+                      scrollDirection: Axis.horizontal,
+                    ),
+                  ),
+                  // Text("${snapshot.data}"),
+                ],
+              ),
+            );
+          }
         } else {
           return Container(
             child: Column(
@@ -2064,13 +2007,8 @@ class _PodcastWidgetState extends State<PodcastWidget>
                                 imageUrl: placeholderUrl,
                                 placeholder: (context, imageProvider) {
                                   return Container(
-                                    decoration: BoxDecoration(
-                                        // image: DecorationImage(
-                                        //     image: AssetImage(
-                                        //         'assets/images/Thumbnail.png'),
-                                        //     fit: BoxFit
-                                        //         .cover),
-                                        color: Color(0xff080808)),
+                                    decoration:
+                                        BoxDecoration(color: Color(0xff080808)),
                                     height: MediaQuery.of(context).size.width *
                                         0.38,
                                     width: MediaQuery.of(context).size.width *
@@ -2134,283 +2072,291 @@ class PlaylistWidget extends StatelessWidget {
       future: generalisedApiCall(data['api']),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          try {
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    title: Text("${data['name']}",
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 5,
-                            fontWeight: FontWeight.bold)),
-                    trailing: ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return LinearGradient(colors: [
-                            Color(0xff5bc3ef),
-                            Color(0xff5d5da8)
-                          ]).createShader(bounds);
-                        },
-                        child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                  builder: (context) {
-                                    return SeeMore(data: data);
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "See more",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ))),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: SizeConfig.blockSizeVertical * 25,
-                    constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height * 0.17),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
+          if (snapshot.data.length == 0) {
+            return SizedBox();
+          } else {
+            try {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text("${data['name']}",
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold)),
+                      trailing: ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return LinearGradient(colors: [
+                              Color(0xff5bc3ef),
+                              Color(0xff5d5da8)
+                            ]).createShader(bounds);
+                          },
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  CupertinoPageRoute(builder: (context) {
-                                return PlaylistView(
-                                    playlistId: snapshot.data[index]['id']);
-                              }));
-                            },
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) {
+                                      return SeeMore(data: data);
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "See more",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ))),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: SizeConfig.blockSizeVertical * 25,
+                      constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height * 0.17),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    CupertinoPageRoute(builder: (context) {
+                                  return PlaylistView(
+                                      playlistId: snapshot.data[index]['id']);
+                                }));
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 3,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    int.parse(snapshot.data[index]
+                                                ['episodes_count']) <=
+                                            4
+                                        ? CachedNetworkImage(
+                                            imageUrl: snapshot.data[index]
+                                                ['episodes_images'][0],
+                                            imageBuilder:
+                                                (context, imageProvider) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3,
+                                                decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                        image: imageProvider,
+                                                        fit: BoxFit.cover)),
+                                              );
+                                            },
+                                          )
+                                        : Container(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    CachedNetworkImage(
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        );
+                                                      },
+                                                      imageUrl: snapshot
+                                                              .data[index][
+                                                          'episodes_images'][0],
+                                                    ),
+                                                    CachedNetworkImage(
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        );
+                                                      },
+                                                      imageUrl: snapshot
+                                                              .data[index][
+                                                          'episodes_images'][1],
+                                                    )
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    CachedNetworkImage(
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        );
+                                                      },
+                                                      imageUrl: snapshot
+                                                              .data[index][
+                                                          'episodes_images'][2],
+                                                    ),
+                                                    CachedNetworkImage(
+                                                      imageBuilder: (context,
+                                                          imageProvider) {
+                                                        return Container(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              6,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image:
+                                                                      imageProvider,
+                                                                  fit: BoxFit
+                                                                      .cover)),
+                                                        );
+                                                      },
+                                                      imageUrl: snapshot
+                                                              .data[index][
+                                                          'episodes_images'][3],
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Text(
+                                        "${snapshot.data[index]['playlist_name']}",
+                                        style: TextStyle(
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    4,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        itemCount: snapshot.data.length,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } catch (e) {
+              return Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text("${data['name']}",
+                          style: TextStyle(
+                              fontSize: SizeConfig.safeBlockHorizontal * 5,
+                              fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: SizeConfig.blockSizeVertical * 25,
+                      constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height * 0.17),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
                             child: Container(
                               width: MediaQuery.of(context).size.width / 3,
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  int.parse(snapshot.data[index]
-                                              ['episodes_count']) <=
-                                          4
-                                      ? CachedNetworkImage(
-                                          imageUrl: snapshot.data[index]
-                                              ['episodes_images'][0],
-                                          imageBuilder:
-                                              (context, imageProvider) {
-                                            return Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  3,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  3,
-                                              decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover)),
-                                            );
-                                          },
-                                        )
-                                      : Container(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CachedNetworkImage(
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image:
-                                                                    imageProvider,
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                      );
-                                                    },
-                                                    imageUrl: snapshot
-                                                            .data[index]
-                                                        ['episodes_images'][0],
-                                                  ),
-                                                  CachedNetworkImage(
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image:
-                                                                    imageProvider,
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                      );
-                                                    },
-                                                    imageUrl: snapshot
-                                                            .data[index]
-                                                        ['episodes_images'][1],
-                                                  )
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CachedNetworkImage(
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image:
-                                                                    imageProvider,
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                      );
-                                                    },
-                                                    imageUrl: snapshot
-                                                            .data[index]
-                                                        ['episodes_images'][2],
-                                                  ),
-                                                  CachedNetworkImage(
-                                                    imageBuilder: (context,
-                                                        imageProvider) {
-                                                      return Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            6,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image:
-                                                                    imageProvider,
-                                                                fit: BoxFit
-                                                                    .cover)),
-                                                      );
-                                                    },
-                                                    imageUrl: snapshot
-                                                            .data[index]
-                                                        ['episodes_images'][3],
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 5),
-                                    child: Text(
-                                      "${snapshot.data[index]['playlist_name']}",
-                                      style: TextStyle(
-                                          fontSize:
-                                              SizeConfig.safeBlockHorizontal *
-                                                  4,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.width / 3,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    decoration:
+                                        BoxDecoration(color: Color(0xff080808)),
                                   )
+                                  // Padding(
+                                  //   padding: const EdgeInsets.symmetric(vertical: 5),
+                                  //   child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
+                                  // )
                                 ],
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      itemCount: snapshot.data.length,
+                          );
+                        },
+                        itemCount: snapshot.data.length,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          } catch (e) {
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    title: Text("${data['name']}",
-                        style: TextStyle(
-                            fontSize: SizeConfig.safeBlockHorizontal * 5,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: SizeConfig.blockSizeVertical * 25,
-                    constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height * 0.17),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: MediaQuery.of(context).size.width / 3,
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  decoration:
-                                      BoxDecoration(color: Color(0xff080808)),
-                                )
-                                // Padding(
-                                //   padding: const EdgeInsets.symmetric(vertical: 5),
-                                //   child: Text("${snapshot.data[index]['playlist_name']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4,fontWeight: FontWeight.bold),),
-                                // )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      itemCount: snapshot.data.length,
-                    ),
-                  ),
-                ],
-              ),
-            );
+                  ],
+                ),
+              );
+            }
           }
         } else {
           return Container(
@@ -2600,16 +2546,6 @@ class SnippetWidget extends StatelessWidget {
                                     ),
                                   ),
                                 )
-                                // ClipRect(
-                                //   child: BackdropFilter(
-                                //     filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
-                                //     child: Container(
-                                //       decoration: BoxDecoration(
-                                //         borderRadius: BorderRadius.circular(10),
-                                //       ),
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
@@ -2731,7 +2667,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    // audioplayer.stop();
+
     snippetPlayer.snippetPlayer.stop();
   }
 

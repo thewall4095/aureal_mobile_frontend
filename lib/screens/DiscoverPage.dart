@@ -217,7 +217,8 @@ class DiscoverScreen extends StatelessWidget {
         return PodcastWidget(data: data);
         break;
       case 'episode':
-        return EpisodeWidget(data: data);
+        // return EpisodeWidget(data: data);
+        return Container();
         break;
       case "playlist":
         return PlaylistWidget(data: data);
@@ -345,37 +346,28 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool isInnerBoxScrolled) {
-          return <Widget>[];
+      body: FutureBuilder(
+        future: getDiscoverStructure(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              shrinkWrap: true,
+              addAutomaticKeepAlives: true,
+              itemBuilder: (context, int index) {
+                if (index == snapshot.data.length) {
+                  return SizedBox(
+                    height: 150,
+                  );
+                } else {
+                  return _feedBuilder(context, snapshot.data[index]);
+                }
+              },
+              itemCount: snapshot.data.length + 1,
+            );
+          } else {
+            return SizedBox();
+          }
         },
-        body: Container(
-          // height: MediaQuery.of(context).size.height,
-          child: FutureBuilder(
-            future: getDiscoverStructure(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  addAutomaticKeepAlives: true,
-                  itemBuilder: (context, int index) {
-                    if (index == snapshot.data.length) {
-                      return SizedBox(
-                        height: 150,
-                      );
-                    } else {
-                      return _feedBuilder(context, snapshot.data[index]);
-                    }
-                  },
-                  itemCount: snapshot.data.length + 1,
-                );
-              } else {
-                return SizedBox();
-              }
-            },
-          ),
-        ),
       ),
     );
   }

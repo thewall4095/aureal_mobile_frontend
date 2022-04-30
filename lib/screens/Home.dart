@@ -142,7 +142,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   var currentlyPlaying;
 
@@ -318,6 +318,40 @@ class _HomeState extends State<Home> {
   //   );
   // }
 
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  Widget buildPageView() {
+    return PageView(
+      physics: NeverScrollableScrollPhysics(),
+      controller: pageController,
+      onPageChanged: (index) {
+        pageChanged(index);
+      },
+      children: [
+        Feed(),
+        DiscoverScreen(),
+        LibraryPage(),
+      ],
+    );
+  }
+
+  void pageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void bottomTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
+
   void addRoomParticipant({String roomid}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/public/addRoomParticipant';
@@ -405,25 +439,6 @@ class _HomeState extends State<Home> {
           }));
         }
 
-        // if (uri.toString().contains('episode') == true) {
-        //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        //     return EpisodeView(
-        //       episodeId: uri
-        //           .toString()
-        //           .split('/')[uri.toString().split('/').length - 1],
-        //     );
-        //   }));
-        // }
-        // if (uri.toString().contains('episode') == true) {
-        //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        //     return EpisodeView(
-        //       episodeId: uri
-        //           .toString()
-        //           .split('/')[uri.toString().split('/').length - 1],
-        //     );
-        //   }));
-        // }
-
         print(_latestUri);
       }, onError: (Object err) {
         if (!mounted) return;
@@ -508,24 +523,6 @@ class _HomeState extends State<Home> {
               );
             }));
           }
-          // if (uri.toString().contains('episode') == true) {
-          //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
-          //     return EpisodeView(
-          //       episodeId: uri
-          //           .toString()
-          //           .split('/')[uri.toString().split('/').length - 1],
-          //     );
-          //   }));
-          // }
-          // if (uri.toString().contains('episode') == true) {
-          //   Navigator.push(context, CupertinoPageRoute(builder: (context) {
-          //     return EpisodeView(
-          //       episodeId: uri
-          //           .toString()
-          //           .split('/')[uri.toString().split('/').length - 1],
-          //     );
-          //   }));
-          // }
         }
         if (!mounted) return;
         setState(() => _initialUri = uri);
@@ -544,19 +541,7 @@ class _HomeState extends State<Home> {
   void initState() {
     setLocalData();
     // TODO: implement initState
-
     getUserDetails();
-
-    // MediaNotification.setListener('pause', () {
-    //   setState(() => status = 'pause');
-    // });
-    // MediaNotification.setListener('play', () {
-    //   setState(() => status = 'play');
-    // });
-    // MediaNotification.setListener('next', () {});
-    // MediaNotification.setListener('prev', () {});
-    // MediaNotification.setListener('select', () {});
-
     getLocalData();
     _handleIncomingLinks();
     _handleInitialUri();
@@ -709,7 +694,8 @@ class _HomeState extends State<Home> {
             content: Text('Tap back again to leave'),
           ),
           child: Stack(children: [
-            _createPage(context, _selectedIndex),
+            // _createPage(context, _selectedIndex),
+            buildPageView(),
             Align(
               alignment: Alignment.bottomCenter,
               child: ClipRect(
@@ -742,14 +728,6 @@ class _HomeState extends State<Home> {
                               //Color(0xff5bc3ef),
                               // backgroundColor: Colors.transparent,
                               items: <BottomNavigationBarItem>[
-                                // BottomNavigationBarItem(
-                                //   icon: Icon(
-                                //     Icons.stream,
-                                //   ),
-                                //   activeIcon: Icon(Icons.stream),
-                                //   label: '',
-                                // ),
-
                                 BottomNavigationBarItem(
                                   label: "",
                                   icon: Icon(
@@ -785,7 +763,9 @@ class _HomeState extends State<Home> {
                                 ),
                               ],
                               currentIndex: _selectedIndex,
-                              onTap: _onItemTapped,
+                              onTap: (index) {
+                                bottomTapped(index);
+                              },
                             ),
                           ),
                         )
@@ -1046,211 +1026,3 @@ class BottomPlayer extends StatelessWidget {
     }
   }
 }
-
-// class BottomPlayer extends StatefulWidget {
-//   @override
-//   _BottomPlayerState createState() => _BottomPlayerState();
-// }
-//
-// class _BottomPlayerState extends State<BottomPlayer> {
-//   // MusicPlayer player;
-//
-//   PlayerState playerstate = PlayerState.playing;
-//
-//   ScrollController _controller = ScrollController();
-//
-//   var status;
-//   bool _hasBeenPressed = false;
-//
-//   SharedPreferences prefs;
-//
-//   getLocalData() async {
-//     prefs = await SharedPreferences.getInstance();
-//   }
-//
-//   String changingDuration = '0.0';
-//
-//   Duration _visibleValue;
-//   bool listenOnlyUserInteraction = false;
-//   double get percent => duration.inMilliseconds == 0
-//       ? 0
-//       : _visibleValue.inMilliseconds / duration.inMilliseconds;
-//
-//   void durationToString(Duration duration) {
-//     String twoDigits(int n) {
-//       if (n >= 10) return "$n";
-//       return "0$n";
-//     }
-//
-//     String twoDigitMinutes =
-//         twoDigits(duration.inMinutes.remainder(Duration.minutesPerHour));
-//     String twoDigitSeconds =
-//         twoDigits(duration.inSeconds.remainder(Duration.secondsPerMinute));
-//
-//     setState(() {
-//       changingDuration = "$twoDigitMinutes:$twoDigitSeconds";
-//     });
-//   }
-//
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     // var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-//     // episodeObject.episodeViewed(
-//     //     episodeObject.audioPlayer.current.value.audio.audio.metas.id);
-//
-//     super.initState();
-//   }
-//
-//   int count = 0;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     SizeConfig().init(context);
-//     var episodeObject = Provider.of<PlayerChange>(context);
-//
-//     // if (episodeObject.episodeObject != null) {
-//     //   episodeObject.audioPlayer.currentPosition.listen((event) {
-//     //     if (episodeObject.audioPlayer.currentPosition.value ==
-//     //         episodeObject.audioPlayer.realtimePlayingInfos.value.duration) {
-//     //       episodeObject.customNextAction(episodeObject.audioPlayer);
-//     //     }
-//     //   });
-//     // }
-//     try{
-//       return GestureDetector(
-//         onTap: () {
-//           showModalBottomSheet(
-//               isScrollControlled: true,
-//               backgroundColor: Colors.transparent,
-//               barrierColor: Colors.transparent,
-//               isDismissible: true,
-//               // bounce: true,
-//               context: context,
-//               builder: (context) {
-//                 return Player2();
-//               });
-//           // Navigator.pushNamed(context, Player.id);
-//         },
-//         child: Dismissible(
-//           key: UniqueKey(),
-//           onDismissed: (direction) {
-//             setState(() {
-//               // episodeObject.episodeName = null;
-//               episodeObject.audioPlayer.pause();
-//             });
-//           },
-//           child: ClipRect(
-//             child: BackdropFilter(
-//               filter: ImageFilter.blur(
-//                 sigmaY: 15.0,
-//                 sigmaX: 15.0,
-//               ),
-//               child: Container(
-//                 decoration: BoxDecoration(
-//                   // color: Colors.transparent
-//                 ),
-//                 child: episodeObject.audioPlayer.builderRealtimePlayingInfos(
-//                     builder: (context, infos) {
-//                       if (infos == null) {
-//                         return SizedBox(
-//                           height: 0,
-//                           width: 0,
-//                         );
-//                       } else {
-//                         return ListTile(
-//                           trailing: infos.isPlaying == true
-//                               ? IconButton(
-//                             splashColor: Colors.transparent,
-//                             icon: Icon(
-//                               Icons.pause,
-//                               color: Colors.white,
-//                             ),
-//                             onPressed: () {
-//                               episodeObject.audioPlayer.pause();
-//                             },
-//                           )
-//                               : IconButton(
-//                             splashColor: Colors.blue,
-//                             icon: Icon(
-//                               Icons.play_arrow,
-//                               color: Colors.white,
-//                             ),
-//                             onPressed: () {
-//                               episodeObject.resume();
-//                             },
-//                           ),
-//                           leading: Builder(builder: (context){
-//                             try{
-//                               return CachedNetworkImage(
-//                                 width: 40,
-//                                 height: 40,
-//                                 imageUrl: infos.current.audio == null ? placeholderUrl:infos.current.audio.audio.metas.image.path,
-//                                 errorWidget: (context, url, e){
-//                                   return Container(
-//                                     height: 40,
-//                                     width: 40,
-//                                     decoration: BoxDecoration(
-//                                       color: Color(0xff1a1a1a),
-//                                       borderRadius: BorderRadius.circular(3),
-//                                     ),
-//                                   );
-//                                 },
-//                                 imageBuilder: (context, imageProvider) {
-//                                   return Container(
-//                                     height: 40,
-//                                     width: 40,
-//                                     decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(3),
-//                                         image: DecorationImage(
-//                                             image: imageProvider, fit: BoxFit.cover)),
-//                                   );
-//                                 },
-//                               );
-//                             }catch(e){
-//                               return CachedNetworkImage(
-//                                 width: 40,
-//                                 height: 40,
-//                                 imageUrl: placeholderUrl,
-//                                 imageBuilder: (context, imageProvider) {
-//                                   return Container(
-//                                     height: 40,
-//                                     width: 40,
-//                                     decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(3),
-//                                         image: DecorationImage(
-//                                             image: imageProvider, fit: BoxFit.cover)),
-//                                   );
-//                                 },
-//                               );
-//                             }
-//                           },),
-//                           title: Builder(builder: (context){
-//                             try{
-//                               return Padding(
-//                                 padding: const EdgeInsets.only(right: 10),
-//                                 child: infos.current.audio == null? Text(""):Text(
-//                                   "${infos.current.audio == null ? "":infos.current.audio.audio.metas.title}",
-//                                   maxLines: 2,
-//                                   overflow: TextOverflow.ellipsis,
-//                                 ),
-//                               );
-//                             }catch(e){
-//                               return SizedBox();
-//                             }
-//                           },)
-//                         );
-//                       }
-//                     }),
-//               ),
-//             ),
-//           ),
-//         ),
-//       );
-//     }catch(e){
-//       SizedBox();
-//     }
-//
-//
-//   }
-// }

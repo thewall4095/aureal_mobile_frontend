@@ -40,6 +40,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Clips.dart';
 import 'PlayerElements/Seekbar.dart';
 
 class Player2 extends StatelessWidget {
@@ -6038,7 +6039,7 @@ class _ClipScreenState extends State<ClipScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
   }
 
-  void delete(var snippetId) async {
+  Future delete(var snippetId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url = 'https://api.aureal.one/private/deleteSnippet';
 
@@ -6055,7 +6056,7 @@ class _ClipScreenState extends State<ClipScreen> {
     }
   }
 
-  void getClips() async {
+  Future getClips() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/getSnippet?user_id=${prefs.getString('userId')}";
@@ -6071,17 +6072,20 @@ class _ClipScreenState extends State<ClipScreen> {
             v['isPlaying'] = false;
           }
         });
+        return clips;
       }
     } catch (e) {
       print(e);
     }
   }
 
+  Future myFuture;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getClips();
+    myFuture = getClips();
   }
 
   int currentIndex = 0;
@@ -6101,186 +6105,291 @@ class _ClipScreenState extends State<ClipScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          "Your Clips",
-          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
-          textScaleFactor: 1.0,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Text(
+            "Your Clips",
+            style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3.5),
+            textScaleFactor: 1.0,
+          ),
         ),
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          childAspectRatio: 9 / 14,
-          children: [
-            for (var v in clips)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          image: DecorationImage(
-                              image: CachedNetworkImageProvider(
-                                  v['podcast_image']),
-                              fit: BoxFit.cover)),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.black, Colors.transparent],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+        body: FutureBuilder(
+          future: myFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data.length == 0) {
+                return Container(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              "${v['episode_name']}",
-                              textScaleFactor: 0.75,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 20,
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              height: MediaQuery.of(context).size.width / 2,
+                              child: Image.asset('assets/images/Mascot.png'),
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                InkWell(
-                                    onTap: () {
-                                      if (v['isPlaying'] == false) {
-                                        audioPlayer
-                                            .open(Audio.network(v['url']));
-                                        setState(() {
-                                          v['isPlaying'] = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          v['isPlaying'] = false;
-                                        });
-                                        audioPlayer.stop();
-                                      }
-                                    },
-                                    child: Icon(v['isPlaying'] == true
-                                        ? Icons.pause_circle_filled
-                                        : Icons.play_circle_fill)),
-                                InkWell(
-                                    onTap: () {
-                                      showBarModalBottomSheet(
-                                          context: context,
-                                          builder: (context) {
-                                            return Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                ListTile(
-                                                  title: Text(
-                                                    "${v['episode_name']}",
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            3),
-                                                  ),
-                                                  trailing: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: CachedNetworkImage(
-                                                      imageBuilder: (context,
-                                                          imageProvider) {
-                                                        return Container(
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              10,
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              10,
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              image: DecorationImage(
-                                                                  image:
-                                                                      imageProvider,
-                                                                  fit: BoxFit
-                                                                      .cover)),
-                                                        );
-                                                      },
-                                                      imageUrl:
-                                                          v['podcast_image'],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Divider(),
-                                                ListTile(
-                                                  onTap: () {
-                                                    delete(v['id']);
-                                                    Navigator.pop(context);
-                                                    getClips();
-                                                  },
-                                                  title: Text(
-                                                    "Delete",
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            3),
-                                                  ),
-                                                ),
-                                                ListTile(
-                                                  onTap: () {
-                                                    share(v);
-                                                  },
-                                                  title: Text(
-                                                    "Share",
-                                                    textScaleFactor: 1.0,
-                                                    style: TextStyle(
-                                                        fontSize: SizeConfig
-                                                                .safeBlockHorizontal *
-                                                            3),
-                                                  ),
-                                                )
-                                              ],
-                                            );
-                                          });
-                                    },
-                                    child: Icon(Icons.more_vert))
+                                Text(
+                                  "Snap! you don't have any Clips yet.",
+                                  style: TextStyle(
+                                      fontSize:
+                                          SizeConfig.safeBlockHorizontal * 5),
+                                ),
                               ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Icon(Icons.download_outlined),
+                            ),
+                            Text(
+                              "Create clips while you listen to the podcasts, To start making clips, come here.",
+                              textAlign: TextAlign.center,
                             )
                           ],
                         ),
-                      ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                CupertinoPageRoute(builder: (context) {
+                              return CreateClipSnippet();
+                            }));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: kSecondaryColor)
+                                //  color: kSecondaryColor,
+                                ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.arrow_forward_ios),
+                                  SizedBox(
+                                    width: 8.0,
+                                  ),
+                                  Text(
+                                    'Browse',
+                                    style: TextStyle(
+                                        fontSize:
+                                            SizeConfig.safeBlockHorizontal * 4),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 100,
+                        )
+                      ],
                     ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
+                  ),
+                );
+              } else {
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 9 / 14,
+                    children: [
+                      for (var v in snapshot.data)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                            v['podcast_image']),
+                                        fit: BoxFit.cover)),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        Colors.black,
+                                        Colors.transparent
+                                      ],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${v['episode_name']}",
+                                        textScaleFactor: 0.75,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    4,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                              onTap: () {
+                                                if (v['isPlaying'] == false) {
+                                                  audioPlayer.open(
+                                                      Audio.network(v['url']));
+                                                  setState(() {
+                                                    v['isPlaying'] = true;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    v['isPlaying'] = false;
+                                                  });
+                                                  audioPlayer.stop();
+                                                }
+                                              },
+                                              child: Icon(v['isPlaying'] == true
+                                                  ? Icons.pause_circle_filled
+                                                  : Icons.play_circle_fill)),
+                                          InkWell(
+                                              onTap: () {
+                                                showBarModalBottomSheet(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          ListTile(
+                                                            title: Text(
+                                                              "${v['episode_name']}",
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textScaleFactor:
+                                                                  1.0,
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3),
+                                                            ),
+                                                            trailing: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  CachedNetworkImage(
+                                                                imageBuilder:
+                                                                    (context,
+                                                                        imageProvider) {
+                                                                  return Container(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        10,
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width /
+                                                                        10,
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                                5),
+                                                                        image: DecorationImage(
+                                                                            image:
+                                                                                imageProvider,
+                                                                            fit:
+                                                                                BoxFit.cover)),
+                                                                  );
+                                                                },
+                                                                imageUrl: v[
+                                                                    'podcast_image'],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Divider(),
+                                                          ListTile(
+                                                            onTap: () {
+                                                              delete(v['id'])
+                                                                  .then(
+                                                                      (value) {
+                                                                Navigator.pop(
+                                                                    context);
+                                                                getClips();
+                                                              });
+                                                            },
+                                                            title: Text(
+                                                              "Delete",
+                                                              textScaleFactor:
+                                                                  1.0,
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3),
+                                                            ),
+                                                          ),
+                                                          ListTile(
+                                                            onTap: () {
+                                                              share(v);
+                                                            },
+                                                            title: Text(
+                                                              "Share",
+                                                              textScaleFactor:
+                                                                  1.0,
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      SizeConfig
+                                                                              .safeBlockHorizontal *
+                                                                          3),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      );
+                                                    });
+                                              },
+                                              child: Icon(Icons.more_vert))
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }
+            } else {
+              return CircularProgressIndicator.adaptive();
+            }
+          },
+        ));
   }
 }
 
