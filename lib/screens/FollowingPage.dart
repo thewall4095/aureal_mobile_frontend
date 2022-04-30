@@ -21,6 +21,7 @@ import 'package:auditory/utilities/constants.dart';
 import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+// import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
@@ -60,26 +61,15 @@ import 'buttonPages/settings/Theme-.dart';
 //   light
 // }
 
-class Feed extends StatelessWidget {
+class Feed extends StatefulWidget {
   Feed();
 
-  // Future checkforSubscriptions() async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   String url =
-  //       "https://api.aureal.one/public/yourSubscriptions?page=0&pageSize=14&user_id=${prefs.getString("userId")}";
-  //
-  //   try {
-  //     var response = await dio.get(url, cancelToken: _cancel);
-  //     if (response.statusCode == 200) {
-  //       return response.data['data'].length;
-  //     } else {
-  //       print(response.statusCode);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  @override
+  State<Feed> createState() => _FeedState();
+}
 
+class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
+  // Future checkforSubscriptions() async {
   CancelToken _cancel = CancelToken();
 
   final String baseUrl = "https://api.aureal.one/public";
@@ -105,20 +95,6 @@ class Feed extends StatelessWidget {
   }
 
   // Future getFeedStructure(BuildContext context) async {
-  //   checkforSubscriptions().then((value) {
-  //     if (value == 0 || null) {
-  //       showBarModalBottomSheet(
-  //           isDismissible: false,
-  //           context: context,
-  //           builder: (context) {
-  //             return Subscriptiongetter();
-  //           });
-  //     } else {
-  //       getFeed();
-  //     }
-  //   });
-  // }
-
   SharedPreferences prefs;
 
   Future generalisedApiCall(String apicall) async {
@@ -184,10 +160,19 @@ class Feed extends StatelessWidget {
     }
   }
 
+  Future feed;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    feed = getFeed();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) => Material(
         child: FutureBuilder(
-          future: getFeed(),
+          future: feed,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
@@ -211,6 +196,10 @@ class Feed extends StatelessWidget {
           },
         ),
       );
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class VideoCard extends StatelessWidget {
@@ -1764,78 +1753,78 @@ class _PodcastWidgetState extends State<PodcastWidget>
                   height: SizeConfig.blockSizeVertical * 25,
                   constraints: BoxConstraints(
                       minHeight: MediaQuery.of(context).size.height * 0.17),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    addAutomaticKeepAlives: true,
-                    itemCount: 10,
-                    itemBuilder: (context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            // x
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.38,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CachedNetworkImage(
-                                errorWidget: (context, url, error) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        color: Color(0xff080808),
-                                        // image: DecorationImage(
-                                        //     image: NetworkImage(
-                                        //         placeholderUrl),
-                                        //     fit: BoxFit
-                                        //         .cover),
-                                        borderRadius: BorderRadius.circular(3)),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.38,
-                                    height: MediaQuery.of(context).size.width *
-                                        0.38,
-                                  );
-                                },
-                                imageBuilder: (context, imageProvider) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: imageProvider,
-                                            fit: BoxFit.cover),
-                                        borderRadius: BorderRadius.circular(3)),
-                                    width: MediaQuery.of(context).size.width *
-                                        0.38,
-                                    height: MediaQuery.of(context).size.width *
-                                        0.38,
-                                  );
-                                },
-                                memCacheHeight:
-                                    (MediaQuery.of(context).size.height)
-                                        .floor(),
-                                imageUrl: placeholderUrl,
-                                placeholder: (context, imageProvider) {
-                                  return Container(
-                                    decoration:
-                                        BoxDecoration(color: Color(0xff080808)),
-                                    height: MediaQuery.of(context).size.width *
-                                        0.38,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.38,
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    scrollDirection: Axis.horizontal,
-                  ),
+                  // child: ListView.builder(
+                  //   shrinkWrap: true,
+                  //   addAutomaticKeepAlives: true,
+                  //   itemCount: 10,
+                  //   itemBuilder: (context, int index) {
+                  //     return Padding(
+                  //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 8),
+                  //       child: Container(
+                  //         decoration: BoxDecoration(
+                  //
+                  //           borderRadius: BorderRadius.circular(15),
+                  //         ),
+                  //         width: MediaQuery.of(context).size.width * 0.38,
+                  //         child: Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           mainAxisSize: MainAxisSize.min,
+                  //           children: [
+                  //             CachedNetworkImage(
+                  //               errorWidget: (context, url, error) {
+                  //                 return Container(
+                  //                   decoration: BoxDecoration(
+                  //                       color: Color(0xff080808),
+                  //                       // image: DecorationImage(
+                  //                       //     image: NetworkImage(
+                  //                       //         placeholderUrl),
+                  //                       //     fit: BoxFit
+                  //                       //         .cover),
+                  //                       borderRadius: BorderRadius.circular(3)),
+                  //                   width: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                   height: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                 );
+                  //               },
+                  //               imageBuilder: (context, imageProvider) {
+                  //                 return Container(
+                  //                   decoration: BoxDecoration(
+                  //                       image: DecorationImage(
+                  //                           image: imageProvider,
+                  //                           fit: BoxFit.cover),
+                  //                       borderRadius: BorderRadius.circular(3)),
+                  //                   width: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                   height: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                 );
+                  //               },
+                  //               memCacheHeight:
+                  //                   (MediaQuery.of(context).size.height)
+                  //                       .floor(),
+                  //               imageUrl: placeholderUrl,
+                  //               placeholder: (context, imageProvider) {
+                  //                 return Container(
+                  //                   decoration:
+                  //                       BoxDecoration(color: Color(0xff080808)),
+                  //                   height: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                   width: MediaQuery.of(context).size.width *
+                  //                       0.38,
+                  //                 );
+                  //               },
+                  //             ),
+                  //             SizedBox(
+                  //               height: 5,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  //   scrollDirection: Axis.horizontal,
+                  // ),
                 ),
               ],
             ),
@@ -3090,7 +3079,22 @@ class PodcastCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FadeInImage(placeholder: CachedNetworkImageProvider(placeholderUrl), image: CachedNetworkImageProvider(data['image'],)),
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.38,
+                  child: FadeInImage(
+                    placeholder: AssetImage('assets/placeholder.gif'),
+                    image: Image.network(data['image'], gaplessPlayback: true, cacheHeight: (MediaQuery.of(context).size.width * 0.76).floor(), cacheWidth: (MediaQuery.of(context).size.width * 0.76).floor(),).image,
+                  ),
+                ),
+              ),
+              // AspectRatio(aspectRatio: 1.0, child: Container(width: MediaQuery.of(context).size.width * 0.38,child: Image.network(data['image'], gaplessPlayback: true, cacheHeight: (MediaQuery.of(context).size.width * 0.76).floor(), cacheWidth: (MediaQuery.of(context).size.width * 0.76).floor(),))),
+              // FadeInImage(
+              //     placeholder: CachedNetworkImageProvider(placeholderUrl),
+              //     image: CachedNetworkImageProvider(
+              //       data['image'],
+              //     )),
               // CachedNetworkImage(
               //   errorWidget: (context, url, error) {
               //     return Container(
@@ -3125,6 +3129,22 @@ class PodcastCard extends StatelessWidget {
               //       width: MediaQuery.of(context).size.width * 0.38,
               //     );
               //   },
+              // ),
+              // Image.network(data['image'], loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent loadingProgress){
+              //   if(loadingProgress == null) return child;
+              //   return
+              //   Center(child: CircularProgressIndicator(value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes : null,));
+              // },),
+              // ExtendedImage.network(
+              //   data['image'],
+              //   width: MediaQuery.of(context).size.width * 0.38,
+              //   height: MediaQuery.of(context).size.width * 0.38,
+              //   fit: BoxFit.fill,
+              //   cache: false,
+              //   border: Border.all(color: Colors.red, width: 1.0),
+              //   // shape: boxShape,
+              //   borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              //   //cancelToken: cancellationToken,
               // ),
               SizedBox(
                 height: 5,

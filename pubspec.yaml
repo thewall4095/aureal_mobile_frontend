@@ -134,6 +134,7 @@ dependencies:
 #  pip_view:
 #  flutter_riverpod: ^0.13.1+1
   miniplayer: ^1.0.1
+#  extended_image: any
 
 
 
