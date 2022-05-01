@@ -535,63 +535,97 @@ class _EpisodeViewState extends State<EpisodeView>
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  CachedNetworkImage(
-                                    placeholder: (context, String url) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                2,
+                                  // CachedNetworkImage(
+                                  //   placeholder: (context, String url) {
+                                  //     return Container(
+                                  //       height:
+                                  //           MediaQuery.of(context).size.width /
+                                  //               2,
+                                  //       width:
+                                  //           MediaQuery.of(context).size.width /
+                                  //               2,
+                                  //       decoration: BoxDecoration(
+                                  //           borderRadius:
+                                  //               BorderRadius.circular(15),
+                                  //           color: Color(0xff1a1a1a)
+                                  //           // image: DecorationImage(
+                                  //           //     image: imageProvider,
+                                  //           //     fit: BoxFit.cover),
+                                  //           ),
+                                  //     );
+                                  //   },
+                                  //   imageUrl: episodeContent['image'] == null
+                                  //       ? episodeContent['podcast_image']
+                                  //       : episodeContent['image'],
+                                  //   imageBuilder: (context, imageProvider) {
+                                  //     try {
+                                  //       return Container(
+                                  //         height: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .width /
+                                  //             2,
+                                  //         width: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .width /
+                                  //             2,
+                                  //         decoration: BoxDecoration(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(15),
+                                  //             image: DecorationImage(
+                                  //                 image: imageProvider,
+                                  //                 fit: BoxFit.cover)),
+                                  //       );
+                                  //     } catch (e) {
+                                  //       return Container(
+                                  //         height: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .width /
+                                  //             2,
+                                  //         width: MediaQuery.of(context)
+                                  //                 .size
+                                  //                 .width /
+                                  //             2,
+                                  //         decoration: BoxDecoration(
+                                  //             borderRadius:
+                                  //                 BorderRadius.circular(15),
+                                  //             color: Color(0xff1a1a1a)),
+                                  //       );
+                                  //     }
+                                  //   },
+                                  // ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
+                                    height:
+                                        MediaQuery.of(context).size.width / 2,
+                                    child: AspectRatio(
+                                      aspectRatio: 1.0,
+                                      child: Container(
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 2,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            color: Color(0xff1a1a1a)
-                                            // image: DecorationImage(
-                                            //     image: imageProvider,
-                                            //     fit: BoxFit.cover),
-                                            ),
-                                      );
-                                    },
-                                    imageUrl: episodeContent['image'] == null
-                                        ? episodeContent['podcast_image']
-                                        : episodeContent['image'],
-                                    imageBuilder: (context, imageProvider) {
-                                      try {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.cover)),
-                                        );
-                                      } catch (e) {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              color: Color(0xff1a1a1a)),
-                                        );
-                                      }
-                                    },
+                                        child: FadeInImage(
+                                          placeholder: AssetImage(
+                                              'assets/placeholder.gif'),
+                                          image: Image.network(
+                                            episodeContent['image'] == null
+                                                ? episodeContent[
+                                                    'podcast_image']
+                                                : episodeContent['image'],
+                                            gaplessPlayback: true,
+                                            cacheHeight: (MediaQuery.of(context)
+                                                    .size
+                                                    .width)
+                                                .floor(),
+                                            cacheWidth: (MediaQuery.of(context)
+                                                    .size
+                                                    .width)
+                                                .floor(),
+                                          ).image,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     height:
