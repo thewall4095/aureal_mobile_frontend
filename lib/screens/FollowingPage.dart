@@ -229,34 +229,78 @@ class VideoCard extends StatelessWidget {
           ),
         ));
       },
-      child: AspectRatio(
-        aspectRatio: 16 / 12,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                child: FadeInImage(
+                  placeholder: AssetImage('assets/placeholder.gif'),
+                  image: Image.network(
+                    video.episodeImage == null
+                        ? video.thumbnailUrl
+                        : video.episodeImage,
+                    gaplessPlayback: true,
+                    cacheHeight: (MediaQuery.of(context).size.width).floor(),
+                    cacheWidth: (MediaQuery.of(context).size.width).floor(),
+                  ).image,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            // child: CachedNetworkImage(
+            //   imageUrl: video.episodeImage,
+            //   errorWidget: (context, url, e) {
+            //     return Container(
+            //       width: double.infinity,
+            //       constraints: BoxConstraints(
+            //           maxWidth: MediaQuery.of(context).size.width,
+            //           maxHeight: MediaQuery.of(context).size.height / 3),
+            //       decoration: BoxDecoration(
+            //           image: DecorationImage(
+            //               image: CachedNetworkImageProvider(placeholderUrl),
+            //               fit: BoxFit.cover)),
+            //     );
+            //   },
+            //   placeholder: (context, url) {
+            //     return Container(
+            //       width: double.infinity,
+            //       constraints: BoxConstraints(
+            //           maxWidth: MediaQuery.of(context).size.width,
+            //           maxHeight: MediaQuery.of(context).size.height / 3),
+            //       decoration: BoxDecoration(
+            //           image: DecorationImage(
+            //               image: CachedNetworkImageProvider(placeholderUrl),
+            //               fit: BoxFit.cover)),
+            //     );
+            //   },
+            //   imageBuilder: (context, imageProvider) {
+            //     return Container(
+            //       width: double.infinity,
+            //       constraints: BoxConstraints(
+            //           maxWidth: MediaQuery.of(context).size.width,
+            //           maxHeight: MediaQuery.of(context).size.height / 3),
+            //       decoration: BoxDecoration(
+            //           image: DecorationImage(
+            //               image: imageProvider, fit: BoxFit.cover)),
+            //     );
+            //   },
+            // ),
+          ),
+          ListTile(
+            leading: CircleAvatar(
+              radius: 20,
               child: CachedNetworkImage(
-                imageUrl: video.episodeImage,
+                imageUrl: video.thumbnailUrl,
                 errorWidget: (context, url, e) {
                   return Container(
-                    width: double.infinity,
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: MediaQuery.of(context).size.height / 3),
+                    height: 50,
+                    width: 50,
                     decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(placeholderUrl),
-                            fit: BoxFit.cover)),
-                  );
-                },
-                placeholder: (context, url) {
-                  return Container(
-                    width: double.infinity,
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: MediaQuery.of(context).size.height / 3),
-                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         image: DecorationImage(
                             image: CachedNetworkImageProvider(placeholderUrl),
                             fit: BoxFit.cover)),
@@ -264,62 +308,32 @@ class VideoCard extends StatelessWidget {
                 },
                 imageBuilder: (context, imageProvider) {
                   return Container(
-                    width: double.infinity,
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width,
-                        maxHeight: MediaQuery.of(context).size.height / 3),
+                    height: 50,
+                    width: 50,
                     decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                         image: DecorationImage(
                             image: imageProvider, fit: BoxFit.cover)),
                   );
                 },
               ),
             ),
-            ListTile(
-              leading: CircleAvatar(
-                radius: 20,
-                child: CachedNetworkImage(
-                  imageUrl: video.thumbnailUrl,
-                  errorWidget: (context, url, e) {
-                    return Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: CachedNetworkImageProvider(placeholderUrl),
-                              fit: BoxFit.cover)),
-                    );
-                  },
-                  imageBuilder: (context, imageProvider) {
-                    return Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.cover)),
-                    );
-                  },
-                ),
-              ),
-              title: Text(
-                "${video.title}",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
-                    .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              subtitle: Text(
-                "${video.album}",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            )
-          ],
-        ),
+            title: Text(
+              "${video.title}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  .copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(
+              "${video.album}",
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -357,7 +371,7 @@ class VideoListWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 2.5,
             child: Column(
               children: [
                 ListTile(
@@ -996,168 +1010,260 @@ class EpisodeCard extends StatelessWidget {
                             ),
                           ));
                         },
-                        child: CachedNetworkImage(
-                          imageBuilder: (context, imageProvider) {
-                            return Stack(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Container(
-                                    foregroundDecoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            begin: Alignment.bottomLeft,
-                                            end: Alignment.topRight,
-                                            colors: [
-                                          Colors.black.withOpacity(0.8),
-                                          Colors.transparent
-                                        ])),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover),
-                                    ),
-                                    width: double.infinity,
-                                    height:
-                                        MediaQuery.of(context).size.width / 8,
-                                  ),
-                                ),
-                                AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: Container(
-                                        width: double.infinity,
-                                        child: Center(
-                                            child: Icon(
-                                          Icons.play_circle_fill,
-                                          size: 80,
-                                          color: Colors.white.withOpacity(0.9),
-                                        ))))
-                              ],
-                            );
-                          },
-                          imageUrl: data['image'] == null
-                              ? data['podcast_image']
-                              : data['image'],
-                          memCacheWidth:
-                              MediaQuery.of(context).size.width.floor(),
-                          memCacheHeight:
-                              MediaQuery.of(context).size.width.floor(),
-                          placeholder: (context, url) => Stack(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              placeholderUrl),
-                                          fit: BoxFit.cover)),
-                                ),
-                              ),
-                              AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Container(
-                                      width: double.infinity,
-                                      child: Center(
-                                          child: Icon(
-                                        Icons.play_circle_fill,
-                                        size: 80,
-                                        color: Colors.white.withOpacity(0.9),
-                                      ))))
-                            ],
+                        // child: CachedNetworkImage(
+                        //   imageBuilder: (context, imageProvider) {
+                        //     return Stack(
+                        //       children: [
+                        //         AspectRatio(
+                        //           aspectRatio: 1.0,
+                        //           child: Container(
+                        //             foregroundDecoration: BoxDecoration(
+                        //                 gradient: LinearGradient(
+                        //                     begin: Alignment.bottomLeft,
+                        //                     end: Alignment.topRight,
+                        //                     colors: [
+                        //                   Colors.black.withOpacity(0.8),
+                        //                   Colors.transparent
+                        //                 ])),
+                        //             decoration: BoxDecoration(
+                        //               borderRadius: BorderRadius.circular(3),
+                        //               image: DecorationImage(
+                        //                   image: imageProvider,
+                        //                   fit: BoxFit.cover),
+                        //             ),
+                        //             width: double.infinity,
+                        //             height:
+                        //                 MediaQuery.of(context).size.width / 8,
+                        //           ),
+                        //         ),
+                        //         AspectRatio(
+                        //             aspectRatio: 1.0,
+                        //             child: Container(
+                        //                 width: double.infinity,
+                        //                 child: Center(
+                        //                     child: Icon(
+                        //                   Icons.play_circle_fill,
+                        //                   size: 80,
+                        //                   color: Colors.white.withOpacity(0.9),
+                        //                 ))))
+                        //       ],
+                        //     );
+                        //   },
+                        //   imageUrl: data['image'] == null
+                        //       ? data['podcast_image']
+                        //       : data['image'],
+                        //   memCacheWidth:
+                        //       MediaQuery.of(context).size.width.floor(),
+                        //   memCacheHeight:
+                        //       MediaQuery.of(context).size.width.floor(),
+                        //   placeholder: (context, url) => Stack(
+                        //     children: [
+                        //       AspectRatio(
+                        //         aspectRatio: 1.0,
+                        //         child: Container(
+                        //           width: double.infinity,
+                        //           decoration: BoxDecoration(
+                        //               image: DecorationImage(
+                        //                   image: CachedNetworkImageProvider(
+                        //                       placeholderUrl),
+                        //                   fit: BoxFit.cover)),
+                        //         ),
+                        //       ),
+                        //       AspectRatio(
+                        //           aspectRatio: 1.0,
+                        //           child: Container(
+                        //               width: double.infinity,
+                        //               child: Center(
+                        //                   child: Icon(
+                        //                 Icons.play_circle_fill,
+                        //                 size: 80,
+                        //                 color: Colors.white.withOpacity(0.9),
+                        //               ))))
+                        //     ],
+                        //   ),
+                        //   errorWidget: (context, url, error) {
+                        //     return Stack(
+                        //       children: [
+                        //         AspectRatio(
+                        //           aspectRatio: 1.0,
+                        //           child: Container(
+                        //               width: double.infinity,
+                        //               decoration: BoxDecoration(
+                        //                   image: DecorationImage(
+                        //                       image: CachedNetworkImageProvider(
+                        //                           placeholderUrl),
+                        //                       fit: BoxFit.cover))),
+                        //         ),
+                        //         AspectRatio(
+                        //             aspectRatio: 1.0,
+                        //             child: Container(
+                        //                 width: double.infinity,
+                        //                 child: Center(
+                        //                     child: Icon(
+                        //                   Icons.play_circle_fill,
+                        //                   size: 80,
+                        //                   color: Colors.white.withOpacity(0.9),
+                        //                 ))))
+                        //       ],
+                        //     );
+                        //   },
+                        // ),
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.38,
+                            child: FadeInImage(
+                              placeholder: AssetImage('assets/placeholder.gif'),
+                              image: Image.network(
+                                data['image'] == null
+                                    ? data['podcast_image']
+                                    : data['image'],
+                                gaplessPlayback: true,
+                                cacheHeight:
+                                    (MediaQuery.of(context).size.width).floor(),
+                                cacheWidth:
+                                    (MediaQuery.of(context).size.width).floor(),
+                              ).image,
+                            ),
                           ),
-                          errorWidget: (context, url, error) {
-                            return Stack(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 1.0,
-                                  child: Container(
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: CachedNetworkImageProvider(
-                                                  placeholderUrl),
-                                              fit: BoxFit.cover))),
-                                ),
-                                AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: Container(
-                                        width: double.infinity,
-                                        child: Center(
-                                            child: Icon(
-                                          Icons.play_circle_fill,
-                                          size: 80,
-                                          color: Colors.white.withOpacity(0.9),
-                                        ))))
-                              ],
-                            );
-                          },
                         ),
                       )
                     : SizedBox(),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    CachedNetworkImage(
-                      imageBuilder: (context, imageProvider) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.cover),
-                          ),
+
+                // Row(
+                //   children: [
+                //     Container(
+                //       width: MediaQuery.of(context).size.width / 8,
+                //       height: MediaQuery.of(context).size.width / 8,
+                //       child: AspectRatio(
+                //         aspectRatio: 1.0,
+                //         child: Container(
+                //           width: MediaQuery.of(context).size.width / 8,
+                //           height: MediaQuery.of(context).size.width / 8,
+                //           child: FadeInImage(
+                //             placeholder: AssetImage('assets/placeholder.gif'),
+                //             image: Image.network(
+                //               data['image'] == null
+                //                   ? data['podcast_image']
+                //                   : data['image'],
+                //               gaplessPlayback: true,
+                //               cacheHeight:
+                //                   (MediaQuery.of(context).size.width * 0.32)
+                //                       .floor(),
+                //               cacheWidth:
+                //                   (MediaQuery.of(context).size.width * 0.32)
+                //                       .floor(),
+                //             ).image,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     // CachedNetworkImage(
+                //     //   imageBuilder: (context, imageProvider) {
+                //     //     return Container(
+                //     //       decoration: BoxDecoration(
+                //     //         borderRadius: BorderRadius.circular(3),
+                //     //         image: DecorationImage(
+                //     //             image: imageProvider, fit: BoxFit.cover),
+                //     //       ),
+                //     //       width: MediaQuery.of(context).size.width / 8,
+                //     //       height: MediaQuery.of(context).size.width / 8,
+                //     //     );
+                //     //   },
+                //     //   imageUrl: data['image'] == null
+                //     //       ? data['podcast_image']
+                //     //       : data['image'],
+                //     //   memCacheWidth: MediaQuery.of(context).size.width.floor(),
+                //     //   memCacheHeight: MediaQuery.of(context).size.width.floor(),
+                //     //   placeholder: (context, url) => Container(
+                //     //     width: MediaQuery.of(context).size.width / 8,
+                //     //     height: MediaQuery.of(context).size.width / 8,
+                //     //     child: Image.asset('assets/images/Thumbnail.png'),
+                //     //   ),
+                //     //   errorWidget: (context, url, error) => Icon(Icons.error),
+                //     // ),
+                //     SizedBox(width: SizeConfig.screenWidth / 26),
+                //     Column(
+                //       crossAxisAlignment: CrossAxisAlignment.start,
+                //       children: [
+                //         GestureDetector(
+                //           onTap: () {
+                //             Navigator.push(
+                //                 context,
+                //                 CupertinoPageRoute(
+                //                     builder: (context) =>
+                //                         PodcastView(data['podcast_id'])));
+                //           },
+                //           child: Text(
+                //             data['podcast_name'],
+                //             textScaleFactor: 0.8,
+                //             style: TextStyle(
+                //                 // color: Color(
+                //                 //     0xffe8e8e8),
+                //                 fontSize: SizeConfig.safeBlockHorizontal * 4,
+                //                 fontWeight: FontWeight.bold),
+                //           ),
+                //         ),
+                //         Text(
+                //           '${timeago.format(DateTime.parse(data['published_at']))}',
+                //           textScaleFactor: 0.8,
+                //           style: TextStyle(
+                //               // color: Color(
+                //               //     0xffe8e8e8),
+                //               fontSize: SizeConfig.safeBlockHorizontal * 3),
+                //         ),
+                //       ],
+                //     )
+                //   ],
+                // ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: CircleAvatar(
+                    radius: 20,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 8,
+                      height: MediaQuery.of(context).size.width / 8,
+                      child: AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Container(
                           width: MediaQuery.of(context).size.width / 8,
                           height: MediaQuery.of(context).size.width / 8,
-                        );
-                      },
-                      imageUrl: data['image'] == null
-                          ? data['podcast_image']
-                          : data['image'],
-                      memCacheWidth: MediaQuery.of(context).size.width.floor(),
-                      memCacheHeight: MediaQuery.of(context).size.width.floor(),
-                      placeholder: (context, url) => Container(
-                        width: MediaQuery.of(context).size.width / 8,
-                        height: MediaQuery.of(context).size.width / 8,
-                        child: Image.asset('assets/images/Thumbnail.png'),
-                      ),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
-                    SizedBox(width: SizeConfig.screenWidth / 26),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        PodcastView(data['podcast_id'])));
-                          },
-                          child: Text(
-                            data['podcast_name'],
-                            textScaleFactor: 0.8,
-                            style: TextStyle(
-                                // color: Color(
-                                //     0xffe8e8e8),
-                                fontSize: SizeConfig.safeBlockHorizontal * 4,
-                                fontWeight: FontWeight.bold),
+                          child: FadeInImage(
+                            placeholder: AssetImage('assets/placeholder.gif'),
+                            image: Image.network(
+                              data['image'] == null
+                                  ? data['podcast_image']
+                                  : data['image'],
+                              gaplessPlayback: true,
+                              cacheHeight:
+                                  (MediaQuery.of(context).size.width * 0.32)
+                                      .floor(),
+                              cacheWidth:
+                                  (MediaQuery.of(context).size.width * 0.32)
+                                      .floor(),
+                            ).image,
                           ),
                         ),
-                        Text(
-                          '${timeago.format(DateTime.parse(data['published_at']))}',
-                          textScaleFactor: 0.8,
-                          style: TextStyle(
-                              // color: Color(
-                              //     0xffe8e8e8),
-                              fontSize: SizeConfig.safeBlockHorizontal * 3),
-                        ),
-                      ],
-                    )
-                  ],
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    data['podcast_name'],
+                    textScaleFactor: 0.8,
+                    style: TextStyle(
+                        // color: Color(
+                        //     0xffe8e8e8),
+                        fontSize: SizeConfig.safeBlockHorizontal * 4,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    '${timeago.format(DateTime.parse(data['published_at']))}',
+                    textScaleFactor: 0.8,
+                    style: TextStyle(
+                        // color: Color(
+                        //     0xffe8e8e8),
+                        fontSize: SizeConfig.safeBlockHorizontal * 3),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -3078,11 +3184,23 @@ class PodcastCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              FadeInImage(
-                  placeholder: CachedNetworkImageProvider(placeholderUrl),
-                  image: CachedNetworkImageProvider(
-                    data['image'],
-                  )),
+              AspectRatio(
+                aspectRatio: 1.0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.38,
+                  child: FadeInImage(
+                    placeholder: AssetImage('assets/placeholder.gif'),
+                    image: Image.network(
+                      data['image'],
+                      gaplessPlayback: true,
+                      cacheHeight:
+                          (MediaQuery.of(context).size.width * 0.76).floor(),
+                      cacheWidth:
+                          (MediaQuery.of(context).size.width * 0.76).floor(),
+                    ).image,
+                  ),
+                ),
+              ),
               // CachedNetworkImage(
               //   errorWidget: (context, url, error) {
               //     return Container(

@@ -158,15 +158,23 @@ import 'Profiles/PodcastView.dart';
 //   }
 // }
 
-class DiscoverScreen extends StatelessWidget {
+class DiscoverScreen extends StatefulWidget {
   DiscoverScreen();
 
+  @override
+  State<DiscoverScreen> createState() => _DiscoverScreenState();
+}
+
+class _DiscoverScreenState extends State<DiscoverScreen>
+    with AutomaticKeepAliveClientMixin {
   String creator = '';
 
   SharedPreferences pref;
 
   SharedPreferences prefs;
+
   Dio dio = Dio();
+
   CancelToken _cancel = CancelToken();
 
   Future getDiscoverStructure() async {
@@ -217,8 +225,8 @@ class DiscoverScreen extends StatelessWidget {
         return PodcastWidget(data: data);
         break;
       case 'episode':
-        // return EpisodeWidget(data: data);
-        return Container();
+        return EpisodeWidget(data: data);
+        // return Container();
         break;
       case "playlist":
         return PlaylistWidget(data: data);
@@ -343,11 +351,20 @@ class DiscoverScreen extends StatelessWidget {
     }
   }
 
+  Future discoverFeed;
+
+  @override
+  void initState() {
+    discoverFeed = getDiscoverStructure();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: getDiscoverStructure(),
+        future: discoverFeed,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
@@ -371,6 +388,10 @@ class DiscoverScreen extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class FeaturedBuilder extends StatelessWidget {
