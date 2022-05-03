@@ -18,7 +18,6 @@ import 'package:auditory/utilities/DurationDatabase.dart';
 import 'package:auditory/utilities/Share.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -217,17 +216,17 @@ class VideoCard extends StatelessWidget {
         episodeObject.videoSource = video;
         episodeObject.miniplayerController
             .animateToHeight(state: PanelState.MAX);
-        episodeObject.betterPlayerController
-            .setupDataSource(BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network,
-          episodeObject.videoSource.url,
-          notificationConfiguration: BetterPlayerNotificationConfiguration(
-            showNotification: true,
-            title: "${episodeObject.videoSource.title}",
-            author: "${episodeObject.videoSource.author}",
-            imageUrl: "${episodeObject.videoSource.episodeImage}",
-          ),
-        ));
+        // episodeObject.betterPlayerController
+        //     .setupDataSource(BetterPlayerDataSource(
+        //   BetterPlayerDataSourceType.network,
+        //   episodeObject.videoSource.url,
+        //   notificationConfiguration: BetterPlayerNotificationConfiguration(
+        //     showNotification: true,
+        //     title: "${episodeObject.videoSource.title}",
+        //     author: "${episodeObject.videoSource.author}",
+        //     imageUrl: "${episodeObject.videoSource.episodeImage}",
+        //   ),
+        // ));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -293,29 +292,10 @@ class VideoCard extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
               radius: 20,
-              child: CachedNetworkImage(
-                imageUrl: video.thumbnailUrl,
-                errorWidget: (context, url, e) {
-                  return Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: CachedNetworkImageProvider(placeholderUrl),
-                            fit: BoxFit.cover)),
-                  );
-                },
-                imageBuilder: (context, imageProvider) {
-                  return Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imageProvider, fit: BoxFit.cover)),
-                  );
-                },
+              child: Image.network(
+                video.thumbnailUrl,
+                cacheHeight: 100,
+                cacheWidth: 100,
               ),
             ),
             title: Text(
@@ -996,19 +976,19 @@ class EpisodeCard extends StatelessWidget {
                               createdAt: data['published_at']);
                           episodeObject.miniplayerController
                               .animateToHeight(state: PanelState.MAX);
-                          episodeObject.betterPlayerController
-                              .setupDataSource(BetterPlayerDataSource(
-                            BetterPlayerDataSourceType.network,
-                            episodeObject.videoSource.url,
-                            notificationConfiguration:
-                                BetterPlayerNotificationConfiguration(
-                              showNotification: true,
-                              title: "${episodeObject.videoSource.title}",
-                              author: "${episodeObject.videoSource.author}",
-                              imageUrl:
-                                  "${episodeObject.videoSource.thumbnailUrl}",
-                            ),
-                          ));
+                          // episodeObject.betterPlayerController
+                          //     .setupDataSource(BetterPlayerDataSource(
+                          //   BetterPlayerDataSourceType.network,
+                          //   episodeObject.videoSource.url,
+                          //   notificationConfiguration:
+                          //       BetterPlayerNotificationConfiguration(
+                          //     showNotification: true,
+                          //     title: "${episodeObject.videoSource.title}",
+                          //     author: "${episodeObject.videoSource.author}",
+                          //     imageUrl:
+                          //         "${episodeObject.videoSource.thumbnailUrl}",
+                          //   ),
+                          // ));
                         },
                         // child: CachedNetworkImage(
                         //   imageBuilder: (context, imageProvider) {
@@ -1640,7 +1620,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                             Vibrate.feedback(FeedbackType.impact);
 
                             episodeObject.isVideo = false;
-                            episodeObject.betterPlayerController.pause();
+                            // episodeObject.betterPlayerController.pause();
                             if (widget.playlist == null) {
                               episodeObject.stop();
                               episodeObject.episodeObject = episodeData;
@@ -2561,9 +2541,9 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
 
     getSnippetPlayer(context).then((value) {
       pro.Provider.of<PlayerChange>(context, listen: false).audioPlayer.stop();
-      pro.Provider.of<PlayerChange>(context, listen: false)
-          .betterPlayerController
-          .pause();
+      // pro.Provider.of<PlayerChange>(context, listen: false)
+      //     .betterPlayerController
+      //     .pause();
     });
   }
 

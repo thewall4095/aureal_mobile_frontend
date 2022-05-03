@@ -127,9 +127,9 @@ dependencies:
 #  slider_controller: ^0.0.3
   flutter_vibrate: ^1.3.0
   mime: ^1.0.1
-#  chewie: ^1.3.0
-#  video_player: ^2.3.0
-  better_player: any
+  chewie: ^1.3.0
+  video_player: ^2.3.0
+#  better_player: any
   flutter_sticky_header: ^0.6.1
 #  pip_view:
 #  flutter_riverpod: ^0.13.1+1

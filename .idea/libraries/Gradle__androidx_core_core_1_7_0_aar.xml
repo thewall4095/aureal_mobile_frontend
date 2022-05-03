@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.core:core:1.7.0@aar" type="AndroidModuleLibraryType">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b62df86180bdd9198003ce8c180760ec/transformed/core-1.7.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b62df86180bdd9198003ce8c180760ec/transformed/core-1.7.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

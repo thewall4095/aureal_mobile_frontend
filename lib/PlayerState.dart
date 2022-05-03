@@ -1,9 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auditory/utilities/DurationDatabase.dart';
-import 'package:better_player/better_player.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:miniplayer/miniplayer.dart';
 // import 'package:flutter_media_notification/flutter_media_notification.dart';
 // import 'package:music_player/music_player.dart';
@@ -53,51 +51,51 @@ class PlayerChange extends ChangeNotifier {
 
   //VideoPlayer Controls
 
-  BetterPlayerController betterPlayerController =
-      BetterPlayerController(BetterPlayerConfiguration(
-    aspectRatio: 16 / 9,
-    fit: BoxFit.contain,
-    autoPlay: true,
-    looping: false,
-    allowedScreenSleep: false,
-    autoDispose: false,
-    deviceOrientationsAfterFullScreen: [
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ],
-  ));
-  BetterPlayerDataSource betterPlayerDataSource;
-  BetterPlayerConfiguration betterPlayerConfiguration;
+  // BetterPlayerController betterPlayerController =
+  //     BetterPlayerController(BetterPlayerConfiguration(
+  //   aspectRatio: 16 / 9,
+  //   fit: BoxFit.contain,
+  //   autoPlay: true,
+  //   looping: false,
+  //   allowedScreenSleep: false,
+  //   autoDispose: false,
+  //   deviceOrientationsAfterFullScreen: [
+  //     DeviceOrientation.portraitDown,
+  //     DeviceOrientation.portraitUp
+  //   ],
+  // ));
+  // BetterPlayerDataSource betterPlayerDataSource;
+  // BetterPlayerConfiguration betterPlayerConfiguration;
 
-  Future setVideoPlayerConfiguration() async {
-    betterPlayerConfiguration = BetterPlayerConfiguration(
-      aspectRatio: 16 / 9,
-      fit: BoxFit.contain,
-      autoPlay: true,
-      looping: false,
-      allowedScreenSleep: false,
-      autoDispose: false,
-      deviceOrientationsAfterFullScreen: [
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.portraitUp
-      ],
-    );
-  }
+  // Future setVideoPlayerConfiguration() async {
+  //   betterPlayerConfiguration = BetterPlayerConfiguration(
+  //     aspectRatio: 16 / 9,
+  //     fit: BoxFit.contain,
+  //     autoPlay: true,
+  //     looping: false,
+  //     allowedScreenSleep: false,
+  //     autoDispose: false,
+  //     deviceOrientationsAfterFullScreen: [
+  //       DeviceOrientation.portraitDown,
+  //       DeviceOrientation.portraitUp
+  //     ],
+  //   );
+  // }
 
-  Future setVideoPlayerDataSource() {
-    betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      _episodeObject['url'],
-      notificationConfiguration: BetterPlayerNotificationConfiguration(
-        showNotification: true,
-        title: "${_episodeObject['name']}",
-        author: "${_episodeObject['author']}",
-        imageUrl: _episodeObject['image'],
-      ),
-    );
-    betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    betterPlayerController.setupDataSource(betterPlayerDataSource);
-  }
+  // Future setVideoPlayerDataSource() {
+  //   betterPlayerDataSource = BetterPlayerDataSource(
+  //     BetterPlayerDataSourceType.network,
+  //     _episodeObject['url'],
+  //     notificationConfiguration: BetterPlayerNotificationConfiguration(
+  //       showNotification: true,
+  //       title: "${_episodeObject['name']}",
+  //       author: "${_episodeObject['author']}",
+  //       imageUrl: _episodeObject['image'],
+  //     ),
+  //   );
+  //   betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+  //   betterPlayerController.setupDataSource(betterPlayerDataSource);
+  // }
 
   // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();

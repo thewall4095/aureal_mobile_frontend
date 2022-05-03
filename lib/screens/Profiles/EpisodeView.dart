@@ -20,7 +20,6 @@ import 'package:auditory/screens/Profiles/publicUserProfile.dart';
 import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -872,22 +871,22 @@ class _EpisodeViewState extends State<EpisodeView>
                                         episodeObject.miniplayerController
                                             .animateToHeight(
                                                 state: PanelState.MAX);
-                                        episodeObject.betterPlayerController
-                                            .setupDataSource(
-                                                BetterPlayerDataSource(
-                                          BetterPlayerDataSourceType.network,
-                                          episodeObject.videoSource.url,
-                                          notificationConfiguration:
-                                              BetterPlayerNotificationConfiguration(
-                                            showNotification: true,
-                                            title:
-                                                "${episodeObject.videoSource.title}",
-                                            author:
-                                                "${episodeObject.videoSource.author}",
-                                            imageUrl:
-                                                "${episodeObject.videoSource.thumbnailUrl}",
-                                          ),
-                                        ));
+                                        // episodeObject.betterPlayerController
+                                        //     .setupDataSource(
+                                        //         BetterPlayerDataSource(
+                                        //   BetterPlayerDataSourceType.network,
+                                        //   episodeObject.videoSource.url,
+                                        //   notificationConfiguration:
+                                        //       BetterPlayerNotificationConfiguration(
+                                        //     showNotification: true,
+                                        //     title:
+                                        //         "${episodeObject.videoSource.title}",
+                                        //     author:
+                                        //         "${episodeObject.videoSource.author}",
+                                        //     imageUrl:
+                                        //         "${episodeObject.videoSource.thumbnailUrl}",
+                                        //   ),
+                                        // ));
                                         // showModalBottomSheet(
                                         //     isScrollControlled: true,
                                         //     backgroundColor: Colors.transparent,

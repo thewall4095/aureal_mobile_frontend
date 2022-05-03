@@ -7,6 +7,7 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/share-2.0.4" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/video_player-2.3.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/image_cropper-1.4.0" />
+      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock-0.6.1+2" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.12" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/jitsi_meet_web_plugin-2.0.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_vibrate-1.3.0" />
@@ -18,7 +19,6 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayer-0.8.1" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.6.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock_web-0.4.0" />
-      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/wakelock-0.5.6" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.2.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.0.10" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.8" />
@@ -44,7 +44,6 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-8.1.1+2" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_analytics-8.1.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/in_app_update-2.0.0" />
-      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/better_player-0.0.81" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-2.0.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/video_player_android-2.3.0" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.7" />
