@@ -33,233 +33,42 @@ class VideoPlayer extends StatefulWidget {
   State<VideoPlayer> createState() => _VideoPlayerState();
 }
 
-class _VideoPlayerState extends State<VideoPlayer> {
-  List<String> srcs = [
-    "https://assets.mixkit.co/videos/preview/mixkit-daytime-city-traffic-aerial-view-56-large.mp4",
-    "https://assets.mixkit.co/videos/preview/mixkit-a-girl-blowing-a-bubble-gum-at-an-amusement-park-1226-large.mp4"
-  ];
-
-  int currPlayIndex = 0;
-
-  int selectedIndex = 0;
-
-  TargetPlatform _platform;
-  VideoPlayerController _videoPlayerController1;
-  VideoPlayerController _videoPlayerController2;
-  ChewieController _chewieController;
-
-  Future<void> initializePlayer() async {
-    _videoPlayerController1 =
-        VideoPlayerController.network(srcs[currPlayIndex]);
-    _videoPlayerController2 =
-        VideoPlayerController.network(srcs[currPlayIndex]);
-    await Future.wait([
-      _videoPlayerController1.initialize(),
-      _videoPlayerController2.initialize()
-    ]);
-    _createChewieController();
-    setState(() {});
-  }
-
-  void _createChewieController() {
-    // final subtitles = [
-    //     Subtitle(
-    //       index: 0,
-    //       start: Duration.zero,
-    //       end: const Duration(seconds: 10),
-    //       text: 'Hello from subtitles',
-    //     ),
-    //     Subtitle(
-    //       index: 0,
-    //       start: const Duration(seconds: 10),
-    //       end: const Duration(seconds: 20),
-    //       text: 'Whats up? :)',
-    //     ),
-    //   ];
-
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController1,
-      autoPlay: true,
-      looping: true,
-
-      // additionalOptions: (context) {
-      //   return <OptionItem>[
-      //     OptionItem(
-      //       onTap: toggleVideo,
-      //       iconData: Icons.live_tv_sharp,
-      //       title: 'Toggle Video Src',
-      //     ),
-      //   ];
-      // },
-      // subtitle: Subtitles(subtitles),
-      subtitleBuilder: (context, dynamic subtitle) => Container(
-        padding: const EdgeInsets.all(10.0),
-        child: subtitle is InlineSpan
-            ? RichText(
-                text: subtitle,
-              )
-            : Text(
-                subtitle.toString(),
-                style: const TextStyle(color: Colors.black),
-              ),
-      ),
-
-      // hideControlsTimer: const Duration(seconds: 1),
-
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
-    );
-  }
-
+class _VideoPlayerState extends State<VideoPlayer>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
-    // TODO: implement initState
+    // _initControllers();
     super.initState();
-    initializePlayer();
   }
+
+  // VideoPlayerController _controller;
+  // ChewieController _chewie;
+
+  // void _initControllers() {
+  //   var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+  //   this._controller =
+  //       VideoPlayerController.network(episodeObject.videoSource.url);
+  //   this._chewie = ChewieController(
+  //     aspectRatio: 16 / 9,
+  //     videoPlayerController: this._controller,
+  //     autoPlay: true,
+  //   );
+  // }
+
+  // @override
+  // void dispose() {
+  //   this._controller?.dispose();
+  //   this._chewie?.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
     return Scaffold(
       body: Stack(
         children: [
-          Center(
-            child: _chewieController != null &&
-                    _chewieController.videoPlayerController.value.isInitialized
-                ? Chewie(
-                    controller: _chewieController,
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 20),
-                      Text('Loading'),
-                    ],
-                  ),
-          ),
-          // NestedScrollView(
-          //   headerSliverBuilder:
-          //       (BuildContext context, bool isInnerBoxScrolled) {
-          //     return <Widget>[
-          //       SliverToBoxAdapter(
-          //         child: SizedBox(
-          //           height: MediaQuery.of(context).size.height / 3.5,
-          //         ),
-          //       ),
-          //       SliverToBoxAdapter(
-          //         child: Consumer<PlayerChange>(
-          //           builder: (context, watch, _) {
-          //             return Column(
-          //               mainAxisSize: MainAxisSize.min,
-          //               children: [
-          //                 ListTile(
-          //                   title: Text(
-          //                     '${watch.videoSource.title}',
-          //                     style: TextStyle(
-          //                         fontSize:
-          //                             SizeConfig.safeBlockHorizontal * 3.6),
-          //                   ),
-          //                   trailing: InkWell(
-          //                       onTap: () {
-          //                         print("Asked for description");
-          //                       },
-          //                       child: Icon(Icons.keyboard_arrow_down)),
-          //                   subtitle: Padding(
-          //                     padding: const EdgeInsets.symmetric(vertical: 10),
-          //                     child: Text(
-          //                       "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
-          //                       style: TextStyle(
-          //                           fontSize:
-          //                               SizeConfig.safeBlockHorizontal * 3),
-          //                     ),
-          //                   ),
-          //                 ),
-          //                 UpvoteAndComment(videoObject: watch.videoSource),
-          //                 Container(
-          //                   decoration: BoxDecoration(),
-          //                   child: ListTile(
-          //                     leading: CircleAvatar(
-          //                       radius: 20,
-          //                       child: CachedNetworkImage(
-          //                         imageUrl: watch.videoSource.thumbnailUrl,
-          //                         imageBuilder: (context, imageProvider) {
-          //                           return Container(
-          //                             decoration: BoxDecoration(
-          //                                 shape: BoxShape.circle,
-          //                                 image: DecorationImage(
-          //                                     image: imageProvider,
-          //                                     fit: BoxFit.contain)),
-          //                           );
-          //                         },
-          //                         errorWidget: (context, url, e) {
-          //                           return Container(
-          //                             decoration: BoxDecoration(
-          //                                 shape: BoxShape.circle,
-          //                                 image: DecorationImage(
-          //                                     image: CachedNetworkImageProvider(
-          //                                         placeholderUrl),
-          //                                     fit: BoxFit.contain)),
-          //                           );
-          //                         },
-          //                       ),
-          //                     ),
-          //                     title: Text(
-          //                       "${watch.videoSource.album}",
-          //                       style: TextStyle(
-          //                           fontWeight: FontWeight.w600,
-          //                           fontSize:
-          //                               SizeConfig.safeBlockHorizontal * 3.5),
-          //                     ),
-          //                     subtitle: Padding(
-          //                       padding: const EdgeInsets.only(top: 3),
-          //                       child: Text("${watch.videoSource.author}"),
-          //                     ),
-          //                   ),
-          //                 ),
-          //                 Divider(),
-          //                 Row(
-          //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //                   children: [
-          //                     IconButton(
-          //                         onPressed: () {
-          //                           print("add to playlist");
-          //                         },
-          //                         icon: Icon(Icons.add)),
-          //                     IconButton(
-          //                         onPressed: () {
-          //                           print("add to playlist");
-          //                         },
-          //                         icon: Icon(Icons.playlist_add)),
-          //                     IconButton(
-          //                         onPressed: () {
-          //                           print("add to playlist");
-          //                         },
-          //                         icon: Icon(Icons.ios_share)),
-          //                   ],
-          //                 )
-          //               ],
-          //             );
-          //           },
-          //         ),
-          //       ),
-          //     ];
-          //   },
-          //   body: Container(
-          //     child: VideoPlayerBottom(),
-          //   ),
-          // ),
+          Chewie(controller: episodeObject.chewie),
           Consumer<PlayerChange>(builder: (context, watch, _) {
             // final videoObject = watch.videoSource;
             // final miniPlayerController = watch.miniplayerController;
@@ -290,6 +99,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class VideoPlayerBottom extends StatefulWidget {
@@ -1111,4 +924,46 @@ class _MoreEpisodesState extends State<MoreEpisodes>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+}
+
+class MyVideoPlayer extends StatefulWidget {
+  final String videoUrl;
+  final UniqueKey newKey;
+
+  MyVideoPlayer(this.videoUrl, this.newKey) : super(key: newKey);
+
+  @override
+  State<MyVideoPlayer> createState() => _MyVideoPlayerState();
+}
+
+class _MyVideoPlayerState extends State<MyVideoPlayer> {
+  VideoPlayerController _controller;
+  ChewieController _chewie;
+
+  @override
+  void initState() {
+    this._initControllers(this.widget.videoUrl);
+    super.initState();
+  }
+
+  void _initControllers(String url) {
+    this._controller = VideoPlayerController.network(url);
+    this._chewie = ChewieController(
+      aspectRatio: 16 / 9,
+      videoPlayerController: this._controller,
+      autoPlay: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    this._controller?.dispose();
+    this._chewie?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Chewie(controller: this._chewie);
+  }
 }
