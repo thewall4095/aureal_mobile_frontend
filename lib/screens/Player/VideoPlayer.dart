@@ -9,6 +9,7 @@ import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,11 +20,11 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:linkable/linkable.dart';
-import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:video_player/video_player.dart';
 
 class VideoPlayer extends StatefulWidget {
@@ -68,33 +69,148 @@ class _VideoPlayerState extends State<VideoPlayer>
     return Scaffold(
       body: Stack(
         children: [
-          Chewie(controller: episodeObject.chewie),
-          Consumer<PlayerChange>(builder: (context, watch, _) {
-            // final videoObject = watch.videoSource;
-            // final miniPlayerController = watch.miniplayerController;
-            return Column(
-              children: [
-                Stack(
-                  children: [
-                    // Container(
-                    //   child: BetterPlayer(
-                    //     controller: watch.betterPlayerController,
-                    //   ),
-                    // ),
-                    IconButton(
-                        onPressed: () {
-                          watch.miniplayerController
-                              .animateToHeight(state: PanelState.MIN);
-                        },
-                        icon: Icon(Icons.keyboard_arrow_down)),
-                  ],
+          NestedScrollView(
+            headerSliverBuilder:
+                (BuildContext context, bool isInnerBoxScrolled) {
+              return <Widget>[
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height / 3.5,
+                  ),
                 ),
-                // watch.permlink != null
-                //     ? ListTile(title: Container())
-                //     : SizedBox(),
-              ],
-            );
-          }),
+                SliverToBoxAdapter(
+                  child: Consumer<PlayerChange>(
+                    builder: (context, watch, _) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              '${watch.videoSource.title}',
+                              style: TextStyle(
+                                  fontSize:
+                                      SizeConfig.safeBlockHorizontal * 3.6),
+                            ),
+                            trailing: InkWell(
+                                onTap: () {
+                                  print("Asked for description");
+                                },
+                                child: Icon(Icons.keyboard_arrow_down)),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                "${timeago.format(DateTime.parse(watch.videoSource.createdAt))}",
+                                style: TextStyle(
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3),
+                              ),
+                            ),
+                          ),
+                          UpvoteAndComment(videoObject: watch.videoSource),
+                          Container(
+                            decoration: BoxDecoration(),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                radius: 20,
+                                child: CachedNetworkImage(
+                                  imageUrl: watch.videoSource.thumbnailUrl,
+                                  imageBuilder: (context, imageProvider) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.contain)),
+                                    );
+                                  },
+                                  errorWidget: (context, url, e) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  placeholderUrl),
+                                              fit: BoxFit.contain)),
+                                    );
+                                  },
+                                ),
+                              ),
+                              title: Text(
+                                "${watch.videoSource.album}",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize:
+                                        SizeConfig.safeBlockHorizontal * 3.5),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Text("${watch.videoSource.author}"),
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.add)),
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.playlist_add)),
+                              IconButton(
+                                  onPressed: () {
+                                    print("add to playlist");
+                                  },
+                                  icon: Icon(Icons.ios_share)),
+                            ],
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ];
+            },
+            body: Container(
+              child: VideoPlayerBottom(),
+            ),
+          ),
+          // Consumer<PlayerChange>(builder: (context, watch, _) {
+          //   // final videoObject = watch.videoSource;
+          //   // final miniPlayerController = watch.miniplayerController;
+          //   return Column(
+          //     children: [
+          //       Stack(
+          //         children: [
+          //           // Container(
+          //           //   child: BetterPlayer(
+          //           //     controller: watch.betterPlayerController,
+          //           //   ),
+          //           // ),
+          //           IconButton(
+          //               onPressed: () {
+          //                 watch.miniplayerController
+          //                     .animateToHeight(state: PanelState.MIN);
+          //               },
+          //               icon: Icon(Icons.keyboard_arrow_down)),
+          //         ],
+          //       ),
+          //       // watch.permlink != null
+          //       //     ? ListTile(title: Container())
+          //       //     : SizedBox(),
+          //     ],
+          //   );
+          // }),
+          AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Chewie(controller: episodeObject.chewie))),
         ],
       ),
     );
