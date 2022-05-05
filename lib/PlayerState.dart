@@ -117,7 +117,7 @@ class PlayerChange extends ChangeNotifier {
 
   void _initControllers(String url) {
     // var episodeObject = Provider.of<PlayerChange>(context, listen: false);
-    _disposeControllers();
+    disposeControllers();
     controller = VideoPlayerController.network(url);
     chewie = ChewieController(
       aspectRatio: 16 / 9,
@@ -126,7 +126,7 @@ class PlayerChange extends ChangeNotifier {
     );
   }
 
-  void _disposeControllers() {
+  void disposeControllers() {
     this.controller?.dispose();
     this.chewie?.dispose();
   }
@@ -134,7 +134,10 @@ class PlayerChange extends ChangeNotifier {
   set videoSource(Video newValue) {
     _videoSource = newValue;
     // videoPlayerController = VideoPlayerController.network(newValue.url);
-    _initControllers(newValue.url);
+    if (newValue != null) {
+      _initControllers(newValue.url);
+    }
+
     notifyListeners();
   }
 
