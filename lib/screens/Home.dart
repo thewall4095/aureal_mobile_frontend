@@ -859,8 +859,11 @@ class BottomPlayer extends StatelessWidget {
                                   )),
                                   IconButton(
                                       onPressed: () {
-                                        watch.videoSource = null;
-                                        watch.betterPlayerController.pause();
+                                        // watch.videoSource = null;
+                                        // watch.disposeControllers();
+                                        watch.chewie.videoPlayerController
+                                            .pause();
+                                        // watch.betterPlayerController.pause();
                                       },
                                       icon: Icon(Icons.close))
                                 ],

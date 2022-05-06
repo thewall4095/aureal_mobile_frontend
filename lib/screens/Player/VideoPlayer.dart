@@ -9,8 +9,8 @@ import 'package:auditory/screens/Onboarding/HiveDetails.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-import 'package:better_player/better_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,20 +20,52 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:linkable/linkable.dart';
-import 'package:miniplayer/miniplayer.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:video_player/video_player.dart';
 
-class VideoPlayer extends StatelessWidget {
+class VideoPlayer extends StatefulWidget {
   VideoPlayer();
 
-  int selectedIndex = 0;
+  @override
+  State<VideoPlayer> createState() => _VideoPlayerState();
+}
+
+class _VideoPlayerState extends State<VideoPlayer>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  void initState() {
+    // _initControllers();
+    super.initState();
+  }
+
+  // VideoPlayerController _controller;
+  // ChewieController _chewie;
+
+  // void _initControllers() {
+  //   var episodeObject = Provider.of<PlayerChange>(context, listen: false);
+  //   this._controller =
+  //       VideoPlayerController.network(episodeObject.videoSource.url);
+  //   this._chewie = ChewieController(
+  //     aspectRatio: 16 / 9,
+  //     videoPlayerController: this._controller,
+  //     autoPlay: true,
+  //   );
+  // }
+
+  // @override
+  // void dispose() {
+  //   this._controller?.dispose();
+  //   this._chewie?.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    var episodeObject = Provider.of<PlayerChange>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -148,36 +180,45 @@ class VideoPlayer extends StatelessWidget {
               child: VideoPlayerBottom(),
             ),
           ),
-          Consumer<PlayerChange>(builder: (context, watch, _) {
-            // final videoObject = watch.videoSource;
-            // final miniPlayerController = watch.miniplayerController;
-            return Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      child: BetterPlayer(
-                        controller: watch.betterPlayerController,
-                      ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          watch.miniplayerController
-                              .animateToHeight(state: PanelState.MIN);
-                        },
-                        icon: Icon(Icons.keyboard_arrow_down)),
-                  ],
-                ),
-                // watch.permlink != null
-                //     ? ListTile(title: Container())
-                //     : SizedBox(),
-              ],
-            );
-          }),
+          // Consumer<PlayerChange>(builder: (context, watch, _) {
+          //   // final videoObject = watch.videoSource;
+          //   // final miniPlayerController = watch.miniplayerController;
+          //   return Column(
+          //     children: [
+          //       Stack(
+          //         children: [
+          //           // Container(
+          //           //   child: BetterPlayer(
+          //           //     controller: watch.betterPlayerController,
+          //           //   ),
+          //           // ),
+          //           IconButton(
+          //               onPressed: () {
+          //                 watch.miniplayerController
+          //                     .animateToHeight(state: PanelState.MIN);
+          //               },
+          //               icon: Icon(Icons.keyboard_arrow_down)),
+          //         ],
+          //       ),
+          //       // watch.permlink != null
+          //       //     ? ListTile(title: Container())
+          //       //     : SizedBox(),
+          //     ],
+          //   );
+          // }),
+          AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Chewie(controller: episodeObject.chewie))),
         ],
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class VideoPlayerBottom extends StatefulWidget {
@@ -999,4 +1040,46 @@ class _MoreEpisodesState extends State<MoreEpisodes>
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
+}
+
+class MyVideoPlayer extends StatefulWidget {
+  final String videoUrl;
+  final UniqueKey newKey;
+
+  MyVideoPlayer(this.videoUrl, this.newKey) : super(key: newKey);
+
+  @override
+  State<MyVideoPlayer> createState() => _MyVideoPlayerState();
+}
+
+class _MyVideoPlayerState extends State<MyVideoPlayer> {
+  VideoPlayerController _controller;
+  ChewieController _chewie;
+
+  @override
+  void initState() {
+    this._initControllers(this.widget.videoUrl);
+    super.initState();
+  }
+
+  void _initControllers(String url) {
+    this._controller = VideoPlayerController.network(url);
+    this._chewie = ChewieController(
+      aspectRatio: 16 / 9,
+      videoPlayerController: this._controller,
+      autoPlay: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    this._controller?.dispose();
+    this._chewie?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Chewie(controller: this._chewie);
+  }
 }

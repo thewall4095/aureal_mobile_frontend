@@ -755,42 +755,65 @@ class _PodcastViewState extends State<PodcastView>
                                               2,
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: CachedNetworkImage(
-                                              imageBuilder:
-                                                  (context, imageProvider) {
-                                                return Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.cover),
-                                                  ),
-                                                );
-                                              },
-                                              memCacheHeight:
-                                                  (MediaQuery.of(context)
-                                                          .size
-                                                          .height)
-                                                      .floor(),
-                                              placeholder: (context, url) =>
-                                                  Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    2.5,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    2.5,
-                                                child: Image.asset(
-                                                    'assets/images/Thumbnail.png'),
+                                            // child: CachedNetworkImage(
+                                            //   imageBuilder:
+                                            //       (context, imageProvider) {
+                                            //     return Container(
+                                            //       decoration: BoxDecoration(
+                                            //         borderRadius:
+                                            //             BorderRadius.circular(
+                                            //                 10),
+                                            //         image: DecorationImage(
+                                            //             image: imageProvider,
+                                            //             fit: BoxFit.cover),
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            //   memCacheHeight:
+                                            //       (MediaQuery.of(context)
+                                            //               .size
+                                            //               .height)
+                                            //           .floor(),
+                                            //   placeholder: (context, url) =>
+                                            //       Container(
+                                            //     width: MediaQuery.of(context)
+                                            //             .size
+                                            //             .width /
+                                            //         2.5,
+                                            //     height: MediaQuery.of(context)
+                                            //             .size
+                                            //             .width /
+                                            //         2.5,
+                                            //     child: Image.asset(
+                                            //         'assets/images/Thumbnail.png'),
+                                            //   ),
+                                            //   imageUrl: podcastData == null
+                                            //       ? placeholderUrl
+                                            //       : podcastData['image'],
+                                            //   fit: BoxFit.cover,
+                                            // ),
+                                            child: Container(
+                                              child: FadeInImage(
+                                                placeholder: AssetImage(
+                                                    'assets/placeholder.gif'),
+                                                image: Image.network(
+                                                  podcastData == null
+                                                      ? placeholderUrl
+                                                      : podcastData['image'],
+                                                  gaplessPlayback: true,
+                                                  cacheHeight:
+                                                      (MediaQuery.of(context)
+                                                              .size
+                                                              .width)
+                                                          .floor(),
+                                                  cacheWidth:
+                                                      (MediaQuery.of(context)
+                                                              .size
+                                                              .width)
+                                                          .floor(),
+                                                ).image,
+                                                fit: BoxFit.cover,
                                               ),
-                                              imageUrl: podcastData == null
-                                                  ? placeholderUrl
-                                                  : podcastData['image'],
-                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                         ),

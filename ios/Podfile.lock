@@ -12,10 +12,6 @@ PODS:
     - Flutter
   - audioplayer (0.0.1):
     - Flutter
-  - better_player (0.0.1):
-    - Flutter
-    - KTVHTTPCache (~> 2.0.0)
-  - CocoaAsyncSocket (7.6.5)
   - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -200,10 +196,6 @@ PODS:
     - Flutter
   - in_app_review (0.2.0):
     - Flutter
-  - KTVCocoaHTTPServer (1.0.0):
-    - CocoaAsyncSocket
-  - KTVHTTPCache (2.0.1):
-    - KTVCocoaHTTPServer
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -236,7 +228,7 @@ PODS:
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
-  - video_player (0.0.1):
+  - video_player_avfoundation (0.0.1):
     - Flutter
   - wakelock (0.0.1):
     - Flutter
@@ -248,7 +240,6 @@ DEPENDENCIES:
   - assets_audio_player (from `.symlinks/plugins/assets_audio_player/ios`)
   - assets_audio_player_web (from `.symlinks/plugins/assets_audio_player_web/ios`)
   - audioplayer (from `.symlinks/plugins/audioplayer/ios`)
-  - better_player (from `.symlinks/plugins/better_player/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -274,14 +265,13 @@ DEPENDENCIES:
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
     - AppAuth
-    - CocoaAsyncSocket
     - DKImagePickerController
     - DKPhotoGallery
     - Firebase
@@ -298,8 +288,6 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
-    - KTVCocoaHTTPServer
-    - KTVHTTPCache
     - nanopb
     - OrderedSet
     - PromisesObjC
@@ -317,8 +305,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/assets_audio_player_web/ios"
   audioplayer:
     :path: ".symlinks/plugins/audioplayer/ios"
-  better_player:
-    :path: ".symlinks/plugins/better_player/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_analytics:
@@ -369,8 +355,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
-  video_player:
-    :path: ".symlinks/plugins/video_player/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/ios"
   wakelock:
     :path: ".symlinks/plugins/wakelock/ios"
   webview_flutter_wkwebview:
@@ -382,8 +368,6 @@ SPEC CHECKSUMS:
   assets_audio_player: edee322b9cb625571b830b35872ead1a295fd917
   assets_audio_player_web: 19826380c44375761aa0b9053665c1e3fbc3b86b
   audioplayer: 0584f31a697e4b0bbad405ae7903d7a93585e784
-  better_player: a4383402f457e53720525888c0fc5d337ef6ba11
-  CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
@@ -416,11 +400,9 @@ SPEC CHECKSUMS:
   image_cropper: f1668dd8d2cad2d357955caad15a40547856edcb
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
-  KTVCocoaHTTPServer: df8d7b861e603ff8037e9b2138aca2563a6b768d
-  KTVHTTPCache: 588c3eb16f6bd1e6fde1e230dabfb7bd4e490a4d
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
-  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
+  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
@@ -434,7 +416,7 @@ SPEC CHECKSUMS:
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  video_player: 7e9dad9437c238a97648819f6dd443c8854cf0c7
+  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: 02b129c6fe415e58e4ab7346512c8c2f79f678db
 
