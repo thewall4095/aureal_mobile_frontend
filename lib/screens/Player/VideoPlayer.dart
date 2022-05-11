@@ -6,6 +6,7 @@ import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/data/Datasource.dart';
 import 'package:auditory/screens/FollowingPage.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/screens/Profiles/CreatePlaylist.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -15,6 +16,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -63,6 +65,13 @@ class _VideoPlayerState extends State<VideoPlayer>
   //   super.dispose();
   // }
 
+  void share1({var episodeObject}) async {
+    // String sharableLink;
+    await FlutterShare.share(
+        title: '${episodeObject['podcast_name']}',
+        text: " https://aureal.one/episode/${episodeObject['id']}");
+  }
+
   @override
   Widget build(BuildContext context) {
     var episodeObject = Provider.of<PlayerChange>(context);
@@ -110,6 +119,11 @@ class _VideoPlayerState extends State<VideoPlayer>
                           Container(
                             decoration: BoxDecoration(),
                             child: ListTile(
+                              onTap: (){
+                                Navigator.push(context, CupertinoPageRoute(builder: (context){
+                                  return PodcastView(watch.videoSource.podcastid);
+                                }));
+                              },
                               leading: CircleAvatar(
                                 radius: 20,
                                 child: CachedNetworkImage(
@@ -152,19 +166,25 @@ class _VideoPlayerState extends State<VideoPlayer>
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+
                               IconButton(
                                   onPressed: () {
-                                    print("add to playlist");
-                                  },
-                                  icon: Icon(Icons.add)),
-                              IconButton(
-                                  onPressed: () {
-                                    print("add to playlist");
+                                    showBarModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Createplaylist(
+                                              episodeId:
+                                              watch.videoSource.id);
+                                        });
                                   },
                                   icon: Icon(Icons.playlist_add)),
                               IconButton(
                                   onPressed: () {
-                                    print("add to playlist");
+                                    share1(
+                                        episodeObject:
+                                            Provider.of<PlayerChange>(context,
+                                                    listen: false)
+                                                .episodeObject);
                                   },
                                   icon: Icon(Icons.ios_share)),
                             ],

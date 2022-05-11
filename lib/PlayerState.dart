@@ -51,55 +51,6 @@ class PlayerChange extends ChangeNotifier {
 
   int currentIndex = 0;
 
-  //VideoPlayer Controls
-
-  // BetterPlayerController betterPlayerController =
-  //     BetterPlayerController(BetterPlayerConfiguration(
-  //   aspectRatio: 16 / 9,
-  //   fit: BoxFit.contain,
-  //   autoPlay: true,
-  //   looping: false,
-  //   allowedScreenSleep: false,
-  //   autoDispose: false,
-  //   deviceOrientationsAfterFullScreen: [
-  //     DeviceOrientation.portraitDown,
-  //     DeviceOrientation.portraitUp
-  //   ],
-  // ));
-  // BetterPlayerDataSource betterPlayerDataSource;
-  // BetterPlayerConfiguration betterPlayerConfiguration;
-
-  // Future setVideoPlayerConfiguration() async {
-  //   betterPlayerConfiguration = BetterPlayerConfiguration(
-  //     aspectRatio: 16 / 9,
-  //     fit: BoxFit.contain,
-  //     autoPlay: true,
-  //     looping: false,
-  //     allowedScreenSleep: false,
-  //     autoDispose: false,
-  //     deviceOrientationsAfterFullScreen: [
-  //       DeviceOrientation.portraitDown,
-  //       DeviceOrientation.portraitUp
-  //     ],
-  //   );
-  // }
-
-  // Future setVideoPlayerDataSource() {
-  //   betterPlayerDataSource = BetterPlayerDataSource(
-  //     BetterPlayerDataSourceType.network,
-  //     _episodeObject['url'],
-  //     notificationConfiguration: BetterPlayerNotificationConfiguration(
-  //       showNotification: true,
-  //       title: "${_episodeObject['name']}",
-  //       author: "${_episodeObject['author']}",
-  //       imageUrl: _episodeObject['image'],
-  //     ),
-  //   );
-  //   betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-  //   betterPlayerController.setupDataSource(betterPlayerDataSource);
-  // }
-
-  // MusicPlayer musicPlayer = MusicPlayer();
   AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
   AssetsAudioPlayer snippetPlayer = AssetsAudioPlayer();
 
