@@ -396,8 +396,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
 class FeaturedBuilder extends StatelessWidget {
   final data;
+  int category_id;
 
-  FeaturedBuilder({@required this.data});
+  FeaturedBuilder({@required this.data, this.category_id});
 
   CancelToken _cancel = CancelToken();
 
@@ -409,7 +410,7 @@ class FeaturedBuilder extends StatelessWidget {
     Dio dio = Dio();
     prefs = await SharedPreferences.getInstance();
     String url =
-        "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}";
+        "https://api.aureal.one/public/$apicall?pageSize=5&user_id=${prefs.getString('userId')}&category_id=${category_id}";
 
     try {
       var response = await dio.get(url, cancelToken: _cancel);

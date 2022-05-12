@@ -796,7 +796,10 @@ class CategoryView extends StatelessWidget {
         );
         break;
       case 'featured':
-        return FeaturedBuilder(data: data);
+        return FeaturedBuilder(
+          data: data,
+          category_id: categoryObject['id'],
+        );
         break;
       case 'subcategory':
         return FutureBuilder(
