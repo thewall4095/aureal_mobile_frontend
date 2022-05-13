@@ -1400,6 +1400,32 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
     }
   }
 
+
+  Future getComments() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://rpc.ecency.com";
+    print(url);
+    var map = Map<String, dynamic>();
+    map = {
+      "jsonrpc": "2.0",
+      "method": "bridge.get_discussion",
+      "params": {
+        'author': episodeData['author_hiveusername'],
+        'permlink': episodeData['permlink'],
+        'observer': ""
+      },
+      "id": 0
+    };
+
+    try{
+      await dio.post(url, data: map).then((value) {
+        print(value);
+      });
+    }catch(e){
+      print(e);
+    }
+  }
+
   var data = Map<String, dynamic>();
 
   bool isLoading = true;
@@ -1552,59 +1578,64 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                               ),
                             ),
                           ))),
-                episodeData['permlink'] == null
-                    ? SizedBox(
-                        height: 0,
-                      )
-                    : GestureDetector(
-                        onTap: () {
-                          if (prefs.getString('HiveUserName') != null) {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) => Comments(
-                                          episodeObject: episodeData,
-                                        )));
-                          } else {
-                            showBarModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return HiveDetails();
-                                });
-                          }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: kSecondaryColor),
-                                borderRadius: BorderRadius.circular(30)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.mode_comment_outlined,
-                                    size: 14,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 7),
-                                    child: Text(
-                                      episodeData['comments_count'].toString(),
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(fontSize: 10
-                                          // color:
-                                          //     Color(0xffe8e8e8)
-                                          ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                // episodeData['permlink'] == null
+                //     ? SizedBox(
+                //         height: 0,
+                //       )
+                //     : GestureDetector(
+                //         onTap: () {
+                //           if (prefs.getString('HiveUserName') != null) {
+                //             Navigator.push(
+                //                 context,
+                //                 CupertinoPageRoute(
+                //                     builder: (context) => Comments(
+                //                           episodeObject: episodeData,
+                //                         )));
+                //           } else {
+                //             showBarModalBottomSheet(
+                //                 context: context,
+                //                 builder: (context) {
+                //                   return HiveDetails();
+                //                 });
+                //           }
+                //         },
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Container(
+                //             decoration: BoxDecoration(
+                //                 border: Border.all(color: kSecondaryColor),
+                //                 borderRadius: BorderRadius.circular(30)),
+                //             child: Padding(
+                //               padding: const EdgeInsets.all(4.0),
+                //               child: Row(
+                //                 children: [
+                //                   Icon(
+                //                     Icons.mode_comment_outlined,
+                //                     size: 14,
+                //                   ),
+                //                   Padding(
+                //                     padding: const EdgeInsets.symmetric(
+                //                         horizontal: 7),
+                //                     child: Text(
+                //                       episodeData['comments_count'].toString(),
+                //                       textScaleFactor: 1.0,
+                //                       style: TextStyle(fontSize: 10
+                //                           // color:
+                //                           //     Color(0xffe8e8e8)
+                //                           ),
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+
+                episodeData['permlink'] == null ? SizedBox() : FutureBuilder(future: getComments(),builder: (context, snapshot){
+                  return Container(child: Text("${snapshot.data}"),);
+                },),
+
                 widget.data['isvideo'] == true
                     ? SizedBox()
                     : Container(
