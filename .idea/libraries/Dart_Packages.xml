@@ -1426,7 +1426,6 @@
       </option>
     </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/archive-3.1.2/lib" />
@@ -1629,6 +1628,7 @@
       <root url="file://$USER_HOME$/Documents/Development/flutter/packages/flutter/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/packages/flutter_test/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/packages/flutter_web_plugins/lib" />
+      <root url="file://$PROJECT_DIR$/../lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

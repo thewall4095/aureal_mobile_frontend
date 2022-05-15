@@ -62,31 +62,39 @@ class _CommentsState extends State<Comments> {
     await getComments();
   }
 
-  void getComments() async {
-    String url =
-        'https://api.aureal.one/public/getComments?episode_id=${widget.episodeObject['id']}';
+  Dio dio = Dio();
+
+  CancelToken cancel = CancelToken();
+
+  Future getComments() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String url = "https://rpc.ecency.com";
+    print(url);
+    var map = Map<String, dynamic>();
+    map = {
+      "jsonrpc": "2.0",
+      "method": "bridge.get_discussion",
+      "params": {
+        'author': widget.episodeObject['author_hiveusername'],
+        'permlink': widget.episodeObject['permlink'],
+        'observer': ""
+      },
+      "id": 0
+    };
 
-    try {
-      http.Response response = await http.get(Uri.parse(url));
-      print(response.body);
-      if (response.statusCode == 200) {
-        setState(() {
-          user = prefs.getString('userName');
-          comments = jsonDecode(response.body)['comments'];
+    
 
-          displayPicture = prefs.getString('displayPicture');
-          for (var v in comments) {
-            expanded.add("0");
-          }
-        });
-        print(comments);
-        print(user);
-      }
-    } catch (e) {
+    print(map);
+
+    try{
+      await dio.post(url, data: map).then((value) {
+        print('///////////////////////////////////////////////////${value}');
+      });
+    }catch(e){
       print(e);
     }
   }
+
 
   void postComment() async {
     setState(() {

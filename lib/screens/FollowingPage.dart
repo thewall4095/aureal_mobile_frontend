@@ -1419,7 +1419,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
 
     try{
       await dio.post(url, data: map).then((value) {
-        print(value);
+        print('///////////////////////////////////////////////////${value}');
       });
     }catch(e){
       print(e);
@@ -1427,6 +1427,8 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
   }
 
   var data = Map<String, dynamic>();
+
+  var commentData = Map<String, dynamic>();
 
   bool isLoading = true;
 
@@ -1436,6 +1438,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
     getLocalPreferences().then((value) {
       if (episodeData['permlink'] != null) {
         getVotingValue();
+        getComments();
       }
     });
     super.initState();
@@ -1578,63 +1581,68 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                               ),
                             ),
                           ))),
-                // episodeData['permlink'] == null
-                //     ? SizedBox(
-                //         height: 0,
-                //       )
-                //     : GestureDetector(
-                //         onTap: () {
-                //           if (prefs.getString('HiveUserName') != null) {
-                //             Navigator.push(
-                //                 context,
-                //                 CupertinoPageRoute(
-                //                     builder: (context) => Comments(
-                //                           episodeObject: episodeData,
-                //                         )));
-                //           } else {
-                //             showBarModalBottomSheet(
-                //                 context: context,
-                //                 builder: (context) {
-                //                   return HiveDetails();
-                //                 });
-                //           }
-                //         },
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(8.0),
-                //           child: Container(
-                //             decoration: BoxDecoration(
-                //                 border: Border.all(color: kSecondaryColor),
-                //                 borderRadius: BorderRadius.circular(30)),
-                //             child: Padding(
-                //               padding: const EdgeInsets.all(4.0),
-                //               child: Row(
-                //                 children: [
-                //                   Icon(
-                //                     Icons.mode_comment_outlined,
-                //                     size: 14,
-                //                   ),
-                //                   Padding(
-                //                     padding: const EdgeInsets.symmetric(
-                //                         horizontal: 7),
-                //                     child: Text(
-                //                       episodeData['comments_count'].toString(),
-                //                       textScaleFactor: 1.0,
-                //                       style: TextStyle(fontSize: 10
-                //                           // color:
-                //                           //     Color(0xffe8e8e8)
-                //                           ),
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
+                episodeData['permlink'] == null
+                    ? SizedBox(
+                        height: 0,
+                      )
+                    : GestureDetector(
+                        onTap: () {
+                          if (prefs.getString('HiveUserName') != null) {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => Comments(
+                                          episodeObject: episodeData,
+                                        )));
+                          } else {
+                            showBarModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return HiveDetails();
+                                });
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: kSecondaryColor),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.mode_comment_outlined,
+                                    size: 14,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 7),
+                                    child: Text(
+                                      episodeData['comments_count'].toString(),
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(fontSize: 10
+                                          // color:
+                                          //     Color(0xffe8e8e8)
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
 
-                episodeData['permlink'] == null ? SizedBox() : FutureBuilder(future: getComments(),builder: (context, snapshot){
-                  return Container(child: Text("${snapshot.data}"),);
-                },),
+                // episodeData['permlink'] == null ? SizedBox() : FutureBuilder(future: getComments(),builder: (context, snapshot){
+                //   // return Container(child: Text("${snapshot.data}"),);
+                //   if(snapshot.hasData){
+                //     return Container(child: Text("${snapshot.data}"),);
+                //   }else{
+                //     return SizedBox();
+                //   }
+                // },),
 
                 widget.data['isvideo'] == true
                     ? SizedBox()
