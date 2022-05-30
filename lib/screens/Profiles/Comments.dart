@@ -70,8 +70,10 @@ class _CommentsState extends State<Comments> {
 
   var commentsData;
 
+  SharedPreferences prefs;
+
   Future getComments() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     String url = "https://rpc.ecency.com";
     print(url);
     var map = Map<String, dynamic>();
@@ -213,7 +215,7 @@ class _CommentsState extends State<Comments> {
     SizeConfig().init(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -253,17 +255,31 @@ class _CommentsState extends State<Comments> {
 //           );
 //         }
 //       },),
-    body: ListView.builder(itemBuilder: (context, int index){
-      if(index ==  0){
-        return SizedBox();
-      }else{
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: CommentCard(data: commentsData['${commentKeys[index].toString()}']),
-        );
-      }
+    body: Stack(
+      children: [
+        ListView.builder(itemBuilder: (context, int index){
+          if(index ==  0){
+            return SizedBox();
+          }else{
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: CommentCard(data: commentsData['${commentKeys[index].toString()}']),
+            );
+          }
 
-    }, itemCount: commentKeys.length,),
+        }, itemCount: commentKeys.length,),
+        Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(enableIMEPersonalizedLearning: true,
+            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: SizedBox(height: 20, width:20,child: CircleAvatar(radius: 5,backgroundImage: Image.network('https://images.hive.blog/u/${prefs.getString('HiveUserName')}/avatar').image,)),
+            ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
+        ),
+        )),
+      ],
+
+    ),
 
     );
   }
@@ -1690,7 +1706,7 @@ class _CommentCardState extends State<CommentCard> {
                     ),
                   ),
                 ),
-                Text("View Replies", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),)
+                Text("View Replies", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),)  //level 1 replies make a seperate interface for them
 
               ],
           )
