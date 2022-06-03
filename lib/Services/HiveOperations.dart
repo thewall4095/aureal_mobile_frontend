@@ -64,26 +64,49 @@ void downVoteEpisode({String permlink, int episode_id}) async {
   } else {}
 }
 
-void upVoteComment({@required String commentId, double weight}) async {
-  postreq.Interceptor interceptor = postreq.Interceptor();
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+// void upVoteComment({@required String commentId, double weight}) async {
+//   postreq.Interceptor interceptor = postreq.Interceptor();
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//
+//   String url = 'https://api.aureal.one/public/voteComment';
+//
+//   var map = Map<String, dynamic>();
+//   map['weight'] = weight;
+//   map['hive_username'] = prefs.getString('HiveUserName');
+//   map['comment_id'] = commentId;
+//   map['user_id'] = prefs.getString('userId');
+//
+//   FormData formData = FormData.fromMap(map);
+//
+//   try {
+//     var response = await interceptor.postRequest(formData, url);
+//     print(response.toString());
+//   } catch (e) {
+//     print(e);
+//   }
+// }
 
-  String url = 'https://api.aureal.one/public/voteComment';
+Future upvoteComment({int weight, String author, String permlink}) async {
+  postreq.Interceptor intercept = postreq.Interceptor();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String url = "https://api.aureal.one/public/voteComment";
 
   var map = Map<String, dynamic>();
-  map['weight'] = weight;
+  map['author_hive_username'] = author;
   map['hive_username'] = prefs.getString('HiveUserName');
-  map['comment_id'] = commentId;
-  map['user_id'] = prefs.getString('userId');
+  map['permlink'] = permlink;
+  map['weight'] = weight;
 
   FormData formData = FormData.fromMap(map);
 
-  try {
-    var response = await interceptor.postRequest(formData, url);
-    print(response.toString());
-  } catch (e) {
+  try{
+    await intercept.postRequest(formData, url).then((value) {
+      print(value);
+    });
+  }catch(e){
     print(e);
   }
+
 }
 
 void publishManually(var episodeId) async {
@@ -301,9 +324,9 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
 }
 
 class UpvoteComment extends StatefulWidget {
-  var comment_id;
+  var data;
 
-  UpvoteComment({@required comment_id});
+  UpvoteComment({@required data});
 
   @override
   _UpvoteCommentState createState() => _UpvoteCommentState();
@@ -381,8 +404,7 @@ class _UpvoteCommentState extends State<UpvoteComment> {
                     },
                     onChangeEnd: (value) async {
                       print("this is the final value: $value");
-                      await upVoteComment(
-                          commentId: widget.comment_id, weight: _value*100);
+                      await upvoteComment(permlink: widget.data['permlink'], author: widget.data['author'], );
                       Navigator.pop(context);
                     },
                   ),

@@ -1647,6 +1647,36 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> {
+
+  SharedPreferences prefs;
+
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+
+  Future upvoteComment(int weight) async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/public/voteComment";
+
+    var map = Map<String, dynamic>();
+    map['author_hive_username'] = widget.data['author'];
+    map['hive_username'] = prefs.getString('HiveUserName');
+    map['permlink'] = widget.data['permlink'];
+    map['weight'] = weight;
+
+    FormData formData = FormData.fromMap(map);
+
+    try{
+      await intercept.postRequest(formData, url).then((value) {
+        print(value);
+      });
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -1665,21 +1695,32 @@ class _CommentCardState extends State<CommentCard> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: kSecondaryColor)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(FontAwesomeIcons.chevronCircleUp, size: 15,),
-                          SizedBox(width: 5,),
-                          Text("\$${widget.data['payout']}")
-                        ],
+                  child: InkWell(
+                    onTap: (){
+                      showModalBottomSheet(
+                        builder: (context){
+                          return Container(
+                            
+                          );
+                        }
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: kSecondaryColor)
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(FontAwesomeIcons.chevronCircleUp, size: 15,),
+                            SizedBox(width: 5,),
+                            Text("\$${widget.data['payout']}")
+                          ],
+                        ),
                       ),
                     ),
                   ),
