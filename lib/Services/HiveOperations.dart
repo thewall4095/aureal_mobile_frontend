@@ -86,7 +86,7 @@ void downVoteEpisode({String permlink, int episode_id}) async {
 //   }
 // }
 
-Future upvoteComment({int weight, String author, String permlink}) async {
+Future upvoteComment({var weight, String author, String permlink}) async {
   postreq.Interceptor intercept = postreq.Interceptor();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String url = "https://api.aureal.one/public/voteComment";
@@ -96,6 +96,8 @@ Future upvoteComment({int weight, String author, String permlink}) async {
   map['hive_username'] = prefs.getString('HiveUserName');
   map['permlink'] = permlink;
   map['weight'] = weight;
+
+  print(map);
 
   FormData formData = FormData.fromMap(map);
 
@@ -326,7 +328,7 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
 class UpvoteComment extends StatefulWidget {
   var data;
 
-  UpvoteComment({@required data});
+  UpvoteComment({@required this.data});
 
   @override
   _UpvoteCommentState createState() => _UpvoteCommentState();
@@ -362,9 +364,7 @@ class _UpvoteCommentState extends State<UpvoteComment> {
 
   @override
   Widget build(BuildContext context) {
-    return factor == null
-        ? SizedBox()
-        : Container(
+    return  Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: kSecondaryColor,
@@ -392,21 +392,30 @@ class _UpvoteCommentState extends State<UpvoteComment> {
                       ),
                     ),
                   ),
-                  Slider(
-                    max: 100.0,
-                    min: 1.0,
-                    value: _value,
-                    onChanged: (value) {
-                      setState(() {
-                        _value = value;
-                        print(_value);
-                      });
-                    },
-                    onChangeEnd: (value) async {
-                      print("this is the final value: $value");
-                      await upvoteComment(permlink: widget.data['permlink'], author: widget.data['author'], );
-                      Navigator.pop(context);
-                    },
+                  SliderTheme(
+                    data: SliderThemeData(
+                        trackHeight: 30,
+                        trackShape: GradientRectSliderTrackShape(darkenInactive: true, gradient: LinearGradient(colors: [Color(0xff52BFF9),
+                          Color(0xff6048F6)]))
+
+                    ),
+                    child: Slider(
+                      max: 100.0,
+                      min: 1.0,
+                      value: _value,
+                      onChanged: (value) {
+                        print(widget.data);
+                        setState(() {
+                          _value = value;
+                          print(_value);
+                        });
+                      },
+                      onChangeEnd: (value) async {
+                        print("this is the final value: $value");
+                        await upvoteComment(permlink: widget.data['permlink'], author: widget.data['author'], weight: value * 100);
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
                 ],
               ),
