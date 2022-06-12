@@ -13,6 +13,7 @@ import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/Wrapper.dart';
 import 'package:auditory/screens/CommunityPages/CommunitySearch.dart';
 import 'package:auditory/screens/Onboarding/HiveDetails.dart';
+import 'package:auditory/screens/Profiles/Comments.dart';
 import 'package:auditory/screens/Profiles/EpisodeView.dart';
 import 'package:auditory/screens/Profiles/PodcastView.dart';
 import 'package:auditory/screens/Profiles/publicUserProfile.dart';
@@ -247,109 +248,112 @@ class _MyAppState extends State<MyApp> {
     ]);
 
     return pro.ChangeNotifierProvider(
-      create: (context) => SearchResultProvider(),
+      create: (context) => ComState(),
       child: pro.ChangeNotifierProvider(
-          create: (context) => SearchProvider(),
-          child: pro.ChangeNotifierProvider(
-            create: (context) => SelectedCommunityProvider(),
-            // child:   ChangeNotifierProvider(
-            //    create: (context) => FileDownloaderProvider(),
+        create: (context) => SearchResultProvider(),
+        child: pro.ChangeNotifierProvider(
+            create: (context) => SearchProvider(),
             child: pro.ChangeNotifierProvider(
-              create: (context) => CommunityProvider(),
+              create: (context) => SelectedCommunityProvider(),
+              // child:   ChangeNotifierProvider(
+              //    create: (context) => FileDownloaderProvider(),
               child: pro.ChangeNotifierProvider(
-                  create: (context) => CategoriesProvider(),
-                  child: pro.ChangeNotifierProvider(
-                      create: (context) => DiscoverProvider(),
-                      child: pro.ChangeNotifierProvider(
-                        create: (context) => BrowseProvider(),
+                create: (context) => CommunityProvider(),
+                child: pro.ChangeNotifierProvider(
+                    create: (context) => CategoriesProvider(),
+                    child: pro.ChangeNotifierProvider(
+                        create: (context) => DiscoverProvider(),
                         child: pro.ChangeNotifierProvider(
-                            create: (context) => PlayerChange(),
-                            child: pro.Provider(
-                                create: (context) => AuthBloc(),
-                                child: pro.ChangeNotifierProvider(
-                                  create: (context) => SortFilterPreferences(),
-                                  child: MaterialApp(
-                                    debugShowCheckedModeBanner: false,
-                                    navigatorKey: navigatorKey,
-                                    darkTheme: ThemeData.dark(),
-                                    themeMode: ThemeMode.light,
-                                    title: 'Aureal',
-                                    theme: widget.themeProvider.themeData(),
-                                    home: SplashScreenPage(),
-                                    // home: OnboardingCategories(),
-                                    // initialRoute: HiveAccount.id,
-                                    routes: {
-                                      PostRSSFeed.id: (context) =>
-                                          PostRSSFeed(),
-                                      //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
-                                      PopError.id: (context) => PopError(),
+                          create: (context) => BrowseProvider(),
+                          child: pro.ChangeNotifierProvider(
+                              create: (context) => PlayerChange(),
+                              child: pro.Provider(
+                                  create: (context) => AuthBloc(),
+                                  child: pro.ChangeNotifierProvider(
+                                    create: (context) => SortFilterPreferences(),
+                                    child: MaterialApp(
+                                      debugShowCheckedModeBanner: false,
+                                      navigatorKey: navigatorKey,
+                                      darkTheme: ThemeData.dark(),
+                                      themeMode: ThemeMode.light,
+                                      title: 'Aureal',
+                                      theme: widget.themeProvider.themeData(),
+                                      home: SplashScreenPage(),
+                                      // home: OnboardingCategories(),
+                                      // initialRoute: HiveAccount.id,
+                                      routes: {
+                                        PostRSSFeed.id: (context) =>
+                                            PostRSSFeed(),
+                                        //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
+                                        PopError.id: (context) => PopError(),
 
-                                      // Recorder.id: (context) => Recorder(),
-                                      Home.id: (context) => Home(),
-                                      RecorderDashboard.id: (context) =>
-                                          RecorderDashboard(),
-                                      Messages.id: (context) => Messages(),
-                                      // Search.id: (context) => Search(),
-                                      Profile.id: (context) => Profile(),
-                                      DownloadPage.id: (context) =>
-                                          DownloadPage(),
-                                      NotificationPage.id: (context) =>
-                                          NotificationPage(),
-                                      Login.id: (context) => Login(),
-                                      SignUp.id: (context) => SignUp(),
+                                        // Recorder.id: (context) => Recorder(),
+                                        Home.id: (context) => Home(),
+                                        RecorderDashboard.id: (context) =>
+                                            RecorderDashboard(),
+                                        Messages.id: (context) => Messages(),
+                                        // Search.id: (context) => Search(),
+                                        Profile.id: (context) => Profile(),
+                                        DownloadPage.id: (context) =>
+                                            DownloadPage(),
+                                        NotificationPage.id: (context) =>
+                                            NotificationPage(),
+                                        Login.id: (context) => Login(),
+                                        SignUp.id: (context) => SignUp(),
 
-                                      Welcome.id: (context) => Welcome(),
-                                      Profile.id: (context) => Profile(),
-                                      Settings.id: (context) => Settings(),
-                                      AccountSettings.id: (context) =>
-                                          AccountSettings(),
-                                      Notifications.id: (context) =>
-                                          Notifications(),
-                                      MobileNotifications.id: (context) =>
-                                          MobileNotifications(),
-                                      EmailNotifications.id: (context) =>
-                                          EmailNotifications(),
-                                      Security.id: (context) => Security(),
-                                      SoundEditor.id: (context) =>
-                                          SoundEditor(),
-                                      CreatePodcast.id: (context) =>
-                                          CreatePodcast(),
+                                        Welcome.id: (context) => Welcome(),
+                                        Profile.id: (context) => Profile(),
+                                        Settings.id: (context) => Settings(),
+                                        AccountSettings.id: (context) =>
+                                            AccountSettings(),
+                                        Notifications.id: (context) =>
+                                            Notifications(),
+                                        MobileNotifications.id: (context) =>
+                                            MobileNotifications(),
+                                        EmailNotifications.id: (context) =>
+                                            EmailNotifications(),
+                                        Security.id: (context) => Security(),
+                                        SoundEditor.id: (context) =>
+                                            SoundEditor(),
+                                        CreatePodcast.id: (context) =>
+                                            CreatePodcast(),
 
-                                      Wrapper.id: (context) => Wrapper(),
-                                      Bio.id: (context) => Bio(),
-                                      Presence.id: (context) => Presence(),
-                                      SelectLanguage.id: (context) =>
-                                          SelectLanguage(),
-                                      OnboardingCategories.id: (context) =>
-                                          OnboardingCategories(),
-                                      SelectPodcast.id: (context) =>
-                                          SelectPodcast(),
-                                      TemporaryError.id: (context) =>
-                                          TemporaryError(),
-                                      HiveAccount.id: (context) =>
-                                          HiveAccount(),
-                                      TagSearch.id: (context) => TagSearch(),
-                                      Wallet.id: (context) => Wallet(),
-                                      // CommunityView.id: (context) =>
-                                      //     CommunityView(),
-                                      //      Noti.id: (context) => Noti(),
-                                      HiveDetails.id: (context) =>
-                                          HiveDetails(),
-                                      CommunitySearch.id: (context) =>
-                                          CommunitySearch(),
-                                      Prefrences.id: (context) => Prefrences(),
-                                      // HomePage.id: (context) =>
-                                      //  HomePage(),
+                                        Wrapper.id: (context) => Wrapper(),
+                                        Bio.id: (context) => Bio(),
+                                        Presence.id: (context) => Presence(),
+                                        SelectLanguage.id: (context) =>
+                                            SelectLanguage(),
+                                        OnboardingCategories.id: (context) =>
+                                            OnboardingCategories(),
+                                        SelectPodcast.id: (context) =>
+                                            SelectPodcast(),
+                                        TemporaryError.id: (context) =>
+                                            TemporaryError(),
+                                        HiveAccount.id: (context) =>
+                                            HiveAccount(),
+                                        TagSearch.id: (context) => TagSearch(),
+                                        Wallet.id: (context) => Wallet(),
+                                        // CommunityView.id: (context) =>
+                                        //     CommunityView(),
+                                        //      Noti.id: (context) => Noti(),
+                                        HiveDetails.id: (context) =>
+                                            HiveDetails(),
+                                        CommunitySearch.id: (context) =>
+                                            CommunitySearch(),
+                                        Prefrences.id: (context) => Prefrences(),
+                                        // HomePage.id: (context) =>
+                                        //  HomePage(),
 
-                                      // Download.id: (context) =>
-                                      //     Download(),
-                                    },
-                                  ),
-                                ))),
-                      ))),
-            ),
-            // ),
-          )),
+                                        // Download.id: (context) =>
+                                        //     Download(),
+                                      },
+                                    ),
+                                  ))),
+                        ))),
+              ),
+              // ),
+            )),
+      ),
     );
   }
 }

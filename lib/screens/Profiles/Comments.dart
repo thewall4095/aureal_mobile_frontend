@@ -7,6 +7,7 @@ import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -214,7 +215,7 @@ class _CommentsState extends State<Comments> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-
+    var comstate = Provider.of<ComState>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -244,14 +245,27 @@ class _CommentsState extends State<Comments> {
           if(index ==  0){
             return SizedBox();
           }else{
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: CommentCard(data: commentsData['${commentKeys[index].toString()}']),
-            );
+            if(index == commentKeys.length){
+              return SizedBox(height: 200,);
+            }else{
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: CommentCard(data: commentsData['${commentKeys[index].toString()}']),
+              );
+            }
+
           }
 
-        }, itemCount: commentKeys.length,),
-        Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+        }, itemCount: commentKeys.length + 1,),
+        comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(enableIMEPersonalizedLearning: true,
+            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: SizedBox(height: 20, width:20,child: CircleAvatar(radius: 5,backgroundImage: Image.network('https://images.hive.blog/u/${prefs.getString('HiveUserName')}/avatar').image,)),
+            ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "replying as @${prefs.getString('HiveUserName').toString()}"),),
+        ),
+        )) : Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextField(enableIMEPersonalizedLearning: true,
             controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
@@ -281,32 +295,11 @@ class CommentCard extends StatefulWidget {
 
 class _CommentCardState extends State<CommentCard> {
 
+  CommentState commstate = CommentState.comment;
+
   SharedPreferences prefs;
 
   postreq.Interceptor intercept = postreq.Interceptor();
-
-
-  // Future upvoteComment(int weight) async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   String url = "https://api.aureal.one/public/voteComment";
-  //
-  //   var map = Map<String, dynamic>();
-  //   map['author_hive_username'] = widget.data['author'];
-  //   map['hive_username'] = prefs.getString('HiveUserName');
-  //   map['permlink'] = widget.data['permlink'];
-  //   map['weight'] = weight;
-  //
-  //   FormData formData = FormData.fromMap(map);
-  //
-  //   try{
-  //     await intercept.postRequest(formData, url).then((value) {
-  //       print(value);
-  //     });
-  //   }catch(e){
-  //     print(e);
-  //   }
-  //
-  // }
 
   List active_votes;
   bool ifVoted;
@@ -334,19 +327,21 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    var commentState = Provider.of<ComState>(context);
+    return ExpandablePanel(
+      header: ListTile(
 
-      horizontalTitleGap: 10,
-      leading: SizedBox(height: 40, width: 40, child: CircleAvatar(backgroundColor: kSecondaryColor,backgroundImage: Image.network('https://images.hive.blog/u/${widget.data['author']}/avatar').image,)),
-      subtitle: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(decoration: BoxDecoration(
-            color: kSecondaryColor,
-            borderRadius: BorderRadius.circular(8)
-          ),child: Html(data: widget.data['body'])),
-          SizedBox(height: 8,),
-          Row(
+        horizontalTitleGap: 10,
+        leading: SizedBox(height: 40, width: 40, child: CircleAvatar(backgroundColor: kSecondaryColor,backgroundImage: Image.network('https://images.hive.blog/u/${widget.data['author']}/avatar').image,)),
+        subtitle: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(decoration: BoxDecoration(
+                color: kSecondaryColor,
+                borderRadius: BorderRadius.circular(8)
+            ),child: Html(data: widget.data['body'])),
+            SizedBox(height: 8,),
+            Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
@@ -393,14 +388,19 @@ class _CommentCardState extends State<CommentCard> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.mode_comment, size: 15,),
-                          SizedBox(width: 5,),
-                          Text("${widget.data['replies'].length}")
-                        ],
+                      child: InkWell(
+                        onTap: (){
+                          commentState.commentState = CommentState.reply;
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.mode_comment, size: 15,),
+                            SizedBox(width: 5,),
+                            Text("${widget.data['replies'].length}")
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -408,14 +408,32 @@ class _CommentCardState extends State<CommentCard> {
                 Text("View Replies", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),)  //level 1 replies make a seperate interface for them
 
               ],
-          )
-        ],
+            )
+          ],
+        ),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Text("${widget.data['author']}"),
+        ),
       ),
-      title: Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Text("${widget.data['author']}"),
-      ),
+
     );
   }
 }
+
+class ComState extends ChangeNotifier{
+
+ CommentState _commentState;
+ CommentState get commentState => _commentState;
+
+ set commentState(CommentState newValue) {
+   _commentState = newValue;
+   notifyListeners();
+ }
+
+
+
+}
+
+
 
