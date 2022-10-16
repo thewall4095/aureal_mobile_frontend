@@ -1420,6 +1420,11 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
     try{
       await dio.post(url, data: map).then((value) {
         print('///////////////////////////////////////////////////${value}');
+
+        setState(() {
+          commentData = value.data['result'];
+        });
+
       });
     }catch(e){
       print(e);
@@ -1593,6 +1598,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                 CupertinoPageRoute(
                                     builder: (context) => Comments(
                                           episodeObject: episodeData,
+                                      commentData: commentData,
                                         )));
                           } else {
                             showBarModalBottomSheet(
@@ -1620,7 +1626,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 7),
                                     child: Text(
-                                      episodeData['comments_count'].toString(),
+                                      "${commentData.keys.length }",
                                       textScaleFactor: 1.0,
                                       style: TextStyle(fontSize: 10
                                           // color:

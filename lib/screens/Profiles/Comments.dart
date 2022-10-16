@@ -23,8 +23,9 @@ enum CommentState {
 
 class Comments extends StatefulWidget {
   var episodeObject;
+  Map<String, dynamic> commentData;
 
-  Comments({this.episodeObject});
+  Comments({this.episodeObject, this.commentData});
 
   @override
   _CommentsState createState() => _CommentsState();
@@ -41,6 +42,14 @@ class _CommentsState extends State<Comments> {
 
   String replyingTo;
   bool isSending = false;
+
+  var commentKeys;
+
+  void getCommentKeys() async {
+    prefs = await SharedPreferences.getInstance();
+    comment_keys = widget.commentData.keys.toList();
+    print(comment_keys);
+  }
 
   String comment;
   String reply;
@@ -113,7 +122,7 @@ class _CommentsState extends State<Comments> {
     }
   }
 
-  var commentKeys = [];
+  var comment_keys = [];
 
 
   void postComment() async {
@@ -198,8 +207,8 @@ class _CommentsState extends State<Comments> {
   @override
   void initState() {
     // TODO: implement initState
-    commentsgetter();
-
+    // commentsgetter();
+    getCommentKeys();
     super.initState();
     _commentsController = TextEditingController();
 
@@ -245,18 +254,18 @@ class _CommentsState extends State<Comments> {
           if(index ==  0){
             return SizedBox();
           }else{
-            if(index == commentKeys.length){
+            if(index == comment_keys.length){
               return SizedBox(height: 200,);
             }else{
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: CommentCard(data: commentsData['${commentKeys[index].toString()}']),
+                child: CommentCard(data: widget.commentData['${comment_keys[index].toString()}']),
               );
             }
 
           }
 
-        }, itemCount: commentKeys.length + 1,),
+        }, itemCount: comment_keys.length + 1,),
         comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextField(enableIMEPersonalizedLearning: true,
