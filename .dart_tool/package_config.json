@@ -8,6 +8,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "amplitude_flutter",
+      "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/amplitude_flutter-3.11.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "animated_text_kit",
       "rootUri": "file:///Users/shubhamupadhyay/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1",
       "packageUri": "lib/",
@@ -1220,7 +1226,7 @@
       "languageVersion": "2.10"
     }
   ],
-  "generated": "2022-10-16T12:05:13.878462Z",
+  "generated": "2022-10-25T12:41:31.593070Z",
   "generator": "pub",
   "generatorVersion": "2.15.1"
 }

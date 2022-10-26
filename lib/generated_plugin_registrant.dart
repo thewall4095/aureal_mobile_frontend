@@ -5,6 +5,7 @@
 // ignore_for_file: directives_ordering
 // ignore_for_file: lines_longer_than_80_chars
 
+import 'package:amplitude_flutter/amplitude_web.dart';
 import 'package:assets_audio_player_web/web/assets_audio_player_web.dart';
 import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:firebase_analytics_web/firebase_analytics_web.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 // ignore: public_member_api_docs
 void registerPlugins(Registrar registrar) {
+  AmplitudeFlutterPlugin.registerWith(registrar);
   AssetsAudioPlayerWebPlugin.registerWith(registrar);
   FilePickerWeb.registerWith(registrar);
   FirebaseAnalyticsWeb.registerWith(registrar);

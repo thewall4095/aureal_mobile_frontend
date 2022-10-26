@@ -9,6 +9,13 @@
             </list>
           </value>
         </entry>
+        <entry key="amplitude_flutter">
+          <value>
+            <list>
+              <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/amplitude_flutter-3.11.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="animated_text_kit">
           <value>
             <list>
@@ -1427,6 +1434,7 @@
     </properties>
     <CLASSES>
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1/lib" />
+      <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/amplitude_flutter-3.11.0/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/animated_text_kit-4.2.1/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/archive-3.1.2/lib" />
       <root url="file://$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/args-2.0.0/lib" />

@@ -52,6 +52,7 @@ const String tagSearch = '/TagSearch';
 const String home = '/';
 const String placeholderUrl =
     "https://aurealbucket.s3.us-east-2.amazonaws.com/placeholder.gif";
+const String kAmplitudeAnalyticskey = '47bed23a71e1d8e36047892bfbf1bf53';
 
 const LinearGradient kGradient =
     LinearGradient(colors: [Color(0xff5d5da8), Color(0xff5bc3ef)]);
