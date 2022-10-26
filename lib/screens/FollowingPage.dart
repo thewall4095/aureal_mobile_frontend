@@ -1598,7 +1598,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                 CupertinoPageRoute(
                                     builder: (context) => Comments(
                                           episodeObject: episodeData,
-                                      commentData: commentData,
+
                                         )));
                           } else {
                             showBarModalBottomSheet(
