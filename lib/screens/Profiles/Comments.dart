@@ -315,7 +315,7 @@ class Comments extends StatelessWidget {
 
   List commentKeys;
 
-  Future getComments() async {
+  Future<Map<String, dynamic>> getComments() async {
     prefs = await SharedPreferences.getInstance();
     String url = "https://rpc.ecency.com";
 
@@ -337,7 +337,9 @@ class Comments extends StatelessWidget {
 
       if(result.statusCode == 200){
         print(result.data);
-        return result.data;
+        Map<String, dynamic> comments = result.data['result'];
+        commentKeys = comments.keys.toList();
+        return result.data['result'];
       }else{
         print(result.statusCode);
       }
@@ -398,7 +400,14 @@ class Comments extends StatelessWidget {
               print(snapshot.hasData);
               print(snapshot.data);
               if(snapshot.hasData){
-                return Container();
+                return ListView.builder(itemBuilder: (context, int index){
+                  if(index == 0){
+                    return Container();
+                  }else{
+                    return CommentCard(data: snapshot.data['${commentKeys[index]}']);
+                  }
+
+                }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length,shrinkWrap: true,);
               }else{
                 return Center(child: Text("Oh! Snap"));
               }
