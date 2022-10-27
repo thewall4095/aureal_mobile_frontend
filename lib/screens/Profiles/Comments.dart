@@ -303,17 +303,26 @@ enum CommentState {
 //   }
 // }
 
-class Comments extends StatelessWidget {
+class Comments extends StatefulWidget {
 
   final episodeObject;
 
   Comments({@required this.episodeObject});
 
+  @override
+  State<Comments> createState() => _CommentsState();
+}
+
+class _CommentsState extends State<Comments> {
   Dio dio = Dio();
+
   SharedPreferences prefs;
+
   CancelToken cancel = CancelToken();
 
   List commentKeys;
+
+  TextEditingController _commentsController = TextEditingController();
 
   Future<Map<String, dynamic>> getComments() async {
     prefs = await SharedPreferences.getInstance();
@@ -325,8 +334,8 @@ class Comments extends StatelessWidget {
       "jsonrpc": "2.0",
       "method": "bridge.get_discussion",
       "params": {
-        'author': episodeObject['author_hiveusername'],
-        'permlink': episodeObject['permlink'],
+        'author': widget.episodeObject['author_hiveusername'],
+        'permlink': widget.episodeObject['permlink'],
         'observer': ""
       },
       "id": 0
@@ -359,8 +368,8 @@ class Comments extends StatelessWidget {
       "jsonrpc": "2.0",
       "method": "bridge.get_discussion",
       "params": {
-        'author': episodeObject['author_hiveusername'],
-        'permlink': episodeObject['permlink'],
+        'author': widget.episodeObject['author_hiveusername'],
+        'permlink': widget.episodeObject['permlink'],
         'observer': ""
       },
       "id": 0
@@ -387,32 +396,97 @@ class Comments extends StatelessWidget {
     }
   }
 
+  CommentState texting = CommentState.comment;
+
+  void getUsername() async{
+    setState(() async{
+      prefs = await SharedPreferences.getInstance();
+    });
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUsername();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var comstate = Provider.of<ComState>(context);
+    getUsername();
     return Scaffold(
-      body: Container(
-        child: FutureBuilder(
-          future: getComments(),
-          builder: (context, snapshot){
-            if(snapshot.connectionState == ConnectionState.active){
-              return Center(child: CircularProgressIndicator(color: Colors.white,));
-            }else{
-              print(snapshot.hasData);
-              print(snapshot.data);
-              if(snapshot.hasData){
-                return ListView.builder(itemBuilder: (context, int index){
-                  if(index == 0){
-                    return Container();
-                  }else{
-                    return CommentCard(data: snapshot.data['${commentKeys[index]}']);
-                  }
-
-                }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length,shrinkWrap: true,);
-              }else{
-                return Center(child: Text("Oh! Snap"));
-              }
-            }
+        appBar:AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context, 'done');
           },
+          icon: Icon(
+            Icons.navigate_before,
+          ),
+        ),
+        title: Text(
+          "${widget.episodeObject['podcast_name']}",
+          textScaleFactor: 1.0,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 4),
+        ),
+      ),
+      body: Container(
+        child: Stack(
+          children: [FutureBuilder(
+            future: getComments(),
+            builder: (context, snapshot){
+              if(snapshot.connectionState == ConnectionState.active){
+                return Center(child: CircularProgressIndicator(color: Colors.white,));
+              }else{
+                print(snapshot.hasData);
+                print(snapshot.data);
+                if(snapshot.hasData){
+                  return ListView.builder(itemBuilder: (context, int index){
+                    if(index == 0){
+                      return Container();
+                    }else{
+                      if(index == commentKeys.length){
+                        return SizedBox(height: 100,);
+                      }else{
+                        return CommentCard(data: snapshot.data['${commentKeys[index]}']);
+                      }
+
+                    }
+
+                  }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length + 1,shrinkWrap: true,);
+                }else{
+                  return Center(child: Text("Oh! Snap"));
+                }
+              }
+            },
+          ),
+    comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(enableIMEPersonalizedLearning: true,
+            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              // child: SizedBox(height: 20, width:20,
+              //     child: CircleAvatar(radius: 5,backgroundImage: Image.network('https://images.hive.blog/u/${prefs.getString("HiveUserName")}/avatar').image,)),
+            ),
+                contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "replying as @${prefs.getString('HiveUserName').toString()}"),),
+        ),
+        )) : Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(enableIMEPersonalizedLearning: true,
+            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+              padding: const EdgeInsets.only(right: 10),
+            ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
+        ),
+        )),
+          ],
+
         ),
       ),
     );
@@ -466,95 +540,117 @@ class _CommentCardState extends State<CommentCard> {
   @override
   Widget build(BuildContext context) {
     var commentState = Provider.of<ComState>(context);
-    return ExpandablePanel(
-      header: ListTile(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ExpandablePanel(
+          header: ListTile(
+            // horizontalTitleGap: 10,
+            minLeadingWidth: 30,
+            horizontalTitleGap: 20,
 
-        horizontalTitleGap: 10,
-        leading: SizedBox(height: 40, width: 40, child: CircleAvatar(backgroundColor: kSecondaryColor,backgroundImage: Image.network('https://images.hive.blog/u/${widget.data['author']}/avatar').image,)),
-        subtitle: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(decoration: BoxDecoration(
-                color: kSecondaryColor,
-                borderRadius: BorderRadius.circular(8)
-            ),child: Html(data: widget.data['body'])),
-            SizedBox(height: 8,),
-            Row(
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: InkWell(
-                    onTap: (){
-                      print(widget.data);
-                      print(widget.data.runtimeType);
-                      showModalBottomSheet(context: context, builder: (context){
-                        return UpvoteComment(data: widget.data,);
-                      }).then((value) {
-                        setState(() {
-                          ifVoted = true;
-                        });
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kSecondaryColor),
-                        color: ifVoted == true ? Colors.blue : Colors.transparent,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(FontAwesomeIcons.chevronCircleUp, size: 15,),
-                            SizedBox(width: 5,),
-                            Text("\$${widget.data['payout']}")
-                          ],
-                        ),
-                      ),
-                    ),
+                Container(height: 30, width: 30,
+
+                  decoration: BoxDecoration(shape: BoxShape.circle, gradient: kGradient),
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: CircleAvatar(backgroundColor: kSecondaryColor,backgroundImage: Image.network('https://images.hive.blog/u/${widget.data['author']}/avatar').image,),
                   ),
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kSecondaryColor)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
+                SizedBox(),
+              ],
+            ),
+            subtitle: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(decoration: BoxDecoration(
+                    // gradient: kGradient,
+                  color: Color(0xff1A1A1A),
+                    borderRadius: BorderRadius.circular(8)
+                ),child: Html(data: widget.data['body'])),
+                SizedBox(height: 8,),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
                       child: InkWell(
                         onTap: (){
-                          commentState.commentState = CommentState.reply;
+                          print(widget.data);
+                          print(widget.data.runtimeType);
+                          showModalBottomSheet(context: context, builder: (context){
+                            return UpvoteComment(data: widget.data,);
+                          }).then((value) {
+                            setState(() {
+                              ifVoted = true;
+                            });
+                          });
                         },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.mode_comment, size: 15,),
-                            SizedBox(width: 5,),
-                            Text("${widget.data['replies'].length}")
-                          ],
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: kSecondaryColor),
+                            color: ifVoted == true ? Colors.blue : Colors.transparent,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(FontAwesomeIcons.chevronCircleUp, size: 15,),
+                                SizedBox(width: 5,),
+                                Text("\$${widget.data['payout']}")
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Text("View Replies", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),)  //level 1 replies make a seperate interface for them
 
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: kSecondaryColor)
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: InkWell(
+                            onTap: (){
+                              commentState.commentState = CommentState.reply;
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.mode_comment, size: 15,),
+                                SizedBox(width: 5,),
+                                Text("${widget.data['replies'].length}")
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text("View Replies", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),)  //level 1 replies make a seperate interface for them
+
+                  ],
+                )
               ],
-            )
-          ],
-        ),
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Text("${widget.data['author']}"),
-        ),
-      ),
+            ),
+            title: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text("${widget.data['author']}", style: TextStyle(fontSize: SizeConfig.safeBlockHorizontal * 3),),
+            ),
+          ),
 
+        ),
+        SizedBox(height: 20,),
+      ],
     );
   }
 }
