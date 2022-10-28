@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:auditory/Services/HiveOperations.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
-import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
+
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:dio/dio.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -324,6 +324,30 @@ class _CommentsState extends State<Comments> {
 
   TextEditingController _commentsController = TextEditingController();
 
+  postreq.Interceptor intercept = postreq.Interceptor();
+
+  Future postComment({String authorHiveUsername, String permlink, String episodeName}) async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://api.aureal.one/private/comment";
+
+    var map = Map<String, dynamic>();
+
+    map['parent_author_hive_username'] = authorHiveUsername;
+    map['permlink'] = permlink;
+    map['episode_name'] = episodeName;
+
+    FormData formData = FormData.fromMap(map);
+
+    try{
+      var result = await intercept.postRequest(formData, url);
+      print(result);
+
+    }catch(e){
+      print(e);
+    }
+  }
+
+
   Future<Map<String, dynamic>> getComments() async {
     prefs = await SharedPreferences.getInstance();
     String url = "https://rpc.ecency.com";
@@ -359,63 +383,75 @@ class _CommentsState extends State<Comments> {
 
   }
 
-  Future getComments1() async {
-    prefs = await SharedPreferences.getInstance();
-    String url = "https://rpc.ecency.com";
-    print(url);
-    var map = Map<String, dynamic>();
-    map = {
-      "jsonrpc": "2.0",
-      "method": "bridge.get_discussion",
-      "params": {
-        'author': widget.episodeObject['author_hiveusername'],
-        'permlink': widget.episodeObject['permlink'],
-        'observer': ""
-      },
-      "id": 0
-    };
-
-    print(map);
-
-    try{
-      await dio.post(url, data: map, cancelToken: cancel).then((value) {
-        Map<String, dynamic> result;
-        result = value.data['result'];
-
-          commentKeys = result.keys.toList();
-          // commentsData = value.data['result'];
-
-
-        print(commentKeys);
-        print(value.data['result']);
-        print(result);
-        return result;
-      });
-    }catch(e){
-      print(e);
-    }
-  }
+  // Future getComments1() async {
+  //   prefs = await SharedPreferences.getInstance();
+  //   String url = "https://rpc.ecency.com";
+  //   print(url);
+  //   var map = Map<String, dynamic>();
+  //   map = {
+  //     "jsonrpc": "2.0",
+  //     "method": "bridge.get_discussion",
+  //     "params": {
+  //       'author': widget.episodeObject['author_hiveusername'],
+  //       'permlink': widget.episodeObject['permlink'],
+  //       'observer': ""
+  //     },
+  //     "id": 0
+  //   };
+  //
+  //   print(map);
+  //
+  //   try{
+  //     await dio.post(url, data: map, cancelToken: cancel).then((value) {
+  //       Map<String, dynamic> result;
+  //       result = value.data['result'];
+  //
+  //         commentKeys = result.keys.toList();
+  //         // commentsData = value.data['result'];
+  //
+  //
+  //       print(commentKeys);
+  //       print(value.data['result']);
+  //       print(result);
+  //       return result;
+  //     });
+  //   }catch(e){
+  //     print(e);
+  //   }
+  // }
 
   CommentState texting = CommentState.comment;
 
   void getUsername() async{
-    setState(() async{
+
       prefs = await SharedPreferences.getInstance();
-    });
+      setState(() {
+
+      });
+
 
   }
 
   @override
   void initState() {
+    getUsername();
+    print(widget.episodeObject);
     // TODO: implement initState
     super.initState();
-    getUsername();
+
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    Provider.of<ComState>(context).commentData = null;
+    Provider.of<ComState>(context).commentState = CommentState.comment;
   }
 
   @override
   Widget build(BuildContext context) {
     var comstate = Provider.of<ComState>(context);
-    getUsername();
     return Scaffold(
         appBar:AppBar(
         backgroundColor: Colors.transparent,
@@ -467,24 +503,46 @@ class _CommentsState extends State<Comments> {
               }
             },
           ),
-    comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: TextField(enableIMEPersonalizedLearning: true,
-            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              // child: SizedBox(height: 20, width:20,
-              //     child: CircleAvatar(radius: 5,backgroundImage: Image.network('https://images.hive.blog/u/${prefs.getString("HiveUserName")}/avatar').image,)),
+    Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+
+      children: [
+        comstate.commentState == CommentState.comment? Container():Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: (){
+                comstate.commentState = CommentState.comment;
+                comstate.commentData = null;
+              },
+            )
+          ],
+        ),
+        comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextField(enableIMEPersonalizedLearning: true,
+                controller: _commentsController, decoration: InputDecoration(suffix: IconButton(onPressed: (){
+postComment(authorHiveUsername: comstate.commentData['author'], permlink: comstate.commentData['permlink'], episodeName: comstate.commentData['body']);
+                },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  // child: SizedBox(height: 20, width:20,
+                  //     child: CircleAvatar(radius: 5,backgroundImage: Image.network('https://images.hive.blog/u/${prefs.getString("HiveUserName")}/avatar').image,)),
+                ),
+                    contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "replying as @${prefs.getString('HiveUserName').toString()}"),),
             ),
-                contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "replying as @${prefs.getString('HiveUserName').toString()}"),),
-        ),
-        )) : Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: TextField(enableIMEPersonalizedLearning: true,
-            controller: _commentsController, decoration: InputDecoration(suffix: IconButton(icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10),
-            ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
-        ),
-        )),
+            )) : Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextField(enableIMEPersonalizedLearning: true,
+                controller: _commentsController, decoration: InputDecoration(suffix: IconButton(onPressed: (){
+                  postComment(authorHiveUsername: widget.episodeObject['author_hiveusername'], permlink: widget.episodeObject['permlink'], episodeName: widget.episodeObject['name']);
+                },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
+            ),
+            )),
+      ],
+    ),
           ],
 
         ),
@@ -622,6 +680,7 @@ class _CommentCardState extends State<CommentCard> {
                           child: InkWell(
                             onTap: (){
                               commentState.commentState = CommentState.reply;
+                              commentState.commentData = widget.data;
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -665,7 +724,14 @@ class ComState extends ChangeNotifier{
    notifyListeners();
  }
 
+ var _commentData;
+ get commentData => _commentData;
 
+ set commentData(var newValue){
+   _commentData = newValue;
+   print("/////////////////////////////////////////////////////////////////${newValue}");
+   notifyListeners();
+ }
 
 }
 
