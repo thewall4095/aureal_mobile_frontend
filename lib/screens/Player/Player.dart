@@ -560,7 +560,7 @@ class _PLayerBottomSheetState extends State<PLayerBottomSheet>
           sigmaX: 15.0,
         ),
         child: Container(
-          color: Colors.black.withOpacity(0.3),
+          color: kSecondaryColor.withOpacity(0.3),
           child: Row(
             children: [
               InkWell(

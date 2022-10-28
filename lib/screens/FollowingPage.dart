@@ -947,7 +947,7 @@ class EpisodeCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Color(0xff080808),
+            color: kSecondaryColor,
             borderRadius: BorderRadius.circular(5),
           ),
           width: double.infinity,
