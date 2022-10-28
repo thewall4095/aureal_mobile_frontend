@@ -326,15 +326,16 @@ class _CommentsState extends State<Comments> {
 
   postreq.Interceptor intercept = postreq.Interceptor();
 
-  Future postComment({String authorHiveUsername, String permlink, String episodeName}) async {
+  Future postComment({String authorHiveUsername, String permlink, String episodeName, String comment}) async {
     prefs = await SharedPreferences.getInstance();
     String url = "https://api.aureal.one/private/comment";
 
     var map = Map<String, dynamic>();
-
+    map['hive_username'] = prefs.getString('HiveUserName');
     map['parent_author_hive_username'] = authorHiveUsername;
     map['permlink'] = permlink;
     map['episode_name'] = episodeName;
+    map['text'] = comment;
 
     FormData formData = FormData.fromMap(map);
 
@@ -432,10 +433,13 @@ class _CommentsState extends State<Comments> {
 
   }
 
+  String comment;
+
   @override
   void initState() {
     getUsername();
     print(widget.episodeObject);
+    Provider.of<ComState>(context, listen: false).commentState = CommentState.comment;
     // TODO: implement initState
     super.initState();
 
@@ -507,23 +511,31 @@ class _CommentsState extends State<Comments> {
       mainAxisAlignment: MainAxisAlignment.end,
 
       children: [
-        comstate.commentState == CommentState.comment? Container():Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: (){
-                comstate.commentState = CommentState.comment;
-                comstate.commentData = null;
-              },
-            )
-          ],
+        comstate.commentState == CommentState.comment? Container():Container(
+          color: Color(0xff1A1A1A),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text("Replying as ${prefs.getString("HiveUserName")}"),
+              IconButton(
+                icon: Icon(Icons.close, size: 15,),
+                onPressed: (){
+                  comstate.commentState = CommentState.comment;
+                  comstate.commentData = null;
+                },
+              )
+            ],
+          ),
         ),
-        comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+        comstate.commentState == CommentState.reply? Align(alignment: Alignment.bottomCenter,child: Container(color: Color(0xff1A1A1A),child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextField(enableIMEPersonalizedLearning: true,
-                controller: _commentsController, decoration: InputDecoration(suffix: IconButton(onPressed: (){
-postComment(authorHiveUsername: comstate.commentData['author'], permlink: comstate.commentData['permlink'], episodeName: comstate.commentData['body']);
+                controller: _commentsController, onChanged: (value){
+                  setState(() {
+                    comment = value;
+                  });
+                },decoration: InputDecoration(suffix: IconButton(onPressed: (){
+postComment(authorHiveUsername: comstate.commentData['author'], permlink: comstate.commentData['permlink'], episodeName: comstate.commentData['body'],comment: comment);
                 },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   // child: SizedBox(height: 20, width:20,
@@ -531,11 +543,15 @@ postComment(authorHiveUsername: comstate.commentData['author'], permlink: comsta
                 ),
                     contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "replying as @${prefs.getString('HiveUserName').toString()}"),),
             ),
-            )) : Align(alignment: Alignment.bottomCenter,child: Container(color: kSecondaryColor,child: Padding(
+            )) : Align(alignment: Alignment.bottomCenter,child: Container(color: Color(0xff1A1A1A),child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextField(enableIMEPersonalizedLearning: true,
-                controller: _commentsController, decoration: InputDecoration(suffix: IconButton(onPressed: (){
-                  postComment(authorHiveUsername: widget.episodeObject['author_hiveusername'], permlink: widget.episodeObject['permlink'], episodeName: widget.episodeObject['name']);
+                controller: _commentsController, onChanged: (value){
+                  setState(() {
+                    comment = value;
+                  });
+                },decoration: InputDecoration(suffix: IconButton(onPressed: (){
+                  postComment(authorHiveUsername: widget.episodeObject['author_hiveusername'], permlink: widget.episodeObject['permlink'], episodeName: widget.episodeObject['name'], comment: comment);
                 },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
                   padding: const EdgeInsets.only(right: 10),
                 ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
@@ -734,6 +750,8 @@ class ComState extends ChangeNotifier{
  }
 
 }
+
+
 
 
 
