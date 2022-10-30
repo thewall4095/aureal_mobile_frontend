@@ -340,12 +340,18 @@ class _CommentsState extends State<Comments> {
     FormData formData = FormData.fromMap(map);
 
     try{
-      var result = await intercept.postRequest(formData, url);
+      var result = await intercept.postRequest(formData, url).then((value) {
+        setState(() {
+          isCommented = !isCommented;
+        });
+      });
       print(result);
 
     }catch(e){
       print(e);
     }
+
+
   }
 
 
@@ -433,16 +439,31 @@ class _CommentsState extends State<Comments> {
 
   }
 
+  Future commentFuture;
+
   String comment;
+
+  void init(){
+    commentFuture = getComments();
+  }
 
   @override
   void initState() {
     getUsername();
+    init();
     print(widget.episodeObject);
     Provider.of<ComState>(context, listen: false).commentState = CommentState.comment;
     // TODO: implement initState
     super.initState();
 
+  }
+
+  bool isCommented;
+
+  @override
+  void didUpdateWidget(covariant Comments oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -452,6 +473,7 @@ class _CommentsState extends State<Comments> {
     Provider.of<ComState>(context).commentData = null;
     Provider.of<ComState>(context).commentState = CommentState.comment;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -479,34 +501,35 @@ class _CommentsState extends State<Comments> {
       ),
       body: Container(
         child: Stack(
-          children: [FutureBuilder(
-            future: getComments(),
-            builder: (context, snapshot){
-              if(snapshot.connectionState == ConnectionState.active){
-                return Center(child: CircularProgressIndicator(color: Colors.white,));
-              }else{
-                print(snapshot.hasData);
-                print(snapshot.data);
-                if(snapshot.hasData){
-                  return ListView.builder(itemBuilder: (context, int index){
-                    if(index == 0){
-                      return Container();
-                    }else{
-                      if(index == commentKeys.length){
-                        return SizedBox(height: 100,);
-                      }else{
-                        return CommentCard(data: snapshot.data['${commentKeys[index]}']);
-                      }
-
-                    }
-
-                  }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length + 1,shrinkWrap: true,);
-                }else{
-                  return Center(child: Text("Oh! Snap"));
-                }
-              }
-            },
-          ),
+          children: [CommentList(episodeObject: widget.episodeObject, isCommented: isCommented,),
+          //   FutureBuilder(
+          //   future: getComments(),
+          //   builder: (context, snapshot){
+          //     if(snapshot.connectionState == ConnectionState.active){
+          //       return Center(child: CircularProgressIndicator(color: Colors.white,));
+          //     }else{
+          //       print(snapshot.hasData);
+          //       print(snapshot.data);
+          //       if(snapshot.hasData){
+          //         return ListView.builder(itemBuilder: (context, int index){
+          //           if(index == 0){
+          //             return Container();
+          //           }else{
+          //             if(index == commentKeys.length){
+          //               return SizedBox(height: 100,);
+          //             }else{
+          //               return CommentCard(data: snapshot.data['${commentKeys[index]}']);
+          //             }
+          //
+          //           }
+          //
+          //         }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length + 1,shrinkWrap: true,);
+          //       }else{
+          //         return Center(child: Text("Oh! Snap"));
+          //       }
+          //     }
+          //   },
+          // ),
     Column(
       mainAxisAlignment: MainAxisAlignment.end,
 
@@ -533,9 +556,15 @@ class _CommentsState extends State<Comments> {
                 controller: _commentsController, onChanged: (value){
                   setState(() {
                     comment = value;
+                    // _commentsController.text = "";
                   });
                 },decoration: InputDecoration(suffix: IconButton(onPressed: (){
-postComment(authorHiveUsername: comstate.commentData['author'], permlink: comstate.commentData['permlink'], episodeName: comstate.commentData['body'],comment: comment);
+postComment(authorHiveUsername: comstate.commentData['author'], permlink: comstate.commentData['permlink'], episodeName: comstate.commentData['body'],comment: comment).then((value){
+  setState(() {
+    _commentsController.text = "";
+  });
+
+});
                 },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   // child: SizedBox(height: 20, width:20,
@@ -549,9 +578,15 @@ postComment(authorHiveUsername: comstate.commentData['author'], permlink: comsta
                 controller: _commentsController, onChanged: (value){
                   setState(() {
                     comment = value;
+                    // _commentsController.text = "";
                   });
                 },decoration: InputDecoration(suffix: IconButton(onPressed: (){
-                  postComment(authorHiveUsername: widget.episodeObject['author_hiveusername'], permlink: widget.episodeObject['permlink'], episodeName: widget.episodeObject['name'], comment: comment);
+                  postComment(authorHiveUsername: widget.episodeObject['author_hiveusername'], permlink: widget.episodeObject['permlink'], episodeName: widget.episodeObject['name'], comment: comment).then((value) {
+                    setState(() {
+                      _commentsController.text = "";
+                    });
+
+                  });
                 },icon: Icon(Icons.send,size: 20,),) ,suffixIconConstraints: BoxConstraints(maxWidth: 20, maxHeight: 20),prefixIconConstraints: BoxConstraints(maxHeight: 30, maxWidth: 30),prefixIcon: Padding(
                   padding: const EdgeInsets.only(right: 10),
                 ),contentPadding: EdgeInsets.only(bottom: 14),border: InputBorder.none,hintText: "commenting as @${prefs.getString('HiveUserName').toString()}"),),
@@ -748,8 +783,123 @@ class ComState extends ChangeNotifier{
    print("/////////////////////////////////////////////////////////////////${newValue}");
    notifyListeners();
  }
-
 }
+
+class CommentList extends StatefulWidget {
+
+  var episodeObject;
+  bool isCommented;
+
+  CommentList({@required this.episodeObject, this.isCommented,Key key}) : super(key: key);
+
+  @override
+  State<CommentList> createState() => _CommentListState();
+}
+
+class _CommentListState extends State<CommentList> {
+
+  Future commentFuture;
+
+  SharedPreferences prefs;
+  Dio dio = Dio();
+  CancelToken cancel = CancelToken();
+
+
+  Future<Map<String, dynamic>> getComments() async {
+    prefs = await SharedPreferences.getInstance();
+    String url = "https://rpc.ecency.com";
+
+    var map = Map<String, dynamic>();
+
+    map = {
+      "jsonrpc": "2.0",
+      "method": "bridge.get_discussion",
+      "params": {
+        'author': widget.episodeObject['author_hiveusername'],
+        'permlink': widget.episodeObject['permlink'],
+        'observer': ""
+      },
+      "id": 0
+    };
+
+    try{
+      var result = await dio.post(url, cancelToken: cancel, data: map);
+
+      if(result.statusCode == 200){
+        print(result.data);
+        Map<String, dynamic> comments = result.data['result'];
+        commentKeys = comments.keys.toList();
+        return result.data['result'];
+      }else{
+        print(result.statusCode);
+      }
+
+    }catch(e){
+      print(e);
+    }
+
+  }
+
+  List commentKeys;
+
+  void init(){
+    commentFuture = getComments();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    init();
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant CommentList oldWidget) {
+    // TODO: implement didUpdateWidget
+    if(widget.isCommented != oldWidget.isCommented){
+      init();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future:commentFuture,
+      builder: (context, snapshot){
+        if(snapshot.connectionState == ConnectionState.active){
+          return Center(child: CircularProgressIndicator(color: Colors.white,));
+        }else{
+          print(snapshot.hasData);
+          print(snapshot.data);
+          if(snapshot.hasData){
+            return ListView.builder(itemBuilder: (context, int index){
+              if(index == 0){
+                return Container();
+              }else{
+                if(index == commentKeys.length){
+                  return SizedBox(height: 100,);
+                }else{
+                  return CommentCard(data: snapshot.data['${commentKeys[index]}']);
+                }
+
+              }
+
+            }, itemCount: commentKeys.length == 0 ? 0 : commentKeys.length + 1,shrinkWrap: true,);
+          }else{
+            return Center(child: Text("Oh! Snap"));
+          }
+        }
+      },
+    );
+  }
+}
+
+
+
 
 
 
