@@ -31,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../PlayerState.dart';
+import '../../amplitudeAnalyticsProvider.dart';
 import '../../main.dart';
 import '../Clips.dart';
 // import 'package:hive_flutter/hive_flutter.dart';
@@ -335,6 +336,8 @@ class _PodcastViewState extends State<PodcastView>
   int page = 0;
   List snippets = [];
 
+  final amplitudeAnalytics = AmplitudeAnalyticsProvider();
+
   void getAllSnippets() async {
     setState(() {
       isLoading = true;
@@ -385,6 +388,10 @@ class _PodcastViewState extends State<PodcastView>
     getPodcastRecommendations();
     getPeopleRecommendation(widget.podcastId);
     getAllSnippets();
+
+    amplitudeAnalytics.logEvent(event: "Podcast ${widget.podcastId}", eventData: {
+      "podcastId": "${widget.podcastId}"
+    });
 
     super.initState();
 

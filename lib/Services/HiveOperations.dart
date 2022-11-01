@@ -12,10 +12,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Interceptor.dart' as postreq;
 
+
+
 void upvoteEpisode({String permlink, int episode_id, double weight}) async {
   postreq.Interceptor interceptor = postreq.Interceptor();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String url = 'https://api.aureal.one/public/voteEpisode';
+
+
 
   if (prefs.getString('HiveUserName') != null) {
     if (permlink != null) {
@@ -62,6 +66,9 @@ void downVoteEpisode({String permlink, int episode_id}) async {
       }
     }
   } else {}
+
+
+
 }
 
 // void upVoteComment({@required String commentId, double weight}) async {
