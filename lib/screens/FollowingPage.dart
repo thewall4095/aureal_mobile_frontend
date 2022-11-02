@@ -39,6 +39,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../PlayerState.dart';
+import '../amplitudeAnalyticsProvider.dart';
 import 'Clips.dart';
 import 'Onboarding/HiveDetails.dart';
 import 'Profiles/CategoryView.dart';
@@ -2568,6 +2569,9 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
   PageController _pageController;
 
   // AssetsAudioPlayer audioplayer = AssetsAudioPlayer();
+
+  final analytics = AmplitudeAnalyticsProvider();
+
   int currentIndex;
 
   var snippetPlayer;
@@ -2590,6 +2594,9 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
       //     .betterPlayerController
       //     .pause();
     });
+
+    analytics.logEvent(event: "Playing Snippets", eventData: widget.data);
+
   }
 
   @override

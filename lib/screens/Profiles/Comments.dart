@@ -16,6 +16,8 @@ import 'package:linkable/linkable.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../amplitudeAnalyticsProvider.dart';
+
 enum CommentState {
   reply,
   comment,
@@ -320,6 +322,8 @@ class _CommentsState extends State<Comments> {
 
   CancelToken cancel = CancelToken();
 
+  final analytics = AmplitudeAnalyticsProvider();
+
   List commentKeys;
 
   TextEditingController _commentsController = TextEditingController();
@@ -336,6 +340,10 @@ class _CommentsState extends State<Comments> {
     map['permlink'] = permlink;
     map['episode_name'] = episodeName;
     map['text'] = comment;
+
+    analytics.logEvent(
+      event: "Hive User commenting : ${prefs.getString("HiveUserName")} on $permlink created by $authorHiveUsername", eventData: map
+    );
 
     FormData formData = FormData.fromMap(map);
 

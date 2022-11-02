@@ -10,9 +10,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:slider_controller/slider_controller.dart';
 
+import '../amplitudeAnalyticsProvider.dart';
 import 'Interceptor.dart' as postreq;
 
-
+final analytics = AmplitudeAnalyticsProvider();
 
 void upvoteEpisode({String permlink, int episode_id, double weight}) async {
   postreq.Interceptor interceptor = postreq.Interceptor();
@@ -29,6 +30,8 @@ void upvoteEpisode({String permlink, int episode_id, double weight}) async {
       map['weight'] = weight;
       map['hive_username'] = prefs.getString('HiveUserName');
       map['episode_id'] = episode_id;
+
+      analytics.logEvent(eventData: map, event: "Upvote Episode");
 
       FormData formData = FormData.fromMap(map);
 
@@ -98,6 +101,7 @@ Future upvoteComment({var weight, String author, String permlink}) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String url = "https://api.aureal.one/public/voteComment";
 
+
   var map = Map<String, dynamic>();
   map['author_hive_username'] = author;
   map['hive_username'] = prefs.getString('HiveUserName');
@@ -107,6 +111,8 @@ Future upvoteComment({var weight, String author, String permlink}) async {
   print(map);
 
   FormData formData = FormData.fromMap(map);
+
+  analytics.logEvent(event: "Upvote Comment", eventData: map);
 
   try{
     await intercept.postRequest(formData, url).then((value) {
@@ -181,6 +187,8 @@ void claimRewards() async {
 
   FormData formData = FormData.fromMap(map);
 
+  analytics.logEvent(eventData: map, event: "Claimed Rewards");
+
   try {
     var response = await intercept.postRequest(formData, url);
     print(response);
@@ -220,10 +228,13 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
     } catch (e) {}
   }
 
+  final analytics = AmplitudeAnalyticsProvider();
+
   @override
   void initState() {
     // TODO: implement initState
     getFactor();
+
     super.initState();
   }
 

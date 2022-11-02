@@ -31,6 +31,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../CategoriesProvider.dart';
 import '../DiscoverProvider.dart';
+import '../amplitudeAnalyticsProvider.dart';
 import 'Profiles/EpisodeView.dart';
 
 enum PlayerState { stopped, playing, paused }
@@ -244,6 +245,8 @@ class _ClipsState extends State<Clips> {
       print(e);
     }
   }
+
+  final anaytics = AmplitudeAnalyticsProvider();
 
   int selectedCategory = 30;
 

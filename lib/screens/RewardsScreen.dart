@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../amplitudeAnalyticsProvider.dart';
+
 class Rewards extends StatefulWidget {
   static const String id = 'Rewards Screen';
 
@@ -16,10 +18,15 @@ class Rewards extends StatefulWidget {
 }
 
 class _RewardsState extends State<Rewards> {
+
+  final analytics = AmplitudeAnalyticsProvider();
+
+
   @override
   void initState() {
     // TODO: implement initState
     getHiveRewardData();
+    analytics.logEvent(event: "Rewards Screen");
     super.initState();
   }
 

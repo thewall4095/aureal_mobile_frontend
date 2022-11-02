@@ -42,6 +42,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../amplitudeAnalyticsProvider.dart';
 import '../Clips.dart';
 import '../Home.dart';
 import 'PodcastView.dart';
@@ -69,6 +70,8 @@ class _EpisodeViewState extends State<EpisodeView>
   final _mp = EpisodesProvider.getInstance();
 
   RegExp htmlMatch = RegExp(r'(\w+)');
+
+  final analytics = AmplitudeAnalyticsProvider();
 
   SharedPreferences pref;
   Like likeStatus;
@@ -315,6 +318,8 @@ class _EpisodeViewState extends State<EpisodeView>
     _loading = false;
     _progressValue = 0.0;
     await getServerData();
+
+    analytics.logEvent(event: "Episode ${widget.episodeId}");
 
     IsolateNameServer.registerPortWithName(
         _receivePort.sendPort, "downloading");

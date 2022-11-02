@@ -28,6 +28,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+import '../../amplitudeAnalyticsProvider.dart';
 import '../RewardsScreen.dart';
 import 'Comments.dart';
 import 'PodcastView.dart';
@@ -60,6 +61,8 @@ class _PublicProfileState extends State<PublicProfile>
   postreq.Interceptor intercept = postreq.Interceptor();
 
   bool ifFollowed;
+
+  final analytics = AmplitudeAnalyticsProvider();
 
   void follow() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -616,6 +619,9 @@ class _PublicProfileState extends State<PublicProfile>
     userSnippet(widget.userId);
     userSubscriptions();
     _controller = TabController(vsync: this, length: 6);
+
+    analytics.logEvent(event: "User ${widget.userId}");
+
   }
 
   @override

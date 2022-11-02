@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../PlayerState.dart';
+import '../../amplitudeAnalyticsProvider.dart';
 import 'CreatePlaylist.dart';
 import 'PodcastView.dart';
 
@@ -167,11 +168,15 @@ class _PlaylistViewState extends State<PlaylistView> {
 
   RegExp htmlMatch = RegExp(r'(\w+)');
 
+  final analytics = AmplitudeAnalyticsProvider();
+
   @override
   void initState() {
     // TODO: implement initState
     getPlaylistData();
     super.initState();
+
+    analytics.logEvent(event: "Playlist ${widget.playlistId}");
 
     controller.addListener(() {
       if (controller.position.pixels == controller.position.maxScrollExtent) {

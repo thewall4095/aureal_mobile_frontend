@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auditory/Services/Interceptor.dart' as postreq;
+import 'package:auditory/amplitudeAnalyticsProvider.dart';
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +25,8 @@ class _CreateplaylistState extends State<Createplaylist> {
 
   postreq.Interceptor intercept = postreq.Interceptor();
 
+  final analytics = AmplitudeAnalyticsProvider();
+
   Future addFullPlaylist(int toPlaylistId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -32,6 +35,8 @@ class _CreateplaylistState extends State<Createplaylist> {
     map['playlist_id'] = toPlaylistId;
     map['user_id'] = prefs.getString('userId');
     map['from_playlist_id'] = widget.playlist_id;
+
+    analytics.logEvent(event: "Playlist merged from another", eventData: map);
 
     FormData formData = FormData.fromMap(map);
 
@@ -52,6 +57,8 @@ class _CreateplaylistState extends State<Createplaylist> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String url =
         "https://api.aureal.one/public/getPlaylist/${prefs.getString("userId")}";
+
+    analytics.logEvent(event: 'Getting playlists');
 
     try {
       var response = await dio.get(url);
@@ -80,6 +87,7 @@ class _CreateplaylistState extends State<Createplaylist> {
     map['userId'] = prefs.getString('userId');
 
     print(map);
+    analytics.logEvent(eventData: map, event: "Playlist Created with episode");
 
     FormData formData = FormData.fromMap(map);
 
