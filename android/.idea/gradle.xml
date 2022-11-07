@@ -10,9 +10,8 @@
         <option name="gradleJvm" value="11" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/add_2_calendar-2.1.1/android" />
+            <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/amplitude_flutter-3.11.0/android" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-3.0.3+6/android" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player_web-3.0.3+3/android" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayer-0.8.1/android" />
@@ -75,6 +74,8 @@
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-2.3.0/android" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.2.1/android" />
             <option value="$USER_HOME$/Documents/Development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.2.0/android" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
