@@ -5,7 +5,7 @@ class TagSelector extends StatefulWidget {
   static const String id = 'TagSelection';
   var tags;
 
-  TagSelector({@required tags});
+  TagSelector({ tags});
 
   @override
   _TagSelectorState createState() => _TagSelectorState();
@@ -25,7 +25,7 @@ class _TagSelectorState extends State<TagSelector> {
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         actions: <Widget>[
-          // FlatButton(
+          // TextButton(
           //   onPressed: () {
           //     setState(() {});
           //   },

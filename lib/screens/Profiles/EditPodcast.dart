@@ -21,7 +21,7 @@ class EditPodcast extends StatefulWidget {
 
   var podcastObject;
 
-  EditPodcast({@required this.podcastObject});
+  EditPodcast({ this.podcastObject});
 
   @override
   _EditPodcastState createState() => _EditPodcastState();
@@ -86,21 +86,13 @@ class _EditPodcastState extends State<EditPodcast> {
     setState(() {
       isImageLoading = true;
     });
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.blueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        )) as File;
 
     var optimisedImage = decodeImage(croppedFile.readAsBytesSync());
 
@@ -273,7 +265,7 @@ class _EditPodcastState extends State<EditPodcast> {
               height: 0,
               width: 0,
             ),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 updatePodcast();
                 activeButtonState();

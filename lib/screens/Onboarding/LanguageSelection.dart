@@ -101,7 +101,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 5),
-                              child: FlatButton(
+                              child: TextButton(
                                 onPressed: () {
                                   setState(() {
                                     if (selectedLanguages.contains(v['id'])) {
@@ -159,7 +159,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
                               OnboardingCategories.id,
                               (Route<dynamic> route) => false);
                         } else {
-                          await selectLanguage();
+                          selectLanguage();
                           Navigator.of(context).pushNamedAndRemoveUntil(
                               OnboardingCategories.id,
                               (Route<dynamic> route) => false);

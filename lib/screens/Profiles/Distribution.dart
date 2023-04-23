@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 class Distribution extends StatefulWidget {
   var podcastObject;
 
-  Distribution({@required this.podcastObject});
+  Distribution({ this.podcastObject});
 
   @override
   _DistributionState createState() => _DistributionState();
@@ -21,13 +21,13 @@ class _DistributionState extends State<Distribution> {
   final GlobalKey<ScaffoldState> _scaffoldKeyDistribution =
       new GlobalKey<ScaffoldState>();
 
-  void showInSnackBar(String value) {
-    _scaffoldKeyDistribution.currentState.showSnackBar(new SnackBar(
-        content: new Text(
-      value,
-      textScaleFactor: 0.75,
-    )));
-  }
+  // void showInSnackBar(String value) {
+  //   _scaffoldKeyDistribution.currentState.showSnackBar(new SnackBar(
+  //       content: new Text(
+  //     value,
+  //     textScaleFactor: 0.75,
+  //   )));
+  // }
 
   postreq.Interceptor intercept = postreq.Interceptor();
 
@@ -121,7 +121,7 @@ class _DistributionState extends State<Distribution> {
                       onTap: () {
                         print("Copying");
                         Clipboard.setData(ClipboardData(text: aurealLink));
-                        showInSnackBar('Copied to Clipboard');
+                        // showInSnackBar('Copied to Clipboard');
                       },
                       child: Row(
                         children: <Widget>[

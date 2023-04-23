@@ -109,10 +109,9 @@ class _MessagesState extends State<Messages>
                   width: MediaQuery.of(context).size.width / 2.5,
                   left: 16,
                   bottom: 16,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
-                    elevation: 5,
-                    color: Colors.white,
+
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[

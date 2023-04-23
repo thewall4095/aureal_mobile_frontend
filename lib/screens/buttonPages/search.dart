@@ -27,7 +27,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -2358,7 +2358,7 @@ class SearchFunctionality extends SearchDelegate {
 class ResultsSection extends StatefulWidget {
   String query;
 
-  ResultsSection({@required this.query});
+  ResultsSection({ this.query});
 
   @override
   _ResultsSectionState createState() => _ResultsSectionState();
@@ -3098,7 +3098,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                                             search.episodeResult[i]['isLoading'] = false;
                                                                                           });
                                                                                         } else {
-                                                                                          showBarModalBottomSheet(
+                                                                                          showBottomSheet(
                                                                                               context: context,
                                                                                               builder: (context) {
                                                                                                 return HiveDetails();
@@ -3160,7 +3160,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                                                         episodeObject: search.episodeResult[i],
                                                                                                       )));
                                                                                         } else {
-                                                                                          showBarModalBottomSheet(
+                                                                                          showBottomSheet(
                                                                                               context: context,
                                                                                               builder: (context) {
                                                                                                 return HiveDetails();
@@ -3535,7 +3535,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                                             v['isLoading'] = false;
                                                                                           });
                                                                                         } else {
-                                                                                          showBarModalBottomSheet(
+                                                                                          showBottomSheet(
                                                                                               context: context,
                                                                                               builder: (context) {
                                                                                                 return HiveDetails();
@@ -3597,7 +3597,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                                                         episodeObject: v,
                                                                                                       )));
                                                                                         } else {
-                                                                                          showBarModalBottomSheet(
+                                                                                          showBottomSheet(
                                                                                               context: context,
                                                                                               builder: (context) {
                                                                                                 return HiveDetails();
@@ -4801,7 +4801,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                               false;
                                                                         });
                                                                       } else {
-                                                                        showBarModalBottomSheet(
+                                                                        showBottomSheet(
                                                                             context:
                                                                                 context,
                                                                             builder:
@@ -4886,7 +4886,7 @@ class _ResultsSectionState extends State<ResultsSection>
                                                                                       episodeObject: v,
                                                                                     )));
                                                                       } else {
-                                                                        showBarModalBottomSheet(
+                                                                        showBottomSheet(
                                                                             context:
                                                                                 context,
                                                                             builder:
@@ -5522,11 +5522,11 @@ class SearchResultProvider extends ChangeNotifier {
 
   void getInitialSearch() async {
     isLoading = true;
-    await getCommunities();
-    await getEpisode();
-    await getPeople();
-    await getPodcast();
-    await getRooms();
+    getCommunities();
+    getEpisode();
+    getPeople();
+    getPodcast();
+    getRooms();
     isLoading = false;
   }
 
@@ -5868,7 +5868,7 @@ void followUser({String authorUserId}) async {
 
 class ResultSection extends StatelessWidget {
   final query;
-  ResultSection({@required this.query});
+  ResultSection({ this.query});
 
   @override
   Widget build(BuildContext context) {

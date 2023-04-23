@@ -309,7 +309,7 @@ class Comments extends StatefulWidget {
 
   final episodeObject;
 
-  Comments({@required this.episodeObject});
+  Comments({ this.episodeObject});
 
   @override
   State<Comments> createState() => _CommentsState();
@@ -616,7 +616,7 @@ class CommentCard extends StatefulWidget {
 
   var data;
 
-  CommentCard({@required this.data}) ;
+  CommentCard({ this.data}) ;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -798,7 +798,7 @@ class CommentList extends StatefulWidget {
   var episodeObject;
   bool isCommented;
 
-  CommentList({@required this.episodeObject, this.isCommented,Key key}) : super(key: key);
+  CommentList({ this.episodeObject, this.isCommented,Key key}) : super(key: key);
 
   @override
   State<CommentList> createState() => _CommentListState();

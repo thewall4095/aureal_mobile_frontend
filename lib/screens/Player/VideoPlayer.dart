@@ -22,7 +22,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:linkable/linkable.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -169,7 +169,7 @@ class _VideoPlayerState extends State<VideoPlayer>
 
                               IconButton(
                                   onPressed: () {
-                                    showBarModalBottomSheet(
+                                    showBottomSheet(
                                         context: context,
                                         builder: (context) {
                                           return Createplaylist(
@@ -305,7 +305,7 @@ class _VideoPlayerBottomState extends State<VideoPlayerBottom>
 class UpvoteAndComment extends StatefulWidget {
   final Video videoObject;
 
-  UpvoteAndComment({@required this.videoObject});
+  UpvoteAndComment({ this.videoObject});
 
   @override
   State<UpvoteAndComment> createState() => _UpvoteAndCommentState();
@@ -448,7 +448,7 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
                                 isUpvoteButtonLoading = false;
                               });
                             } else {
-                              showBarModalBottomSheet(
+                              showBottomSheet(
                                   context: context,
                                   builder: (context) {
                                     return HiveDetails();
@@ -569,7 +569,7 @@ class _UpvoteAndCommentState extends State<UpvoteAndComment> {
 class PlaybackVideoButtons extends StatefulWidget {
   final episodeobject;
 
-  PlaybackVideoButtons({@required this.episodeobject});
+  PlaybackVideoButtons({ this.episodeobject});
 
   @override
   State<PlaybackVideoButtons> createState() => _PlaybackVideoButtonsState();
@@ -730,7 +730,7 @@ class _PlaybackVideoButtonsState extends State<PlaybackVideoButtons> {
                               data['isLoading'] = false;
                             });
                           } else {
-                            showBarModalBottomSheet(
+                            showBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return HiveDetails();
@@ -819,7 +819,7 @@ class _SliverPinnedBoxAdapter extends SingleChildRenderObjectWidget {
 }
 
 class _RenderSliverPinnedBoxAdapter extends RenderSliverSingleBoxAdapter {
-  _RenderSliverPinnedBoxAdapter({RenderBox child, @required this.pinned})
+  _RenderSliverPinnedBoxAdapter({RenderBox child,  this.pinned})
       : super(child: child);
 
   /// If true, ✅ should stay pinned at the top of the list,
@@ -883,7 +883,7 @@ class _RenderSliverPinnedBoxAdapter extends RenderSliverSingleBoxAdapter {
 
 class VideoRecommendation extends StatefulWidget {
   final episodeObject;
-  VideoRecommendation({@required this.episodeObject});
+  VideoRecommendation({ this.episodeObject});
 
   @override
   State<VideoRecommendation> createState() => _VideoRecommendationState();
@@ -971,7 +971,7 @@ class _VideoRecommendationState extends State<VideoRecommendation>
 
 class MoreEpisodes extends StatefulWidget {
   final episodeObject;
-  MoreEpisodes({@required this.episodeObject});
+  MoreEpisodes({ this.episodeObject});
 
   @override
   State<MoreEpisodes> createState() => _MoreEpisodesState();

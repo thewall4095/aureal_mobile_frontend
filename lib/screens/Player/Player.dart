@@ -30,7 +30,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
@@ -195,7 +195,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
@@ -211,7 +211,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(0.5);
@@ -229,7 +229,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(0.75);
@@ -247,7 +247,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(1.0);
@@ -265,7 +265,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(1.25);
@@ -283,7 +283,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(1.5);
@@ -301,7 +301,7 @@ class _PlayerPlaybackButtonsState extends State<PlayerPlaybackButtons> {
                                         ],
                                       ),
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       onPressed: () {
                                         episodeObject.audioPlayer
                                             .setPlaySpeed(2.0);
@@ -630,7 +630,7 @@ class _PLayerBottomSheetState extends State<PLayerBottomSheet>
 
 class SheetView extends StatefulWidget {
   int index;
-  SheetView({@required this.index});
+  SheetView({ this.index});
 
   @override
   _SheetViewState createState() => _SheetViewState();
@@ -794,7 +794,7 @@ extension Pipe<T> on T {
 class MiniTranscript extends StatefulWidget {
   final episodeId;
 
-  MiniTranscript({@required this.episodeId});
+  MiniTranscript({ this.episodeId});
 
   @override
   _MiniTranscriptState createState() => _MiniTranscriptState();
@@ -957,7 +957,7 @@ class _MiniTranscriptState extends State<MiniTranscript>
 class Player extends StatefulWidget {
   final episodeId;
 
-  Player({@required this.episodeId});
+  Player({ this.episodeId});
 
   static const String id = "Player";
 
@@ -1446,7 +1446,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                     false;
                                                               });
                                                             } else {
-                                                              showBarModalBottomSheet(
+                                                              showBottomSheet(
                                                                   context:
                                                                       context,
                                                                   builder:
@@ -1584,7 +1584,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                                 episodeContent,
                                                                           )));
                                                             } else {
-                                                              showBarModalBottomSheet(
+                                                              showBottomSheet(
                                                                   context:
                                                                       context,
                                                                   builder:
@@ -1751,7 +1751,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                       CrossAxisAlignment
                                                                           .start,
                                                                   children: [
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         Navigator.pop(
@@ -1770,7 +1770,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -1792,7 +1792,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -1814,7 +1814,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -1836,7 +1836,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -1858,7 +1858,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -1880,7 +1880,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2100,7 +2100,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                     false;
                                                               });
                                                             } else {
-                                                              showBarModalBottomSheet(
+                                                              showBottomSheet(
                                                                   context:
                                                                       context,
                                                                   builder:
@@ -2239,7 +2239,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                                 episodeContent,
                                                                           )));
                                                             } else {
-                                                              showBarModalBottomSheet(
+                                                              showBottomSheet(
                                                                   context:
                                                                       context,
                                                                   builder:
@@ -2407,7 +2407,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                       CrossAxisAlignment
                                                                           .start,
                                                                   children: [
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         Navigator.pop(
@@ -2426,7 +2426,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2448,7 +2448,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2470,7 +2470,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2492,7 +2492,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2514,7 +2514,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2536,7 +2536,7 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    FlatButton(
+                                                                    TextButton(
                                                                       onPressed:
                                                                           () {
                                                                         episodeObject
@@ -2772,9 +2772,9 @@ class _PlayerState extends State<Player> with TickerProviderStateMixin {
 }
 
 Widget buildSheet({
-  @required num headerHeight,
-  @required num fullHeight,
-  @required Widget child,
+   num headerHeight,
+   num fullHeight,
+   Widget child,
 }) {
   final fraction = headerHeight / fullHeight;
 
@@ -2796,7 +2796,7 @@ Widget buildSheet({
 class Related1 extends StatelessWidget {
   final episodeId;
 
-  Related1({@required this.episodeId});
+  Related1({ this.episodeId});
 
   SharedPreferences prefs;
   Dio dio = Dio();
@@ -4654,7 +4654,7 @@ class SongSelector extends StatelessWidget {
 class TrancriptionPlayer extends StatefulWidget {
   var transcript;
 
-  TrancriptionPlayer({@required this.transcript});
+  TrancriptionPlayer({ this.transcript});
 
   @override
   _TrancriptionPlayerState createState() => _TrancriptionPlayerState();
@@ -5485,7 +5485,7 @@ class SnippetShare extends StatefulWidget {
 
   var episodeDetails;
 
-  SnippetShare({@required this.snippet, @required this.episodeDetails});
+  SnippetShare({ this.snippet,  this.episodeDetails});
 
   @override
   _SnippetShareState createState() => _SnippetShareState();
@@ -6274,7 +6274,7 @@ class _ClipScreenState extends State<ClipScreen> {
                                                   : Icons.play_circle_fill)),
                                           InkWell(
                                               onTap: () {
-                                                showBarModalBottomSheet(
+                                                showBottomSheet(
                                                     context: context,
                                                     builder: (context) {
                                                       return Column(
@@ -6398,7 +6398,7 @@ class EditClip extends StatefulWidget {
 
   var clipDetails;
 
-  EditClip({@required this.episodeDetails, @required this.clipDetails});
+  EditClip({ this.episodeDetails,  this.clipDetails});
 
   @override
   _EditClipState createState() => _EditClipState();

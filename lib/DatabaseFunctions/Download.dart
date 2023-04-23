@@ -65,10 +65,10 @@ class _DownloadState extends State<Download> {
             SizedBox(
               height: 60,
             ),
-            FlatButton(
+            TextButton(
               child: Text("Start Downloading"),
-              color: Colors.redAccent,
-              textColor: Colors.white,
+
+
               onPressed: () async {
                 //    await notificationPlugin.showNotification();
                 //await notificationPlugin.scheduleNotification();

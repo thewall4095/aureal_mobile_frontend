@@ -38,13 +38,13 @@ class _VerificationState extends State<Verification> {
     print(response.data);
   }
 
-  void showInSnackBar(String value) {
-    _verificationKeyLogin.currentState.showSnackBar(new SnackBar(
-        content: new Text(
-      value,
-      textScaleFactor: 0.75,
-    )));
-  }
+  // void showInSnackBar(String value) {
+  //   _verificationKeyLogin.currentState.showSnackBar(new SnackBar(
+  //       content: new Text(
+  //     value,
+  //     textScaleFactor: 0.75,
+  //   )));
+  // }
 
   void verifyOTP() async {
     String url = 'https://api.aureal.one/public/verifyOTP';
@@ -62,7 +62,7 @@ class _VerificationState extends State<Verification> {
     print(response.data);
     if (response.statusCode == 200) {
       if (response.data['user'] == null) {
-        showInSnackBar("Your OTP doesn't match, Please enter a valid OTP");
+        // showInSnackBar("Your OTP doesn't match, Please enter a valid OTP");
       } else {
         prefs.setString('token', response.data['token']);
         Navigator.pushNamed(context, SelectLanguage.id);

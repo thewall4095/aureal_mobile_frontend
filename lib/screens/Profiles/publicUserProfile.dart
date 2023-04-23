@@ -23,7 +23,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,7 +37,7 @@ class PublicProfile extends StatefulWidget {
   String userId;
 
   PublicProfile({
-    @required this.userId,
+     this.userId,
   });
 
   @override
@@ -346,7 +346,7 @@ class _PublicProfileState extends State<PublicProfile>
                             children: [
                               InkWell(
                                 onTap: () {
-                                  showBarModalBottomSheet(
+                                  showBottomSheet(
                                       context: context,
                                       builder: (context) {
                                         return Followers(
@@ -382,7 +382,7 @@ class _PublicProfileState extends State<PublicProfile>
                               ),
                               InkWell(
                                 onTap: () {
-                                  showBarModalBottomSheet(
+                                  showBottomSheet(
                                       context: context,
                                       builder: (context) {
                                         return Folllowing(
@@ -425,7 +425,7 @@ class _PublicProfileState extends State<PublicProfile>
             trailing: widget.userId == prefs.getString("userId")
                 ? IconButton(
                     onPressed: () {
-                      showBarModalBottomSheet(
+                      showBottomSheet(
                           context: context,
                           builder: (context) {
                             return Column(
@@ -1254,7 +1254,7 @@ class _PublicProfileState extends State<PublicProfile>
                                                                   false;
                                                             });
                                                           } else {
-                                                            showBarModalBottomSheet(
+                                                            showBottomSheet(
                                                                 context:
                                                                     context,
                                                                 builder:
@@ -1374,7 +1374,7 @@ class _PublicProfileState extends State<PublicProfile>
                                                                               episodeObject: v,
                                                                             )));
                                                           } else {
-                                                            showBarModalBottomSheet(
+                                                            showBottomSheet(
                                                                 context:
                                                                     context,
                                                                 builder:
@@ -1730,7 +1730,7 @@ void addRoomParticipant({String roomid}) async {
 class Followers extends StatefulWidget {
   String userId;
 
-  Followers({@required this.userId});
+  Followers({ this.userId});
 
   @override
   _FollowersState createState() => _FollowersState();
@@ -1921,7 +1921,7 @@ class _FollowersState extends State<Followers> {
 class Folllowing extends StatefulWidget {
   String userId;
 
-  Folllowing({@required this.userId});
+  Folllowing({ this.userId});
 
   @override
   _FolllowingState createState() => _FolllowingState();

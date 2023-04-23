@@ -74,7 +74,7 @@ void downVoteEpisode({String permlink, int episode_id}) async {
 
 }
 
-// void upVoteComment({@required String commentId, double weight}) async {
+// void upVoteComment({ String commentId, double weight}) async {
 //   postreq.Interceptor interceptor = postreq.Interceptor();
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
 //
@@ -201,7 +201,7 @@ class UpvoteEpisode extends StatefulWidget {
   String permlink;
   int episode_id;
 
-  UpvoteEpisode({@required this.permlink, @required this.episode_id});
+  UpvoteEpisode({ this.permlink,  this.episode_id});
 
   @override
   _UpvoteEpisodeState createState() => _UpvoteEpisodeState();
@@ -346,7 +346,7 @@ class _UpvoteEpisodeState extends State<UpvoteEpisode> {
 class UpvoteComment extends StatefulWidget {
   var data;
 
-  UpvoteComment({@required this.data});
+  UpvoteComment({ this.data});
 
   @override
   _UpvoteCommentState createState() => _UpvoteCommentState();
@@ -453,11 +453,11 @@ class GradientRectSliderTrackShape extends SliderTrackShape with BaseSliderTrack
   void paint(
       PaintingContext context,
       Offset offset, {
-        @required RenderBox parentBox,
-        @required SliderThemeData sliderTheme,
-        @required Animation<double> enableAnimation,
-        @required TextDirection textDirection,
-        @required Offset thumbCenter,
+         RenderBox parentBox,
+         SliderThemeData sliderTheme,
+         Animation<double> enableAnimation,
+         TextDirection textDirection,
+         Offset thumbCenter,
         bool isDiscrete = false,
         bool isEnabled = false,
         double additionalActiveTrackHeight = 2,

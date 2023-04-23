@@ -8,7 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Home.dart';
@@ -378,7 +378,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                               subtitle: Text("${v['episodes_count']} episodes"),
                               trailing: InkWell(
                                   onTap: () {
-                                    showBarModalBottomSheet(
+                                    showBottomSheet(
                                         context: context,
                                         builder: (context) {
                                           return Container(
@@ -510,7 +510,7 @@ class _PlayListScreenState extends State<PlayListScreen> {
                                                 ),
                                                 ListTile(
                                                   onTap: () {
-                                                    showBarModalBottomSheet(
+                                                    showBottomSheet(
                                                         context: context,
                                                         builder: (context) {
                                                           return Createplaylist(

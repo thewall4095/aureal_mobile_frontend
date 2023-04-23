@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:async/async.dart';
+// import 'package:async/async.dart';
 import 'package:auditory/CategoriesProvider.dart';
 import 'package:auditory/CommunityProvider.dart';
 import 'package:auditory/CommunityService.dart';
@@ -23,7 +24,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
+// import 'package:flutter_html/shims/dart_ui_real.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart' as rp;
 import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -32,7 +33,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:miniplayer/miniplayer.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:provider/provider.dart' as pro;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -204,7 +205,7 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
 class VideoCard extends StatelessWidget {
   final Video video;
   final episodeObject;
-  const VideoCard({@required this.video, this.episodeObject});
+  const VideoCard({this.video, this.episodeObject});
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +324,7 @@ class VideoCard extends StatelessWidget {
 class VideoListWidget extends StatelessWidget {
   final data;
 
-  VideoListWidget({@required this.data});
+  VideoListWidget({this.data});
 
   SharedPreferences prefs;
 
@@ -446,7 +447,7 @@ class EpisodeWidget extends StatefulWidget {
   final data;
   final categoryId;
 
-  EpisodeWidget({@required this.data, this.categoryId});
+  EpisodeWidget({ this.data, this.categoryId});
 
   @override
   _EpisodeWidgetState createState() => _EpisodeWidgetState();
@@ -899,8 +900,8 @@ class ColumnBuilder extends StatelessWidget {
 
   const ColumnBuilder({
     Key key,
-    @required this.itemBuilder,
-    @required this.itemCount,
+     this.itemBuilder,
+     this.itemCount,
     this.mainAxisAlignment: MainAxisAlignment.start,
     this.mainAxisSize: MainAxisSize.max,
     this.crossAxisAlignment: CrossAxisAlignment.center,
@@ -925,7 +926,7 @@ class EpisodeCard extends StatelessWidget {
   final index;
   List<Audio> playlist;
 
-  EpisodeCard({@required this.data, this.index, this.playlist});
+  EpisodeCard({ this.data, this.index, this.playlist});
 
   SharedPreferences prefs;
 
@@ -1312,7 +1313,7 @@ class PlaybackButtons extends StatefulWidget {
 
   List<Audio> playlist;
 
-  PlaybackButtons({@required this.data, this.index, this.playlist});
+  PlaybackButtons({ this.data, this.index, this.playlist});
 
   @override
   _PlaybackButtonsState createState() => _PlaybackButtonsState();
@@ -1496,7 +1497,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                     builder: (context) {
                                       return ClipRect(
                                         child: BackdropFilter(
-                                            filter: ImageFilter.blur(
+                                            filter:ImageFilter.blur(
                                               sigmaY: 15.0,
                                               sigmaX: 15.0,
                                             ),
@@ -1519,7 +1520,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
                                   data['isLoading'] = false;
                                 });
                               } else {
-                                showBarModalBottomSheet(
+                                showBottomSheet(
                                     context: context,
                                     builder: (context) {
                                       return HiveDetails();
@@ -1602,7 +1603,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
 
                                         )));
                           } else {
-                            showBarModalBottomSheet(
+                            showBottomSheet(
                                 context: context,
                                 builder: (context) {
                                   return HiveDetails();
@@ -1755,7 +1756,7 @@ class _PlaybackButtonsState extends State<PlaybackButtons>
 class PodcastWidget extends StatefulWidget {
   final data;
 
-  PodcastWidget({@required this.data});
+  PodcastWidget({ this.data});
 
   @override
   State<PodcastWidget> createState() => _PodcastWidgetState();
@@ -1763,28 +1764,26 @@ class PodcastWidget extends StatefulWidget {
 
 class _PodcastWidgetState extends State<PodcastWidget>
     with AutomaticKeepAliveClientMixin {
-  AsyncMemoizer _memoizer = AsyncMemoizer();
+  // AsyncMemoizer _memoizer = AsyncMemoizer();
 
   SharedPreferences prefs;
 
   CancelToken _cancel = CancelToken();
 
   Future generalisedApiCall(String apicall) async {
-    return this._memoizer.runOnce(() async {
-      Dio dio = Dio();
-      prefs = await SharedPreferences.getInstance();
-      String url =
-          "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
+    Dio dio = Dio();
+    prefs = await SharedPreferences.getInstance();
+    String url =
+        "https://api.aureal.one/public/$apicall?pageSize=10&user_id=${prefs.getString('userId')}";
 
-      try {
-        var response = await dio.get(url, cancelToken: _cancel);
-        if (response.statusCode == 200) {
-          return response.data['data'];
-        }
-      } catch (e) {
-        print(e);
+    try {
+      var response = await dio.get(url, cancelToken: _cancel);
+      if (response.statusCode == 200) {
+        return response.data['data'];
       }
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future myFuture;
@@ -1973,7 +1972,7 @@ class _PodcastWidgetState extends State<PodcastWidget>
 class PlaylistWidget extends StatelessWidget {
   final data;
 
-  PlaylistWidget({@required this.data});
+  PlaylistWidget({ this.data});
 
   Future generalisedApiCall(String apicall) async {
     Dio dio = Dio();
@@ -2367,7 +2366,7 @@ class SnippetWidget extends StatelessWidget {
   CancelToken _cancel = CancelToken();
   final data;
 
-  SnippetWidget({@required this.data});
+  SnippetWidget({ this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -2559,7 +2558,7 @@ class SnippetStoryView extends StatefulWidget {
   final data;
   int index;
 
-  SnippetStoryView({@required this.data, this.index});
+  SnippetStoryView({ this.data, this.index});
 
   @override
   _SnippetStoryViewState createState() => _SnippetStoryViewState();
@@ -2638,7 +2637,7 @@ class _SnippetStoryViewState extends State<SnippetStoryView> {
 class SubCategoryView extends StatefulWidget {
   final data;
 
-  SubCategoryView({@required this.data});
+  SubCategoryView({ this.data});
 
   @override
   _SubCategoryViewState createState() => _SubCategoryViewState();
@@ -2807,7 +2806,7 @@ class _SubCategoryViewState extends State<SubCategoryView> {
 class SeeMore extends StatefulWidget {
   final data;
 
-  SeeMore({@required this.data});
+  SeeMore({ this.data});
 
   @override
   State<SeeMore> createState() => _SeeMoreState();
@@ -3168,7 +3167,7 @@ class _SeeMoreState extends State<SeeMore> {
 
 class PodcastCard extends StatelessWidget {
   final data;
-  PodcastCard({@required this.data});
+  PodcastCard({ this.data});
 
   void podcastShare() async {
     await FlutterShare.share(
@@ -4323,7 +4322,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                             false;
                                                                       });
                                                                     } else {
-                                                                      showBarModalBottomSheet(
+                                                                      showBottomSheet(
                                                                           context:
                                                                               context,
                                                                           builder:
@@ -4418,7 +4417,7 @@ class _FollowingPageState extends State<FollowingPage>
                                                                                     episodeObject: v,
                                                                                   )));
                                                                     } else {
-                                                                      showBarModalBottomSheet(
+                                                                      showBottomSheet(
                                                                           context:
                                                                               context,
                                                                           builder:
@@ -4862,7 +4861,7 @@ class Podcast {
 class PodcastViewBuilder extends StatefulWidget {
   var podcastData;
 
-  PodcastViewBuilder(@required this.podcastData);
+  PodcastViewBuilder( this.podcastData);
 
   @override
   _PodcastViewBuilderState createState() => _PodcastViewBuilderState();

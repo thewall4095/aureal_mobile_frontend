@@ -12,10 +12,10 @@ class Seekbar extends StatefulWidget {
 
   Seekbar(
       {this.dominantColor,
-      @required this.currentPosition,
-      @required this.duration,
-      @required this.episodeName,
-      @required this.seekTo});
+       this.currentPosition,
+       this.duration,
+       this.episodeName,
+       this.seekTo});
 
   @override
   _SeekbarState createState() => _SeekbarState();

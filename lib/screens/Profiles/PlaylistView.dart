@@ -11,7 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +24,7 @@ import 'PodcastView.dart';
 class PlaylistView extends StatefulWidget {
   final playlistId;
 
-  PlaylistView({@required this.playlistId});
+  PlaylistView({ this.playlistId});
 
   @override
   _PlaylistViewState createState() => _PlaylistViewState();
@@ -537,7 +537,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                               ),
                                               InkWell(
                                                 onTap: () {
-                                                  showBarModalBottomSheet(
+                                                  showBottomSheet(
                                                       context: context,
                                                       builder: (context) {
                                                         return Container(
@@ -683,7 +683,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                               ),
                                                               ListTile(
                                                                 onTap: () {
-                                                                  showBarModalBottomSheet(
+                                                                  showBottomSheet(
                                                                       context:
                                                                           context,
                                                                       builder:
@@ -950,7 +950,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                     "${v['podcast_name']} • ${DurationCalculator(v['duration'])}"),
                                 trailing: InkWell(
                                     onTap: () {
-                                      showBarModalBottomSheet(
+                                      showBottomSheet(
                                           context: context,
                                           builder: (context) {
                                             return Container(
@@ -1019,7 +1019,7 @@ class _PlaylistViewState extends State<PlaylistView> {
                                                   ),
                                                   ListTile(
                                                     onTap: () {
-                                                      showBarModalBottomSheet(
+                                                      showBottomSheet(
                                                           context: context,
                                                           builder: (context) {
                                                             return Createplaylist(

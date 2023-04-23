@@ -27,7 +27,7 @@ enum Follow { followed, unfollowed }
 
 class CommunityProfileView extends StatefulWidget {
   var communityObject;
-  CommunityProfileView({@required this.communityObject});
+  CommunityProfileView({ this.communityObject});
 
   @override
   _CommunityProfileViewState createState() => _CommunityProfileViewState();

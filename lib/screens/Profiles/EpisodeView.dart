@@ -34,7 +34,7 @@ import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:linkable/linkable.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
@@ -58,7 +58,7 @@ class EpisodeView extends StatefulWidget {
   final episodeId;
   var notificationData;
 
-  EpisodeView({@required this.episodeId, this.notificationData});
+  EpisodeView({ this.episodeId, this.notificationData});
 
   @override
   _EpisodeViewState createState() => _EpisodeViewState();
@@ -743,7 +743,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                             // ),
                                             IconButton(
                                               onPressed: () {
-                                                showBarModalBottomSheet(
+                                                showBottomSheet(
                                                     context: context,
                                                     builder: (context) {
                                                       return Createplaylist(
@@ -823,7 +823,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                   ),
                                             IconButton(
                                               onPressed: () {
-                                                showBarModalBottomSheet(
+                                                showBottomSheet(
                                                     context: context,
                                                     builder: (context) {
                                                       return Createplaylist(
@@ -985,7 +985,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                                 isUpvoteButtonLoading = false;
                                               });
                                             } else {
-                                              showBarModalBottomSheet(
+                                              showBottomSheet(
                                                   context: context,
                                                   builder: (context) {
                                                     return HiveDetails();
@@ -1229,9 +1229,7 @@ class _EpisodeViewState extends State<EpisodeView>
                                         backgroundImage:
                                             CachedNetworkImageProvider(
                                                 episodeContent['author_image'],
-                                                imageRenderMethodForWeb:
-                                                    ImageRenderMethodForWeb
-                                                        .HtmlImage),
+                                                ),
                                       ),
                                       title:
                                           Text("${episodeContent['author']}"),

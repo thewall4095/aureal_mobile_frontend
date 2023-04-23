@@ -15,15 +15,15 @@ class Video {
   final String episodeImage;
 
   const Video(
-      {@required this.id,
-      @required this.author,
-      @required this.title,
-      @required this.thumbnailUrl,
-      @required this.episodeImage,
-      @required this.url,
-      @required this.album,
-      @required this.podcastid,
-      @required this.author_id,
-      @required this.permlink,
-      @required this.createdAt});
+      { this.id,
+       this.author,
+       this.title,
+       this.thumbnailUrl,
+       this.episodeImage,
+       this.url,
+       this.album,
+       this.podcastid,
+       this.author_id,
+       this.permlink,
+       this.createdAt});
 }

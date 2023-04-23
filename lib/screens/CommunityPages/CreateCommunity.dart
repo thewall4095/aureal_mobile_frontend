@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:async/async.dart';
+// import 'package:async/async.dart';
 import 'package:auditory/Services/Interceptor.dart' as postreq;
 import 'package:auditory/utilities/SizeConfig.dart';
 import 'package:auditory/utilities/constants.dart';
@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,7 +73,7 @@ class _CreateCommunityState extends State<CreateCommunity> {
       print(jsonDecode(response.toString())['community']['name']);
 
       if (response.data['msg'] == null) {
-        await editCommunity(
+        editCommunity(
             communityId: jsonDecode(response.toString())['community']['id'],
             communityAlbumArt: communityAlbumArt,
             bannerImage: communityBanner,
@@ -143,21 +143,13 @@ class _CreateCommunityState extends State<CreateCommunity> {
   }
 
   Future getBannerArtImageFile() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            // toolbarColor: Colors.blueAccent,
-            //   toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        )) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 
@@ -209,32 +201,24 @@ class _CreateCommunityState extends State<CreateCommunity> {
     });
   }
 
-  CancelableOperation cancelableOperation;
-
-  Future<dynamic> fromCancelable(Future<dynamic> future) async {
-    cancelableOperation?.cancel();
-    cancelableOperation = CancelableOperation.fromFuture(future, onCancel: () {
-      print('Operation Cancelled');
-    });
-    return cancelableOperation.value;
-  }
+  // CancelableOperation cancelableOperation;
+  //
+  // Future<dynamic> fromCancelable(Future<dynamic> future) async {
+  //   cancelableOperation?.cancel();
+  //   cancelableOperation = CancelableOperation.fromFuture(future, onCancel: () {
+  //     print('Operation Cancelled');
+  //   });
+  //   return cancelableOperation.value;
+  // }
 
   Future getAlbumArtImageFile() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            // toolbarColor: Colors.blueAccent,
-            // toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        )) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 
@@ -586,7 +570,7 @@ class _CreateCommunityState extends State<CreateCommunity> {
                                   ),
                                 GestureDetector(
                                   onTap: () {
-                                    showBarModalBottomSheet(
+                                    showBottomSheet(
                                         context: context,
                                         builder: (context) {
                                           return _TagListView();

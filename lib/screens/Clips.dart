@@ -439,7 +439,7 @@ class SwipeCard extends StatefulWidget {
   final audioPlayer = AssetsAudioPlayer();
 
   SwipeCard({
-    @required this.clipObject,
+     this.clipObject,
   });
 
   @override
@@ -813,9 +813,9 @@ class _SwipeCardState extends State<SwipeCard> with WidgetsBindingObserver {
 
 class CustomTrackShape extends RoundedRectSliderTrackShape {
   Rect getPreferredRect({
-    @required RenderBox parentBox,
+     RenderBox parentBox,
     Offset offset = Offset.zero,
-    @required SliderThemeData sliderTheme,
+     SliderThemeData sliderTheme,
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {
@@ -835,9 +835,9 @@ class ClipSeekBar extends StatefulWidget {
   Color color;
 
   ClipSeekBar(
-      {@required this.currentPosition,
-      @required this.duration,
-      @required this.audioplayer,
+      { this.currentPosition,
+       this.duration,
+       this.audioplayer,
       this.color});
 
   @override
@@ -1183,7 +1183,7 @@ class _CreateClipSnippetState extends State<CreateClipSnippet>
 class PodcastDetailsSnippets extends StatefulWidget {
   var podcastObject;
 
-  PodcastDetailsSnippets({@required this.podcastObject});
+  PodcastDetailsSnippets({ this.podcastObject});
 
   @override
   _PodcastDetailsSnippetsState createState() => _PodcastDetailsSnippetsState();
@@ -1375,7 +1375,7 @@ class _PodcastDetailsSnippetsState extends State<PodcastDetailsSnippets> {
 class SnippetEditor extends StatefulWidget {
   var episodeObject;
 
-  SnippetEditor({@required this.episodeObject});
+  SnippetEditor({ this.episodeObject});
 
   @override
   _SnippetEditorState createState() => _SnippetEditorState();

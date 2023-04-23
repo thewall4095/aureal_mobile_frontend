@@ -1,13 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-@immutable
+// @immutable
 class Message {
   final String title;
   final String body;
   final data;
 
-  const Message({@required this.title, @required this.body, this.data});
+  const Message({ this.title,  this.body, this.data});
 }
 
 /// Message route arguments.

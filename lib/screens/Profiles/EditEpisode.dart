@@ -21,7 +21,7 @@ class EditEpisode extends StatefulWidget {
   var episodeObject;
   int podcastId;
 
-  EditEpisode({@required this.episodeObject, @required this.podcastId});
+  EditEpisode({ this.episodeObject,  this.podcastId});
 
   @override
   _EditEpisodeState createState() => _EditEpisodeState();
@@ -80,21 +80,12 @@ class _EditEpisodeState extends State<EditEpisode> {
   ////////////////////--------Pick Image --------------////////////////////////
 
   Future getImageFile() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-        ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.blueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        ],)) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 
@@ -174,10 +165,10 @@ class _EditEpisodeState extends State<EditEpisode> {
 
     print(map.toString());
 
-    var response = await intercept.postRequest(formData, url);
+    var response =  intercept.postRequest(formData, url);
     print(response.toString());
 
-    await publishEpisode(status: true);
+     publishEpisode(status: true);
   }
 
   void publishEpisode({bool status}) async {

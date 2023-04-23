@@ -39,11 +39,11 @@ class _PopErrorState extends State<PopError> {
         ),
         actions: <Widget>[
           Center(
-            child: new FlatButton(
+            child: new TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              textColor: Colors.blue,
+              // textColor: Colors.blue,
               child: Text(
                 'Okay',
                 textScaleFactor: 0.75,

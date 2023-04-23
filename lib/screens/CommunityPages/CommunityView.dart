@@ -25,7 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CommunityView extends StatefulWidget {
   var communityObject;
-  CommunityView({@required this.communityObject});
+  CommunityView({ this.communityObject});
 
   static const String id = "CommunityView";
   @override
@@ -81,21 +81,12 @@ class _CommunityViewState extends State<CommunityView>
   }
 
   Future getBannerArtImageFile() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-        ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.blueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        ],)) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 
@@ -118,8 +109,8 @@ class _CommunityViewState extends State<CommunityView>
       });
     }
 
-    await _communityBannerUpload();
-    await editCommunity();
+    _communityBannerUpload();
+    editCommunity();
   }
 
   void _communityBannerUpload() async {
@@ -144,20 +135,12 @@ class _CommunityViewState extends State<CommunityView>
 
   Future getAlbumArtImageFile() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.blueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        )) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 

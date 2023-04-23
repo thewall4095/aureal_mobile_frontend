@@ -9,7 +9,7 @@ class DiscoverProvider extends ChangeNotifier {
   //Loaders ////////////////////////////////////////////////////
 
   bool _featuredLoading = false;
-  get featuredLoading => _featuredLoading;
+  bool get featuredLoading => _featuredLoading;
 
   set featuredLoading(bool newValue) {
     _featuredLoading = newValue;
@@ -18,7 +18,7 @@ class DiscoverProvider extends ChangeNotifier {
   }
 
   bool _recentlyPlayedLoading = false;
-  get recentlyPlayedLoading => _recentlyPlayedLoading;
+  bool get recentlyPlayedLoading => _recentlyPlayedLoading;
 
   set recentlyPlayedLoading(bool newValue) {
     _recentlyPlayedLoading = newValue;
@@ -27,7 +27,7 @@ class DiscoverProvider extends ChangeNotifier {
   }
 
   bool _newestLoading = false;
-  get newestLoading => _newestLoading;
+  bool get newestLoading => _newestLoading;
 
   set newestLoading(bool newValue) {
     _newestLoading = newValue;
@@ -36,7 +36,7 @@ class DiscoverProvider extends ChangeNotifier {
   }
 
   bool _popularLoading = false;
-  get popularLoading => _popularLoading;
+  bool get popularLoading => _popularLoading;
 
   set popularLoading(bool newValue) {
     _popularLoading = newValue;
@@ -45,7 +45,7 @@ class DiscoverProvider extends ChangeNotifier {
   }
 
   bool _recommendedLoading = false;
-  get recommendedLoading => _recommendedLoading;
+  bool get recommendedLoading => _recommendedLoading;
 
   set recommendedLoading(bool newValue) {
     _recommendedLoading = newValue;
@@ -140,7 +140,7 @@ class DiscoverProvider extends ChangeNotifier {
   }*/
 
   void getDiscoverProvider() async {
-    await getPreferences();
+    getPreferences();
     _isFetcheddiscoverList = false;
     getFeatured();
     getRecentlyPlayed();

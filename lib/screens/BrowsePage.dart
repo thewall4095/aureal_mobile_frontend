@@ -133,7 +133,7 @@ class _BrowsePageState extends State<BrowsePage>
     setState(() {
       isLoading = true;
     });
-    await getLocalData();
+    getLocalData();
     // await browseEpisodes();
     // await browsePodcasts();
 

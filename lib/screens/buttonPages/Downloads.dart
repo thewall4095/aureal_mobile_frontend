@@ -14,7 +14,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:html/parser.dart';
 import 'package:marquee/marquee.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../PlayerState.dart';
@@ -565,7 +565,7 @@ class _DownloadPageState extends State<DownloadPage>
 class OfflineBottomPlayer extends StatefulWidget {
   var episodeObject;
 
-  OfflineBottomPlayer({@required this.episodeObject});
+  OfflineBottomPlayer({ this.episodeObject});
 
   @override
   _OfflineBottomPlayerState createState() => _OfflineBottomPlayerState();
@@ -640,7 +640,7 @@ class _OfflineBottomPlayerState extends State<OfflineBottomPlayer> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showBarModalBottomSheet(
+        showBottomSheet(
             //  barrierColor: Colors.transparent,
             context: context,
             builder: (context) {
@@ -800,7 +800,7 @@ class OfflinePlayer extends StatefulWidget {
 
   AssetsAudioPlayer audiocontroller;
 
-  OfflinePlayer({@required this.episodeObject, @required this.audiocontroller});
+  OfflinePlayer({ this.episodeObject,  this.audiocontroller});
 
   @override
   _OfflinePlayerState createState() => _OfflinePlayerState();
@@ -905,7 +905,7 @@ class _OfflinePlayerState extends State<OfflinePlayer> {
                 //                     crossAxisAlignment:
                 //                         CrossAxisAlignment.start,
                 //                     children: [
-                //                       FlatButton(
+                //                       TextButton(
                 //                         onPressed: () {
                 //                           widget.audiocontroller
                 //                               .setPlaySpeed(0.25);
@@ -923,7 +923,7 @@ class _OfflinePlayerState extends State<OfflinePlayer> {
                 //                           ],
                 //                         ),
                 //                       ),
-                //                       FlatButton(
+                //                       TextButton(
                 //                         onPressed: () {
                 //                           widget.audiocontroller
                 //                               .setPlaySpeed(0.5);
@@ -941,7 +941,7 @@ class _OfflinePlayerState extends State<OfflinePlayer> {
                 //                           ],
                 //                         ),
                 //                       ),
-                //                       FlatButton(
+                //                       TextButton(
                 //                         onPressed: () {
                 //                           widget.audiocontroller
                 //                               .setPlaySpeed(1.0);
@@ -959,7 +959,7 @@ class _OfflinePlayerState extends State<OfflinePlayer> {
                 //                           ],
                 //                         ),
                 //                       ),
-                //                       FlatButton(
+                //                       TextButton(
                 //                         onPressed: () {
                 //                           widget.audiocontroller
                 //                               .setPlaySpeed(1.5);
@@ -977,7 +977,7 @@ class _OfflinePlayerState extends State<OfflinePlayer> {
                 //                           ],
                 //                         ),
                 //                       ),
-                //                       FlatButton(
+                //                       TextButton(
                 //                         onPressed: () {
                 //                           widget.audiocontroller
                 //                               .setPlaySpeed(2.0);

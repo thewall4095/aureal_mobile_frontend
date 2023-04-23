@@ -4,7 +4,7 @@
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:marquee/marquee.dart';
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// 
 // import 'package:provider/provider.dart';
 // import 'package:assets_audio_player/assets_audio_player.dart';
 //
@@ -44,7 +44,7 @@
 //                   builder: (context, ScrollController controller) {
 //                     return Player();
 //                   });
-//               // showBarModalBottomSheet(
+//               // showBottomSheet(
 //               //     backgroundColor: Colors.transparent,
 //               //     context: context,
 //               //     builder: (context, _controller) {

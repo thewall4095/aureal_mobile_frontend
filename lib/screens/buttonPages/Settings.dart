@@ -12,7 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -142,7 +142,7 @@ class _SettingsState extends State<Settings> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        showBarModalBottomSheet(
+                        showBottomSheet(
                             context: context,
                             builder: (context) {
                               return Scaffold(

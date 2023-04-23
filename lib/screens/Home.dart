@@ -25,7 +25,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:jitsi_meet/jitsi_meet.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -56,7 +56,7 @@ enum PlayerState {
 class Home extends StatefulWidget {
   // String username;
   // String userId;
-  // Home({@required this.userId, @required this.username});
+  // Home({ this.userId,  this.username});
 
   static const String id = "Homepage";
 
@@ -103,7 +103,7 @@ class _HomeState extends State<Home> {
 
   void getCategoryData(BuildContext context) async {
     var category = Provider.of<CategoriesProvider>(context);
-    await category.getCategories();
+    category.getCategories();
   }
 
   void getUserDetails() async {
@@ -202,8 +202,8 @@ class _HomeState extends State<Home> {
 
   void showSnack(String text) {
     if (_scaffoldKey.currentContext != null) {
-      Scaffold.of(_scaffoldKey.currentContext)
-          .showSnackBar(SnackBar(content: Text(text)));
+      // Scaffold.of(_scaffoldKey.currentContext)
+      //     .showSnackBar(SnackBar(content: Text(text)));
     }
   }
 
@@ -613,7 +613,7 @@ class _HomeState extends State<Home> {
                 IconButton(
                   icon: Icon(Icons.more_vert_outlined),
                   onPressed: () {
-                    showBarModalBottomSheet(
+                    showBottomSheet(
                         context: context,
                         builder: (context) {
                           return Container(
@@ -650,7 +650,7 @@ class _HomeState extends State<Home> {
                                       print('Wallet Pressed');
                                       Navigator.pushNamed(context, Wallet.id);
                                     } else {
-                                      showBarModalBottomSheet(
+                                      showBottomSheet(
                                           context: context,
                                           builder: (context) {
                                             return HiveDetails();

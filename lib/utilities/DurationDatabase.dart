@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:auditory/models/RecentlyPlayedModal.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
+// import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,22 +25,22 @@ class RecentlyPlayedProvider {
     final documentsDirectory = appDocDir.path;
     Database _db;
 
-    _database = await openDatabase(
-        join(documentsDirectory, 'recentlyplayed.db'),
-        version: 1, onCreate: (Database db, int version) {
-      _db = db;
-      debugPrint('on database create recentlyplayed');
-      _createTables(db: db);
-    }, onUpgrade: (Database db, int oldVersion, int newVersion) {
-      _db = db;
-      debugPrint('on database upgrade recentlyplayed');
-      _dropTables(db: db);
-      _createTables(db: db);
-    }, onOpen: (Database db) {
-      debugPrint('on database open recentlyplayed');
-
-      _db = db;
-    });
+    // _database = await openDatabase(
+    //     // join(documentsDirectory, 'recentlyplayed.db'),
+    //     version: 1, onCreate: (Database db, int version) {
+    //   _db = db;
+    //   debugPrint('on database create recentlyplayed');
+    //   _createTables(db: db);
+    // }, onUpgrade: (Database db, int oldVersion, int newVersion) {
+    //   _db = db;
+    //   debugPrint('on database upgrade recentlyplayed');
+    //   _dropTables(db: db);
+    //   _createTables(db: db);
+    // }, onOpen: (Database db) {
+    //   debugPrint('on database open recentlyplayed');
+    //
+    //   _db = db;
+    // });
 
     _isInit = true;
 

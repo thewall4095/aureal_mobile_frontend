@@ -5,7 +5,7 @@
 // class PDFviewer extends StatefulWidget {
 //   var episodeObject;
 //
-//   PDFviewer({@required this.episodeObject});
+//   PDFviewer({ this.episodeObject});
 //
 //   @override
 //   _PDFviewerState createState() => _PDFviewerState();

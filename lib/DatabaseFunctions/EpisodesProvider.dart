@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
+// import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -17,35 +17,35 @@ class EpisodesProvider {
   // final String _tblEpisodeExecutions = 'EpisodeExecutions';
 
   EpisodesProvider._() {
-    _init();
+    // _init();
   }
 
   bool get isReady => _isInit;
 
-  Future<Database> _init() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final documentsDirectory = appDocDir.path;
-    Database _db;
-
-    _database = await openDatabase(join(documentsDirectory, 'episodes.db'),
-        version: 1, onCreate: (Database db, int version) {
-      _db = db;
-      debugPrint('on database create');
-      _createTables(db: db);
-    }, onUpgrade: (Database db, int oldVersion, int newVersion) {
-      _db = db;
-      debugPrint('on database upgrade');
-      _dropTables(db: db);
-      _createTables(db: db);
-    }, onOpen: (Database db) {
-      _db = db;
-      debugPrint('on database open');
-    });
-
-    _isInit = true;
-
-    return _database ?? (_database = _db);
-  }
+  // Future<Database> _init() async {
+  //   Directory appDocDir = await getApplicationDocumentsDirectory();
+  //   final documentsDirectory = appDocDir.path;
+  //   Database _db;
+  //
+  //   _database = await openDatabase(join(documentsDirectory, 'episodes.db'),
+  //       version: 1, onCreate: (Database db, int version) {
+  //     _db = db;
+  //     debugPrint('on database create');
+  //     _createTables(db: db);
+  //   }, onUpgrade: (Database db, int oldVersion, int newVersion) {
+  //     _db = db;
+  //     debugPrint('on database upgrade');
+  //     _dropTables(db: db);
+  //     _createTables(db: db);
+  //   }, onOpen: (Database db) {
+  //     _db = db;
+  //     debugPrint('on database open');
+  //   });
+  //
+  //   _isInit = true;
+  //
+  //   return _database ?? (_database = _db);
+  // }
 
   _dropTables({Database db}) async {
     db ??= _database;
@@ -81,15 +81,15 @@ class EpisodesProvider {
 
   static EpisodesProvider getInstance() {
     if (_isInit == false) {
-      _instance._init();
+      // _instance._init();
     }
     return _instance;
   }
 
   /// Deletes a episode based on its id.
   Future<bool> removeEpisode(int episodeId) async {
-    Database db = await _init();
-    _database ??= db;
+    // Database db = await _init();
+    // _database ??= db;
 
     int r = 0;
 
@@ -110,8 +110,8 @@ class EpisodesProvider {
 
   /// Inserts a new episode.
   Future<bool> addEpisode(final Episode episode) async {
-    Database db = await _init();
-    _database ??= db;
+    // Database db = await _init();
+    // _database ??= db;
 
     final int i = await _database.rawInsert(
         'INSERT INTO $_tblEpisodes '
@@ -130,8 +130,8 @@ class EpisodesProvider {
 
   /// Updates the given episode using [Episode.id]
   Future<bool> updateEpisode(final Episode episode) async {
-    Database db = await _init();
-    _database ??= db;
+    // Database db = await _init();
+    // _database ??= db;
 
     final int i = await _database.rawUpdate(
         'UPDATE $_tblEpisodes '
@@ -157,8 +157,8 @@ class EpisodesProvider {
 
   /// Gets a episode using its id.
   Future<bool> getEpisode(int id) async {
-    Database db = await _init();
-    _database ??= db;
+    // Database db = await _init();
+    // _database ??= db;
 
     final List<Map<String, dynamic>> rows = await _database
         .rawQuery('SELECT * FROM $_tblEpisodes WHERE episodeId = $id;');
@@ -172,8 +172,8 @@ class EpisodesProvider {
 
   /// Gets the episodes.
   Future<List<Episode>> getEpisodes() async {
-    Database db = await _init();
-    _database ??= db;
+    // Database db = await _init();
+    // _database ??= db;
 
     final List<Map<String, dynamic>> rows =
         await _database.rawQuery('SELECT * FROM $_tblEpisodes;');

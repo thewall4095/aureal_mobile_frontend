@@ -398,7 +398,7 @@ class FeaturedBuilder extends StatelessWidget {
   final data;
   int category_id;
 
-  FeaturedBuilder({@required this.data, this.category_id});
+  FeaturedBuilder({ this.data, this.category_id});
 
   CancelToken _cancel = CancelToken();
 

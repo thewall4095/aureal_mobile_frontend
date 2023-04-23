@@ -19,7 +19,7 @@ import '../FollowingPage.dart';
 //
 //   var categoryObject;
 //
-//   CategoryView({@required this.categoryObject, this.query, this.data});
+//   CategoryView({ this.categoryObject, this.query, this.data});
 //
 //   @override
 //   _CategoryViewState createState() => _CategoryViewState();
@@ -671,7 +671,7 @@ import '../FollowingPage.dart';
 // }
 class CategoryView extends StatelessWidget {
   final categoryObject;
-  CategoryView({@required this.categoryObject});
+  CategoryView({ this.categoryObject});
 
   SharedPreferences prefs;
   Dio dio = Dio();

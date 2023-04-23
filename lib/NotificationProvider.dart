@@ -213,7 +213,7 @@ class _LocalNotificationScreenState extends State<LocalNotificationScreen> {
         title: Text('Local Notifications'),
       ),
       body: Center(
-        child: FlatButton(
+        child: TextButton(
           onPressed: () async {
             await notificationPlugin.showNotification();
             //  //  await notificationPlugin.scheduleNotification();
@@ -500,10 +500,10 @@ class ReceivedNotification {
   final String payload;
 
   ReceivedNotification({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.payload,
+     this.id,
+     this.title,
+     this.body,
+     this.payload,
   });
 }
 

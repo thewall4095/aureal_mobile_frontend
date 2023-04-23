@@ -49,7 +49,7 @@ class _WalletState extends State<Wallet> with TickerProviderStateMixin {
   }
 
   void getHiveTransactions() async {
-    await getLocalData();
+    getLocalData();
     print(hiveUsername);
     print('this Started');
 

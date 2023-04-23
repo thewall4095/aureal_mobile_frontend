@@ -25,7 +25,7 @@ import 'package:auditory/screens/buttonPages/settings/Theme-.dart';
 import 'package:auditory/screens/buttonPages/settings/security/AccountSettings/Presence.dart';
 import 'package:auditory/screens/errorScreens/PopError.dart';
 import 'package:auditory/screens/errorScreens/TemporaryError.dart';
-import 'package:auditory/screens/recorderApp/recorderpages/PostRSSFeed.dart';
+// import 'package:auditory/screens/recorderApp/recorderpages/PostRSSFeed.dart';
 import 'package:auditory/utilities/TagSearch.dart';
 import 'package:auditory/utilities/getRoomDetails.dart';
 import 'package:dio/dio.dart';
@@ -50,8 +50,6 @@ import 'SearchProvider.dart';
 import 'Services/rating_service.dart';
 import 'screens/Home.dart';
 import 'screens/LoginSignup/Auth.dart';
-import 'screens/LoginSignup/Login.dart';
-import 'screens/LoginSignup/SignUp.dart';
 import 'screens/LoginSignup/WelcomeScreen.dart';
 import 'screens/Onboarding/Categories.dart';
 import 'screens/Onboarding/LanguageSelection.dart';
@@ -66,10 +64,10 @@ import 'screens/buttonPages/settings/EmailNotifications/EmailNotifications.dart'
 import 'screens/buttonPages/settings/MobileNotifications/MobileNotifications.dart';
 import 'screens/buttonPages/settings/NotificationsSetting.dart';
 import 'screens/buttonPages/settings/security/Security.dart';
-import 'screens/recorderApp/RecorderDashboard.dart';
-import 'screens/recorderApp/recorderpages/CreatePodcast.dart';
-import 'screens/recorderApp/recorderpages/SoundEditor/SoundEditor.dart';
-import 'screens/recorderApp/recorderpages/selectPodcast.dart';
+// import 'screens/recorderApp/RecorderDashboard.dart';
+// import 'screens/recorderApp/recorderpages/CreatePodcast.dart';
+// import 'screens/recorderApp/recorderpages/SoundEditor/SoundEditor.dart';
+// import 'screens/recorderApp/recorderpages/selectPodcast.dart';
 
 const debug = true;
 
@@ -147,7 +145,7 @@ class AppStart extends StatelessWidget {
 class MyApp extends StatefulWidget with WidgetsBindingObserver {
   final ThemeProvider themeProvider;
 
-  const MyApp({Key key, @required this.themeProvider}) : super(key: key);
+  const MyApp({Key key,  this.themeProvider}) : super(key: key);
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -179,12 +177,12 @@ class _MyAppState extends State<MyApp> {
   //   });
   // }
 
-  void showSnack(String text) {
-    if (_scaffoldKey.currentContext != null) {
-      Scaffold.of(_scaffoldKey.currentContext)
-          .showSnackBar(SnackBar(content: Text(text)));
-    }
-  }
+  // void showSnack(String text) {
+  //   if (_scaffoldKey.currentContext != null) {
+  //     Scaffold.of(_scaffoldKey.currentContext)
+  //         .showSnackBar(SnackBar(content: Text(text)));
+  //   }
+  // }
 
   // AppUpdateInfo _updateInfo;
   // Future<void> checkForUpdate() async {
@@ -286,18 +284,14 @@ class _MyAppState extends State<MyApp> {
                                         title: 'Aureal',
                                         theme: widget.themeProvider.themeData(),
                                         home: SplashScreenPage(),
-                                        // home: OnboardingCategories(),
-                                        // initialRoute: HiveAccount.id,
+
                                         routes: {
-                                          PostRSSFeed.id: (context) =>
-                                              PostRSSFeed(),
+
                                           //       EmailVerificationDialog.id :(context)=> EmailVerificationDialog(),
                                           PopError.id: (context) => PopError(),
 
                                           // Recorder.id: (context) => Recorder(),
                                           Home.id: (context) => Home(),
-                                          RecorderDashboard.id: (context) =>
-                                              RecorderDashboard(),
                                           Messages.id: (context) => Messages(),
                                           // Search.id: (context) => Search(),
                                           Profile.id: (context) => Profile(),
@@ -305,8 +299,8 @@ class _MyAppState extends State<MyApp> {
                                               DownloadPage(),
                                           NotificationPage.id: (context) =>
                                               NotificationPage(),
-                                          Login.id: (context) => Login(),
-                                          SignUp.id: (context) => SignUp(),
+                                          // Login.id: (context) => Login(),
+                                          // SignUp.id: (context) => SignUp(),
 
                                           Welcome.id: (context) => Welcome(),
                                           Profile.id: (context) => Profile(),
@@ -320,10 +314,7 @@ class _MyAppState extends State<MyApp> {
                                           EmailNotifications.id: (context) =>
                                               EmailNotifications(),
                                           Security.id: (context) => Security(),
-                                          SoundEditor.id: (context) =>
-                                              SoundEditor(),
-                                          CreatePodcast.id: (context) =>
-                                              CreatePodcast(),
+
 
                                           Wrapper.id: (context) => Wrapper(),
                                           Bio.id: (context) => Bio(),
@@ -332,8 +323,7 @@ class _MyAppState extends State<MyApp> {
                                               SelectLanguage(),
                                           OnboardingCategories.id: (context) =>
                                               OnboardingCategories(),
-                                          SelectPodcast.id: (context) =>
-                                              SelectPodcast(),
+
                                           TemporaryError.id: (context) =>
                                               TemporaryError(),
                                           HiveAccount.id: (context) =>

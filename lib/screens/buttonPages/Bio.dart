@@ -28,7 +28,7 @@ class Bio extends StatefulWidget {
 
   var bioObject;
 
-  Bio({@required this.bio, this.fullname, this.displayPicture});
+  Bio({ this.bio, this.fullname, this.displayPicture});
 
   @override
   _BioState createState() => _BioState();
@@ -76,20 +76,12 @@ class _BioState extends State<Bio> {
       isImageLoading = true;
     });
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File croppedFile = await ImageCropper.cropImage(
+    File croppedFile = (await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: Colors.blueAccent,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
+        )) as File;
 
     var optimisedImage = img.decodeImage(croppedFile.readAsBytesSync());
 
@@ -325,12 +317,12 @@ class _BioState extends State<Bio> {
 
   }
 
-  Future<void> _pullRefreshEpisodes() async {
-    // getCommunityEposidesForUser();
-    await updateUserDetails();
-    await getImageFile();
-    await activeButtonState();
-  }
+  // Future _pullRefreshEpisodes() async {
+  //   // getCommunityEposidesForUser();
+  //   await updateUserDetails();
+  //   await getImageFile();
+  //   await activeButtonState();
+  // }
 
   AppBar _appBar() {
     return AppBar(

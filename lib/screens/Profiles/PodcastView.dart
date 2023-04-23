@@ -24,7 +24,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// 
 import 'package:palette_generator/palette_generator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1103,7 +1103,7 @@ class _PodcastViewState extends State<PodcastView>
                                       },
                                       child: InkWell(
                                         onTap: () {
-                                          showMaterialModalBottomSheet(
+                                          showModalBottomSheet(
                                               enableDrag: false,
                                               context: context,
                                               builder: (context) {
@@ -1671,10 +1671,10 @@ class _AnimationHeader extends SliverPersistentHeaderDelegate {
 
   _AnimationHeader(
       {this.podcastData,
-      @required this.dominantColor,
-      @required this.dio,
-      @required this.followState,
-      @required this.follows});
+       this.dominantColor,
+       this.dio,
+       this.followState,
+       this.follows});
 
   RegExp htmlMatch = RegExp(r'(\w+)');
   Dio dio = Dio();
@@ -1913,9 +1913,9 @@ class FollowButton extends StatefulWidget {
   var podcastData;
 
   FollowButton(
-      {@required this.podcastData,
-      @required this.follows,
-      @required this.followState});
+      { this.podcastData,
+       this.follows,
+       this.followState});
 
   @override
   _FollowButtonState createState() => _FollowButtonState();
@@ -2062,7 +2062,7 @@ class _FollowButtonState extends State<FollowButton> {
 class SnippetDisplay extends StatefulWidget {
   var podcastObject;
 
-  SnippetDisplay({@required this.podcastObject});
+  SnippetDisplay({ this.podcastObject});
 
   @override
   _SnippetDisplayState createState() => _SnippetDisplayState();

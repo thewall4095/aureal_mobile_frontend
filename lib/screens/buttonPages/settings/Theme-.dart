@@ -128,8 +128,8 @@ class ZAnimatedToggle extends StatefulWidget {
   final ValueChanged onToggleCallback;
   ZAnimatedToggle({
     Key key,
-    @required this.values,
-    @required this.onToggleCallback,
+     this.values,
+     this.onToggleCallback,
   }) : super(key: key);
   @override
   _ZAnimatedToggleState createState() => _ZAnimatedToggleState();

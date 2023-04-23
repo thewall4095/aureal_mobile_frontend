@@ -19,7 +19,7 @@ class EmailVerificationDialog extends StatefulWidget {
   var username;
 
   ThemeProvider themeProvider;
-  EmailVerificationDialog({@required this.username});
+  EmailVerificationDialog({ this.username});
 
   @override
   _EmailVerificationDialogState createState() =>
@@ -62,7 +62,7 @@ String error ;
       kRSSMail = jsonDecode(response.toString())['email'];
     });
     if (jsonDecode(response.toString())['msg'] != null) {
-      showInSnackBar('${jsonDecode(response.toString())['msg']}');
+      // showInSnackBar('${jsonDecode(response.toString())['msg']}');
     } else {
       setState(() {
         _selectedIndex = 2;
@@ -74,14 +74,14 @@ String error ;
     });
   }
 
-  void showInSnackBar(String value) {
-    _RSSImportKey.currentState.showSnackBar(new SnackBar(
-        backgroundColor: Colors.blue,
-        content: new Text(
-          value,
-          style: TextStyle(color: Colors.white),
-        )));
-  }
+  // void showInSnackBar(String value) {
+  //   _RSSImportKey.currentState.showSnackBar(new SnackBar(
+  //       backgroundColor: Colors.blue,
+  //       content: new Text(
+  //         value,
+  //         style: TextStyle(color: Colors.white),
+  //       )));
+  // }
 
   void verifyOTP() async {
     setState(() {
@@ -217,7 +217,7 @@ String error ;
                     onTap: () async {
                       if (_RSSController.text != null ||
                           _RSSController.text != '') {
-                      await sendOTP();}
+                      sendOTP();}
                     },
                     child: Container(
                       decoration: BoxDecoration(

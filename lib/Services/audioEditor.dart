@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class AudioEditor extends StatefulWidget {
   var episodeObject;
 
-  AudioEditor({@required this.episodeObject});
+  AudioEditor({ this.episodeObject});
 
   @override
   _AudioEditorState createState() => _AudioEditorState();

@@ -251,7 +251,7 @@ class _RewardsState extends State<Rewards> {
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  await claimRewards();
+                                  claimRewards();
                                   setState(() {
                                     isLoading = false;
                                   });
